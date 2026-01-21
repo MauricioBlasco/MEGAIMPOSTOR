@@ -1,11 +1,62 @@
 const datos = {
-    "Animales": ["Perro", "Gato", "Elefante", "Tigre", "Delfín", "Lobo"],
-    "Lugares": ["París", "Playa", "Cine", "Estadio", "Hospital", "Escuela"],
-    "Objetos": ["Lámpara", "Reloj", "Espejo", "Martillo", "Tenedor"],
-    "Futbolistas": ["Messi", "Ronaldo", "Maradona", "Mbappé", "Neymar"],
-    "Series": ["Stranger Things", "Breaking Bad", "The Office", "Harry Potter", "Spider-Man"]
+    "Animales": [
+        "Perro", "Gato", "Elefante", "Tigre", "Delfín", "Lobo", "León", "Cebra", "Jirafa", "Oso", 
+        "Panda", "Pingüino", "Tiburón", "Águila", "Serpiente", "Caballo", "Vaca", "Cerdo", "Mono", "Gorila", 
+        "Canguro", "Hipopótamo", "Rinoceronte", "Tortuga", "Conejo", "Hámster", "Loro", "Pavo Real", "Ballena", "Pulpo", 
+        "Medusa", "Abeja", "Hormiga", "Mariposa", "Araña", "Escorpión", "Cocodrilo", "Camaleón", "Murciélago", "Zorro", 
+        "Ardilla", "Mapache", "Ciervo", "Cabra", "Oveja", "Gallo", "Pato", "Cisne"
+    ],
+    "Lugares": [
+        "Playa", "Cine", "Estadio", "Hospital", "Escuela", "Aeropuerto", "Biblioteca", "Museo", "Zoológico", 
+        "Parque", "Restaurante", "Hotel", "Gimnasio", "Farmacia", "Supermercado", "Banco", "Iglesia", "Castillo", "Cárcel", 
+        "Bosque", "Desierto", "Montaña", "Isla", "Volcán", "Río", "Cascada", "Puerto", "Estación de Tren", "Gasolinera", 
+        "Panadería", "Peluquería", "Teatro", "Casino", "Circo", "Acuario", "Planetario", "Cementerio", "Taller", "Granja", 
+        "Faro", "Puente", "Cabaña", "Cueva", "Jungla", "Pantano"
+    ],
+    "Objetos": [
+        "Lámpara", "Reloj", "Espejo", "Martillo", "Tenedor", "Cuchillo", "Cuchara", "Plato", "Vaso", "Sartén", 
+        "Llave", "Candado", "Teléfono", "Computadora", "Televisor", "Radio", "Cámara", "Libro", "Cuaderno", "Lápiz", 
+        "Mochila", "Maleta", "Paraguas", "Gafas", "Reloj", "Billetera", "Moneda", "Martillo", "Destornillador", "Tijeras", 
+        "Peine", "Cepillo", "Jabón", "Toalla", "Almohada", "Manta", "Silla", "Mesa", "Sofá", "Cama", 
+        "Bicicleta", "Guitarra", "Piano", "Pelota", "Raqueta", "Botella", "Encendedor", "trompeta", "Escoba", "Cubo"
+    ],
+    "Futbolistas": [
+        "Puskás", "Eusébio", "Gerd Müller", "George Best", "Yashin", "Baresi", "Maldini", "Passarella", "Kempes", "Batistuta",
+    "Figo", "Puyol", "Pirlo", "Lahm", "Gerrard", "Lampard", "Scholes", "Raúl", "Shevchenko", "Van Basten",
+    "Bergkamp", "Totti", "Del Piero", "Klose", "Foden", "Saka", "Rodri", "Valverde", "Courtois", "Alisson",
+    "Van Dijk", "Salah", "Son", "Gavi", "James Rodríguez",
+    "Garrincha", "Zico", "Socrates", "Falcao", "Rivarola", "Chilavert", "Valderrama", "Forlán", "Cavani", "Godín",
+    "Bebeto", "Vieri", "Nedved", "Stoichkov", "Hagi", "Kahn", "Schmeichel", "Van der Sar", "Hugo Sánchez", "Rafa Márquez",
+    ],
+    "Series": [
+        "Stranger Things", "Breaking Bad", "The Office", "Harry Potter", "Spider-Man", "Game of Thrones", "Friends", "Dark",
+        "La Casa de Papel", "The Mandalorian", "The Last of Us", "Black Mirror", "Peaky Blinders", "Better Call Saul", "Narcos", "Vikings", 
+        "Grey's Anatomy", "Lost", "The Walking Dead", "Modern Family", "The Big Bang Theory", "How I Met Your Mother", "Simpson", "South Park", "Rick and Morty", 
+        "One Piece", "Naruto", "Dragon Ball", "Attack on Titan", "Demon Slayer", "Cobra Kai", "The Boys", "Invincible", 
+         "Dexter", "Mr. Robot", "Brooklyn Nine-Nine", "Ted Lasso", "The Witcher", "Loki", "Wandavision"
+    ],
+    "Comida": [
+        "Pizza", "Hamburguesa", "Sushi", "Taco", "Pasta", "Asado", "Empanada", "Paella", "Ramen", "Lasaña", 
+        "Hot Dog", "Nuggets", "Ensalada", "Sopa", "Milanesa", "Puré", "Arroz", "Huevo Frito", "Tortilla", "Pan", 
+        "Queso", "Jamón", "Salame", "Sándwich", "Ceviche", "Burrito", "Nachos", "Kebab", "Asado", 
+        "Helado", "Chocolate", "Tarta", "Flan", "Churros", "Donas", "Galletas", "Alfajor", "Papas Fritas", "Pochoclos", 
+        "Manzana", "Banana", "Frutilla", "Sandía", "Uva", "Naranja", "Limón", "Palta", "Tomate", "Lechuga"
+    ],
+    "Deportes": [
+        "Tenis", "Básquet", "Natación", "Rugby", "Golf", "Vóley", "Fútbol", "Boxeo", "Automovilismo", "Ciclismo", 
+        "Atletismo", "Gimnasia", "Hockey", "Béisbol", "Surf", "Skate", "Snowboard", "Esquí", "Karate", "Judo", 
+        "Esgrima", "Arquería", "Remo", "Vela", "Ajedrez", "Pádel", "Ping Pong", "Dardos", 
+        "Billar", "Bowling", "Maratón", "Sumo", "Lucha Libre", 
+        "Motociclismo", "Handball", "Badminton",
+    ],
+    "Videojuegos": [
+        "Minecraft", "Fortnite", "Mario Bros", "FIFA", "GTA", "Zelda", "Rocket league", "Red Dead Redemption", "Fallout", "Tetris", 
+        "Terraria", "League of Legends", "Valorant", "Counter-Strike", "Roblox", "Among Us", "Fall Guys", "God of War", "Elden Ring", "Dark Souls", 
+        "Halo", "Call of Duty", "Resident Evil", "Silent Hill", "Mortal Kombat", "Street Fighter", "Sonic", "Pac-Man", "The Sims", "Stardew Valley", 
+        "Pokemon", "Final Fantasy", "Apex Legends", "Overwatch", "Cyberpunk 2077", "The Witcher 3", "Assassins Creed", "Uncharted", 
+        "The Last of Us", "Skyrim", "Portal", "Half-Life", "BioShock", "Undertale", "Cuphead", "Hollow Knight", "Doom"
+    ]
 };
-
 let numJugadores = 0;
 let numImpostores = 0;
 let jugadorActual = 1;
@@ -33,7 +84,6 @@ function actualizarMaxImpostores() {
         inputImp.value = maxPermitido;
     }
 }
-
 function iniciarPartida() {
     numJugadores = parseInt(document.getElementById('input-jugadores').value);
     numImpostores = parseInt(document.getElementById('input-impostores').value);
@@ -44,11 +94,12 @@ function iniciarPartida() {
     if(document.getElementById('cat-Objetos').checked) datos["Objetos"].forEach(p => bolsaCombinada.push({p: p, c: "Objetos"}));
     if(document.getElementById('cat-Futbolistas').checked) datos["Futbolistas"].forEach(p => bolsaCombinada.push({p: p, c: "Futbolistas"}));
     if(document.getElementById('cat-Series').checked) datos["Series"].forEach(p => bolsaCombinada.push({p: p, c: "Series"}));
+    // AGREGAR ESTAS LÍNEAS:
+    if(document.getElementById('cat-Comida').checked) datos["Comida"].forEach(p => bolsaCombinada.push({p: p, c: "Comida"}));
+    if(document.getElementById('cat-Deportes').checked) datos["Deportes"].forEach(p => bolsaCombinada.push({p: p, c: "Deportes"}));
+    if(document.getElementById('cat-Videojuegos').checked) datos["Videojuegos"].forEach(p => bolsaCombinada.push({p: p, c: "Videojuegos"}));
 
-    if(bolsaCombinada.length === 0) {
-        alert("¡Selecciona al menos una categoría!");
-        return;
-    }
+    // ... resto del código igual
 
     const seleccion = bolsaCombinada[Math.floor(Math.random() * bolsaCombinada.length)];
     palabraSecreta = seleccion.p;
