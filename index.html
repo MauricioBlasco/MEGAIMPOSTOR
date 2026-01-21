@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEGAIMPOSTOR</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        
+        <div id="pantalla-inicio" class="screen active">
+            <h1 class="titulo-principal">MEGAIMPOSTOR</h1>
+            <button class="btn-principal" onclick="mostrarPantalla('pantalla-jugadores')">INICIAR</button>
+        </div>
+
+        <div id="pantalla-jugadores" class="screen hidden">
+            <h2>Configuración</h2>
+            <div class="control-grupal">
+                <label>Jugadores:</label>
+                <input type="number" id="input-jugadores" value="3" min="3" max="12" onchange="actualizarMaxImpostores()">
+            </div>
+            <div class="control-grupal">
+                <label>Impostores:</label>
+                <input type="number" id="input-impostores" value="1" min="1" max="1">
+            </div>
+            <button class="btn-principal" onclick="mostrarPantalla('pantalla-categorias')">SIGUIENTE</button>
+        </div>
+
+        <div id="pantalla-categorias" class="screen hidden">
+            <h2>CATEGORÍAS</h2>
+            <div id="lista-switches">
+                <div class="categoria-item"><span>Animales</span><label class="switch"><input type="checkbox" id="cat-Animales" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Lugares</span><label class="switch"><input type="checkbox" id="cat-Lugares" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Objetos</span><label class="switch"><input type="checkbox" id="cat-Objetos" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Futbolistas</span><label class="switch"><input type="checkbox" id="cat-Futbolistas" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Series</span><label class="switch"><input type="checkbox" id="cat-Series" checked><span class="slider"></span></label></div>
+            </div>
+            <button class="btn-principal" onclick="iniciarPartida()">¡EMPEZAR!</button>
+        </div>
+
+        <div id="pantalla-preparacion" class="screen hidden">
+            <h1 class="titulo-principal">¡HORA DE JUGAR!</h1>
+            <p style="margin-bottom: 20px;">Pasen el celular al Jugador 1</p>
+            <button class="btn-principal" onclick="iniciarTurnoUno()">COMENZAR PARTIDA</button>
+            <button class="btn-secundario" onclick="mostrarPantalla('pantalla-jugadores')">⚙️ CAMBIAR CONFIGURACIÓN</button>
+        </div>
+
+        <div id="pantalla-revelar" class="screen hidden">
+            <h2 id="titulo-turno">Jugador 1</h2>
+            <div id="caja-secreta" class="hidden-word">? ? ?</div>
+            <button class="btn-principal" id="btn-revelar-clic" onclick="revelarCliche()">VER MI PALABRA</button>
+            <button onclick="siguienteJugador()" id="btn-siguiente" class="btn-principal hidden">YA LO VI, PASAR CELULAR</button>
+        </div>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
