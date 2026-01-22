@@ -96,6 +96,7 @@ body {
     padding: 0;
     outline: none;
     -webkit-appearance: none;
+appearance: none;
 }
 
 /* SISTEMA DE SCROLL PARA CATEGORÍAS */
