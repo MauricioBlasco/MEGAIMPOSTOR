@@ -15,17 +15,28 @@
         </div>
 
         <div id="pantalla-jugadores" class="screen hidden">
-            <h2>Configuración</h2>
-            <div class="control-grupal">
-                <label>Jugadores:</label>
-                <input type="number" id="input-jugadores" value="3" min="3" max="12" onchange="actualizarMaxImpostores()">
-            </div>
-            <div class="control-grupal">
-                <label>Impostores:</label>
-                <input type="number" id="input-impostores" value="1" min="1" max="1">
-            </div>
-            <button class="btn-principal" onclick="mostrarPantalla('pantalla-categorias')">SIGUIENTE</button>
+    <h2>Configuración</h2>
+    
+    <div class="control-grupal">
+        <label>Jugadores:</label>
+        <div class="contador-interactivo">
+            <button class="btn-flecha" onclick="cambiarValor('input-jugadores', -1)">-</button>
+            <input type="number" id="input-jugadores" value="3" readonly>
+            <button class="btn-flecha" onclick="cambiarValor('input-jugadores', 1)">+</button>
         </div>
+    </div>
+
+    <div class="control-grupal">
+        <label>Impostores:</label>
+        <div class="contador-interactivo">
+            <button class="btn-flecha" onclick="cambiarValor('input-impostores', -1)">-</button>
+            <input type="number" id="input-impostores" value="1" readonly>
+            <button class="btn-flecha" onclick="cambiarValor('input-impostores', 1)">+</button>
+        </div>
+    </div>
+
+    <button class="btn-principal" onclick="mostrarPantalla('pantalla-categorias')">SIGUIENTE</button>
+</div>
 
         <div id="pantalla-categorias" class="screen hidden">
             <h2>CATEGORÍAS</h2>

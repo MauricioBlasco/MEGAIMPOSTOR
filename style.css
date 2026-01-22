@@ -51,7 +51,53 @@ body {
     background-color: #555;
     color: white;
 }
+.contador-interactivo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
+.btn-flecha {
+    background-color: #ff4757;
+    color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+.btn-flecha:active {
+    transform: scale(0.9);
+    background-color: #e84118;
+}
+#input-jugadores, #input-impostores {
+    border: none;
+    background: transparent;
+    font-size: 1.4rem; /* Lo aumenté un poco para que se vea mejor */
+    font-weight: bold;
+    color: white;
+    width: 50px !important; /* Un poco más de ancho para evitar saltos */
+    text-align: center;    /* ESTA ES LA LÍNEA CLAVE */
+    padding: 0;
+    margin: 0;
+    outline: none;         /* Quita el borde azul al hacer clic */
+}
+
+/* Ajuste adicional para que el contenedor también esté alineado */
+.contador-interactivo {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centra todo el grupo de botones y número */
+    gap: 15px;
+}
 /* CONFIGURACIÓN Y CATEGORÍAS */
 .control-grupal, .categoria-item {
     display: flex;

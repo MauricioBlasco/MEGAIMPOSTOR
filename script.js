@@ -4,21 +4,21 @@ const datos = {
         "Panda", "Pingüino", "Tiburón", "Águila", "Serpiente", "Caballo", "Vaca", "Cerdo", "Mono", "Gorila", 
         "Canguro", "Hipopótamo", "Rinoceronte", "Tortuga", "Conejo", "Hámster", "Loro", "Pavo Real", "Ballena", "Pulpo", 
         "Medusa", "Abeja", "Hormiga", "Mariposa", "Araña", "Escorpión", "Cocodrilo", "Camaleón", "Murciélago", "Zorro", 
-        "Ardilla", "Mapache", "Ciervo", "Cabra", "Oveja", "Gallo", "Pato", "Cisne"
+        "Ardilla", "Mapache", "Ciervo", "Cabra", "Oveja", "Gallo", "Pato", "Cisne", "orca", "foca"
     ],
     "Lugares": [
         "Playa", "Cine", "Estadio", "Hospital", "Escuela", "Aeropuerto", "Biblioteca", "Museo", "Zoológico", 
         "Parque", "Restaurante", "Hotel", "Gimnasio", "Farmacia", "Supermercado", "Banco", "Iglesia", "Castillo", "Cárcel", 
         "Bosque", "Desierto", "Montaña", "Isla", "Volcán", "Río", "Cascada", "Puerto", "Estación de Tren", "Gasolinera", 
-        "Panadería", "Peluquería", "Teatro", "Casino", "Circo", "Acuario", "Planetario", "Cementerio", "Taller", "Granja", 
-        "Faro", "Puente", "Cabaña", "Cueva", "Jungla", "Pantano"
+        "Panadería", "Peluquería", "Teatro", "Casino", "Circo", "Acuario", "Planetario", "Cementerio", "Granja", 
+        "Puente", "Cabaña", "Cueva", "Jungla", "Pantano"
     ],
     "Objetos": [
         "Lámpara", "Reloj", "Espejo", "Martillo", "Tenedor", "Cuchillo", "Cuchara", "Plato", "Vaso", "Sartén", 
-        "Llave", "Candado", "Teléfono", "Computadora", "Televisor", "Radio", "Cámara", "Libro", "Cuaderno", "Lápiz", 
+        "Llave", "Candado", "Teléfono", "Computadora", "Televisor", "Radio", "Cámara", "Libro", "Lápiz", 
         "Mochila", "Maleta", "Paraguas", "Gafas", "Reloj", "Billetera", "Moneda", "Martillo", "Destornillador", "Tijeras", 
-        "Peine", "Cepillo", "Jabón", "Toalla", "Almohada", "Manta", "Silla", "Mesa", "Sofá", "Cama", 
-        "Bicicleta", "Guitarra", "Piano", "Pelota", "Raqueta", "Botella", "Encendedor", "trompeta", "Escoba", "Cubo"
+        "Peine", "Jabón", "Toalla", "Almohada", "Manta", "Silla", "Mesa", "Sofá", "Cama", 
+        "Bicicleta", "Guitarra", "Piano", "Pelota", "Raqueta", "Botella", "Encendedor", "trompeta", "Escoba", "bateria", "bajo"
     ],
     "Futbolistas": [
         "Puskás", "Eusébio", "Gerd Müller", "George Best", "Yashin", "Baresi", "Maldini", "Passarella", "Kempes", "Batistuta",
@@ -37,24 +37,24 @@ const datos = {
     ],
     "Comida": [
         "Pizza", "Hamburguesa", "Sushi", "Taco", "Pasta", "Asado", "Empanada", "Paella", "Ramen", "Lasaña", 
-        "Hot Dog", "Nuggets", "Ensalada", "Sopa", "Milanesa", "Puré", "Arroz", "Huevo Frito", "Tortilla", "Pan", 
+        "Panchito", "Nuggets", "Ensalada", "Sopa", "Milanesa", "Puré", "Arroz", "Huevo Frito", "Tortilla", "Pan", 
         "Queso", "Jamón", "Salame", "Sándwich", "Ceviche", "Burrito", "Nachos", "Kebab", "Asado", 
         "Helado", "Chocolate", "Tarta", "Flan", "Churros", "Donas", "Galletas", "Alfajor", "Papas Fritas", "Pochoclos", 
-        "Manzana", "Banana", "Frutilla", "Sandía", "Uva", "Naranja", "Limón", "Palta", "Tomate", "Lechuga"
+        "Manzana", "Banana", "Frutilla", "Sandía", "Uva", "Naranja", "Limón", "Palta", "Tomate", "Lechuga", "pepino", "zanahoria", "berenjena"
     ],
     "Deportes": [
-        "Tenis", "Básquet", "Natación", "Rugby", "Golf", "Vóley", "Fútbol", "Boxeo", "Automovilismo", "Ciclismo", 
-        "Atletismo", "Gimnasia", "Hockey", "Béisbol", "Surf", "Skate", "Snowboard", "Esquí", "Karate", "Judo", 
-        "Esgrima", "Arquería", "Remo", "Vela", "Ajedrez", "Pádel", "Ping Pong", "Dardos", 
-        "Billar", "Bowling", "Maratón", "Sumo", "Lucha Libre", 
-        "Motociclismo", "Handball", "Badminton",
+        "Tenis", "Básquet", "Natación", "Rugby", "Golf", "Vóley", "Fútbol", "Boxeo", "Ciclismo", 
+        "Atletismo", "Gimnasia", "Hockey", "Béisbol", "Surf", "Skate", "Snowboard", "Esquí", "Karate",
+        "Esgrima", "Arquería", "Remo", "Ajedrez", "Pádel", "Ping Pong", "Dardos", 
+        "Bowling", "Sumo", "Lucha Libre", 
+        "Handball"
     ],
     "Videojuegos": [
         "Minecraft", "Fortnite", "Mario Bros", "FIFA", "GTA", "Zelda", "Rocket league", "Red Dead Redemption", "Fallout", "Tetris", 
         "Terraria", "League of Legends", "Valorant", "Counter-Strike", "Roblox", "Among Us", "Fall Guys", "God of War", "Elden Ring", "Dark Souls", 
         "Halo", "Call of Duty", "Resident Evil", "Silent Hill", "Mortal Kombat", "Street Fighter", "Sonic", "Pac-Man", "The Sims", "Stardew Valley", 
         "Pokemon", "Final Fantasy", "Apex Legends", "Overwatch", "Cyberpunk 2077", "The Witcher 3", "Assassins Creed", "Uncharted", 
-        "The Last of Us", "Skyrim", "Portal", "Half-Life", "BioShock", "Undertale", "Cuphead", "Hollow Knight", "Doom"
+        "The Last of Us", "Skyrim", "Portal", "Half-Life", "BioShock", "Undertale", "Cuphead", "Hollow Knight", "Doom", "gangbeast", "kirby", "polytopia", "crash bandicoot", "need 4 speed"
     ]
 };
 let numJugadores = 0;
@@ -73,17 +73,40 @@ function mostrarPantalla(id) {
     destino.classList.remove('hidden');
     destino.classList.add('active');
 }
+function cambiarValor(id, cambio) {
+    const input = document.getElementById(id);
+    let valorActual = parseInt(input.value);
+    
+    if (id === 'input-jugadores') {
+        const nuevoValor = valorActual + cambio;
+        // Límites: Mínimo 3, Máximo 16
+        if (nuevoValor >= 3 && nuevoValor <= 16) {
+            input.value = nuevoValor;
+            actualizarMaxImpostores(); // Ajusta impostores si es necesario
+        }
+    } else if (id === 'input-impostores') {
+        const jugadores = parseInt(document.getElementById('input-jugadores').value);
+        const nuevoValor = valorActual + cambio;
+        const maxImpostores = jugadores - 2;
+        
+        // Límites: Mínimo 1, Máximo (Jugadores - 2)
+        if (nuevoValor >= 1 && nuevoValor <= maxImpostores) {
+            input.value = nuevoValor;
+        }
+    }
+}
 
+// Función para asegurar que los impostores no superen el límite al bajar jugadores
 function actualizarMaxImpostores() {
     const jugadores = parseInt(document.getElementById('input-jugadores').value);
     const inputImp = document.getElementById('input-impostores');
     const maxPermitido = Math.max(1, jugadores - 2);
     
-    inputImp.max = maxPermitido;
     if (parseInt(inputImp.value) > maxPermitido) {
         inputImp.value = maxPermitido;
     }
 }
+
 function iniciarPartida() {
     numJugadores = parseInt(document.getElementById('input-jugadores').value);
     numImpostores = parseInt(document.getElementById('input-impostores').value);
