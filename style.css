@@ -18,10 +18,13 @@ body {
     padding: 20px;
     border-radius: 20px;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    max-height: 95vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* BOTONES */
-.btn-principal, button:not(.btn-secundario) {
+.btn-principal, button:not(.btn-secundario):not(.btn-flecha):not(.switch input) {
     background-color: #ff4757;
     color: white;
     border: none;
@@ -30,7 +33,7 @@ body {
     border-radius: 10px;
     cursor: pointer;
     margin: 10px 0;
-    width: 100%; /* Ajustado al 100% para mejor simetría */
+    width: 100%;
 }
 
 .btn-secundario {
@@ -44,26 +47,33 @@ body {
     cursor: pointer;
     width: 100%;
     margin-top: 15px;
-    transition: 0.3s;
 }
 
-.btn-secundario:hover {
-    background-color: #555;
-    color: white;
+/* CONTADORES INTERACTIVOS */
+.control-grupal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #2d2d2d;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border-radius: 10px;
 }
+
 .contador-interactivo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    gap: 15px;
 }
 
 .btn-flecha {
     background-color: #ff4757;
     color: white;
     border: none;
-    width: 35px;
+    width: 40px;          /* Un poco más ancho para el estilo rectangular */
     height: 35px;
-    border-radius: 50%;
+    border-radius: 8px;   /* Cambiado de 50% a 8px para redondear solo las esquinas */
     font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
@@ -72,67 +82,64 @@ body {
     align-items: center;
     padding: 0;
     margin: 0;
+    transition: background-color 0.2s; /* Suaviza el cambio de color al tocar */
 }
 
-.btn-flecha:active {
-    transform: scale(0.9);
-    background-color: #e84118;
-}
 #input-jugadores, #input-impostores {
-    border: none;
-    background: transparent;
-    font-size: 1.4rem; /* Lo aumenté un poco para que se vea mejor */
+    border: none !important;
+    background: transparent !important;
+    font-size: 1.4rem;
     font-weight: bold;
     color: white;
-    width: 50px !important; /* Un poco más de ancho para evitar saltos */
-    text-align: center;    /* ESTA ES LA LÍNEA CLAVE */
+    width: 45px !important;
+    text-align: center;
     padding: 0;
-    margin: 0;
-    outline: none;         /* Quita el borde azul al hacer clic */
+    outline: none;
+    -webkit-appearance: none;
 }
 
-/* Ajuste adicional para que el contenedor también esté alineado */
-.contador-interactivo {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Centra todo el grupo de botones y número */
-    gap: 15px;
+/* SISTEMA DE SCROLL PARA CATEGORÍAS */
+#lista-switches {
+    max-height: 250px;
+    overflow-y: auto;
+    margin: 15px 0;
+    padding-right: 8px;
+    /* Barra para Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #ff4757 #2d2d2d;
 }
-/* CONFIGURACIÓN Y CATEGORÍAS */
-.control-grupal, .categoria-item {
+
+/* Barra para Chrome/Safari/Edge */
+#lista-switches::-webkit-scrollbar {
+    width: 6px;
+}
+#lista-switches::-webkit-scrollbar-track {
+    background: #2d2d2d;
+    border-radius: 10px;
+}
+#lista-switches::-webkit-scrollbar-thumb {
+    background: #ff4757;
+    border-radius: 10px;
+}
+
+.categoria-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: #2d2d2d;
     padding: 12px 20px;
-    margin: 10px 0;
+    margin-bottom: 8px;
     border-radius: 10px;
 }
 
-.control-grupal input {
-    width: 50px;
-    background: #444;
-    border: 1px solid #ff4757;
-    color: white;
-    padding: 5px;
-    border-radius: 5px;
-    text-align: center;
-}
-
-/* --- SECCIÓN DE SWITCHES (LO QUE FALTABA) --- */
+/* SWITCHES */
 .switch {
     position: relative;
     display: inline-block;
     width: 46px;
     height: 24px;
 }
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
+.switch input { opacity: 0; width: 0; height: 0; }
 .slider {
     position: absolute;
     cursor: pointer;
@@ -141,28 +148,19 @@ body {
     transition: .4s;
     border-radius: 34px;
 }
-
 .slider:before {
     position: absolute;
     content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
+    height: 18px; width: 18px;
+    left: 3px; bottom: 3px;
     background-color: white;
     transition: .4s;
     border-radius: 50%;
 }
+input:checked + .slider { background-color: #ff4757; }
+input:checked + .slider:before { transform: translateX(22px); }
 
-input:checked + .slider {
-    background-color: #ff4757;
-}
-
-input:checked + .slider:before {
-    transform: translateX(22px);
-}
-/* -------------------------------------------- */
-
+/* PANTALLA REVELAR */
 #caja-secreta {
     font-size: 1.5rem;
     background: #2d2d2d;
@@ -170,16 +168,10 @@ input:checked + .slider:before {
     border-radius: 15px;
     margin: 20px 0;
     border: 2px dashed #ff4757;
-    min-height: 60px;
+    min-height: 80px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-}
-
-small {
-    color: #aaa;
-    font-size: 0.9rem;
 }
 
 .hidden { display: none !important; }

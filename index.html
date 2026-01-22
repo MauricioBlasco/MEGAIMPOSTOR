@@ -15,41 +15,41 @@
         </div>
 
         <div id="pantalla-jugadores" class="screen hidden">
-    <h2>Configuración</h2>
-    
-    <div class="control-grupal">
-        <label>Jugadores:</label>
-        <div class="contador-interactivo">
-            <button class="btn-flecha" onclick="cambiarValor('input-jugadores', -1)">-</button>
-            <input type="number" id="input-jugadores" value="3" readonly>
-            <button class="btn-flecha" onclick="cambiarValor('input-jugadores', 1)">+</button>
+            <h2>Configuración</h2>
+            <div class="control-grupal">
+                <label>Jugadores:</label>
+                <div class="contador-interactivo">
+                    <button class="btn-flecha" onclick="cambiarValor('input-jugadores', -1)">-</button>
+                    <input type="number" id="input-jugadores" value="3" readonly>
+                    <button class="btn-flecha" onclick="cambiarValor('input-jugadores', 1)">+</button>
+                </div>
+            </div>
+            <div class="control-grupal">
+                <label>Impostores:</label>
+                <div class="contador-interactivo">
+                    <button class="btn-flecha" onclick="cambiarValor('input-impostores', -1)">-</button>
+                    <input type="number" id="input-impostores" value="1" readonly>
+                    <button class="btn-flecha" onclick="cambiarValor('input-impostores', 1)">+</button>
+                </div>
+            </div>
+            <button class="btn-principal" onclick="mostrarPantalla('pantalla-categorias')">SIGUIENTE</button>
         </div>
-    </div>
-
-    <div class="control-grupal">
-        <label>Impostores:</label>
-        <div class="contador-interactivo">
-            <button class="btn-flecha" onclick="cambiarValor('input-impostores', -1)">-</button>
-            <input type="number" id="input-impostores" value="1" readonly>
-            <button class="btn-flecha" onclick="cambiarValor('input-impostores', 1)">+</button>
-        </div>
-    </div>
-
-    <button class="btn-principal" onclick="mostrarPantalla('pantalla-categorias')">SIGUIENTE</button>
-</div>
 
         <div id="pantalla-categorias" class="screen hidden">
             <h2>CATEGORÍAS</h2>
             <div id="lista-switches">
-    <div class="categoria-item"><span>Animales</span><label class="switch"><input type="checkbox" id="cat-Animales" checked><span class="slider"></span></label></div>
-    <div class="categoria-item"><span>Lugares</span><label class="switch"><input type="checkbox" id="cat-Lugares" checked><span class="slider"></span></label></div>
-    <div class="categoria-item"><span>Objetos</span><label class="switch"><input type="checkbox" id="cat-Objetos" checked><span class="slider"></span></label></div>
-    <div class="categoria-item"><span>Futbolistas</span><label class="switch"><input type="checkbox" id="cat-Futbolistas" checked><span class="slider"></span></label></div>
-    <div class="categoria-item"><span>Series</span><label class="switch"><input type="checkbox" id="cat-Series" checked><span class="slider"></span></label></div>
-    <div class="categoria-item"><span>Clash Royale</span><label class="switch"><input type="checkbox" id="cat-ClashRoyale" checked><span class="slider"></span></label></div>
-    <div class="categoria-item"><span>Comida</span><label class="switch"><input type="checkbox" id="cat-Comida" checked><span class="slider"></span></label></div>
-    <div class="categoria-item"><span>Deportes</span><label class="switch"><input type="checkbox" id="cat-Deportes" checked><span class="slider"></span></label></div>
-    <div class="categoria-item"><span>Videojuegos</span><label class="switch"><input type="checkbox" id="cat-Videojuegos" checked><span class="slider"></span></label></div></div>
+                <div class="categoria-item"><span>Animales</span><label class="switch"><input type="checkbox" id="cat-Animales" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Lugares</span><label class="switch"><input type="checkbox" id="cat-Lugares" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Objetos</span><label class="switch"><input type="checkbox" id="cat-Objetos" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Futbolistas</span><label class="switch"><input type="checkbox" id="cat-Futbolistas" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Series</span><label class="switch"><input type="checkbox" id="cat-Series" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Clash Royale</span><label class="switch"><input type="checkbox" id="cat-ClashRoyale" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Comida</span><label class="switch"><input type="checkbox" id="cat-Comida" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Deportes</span><label class="switch"><input type="checkbox" id="cat-Deportes" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Videojuegos</span><label class="switch"><input type="checkbox" id="cat-Videojuegos" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Rock Internacional</span><label class="switch"><input type="checkbox" id="cat-RockInt" checked><span class="slider"></span></label></div>
+                <div class="categoria-item"><span>Rock Argentino</span><label class="switch"><input type="checkbox" id="cat-RockArg" checked><span class="slider"></span></label></div>
+            </div>
             <button class="btn-principal" onclick="iniciarPartida()">¡EMPEZAR!</button>
         </div>
 
