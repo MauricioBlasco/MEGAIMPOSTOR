@@ -141,17 +141,15 @@ function cambiarValor(id, cambio) {
     if (id === 'input-jugadores') {
         const nuevoValor = valorActual + cambio;
         const minJugadores = modoLocoActivado ? 2 : 3;
-        // Límites: Mínimo 2 o 3 (según modo loco), Máximo 16
         if (nuevoValor >= minJugadores && nuevoValor <= 16) {
             input.value = nuevoValor;
-            actualizarMaxImpostores(); // Ajusta impostores si es necesario
+            actualizarMaxImpostores();
         }
     } else if (id === 'input-impostores') {
         const jugadores = parseInt(document.getElementById('input-jugadores').value);
         const nuevoValor = valorActual + cambio;
         const maxImpostores = modoLocoActivado ? jugadores : jugadores - 2;
         
-        // Límites: Mínimo 1, Máximo (Jugadores - 2) o Jugadores si modo loco está activo
         if (nuevoValor >= 1 && nuevoValor <= maxImpostores) {
             input.value = nuevoValor;
         }
@@ -160,7 +158,6 @@ function cambiarValor(id, cambio) {
         const nuevoValor = valorActual + cambio;
         const maxPermitido = modoLocoActivado ? jugadores : jugadores - 2;
         
-        // Límites: Mínimo 1, Máximo (Jugadores - 2) o Jugadores si modo loco está activo
         if (nuevoValor >= 1 && nuevoValor <= maxPermitido) {
             input.value = nuevoValor;
         }
@@ -175,7 +172,6 @@ function toggleRandomizador() {
     if (randomizadorActivado) {
         controlMaxImpostores.style.display = 'flex';
         controlImpostores.style.display = 'none';
-        // Inicializar el máximo de impostores
         const jugadores = parseInt(document.getElementById('input-jugadores').value);
         document.getElementById('input-max-impostores').value = Math.max(1, jugadores - 2);
     } else {
@@ -184,7 +180,6 @@ function toggleRandomizador() {
     }
 }
 
-// Función para asegurar que los impostores no superen el límite al bajar jugadores
 function actualizarMaxImpostores() {
     const jugadores = parseInt(document.getElementById('input-jugadores').value);
     const inputImp = document.getElementById('input-impostores');
@@ -195,7 +190,6 @@ function actualizarMaxImpostores() {
         inputImp.value = maxPermitido;
     }
     
-    // También actualizar el máximo de impostores si el randomizador está activo
     if (parseInt(inputMaxImp.value) > maxPermitido) {
         inputMaxImp.value = maxPermitido;
     }
@@ -204,11 +198,9 @@ function actualizarMaxImpostores() {
 function iniciarPartida() {
     numJugadores = parseInt(document.getElementById('input-jugadores').value);
     
-    // Verificar si el randomizador está activo
     const randomizadorActivado = document.getElementById('switch-randomizador').checked;
     if (randomizadorActivado) {
         const maxImpostores = parseInt(document.getElementById('input-max-impostores').value);
-        // Generar número aleatorio entre 1 y maxImpostores
         numImpostores = Math.floor(Math.random() * maxImpostores) + 1;
     } else {
         numImpostores = parseInt(document.getElementById('input-impostores').value);
@@ -287,11 +279,9 @@ function siguienteJugador() {
         jugadorActual++;
         prepararTurno();
     } else {
-        // Verificar si el randomizador está activo
         const randomizadorActivado = document.getElementById('switch-randomizador').checked;
         
         if (randomizadorActivado) {
-            // Resetear la pantalla de info de impostores
             document.getElementById('cantidad-impostores').innerText = '? ? ?';
             document.getElementById('btn-revelar-impostores').style.display = 'block';
             document.getElementById('texto-empezar-pistas').style.display = 'none';
@@ -299,7 +289,6 @@ function siguienteJugador() {
             
             mostrarPantalla('pantalla-info-impostores');
         } else {
-            // Partida normal - mostrar pantalla en lugar de alert
             mostrarPantalla('pantalla-todos-listos');
         }
     }
@@ -309,7 +298,6 @@ function revelarCantidadImpostores() {
     const textoImpostores = numImpostores === 1 ? '1 IMPOSTOR' : `${numImpostores} IMPOSTORES`;
     document.getElementById('cantidad-impostores').innerText = textoImpostores;
     
-    // Ocultar botón de revelar y mostrar botón de continuar
     document.getElementById('btn-revelar-impostores').style.display = 'none';
     document.getElementById('texto-empezar-pistas').style.display = 'block';
     document.getElementById('btn-continuar-info').style.display = 'block';
@@ -327,7 +315,6 @@ function verificarCodigo() {
     if (codigo === 'impatrq') {
         personasDesbloqueado = true;
         
-        // Desbloquear la categoría Personas
         const itemPersonas = document.getElementById('categoria-personas-item');
         const checkPersonas = document.getElementById('cat-Personas');
         
@@ -336,7 +323,6 @@ function verificarCodigo() {
         checkPersonas.disabled = false;
         checkPersonas.checked = true;
         
-        // Actualizar el texto para mostrar que está desbloqueado
         itemPersonas.querySelector('span').innerText = 'Personas ✓';
         
         alert('¡Código correcto! Categoría "Personas" desbloqueada.');
@@ -348,7 +334,6 @@ function verificarCodigo() {
         alert('¡Código correcto! Modo LOCO activado.\n\nAhora puedes tener igual cantidad de impostores que jugadores.');
         input.value = '';
         
-        // Actualizar los límites actuales
         actualizarMaxImpostores();
         
         mostrarPantalla('pantalla-jugadores');
@@ -380,7 +365,6 @@ function desactivarTodasCategorias() {
     document.getElementById('cat-Peliculas').checked = false;
     document.getElementById('cat-Pokemon').checked = false;
     
-    // Solo desactivar Personas si está desbloqueado
     const checkPersonas = document.getElementById('cat-Personas');
     if (!checkPersonas.disabled) {
         checkPersonas.checked = false;
@@ -388,10 +372,9 @@ function desactivarTodasCategorias() {
 }
 
 function activarTemaHippie() {
-    // Cambiar el fondo a la imagen Hippie y los colores negros a verde oscuro
     const verdeOscuro = '#1B4332';
     
     document.body.style.background = "url('HIPPIES.jpg') center center / cover no-repeat fixed";
-    document.body.style.backgroundColor = verdeOscuro; // Color de respaldo verde oscuro
+    document.body.style.backgroundColor = verdeOscuro;
     document.getElementById('game-container').style.backgroundColor = verdeOscuro;
 }

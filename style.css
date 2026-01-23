@@ -1,4 +1,3 @@
-/* RESET Y BASE */
 body {
     background-color: #1a1a1a;
     color: white;
@@ -43,7 +42,6 @@ body {
     scrollbar-color: #ff4757 #2d2d2d;
 }
 
-/* BOTONES */
 .btn-principal, button:not(.btn-secundario):not(.btn-flecha):not(.switch input) {
     background-color: #ff4757;
     color: white;
@@ -69,7 +67,6 @@ body {
     margin-top: 15px;
 }
 
-/* CONTADORES INTERACTIVOS */
 .control-grupal {
     display: flex;
     justify-content: space-between;
@@ -91,9 +88,9 @@ body {
     background-color: #ff4757;
     color: white;
     border: none;
-    width: 40px;          /* Un poco más ancho para el estilo rectangular */
+    width: 40px;
     height: 35px;
-    border-radius: 8px;   /* Cambiado de 50% a 8px para redondear solo las esquinas */
+    border-radius: 8px;
     font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
@@ -102,7 +99,7 @@ body {
     align-items: center;
     padding: 0;
     margin: 0;
-    transition: background-color 0.2s; /* Suaviza el cambio de color al tocar */
+    transition: background-color 0.2s;
 }
 
 #input-jugadores, #input-impostores, #input-max-impostores {
@@ -119,7 +116,6 @@ body {
 appearance: none;
 }
 
-/* BOTÓN SECRETO */
 #pantalla-jugadores {
     position: relative;
 }
@@ -139,18 +135,15 @@ appearance: none;
     -webkit-tap-highlight-color: transparent;
 }
 
-/* SISTEMA DE SCROLL PARA CATEGORÍAS */
 #lista-switches {
     max-height: 250px;
     overflow-y: auto;
     margin: 15px 0;
     padding-right: 8px;
-    /* Barra para Firefox */
     scrollbar-width: thin;
     scrollbar-color: #ff4757 #2d2d2d;
 }
 
-/* Barra para Chrome/Safari/Edge */
 #lista-switches::-webkit-scrollbar {
     width: 6px;
 }
@@ -173,7 +166,6 @@ appearance: none;
     border-radius: 10px;
 }
 
-/* SWITCHES */
 .switch {
     position: relative;
     display: inline-block;
@@ -201,7 +193,6 @@ appearance: none;
 input:checked + .slider { background-color: #ff4757; }
 input:checked + .slider:before { transform: translateX(22px); }
 
-/* PANTALLA REVELAR */
 #caja-secreta {
     font-size: 1.5rem;
     background: #2d2d2d;
