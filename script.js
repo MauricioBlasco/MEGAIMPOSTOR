@@ -26,7 +26,7 @@ const datos = {
     "Bergkamp", "Totti", "Del Piero", "Klose", "Foden", "Saka", "Rodri", "Valverde", "Courtois", "Alisson",
     "Van Dijk", "Salah", "Son", "Gavi", "James Rodríguez",
     "Garrincha", "Zico", "Socrates", "Falcao", "Rivarola", "Chilavert", "Valderrama", "Forlán", "Cavani", "Godín",
-    "Bebeto", "Vieri", "Nedved", "Stoichkov", "Hagi", "Kahn", "Schmeichel", "Van der Sar", "Hugo Sánchez", "Rafa Márquez",
+    "Bebeto", "Vieri", "Nedved", "Stoichkov", "Hagi", "Kahn", "Schmeichel", "Van der Sar", "Hugo Sánchez", "Rafa Márquez", "Amengol"
     ],
     "Series": [
         "Stranger Things", "Breaking Bad", "The Office", "Harry Potter", "Spider-Man", "Game of Thrones", "Friends", "Dark",
@@ -73,7 +73,7 @@ const datos = {
         "The Doors", "Aerosmith", "U2", "Deep Purple", "Black Sabbath", "The Who", "Red Hot Chili Peppers", "Pearl Jam", "Linkin Park", "Iron Maiden",
         "Coldplay", "Green Day", "Bon Jovi", "The Police", "Oasis", "R.E.M.", "Arctic Monkeys", "The Killers", "Foo Fighters", "Muse",
         "The Clash", "Ramones", "Sex Pistols", "KISS", "Van Halen", "Def Leppard", "The Cure", "Depeche Mode", "Joy Division", "The Smiths",
-        "Imagine Dragons", "Gorillaz", "Twenty One Pilots", "System of a Down", "Slipknot", "Mötley Crüe", "Journey", "Toto", "Fleetwood Mac", "Dire Straits"
+        "Imagine Dragons", "Gorillaz", "Twenty One Pilots", "System of a Down", "Slipknot", "Mötley Crüe", "Journey", "Toto", "Fleetwood Mac", "Dire Straits", "Las chismosas"
     ],
     "Rock Argentino": [
         "Soda Stereo", "Patricio Rey", "Serú Girán", "Pescado Rabioso", "Sumo", "Los Abuelos de la Nada", "Enanitos Verdes", "Los Fabulosos Cadillacs", "Los Auténticos Decadentes", "Babasónicos",
@@ -82,6 +82,12 @@ const datos = {
         "El Mató a un Policía Motorizado", "Airbag", "Tan Biónica", "Los Gardelitos", "Los fundamentalistas", "La Beriso", "Los Caballeros de la Quema", "Arbol", "Kapanga", "Memphis la Blusera",
         "Vox Dei", "Almendra", "Sui Generis", "Manal", "Los Gatos", "Pappo's Blues", "Riff", "SKAY", "Miranda!", "Turf"
     ],
+    "Personas":[
+        "Mauri","Lopa", "Euge", "Vicky Baza", "Melina", "eze", "Isidro", "Raul", "Nacho", "Tejeda", "mati prato", "Luna Palumbo", "Valen Zaccari", "lio", "Vicky Viva", "monti", "Facu Arguello", 
+        "Testa", "EWstela", "Lucho Bricola", "Mariano Bricola", "Lorenzo Poggi", "Pablo", "Tomas coffler", "Pablito del pañol", "Facu Led", "Facu mendez", "Facu Spagno", "Tomi sossa", "Tomi shasemnbag", 
+        "Tomi Maffei", "Lucho Altinier", "marcos zarate", "Fran serrudo", "Colo barco", "Abrebu", "gabri", "octa", "tatin", "Pedro Amenta", "Jorge Herrera", "germauro papa", "Titi Patella", "Santi Lautolucito", "Pepi Puente",
+        "Facu giamo", "Gian", "Matarollo", "Lain"
+    ]
 };
 let numJugadores = 0;
 let numImpostores = 0;
@@ -149,6 +155,7 @@ function iniciarPartida() {
     if(document.getElementById('cat-Videojuegos').checked) datos["Videojuegos"].forEach(p => bolsaCombinada.push({p: p, c: "Videojuegos"}));
     if(document.getElementById('cat-RockInt').checked) datos["Rock Internacional"].forEach(p => bolsaCombinada.push({p: p, c: "Rock Internacional"}));
     if(document.getElementById('cat-RockArg').checked) datos["Rock Argentino"].forEach(p => bolsaCombinada.push({p: p, c: "Rock Argentino"}));
+    if(document.getElementById('cat-Personas').checked) datos["Personas"].forEach(p => bolsaCombinada.push({p: p, c: "Personas"}));
 
     const seleccion = bolsaCombinada[Math.floor(Math.random() * bolsaCombinada.length)];
     palabraSecreta = seleccion.p;
