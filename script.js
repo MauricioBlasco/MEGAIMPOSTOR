@@ -233,11 +233,20 @@ function revelarCliche() {
     const caja = document.getElementById('caja-secreta');
     const btnRevelar = document.getElementById('btn-revelar-clic');
     const btnSiguiente = document.getElementById('btn-siguiente');
+    const modoDificil = document.getElementById('switch-dificil').checked;
 
     if(listaImpostores.includes(jugadorActual)) {
-        caja.innerHTML = `<span style="color:#ff4757">¡ERES EL IMPOSTOR!</span><br><small>Categoría: ${categoriaSecreta}</small>`;
+        if (modoDificil) {
+            caja.innerHTML = `<span style="color:#ff4757">¡ERES EL IMPOSTOR!</span>`;
+        } else {
+            caja.innerHTML = `<span style="color:#ff4757">¡ERES EL IMPOSTOR!</span><br><small>Categoría: ${categoriaSecreta}</small>`;
+        }
     } else {
-        caja.innerHTML = `${palabraSecreta}<br><small>Categoría: ${categoriaSecreta}</small>`;
+        if (modoDificil) {
+            caja.innerHTML = `${palabraSecreta}`;
+        } else {
+            caja.innerHTML = `${palabraSecreta}<br><small>Categoría: ${categoriaSecreta}</small>`;
+        }
     }
 
     btnRevelar.classList.add('hidden');
@@ -253,9 +262,12 @@ function siguienteJugador() {
         const randomizadorActivado = document.getElementById('switch-randomizador').checked;
         
         if (randomizadorActivado) {
-            // Mostrar pantalla con información de impostores
-            const textoImpostores = numImpostores === 1 ? '1 IMPOSTOR' : `${numImpostores} IMPOSTORES`;
-            document.getElementById('cantidad-impostores').innerText = textoImpostores;
+            // Resetear la pantalla de info de impostores
+            document.getElementById('cantidad-impostores').innerText = '? ? ?';
+            document.getElementById('btn-revelar-impostores').style.display = 'block';
+            document.getElementById('texto-empezar-pistas').style.display = 'none';
+            document.getElementById('btn-continuar-info').style.display = 'none';
+            
             mostrarPantalla('pantalla-info-impostores');
         } else {
             alert("¡Todos han visto su palabra! Empiecen las pistas.");
@@ -263,6 +275,16 @@ function siguienteJugador() {
             mostrarPantalla('pantalla-preparacion');
         }
     }
+}
+
+function revelarCantidadImpostores() {
+    const textoImpostores = numImpostores === 1 ? '1 IMPOSTOR' : `${numImpostores} IMPOSTORES`;
+    document.getElementById('cantidad-impostores').innerText = textoImpostores;
+    
+    // Ocultar botón de revelar y mostrar botón de continuar
+    document.getElementById('btn-revelar-impostores').style.display = 'none';
+    document.getElementById('texto-empezar-pistas').style.display = 'block';
+    document.getElementById('btn-continuar-info').style.display = 'block';
 }
 
 function continuarDespuesDeInfo() {

@@ -48,6 +48,13 @@
                     <button class="btn-flecha" onclick="cambiarValor('input-max-impostores', 1)">+</button>
                 </div>
             </div>
+            <div class="control-grupal">
+                <label>DIFICIL 😈</label>
+                <label class="switch">
+                    <input type="checkbox" id="switch-dificil">
+                    <span class="slider"></span>
+                </label>
+            </div>
             <button class="btn-principal" onclick="mostrarPantalla('pantalla-categorias')">SIGUIENTE</button>
         </div>
 
@@ -97,10 +104,11 @@
             <h1 class="titulo-principal">¡TODOS HAN VISTO SU PALABRA!</h1>
             <div style="background: #2d2d2d; padding: 25px; border-radius: 15px; margin: 20px 0;">
                 <p style="font-size: 1.3rem; margin-bottom: 10px;">En esta partida hay:</p>
-                <h2 id="cantidad-impostores" style="color: #ff4757; font-size: 2.5rem; margin: 15px 0;">X IMPOSTORES</h2>
+                <h2 id="cantidad-impostores" style="color: #ff4757; font-size: 2.5rem; margin: 15px 0;">? ? ?</h2>
             </div>
-            <p style="font-size: 1.1rem; margin-bottom: 20px;">Empiecen las pistas</p>
-            <button class="btn-principal" onclick="continuarDespuesDeInfo()">CONTINUAR</button>
+            <button class="btn-principal" id="btn-revelar-impostores" onclick="revelarCantidadImpostores()">VER CANTIDAD DE IMPOSTORES</button>
+            <p id="texto-empezar-pistas" style="font-size: 1.1rem; margin-bottom: 20px; display: none;">Empiecen las pistas</p>
+            <button class="btn-principal" id="btn-continuar-info" onclick="continuarDespuesDeInfo()" style="display: none;">CONTINUAR</button>
         </div>
 
     </div>
