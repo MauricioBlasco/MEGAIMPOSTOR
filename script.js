@@ -83,10 +83,10 @@ const datos = {
         "Vox Dei", "Almendra", "Sui Generis", "Manal", "Los Gatos", "Pappo's Blues", "Riff", "SKAY", "Miranda!", "Turf"
     ],
     "Personas":[
-        "Mauri","Lopa", "Euge", "Vicky Baza", "Melina", "eze", "Isidro", "Raul", "Nacho", "Tejeda", "mati prato", "Luna Palumbo", "Valen Zaccari", "lio", "Vicky Viva", "monti", "Facu Arguello", 
-        "Testa", "EWstela", "Lucho Bricola", "Mariano Bricola", "Lorenzo Poggi", "Pablo", "Tomas coffler", "Pablito del pañol", "Facu Led", "Facu mendez", "Facu Spagno", "Tomi sossa", "Tomi shasemnbag", 
-        "Tomi Maffei", "Lucho Altinier", "marcos zarate", "Fran serrudo", "Colo barco", "Abrebu", "gabri", "octa", "tatin", "Pedro Amenta", "Jorge Herrera", "germauro papa", "Titi Patella", "Santi Lautolucito", "Pepi Puente",
-        "Facu giamo", "Gian", "Matarollo", "Lain"
+        "Mauro","Lopa", "Euge", "Baza", "Melina", "eze", "Isidro", "Raul", "Nacho", "Tejeda", "prato", "Luna", "Valen", "lio", "Viva", "monti", "Arguello", 
+        "Testa", "Estela", "Bricola", "Mariano Bricola", "Poggi", "Pablo", "coffler", "Pablito del pañol", "Facu Led", "mendez", "Spagno", "sosa", "shasemnbag", 
+        "Maffei", "Altinier", "zarate", "serrudo", "Colo barco", "Abregu", "gabri", "octa", "tatin", "Amenta", "Jorge Herrera", "germauro papa", "Titi", "Santi Lautolucito", "Pepi Puente",
+        "giamo", "Gian", "Matarollo", "Lain"
     ]
 };
 let numJugadores = 0;
@@ -270,9 +270,8 @@ function siguienteJugador() {
             
             mostrarPantalla('pantalla-info-impostores');
         } else {
-            alert("¡Todos han visto su palabra! Empiecen las pistas.");
-            iniciarPartida(); 
-            mostrarPantalla('pantalla-preparacion');
+            // Partida normal - mostrar pantalla en lugar de alert
+            mostrarPantalla('pantalla-todos-listos');
         }
     }
 }
@@ -324,6 +323,13 @@ function verificarCodigo() {
         actualizarMaxImpostores();
         
         mostrarPantalla('pantalla-jugadores');
+    } else if (codigo === 'bob') {
+        activarTemaHippie();
+        
+        alert('¡Código correcto! Tema HIPPIE activado. ✌️🌈');
+        input.value = '';
+        
+        mostrarPantalla('pantalla-jugadores');
     } else {
         alert('Código incorrecto. Inténtalo de nuevo.');
         input.value = '';
@@ -348,4 +354,13 @@ function desactivarTodasCategorias() {
     if (!checkPersonas.disabled) {
         checkPersonas.checked = false;
     }
+}
+
+function activarTemaHippie() {
+    // Cambiar el fondo a la imagen Hippie y los colores negros a verde oscuro
+    const verdeOscuro = '#1B4332';
+    
+    document.body.style.background = "url('HIPPIES.jpg') center center / cover no-repeat fixed";
+    document.body.style.backgroundColor = verdeOscuro; // Color de respaldo verde oscuro
+    document.getElementById('game-container').style.backgroundColor = verdeOscuro;
 }
