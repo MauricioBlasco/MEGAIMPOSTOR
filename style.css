@@ -21,6 +21,26 @@ body {
     max-height: 95vh;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+}
+
+#game-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#game-container::-webkit-scrollbar-track {
+    background: #2d2d2d;
+    border-radius: 10px;
+}
+
+#game-container::-webkit-scrollbar-thumb {
+    background: #ff4757;
+    border-radius: 10px;
+}
+
+#game-container {
+    scrollbar-width: thin;
+    scrollbar-color: #ff4757 #2d2d2d;
 }
 
 /* BOTONES */

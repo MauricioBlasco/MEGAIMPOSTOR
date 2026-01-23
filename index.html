@@ -92,7 +92,38 @@
             <h1 class="titulo-principal">¡HORA DE JUGAR!</h1>
             <p style="margin-bottom: 20px;">Pasen el celular al Jugador 1</p>
             <button class="btn-principal" onclick="iniciarTurnoUno()">COMENZAR PARTIDA</button>
+            <button class="btn-secundario" onclick="mostrarPantalla('pantalla-como-jugar')">❓ CÓMO SE JUEGA?</button>
             <button class="btn-secundario" onclick="mostrarPantalla('pantalla-jugadores')">⚙️ CAMBIAR CONFIGURACIÓN</button>
+        </div>
+
+        <div id="pantalla-como-jugar" class="screen hidden">
+            <h2>CÓMO SE JUEGA</h2>
+            <div style="background: #2d2d2d; padding: 20px; border-radius: 15px; margin: 20px 0; text-align: left;">
+                <p style="margin-bottom: 15px; font-size: 1.2rem; color: #4a90e2;">📝 <strong>OBJETIVO DEL JUEGO</strong></p>
+                <p style="margin-bottom: 25px; line-height: 1.7; font-size: 1.05rem;">El juego reparte una <strong>palabra secreta</strong> de una categoría seleccionada a todos los jugadores, <strong>excepto a uno o más</strong> que recibirán el rol de <strong style="color: #ff4757;">IMPOSTOR</strong>. El objetivo de los jugadores normales es descubrir quién es el impostor, mientras que el impostor debe identificar la palabra sin ser descubierto.</p>
+                
+                <p style="margin-bottom: 15px; font-size: 1.2rem; color: #4a90e2;">💬 <strong>RONDAS DE PISTAS</strong></p>
+                <p style="margin-bottom: 25px; line-height: 1.7; font-size: 1.05rem;">Comenzando desde el <strong>Jugador 1</strong>, cada jugador debe dar <strong>una pista relacionada con su palabra</strong>. Las pistas deben ser:<br>
+                • Lo suficientemente claras para que los demás jugadores sepan que conoces la palabra<br>
+                • Lo suficientemente ambiguas para que el impostor no la descubra fácilmente<br>
+                • Evita ser demasiado obvio o decir la palabra directamente</p>
+                
+                <p style="margin-bottom: 15px; font-size: 1.2rem; color: #4a90e2;">🎯 <strong>ROL DEL IMPOSTOR</strong></p>
+                <p style="margin-bottom: 25px; line-height: 1.7; font-size: 1.05rem;">El impostor debe:<br>
+                • Escuchar atentamente las pistas de los demás<br>
+                • Intentar adivinar la palabra secreta<br>
+                • Dar pistas vagas que no delaten que no conoce la palabra<br>
+                • Mezclarse con el grupo sin levantar sospechas</p>
+                
+                <p style="margin-bottom: 15px; font-size: 1.2rem; color: #4a90e2;">🗳️ <strong>VOTACIÓN Y FIN DEL JUEGO</strong></p>
+                <p style="margin-bottom: 10px; line-height: 1.7; font-size: 1.05rem;">Después de que todos den su pista (una vuelta completa), se realiza una <strong>votación</strong> donde todos deben elegir a quién creen que es el impostor.<br><br>
+                El jugador más votado es eliminado. Si aún quedan impostores en el juego, se continúa con otra ronda de pistas.<br><br>
+                <strong>El juego termina cuando:</strong><br>
+                • Se eliminan todos los impostores (ganan los jugadores normales)<br>
+                • Solo quedan 2 jugadores en total (ganan los impostores)<br>
+                • El impostor adivina correctamente la palabra secreta</p>
+            </div>
+            <button class="btn-principal" onclick="mostrarPantalla('pantalla-preparacion')">VOLVER</button>
         </div>
 
         <div id="pantalla-revelar" class="screen hidden">
