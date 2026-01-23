@@ -239,3 +239,23 @@ function verificarCodigo() {
         input.value = '';
     }
 }
+
+function desactivarTodasCategorias() {
+    document.getElementById('cat-Animales').checked = false;
+    document.getElementById('cat-Lugares').checked = false;
+    document.getElementById('cat-Objetos').checked = false;
+    document.getElementById('cat-Futbolistas').checked = false;
+    document.getElementById('cat-Series').checked = false;
+    document.getElementById('cat-ClashRoyale').checked = false;
+    document.getElementById('cat-Comida').checked = false;
+    document.getElementById('cat-Deportes').checked = false;
+    document.getElementById('cat-Videojuegos').checked = false;
+    document.getElementById('cat-RockInt').checked = false;
+    document.getElementById('cat-RockArg').checked = false;
+    
+    // Solo desactivar Personas si está desbloqueado
+    const checkPersonas = document.getElementById('cat-Personas');
+    if (!checkPersonas.disabled) {
+        checkPersonas.checked = false;
+    }
+}
