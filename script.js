@@ -96,6 +96,7 @@ let palabraSecreta = "";
 let categoriaSecreta = "";
 let listaImpostores = [];
 let personasDesbloqueado = false;
+let modoLocoActivado = false;
 
 function mostrarPantalla(id) {
     document.querySelectorAll('.screen').forEach(s => {
@@ -112,20 +113,47 @@ function cambiarValor(id, cambio) {
     
     if (id === 'input-jugadores') {
         const nuevoValor = valorActual + cambio;
-        // Límites: Mínimo 3, Máximo 16
-        if (nuevoValor >= 3 && nuevoValor <= 16) {
+        const minJugadores = modoLocoActivado ? 2 : 3;
+        // Límites: Mínimo 2 o 3 (según modo loco), Máximo 16
+        if (nuevoValor >= minJugadores && nuevoValor <= 16) {
             input.value = nuevoValor;
             actualizarMaxImpostores(); // Ajusta impostores si es necesario
         }
     } else if (id === 'input-impostores') {
         const jugadores = parseInt(document.getElementById('input-jugadores').value);
         const nuevoValor = valorActual + cambio;
-        const maxImpostores = jugadores - 2;
+        const maxImpostores = modoLocoActivado ? jugadores : jugadores - 2;
         
-        // Límites: Mínimo 1, Máximo (Jugadores - 2)
+        // Límites: Mínimo 1, Máximo (Jugadores - 2) o Jugadores si modo loco está activo
         if (nuevoValor >= 1 && nuevoValor <= maxImpostores) {
             input.value = nuevoValor;
         }
+    } else if (id === 'input-max-impostores') {
+        const jugadores = parseInt(document.getElementById('input-jugadores').value);
+        const nuevoValor = valorActual + cambio;
+        const maxPermitido = modoLocoActivado ? jugadores : jugadores - 2;
+        
+        // Límites: Mínimo 1, Máximo (Jugadores - 2) o Jugadores si modo loco está activo
+        if (nuevoValor >= 1 && nuevoValor <= maxPermitido) {
+            input.value = nuevoValor;
+        }
+    }
+}
+
+function toggleRandomizador() {
+    const randomizadorActivado = document.getElementById('switch-randomizador').checked;
+    const controlMaxImpostores = document.getElementById('control-max-impostores');
+    const controlImpostores = document.querySelector('.control-grupal:has(#input-impostores)');
+    
+    if (randomizadorActivado) {
+        controlMaxImpostores.style.display = 'flex';
+        controlImpostores.style.display = 'none';
+        // Inicializar el máximo de impostores
+        const jugadores = parseInt(document.getElementById('input-jugadores').value);
+        document.getElementById('input-max-impostores').value = Math.max(1, jugadores - 2);
+    } else {
+        controlMaxImpostores.style.display = 'none';
+        controlImpostores.style.display = 'flex';
     }
 }
 
@@ -133,16 +161,31 @@ function cambiarValor(id, cambio) {
 function actualizarMaxImpostores() {
     const jugadores = parseInt(document.getElementById('input-jugadores').value);
     const inputImp = document.getElementById('input-impostores');
-    const maxPermitido = Math.max(1, jugadores - 2);
+    const inputMaxImp = document.getElementById('input-max-impostores');
+    const maxPermitido = modoLocoActivado ? jugadores : Math.max(1, jugadores - 2);
     
     if (parseInt(inputImp.value) > maxPermitido) {
         inputImp.value = maxPermitido;
+    }
+    
+    // También actualizar el máximo de impostores si el randomizador está activo
+    if (parseInt(inputMaxImp.value) > maxPermitido) {
+        inputMaxImp.value = maxPermitido;
     }
 }
 
 function iniciarPartida() {
     numJugadores = parseInt(document.getElementById('input-jugadores').value);
-    numImpostores = parseInt(document.getElementById('input-impostores').value);
+    
+    // Verificar si el randomizador está activo
+    const randomizadorActivado = document.getElementById('switch-randomizador').checked;
+    if (randomizadorActivado) {
+        const maxImpostores = parseInt(document.getElementById('input-max-impostores').value);
+        // Generar número aleatorio entre 1 y maxImpostores
+        numImpostores = Math.floor(Math.random() * maxImpostores) + 1;
+    } else {
+        numImpostores = parseInt(document.getElementById('input-impostores').value);
+    }
     
     let bolsaCombinada = [];
     if(document.getElementById('cat-Animales').checked) datos["Animales"].forEach(p => bolsaCombinada.push({p: p, c: "Animales"}));
@@ -206,10 +249,25 @@ function siguienteJugador() {
         jugadorActual++;
         prepararTurno();
     } else {
-        alert("¡Todos han visto su palabra! Empiecen las pistas.");
-        iniciarPartida(); 
-        mostrarPantalla('pantalla-preparacion');
+        // Verificar si el randomizador está activo
+        const randomizadorActivado = document.getElementById('switch-randomizador').checked;
+        
+        if (randomizadorActivado) {
+            // Mostrar pantalla con información de impostores
+            const textoImpostores = numImpostores === 1 ? '1 IMPOSTOR' : `${numImpostores} IMPOSTORES`;
+            document.getElementById('cantidad-impostores').innerText = textoImpostores;
+            mostrarPantalla('pantalla-info-impostores');
+        } else {
+            alert("¡Todos han visto su palabra! Empiecen las pistas.");
+            iniciarPartida(); 
+            mostrarPantalla('pantalla-preparacion');
+        }
     }
+}
+
+function continuarDespuesDeInfo() {
+    iniciarPartida();
+    mostrarPantalla('pantalla-preparacion');
 }
 
 function verificarCodigo() {
@@ -233,6 +291,16 @@ function verificarCodigo() {
         
         alert('¡Código correcto! Categoría "Personas" desbloqueada.');
         input.value = '';
+        mostrarPantalla('pantalla-jugadores');
+    } else if (codigo === 'loco') {
+        modoLocoActivado = true;
+        
+        alert('¡Código correcto! Modo LOCO activado.\n\nAhora puedes tener igual cantidad de impostores que jugadores.');
+        input.value = '';
+        
+        // Actualizar los límites actuales
+        actualizarMaxImpostores();
+        
         mostrarPantalla('pantalla-jugadores');
     } else {
         alert('Código incorrecto. Inténtalo de nuevo.');

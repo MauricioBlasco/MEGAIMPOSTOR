@@ -85,7 +85,7 @@ body {
     transition: background-color 0.2s; /* Suaviza el cambio de color al tocar */
 }
 
-#input-jugadores, #input-impostores {
+#input-jugadores, #input-impostores, #input-max-impostores {
     border: none !important;
     background: transparent !important;
     font-size: 1.4rem;
@@ -106,16 +106,17 @@ appearance: none;
 
 #boton-secreto {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 30px;
-    height: 30px;
+    top: 5px;
+    right: 5px;
+    width: 50px;
+    height: 50px;
     background: transparent;
     border: none;
     cursor: pointer;
     z-index: 1000;
     padding: 0;
     margin: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* SISTEMA DE SCROLL PARA CATEGORÍAS */

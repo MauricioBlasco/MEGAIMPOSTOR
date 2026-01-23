@@ -33,6 +33,21 @@
                     <button class="btn-flecha" onclick="cambiarValor('input-impostores', 1)">+</button>
                 </div>
             </div>
+            <div class="control-grupal">
+                <label>Randomizador</label>
+                <label class="switch">
+                    <input type="checkbox" id="switch-randomizador" onchange="toggleRandomizador()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="control-grupal" id="control-max-impostores" style="display: none;">
+                <label>Máximo de impostores:</label>
+                <div class="contador-interactivo">
+                    <button class="btn-flecha" onclick="cambiarValor('input-max-impostores', -1)">-</button>
+                    <input type="number" id="input-max-impostores" value="1" readonly>
+                    <button class="btn-flecha" onclick="cambiarValor('input-max-impostores', 1)">+</button>
+                </div>
+            </div>
             <button class="btn-principal" onclick="mostrarPantalla('pantalla-categorias')">SIGUIENTE</button>
         </div>
 
@@ -76,6 +91,16 @@
             <div id="caja-secreta" class="hidden-word">? ? ?</div>
             <button class="btn-principal" id="btn-revelar-clic" onclick="revelarCliche()">VER MI PALABRA</button>
             <button onclick="siguienteJugador()" id="btn-siguiente" class="btn-principal hidden">YA LO VI, PASAR CELULAR</button>
+        </div>
+
+        <div id="pantalla-info-impostores" class="screen hidden">
+            <h1 class="titulo-principal">¡TODOS HAN VISTO SU PALABRA!</h1>
+            <div style="background: #2d2d2d; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                <p style="font-size: 1.3rem; margin-bottom: 10px;">En esta partida hay:</p>
+                <h2 id="cantidad-impostores" style="color: #ff4757; font-size: 2.5rem; margin: 15px 0;">X IMPOSTORES</h2>
+            </div>
+            <p style="font-size: 1.1rem; margin-bottom: 20px;">Empiecen las pistas</p>
+            <button class="btn-principal" onclick="continuarDespuesDeInfo()">CONTINUAR</button>
         </div>
 
     </div>
