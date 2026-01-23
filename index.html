@@ -15,6 +15,7 @@
         </div>
 
         <div id="pantalla-jugadores" class="screen hidden">
+            <button id="boton-secreto" onclick="mostrarPantalla('pantalla-codigo')"></button>
             <h2>Configuración</h2>
             <div class="control-grupal">
                 <label>Jugadores:</label>
@@ -35,6 +36,14 @@
             <button class="btn-principal" onclick="mostrarPantalla('pantalla-categorias')">SIGUIENTE</button>
         </div>
 
+        <div id="pantalla-codigo" class="screen hidden">
+            <h2>Código Secreto</h2>
+            <p style="margin: 20px 0;">Ingresa el código para desbloquear contenido especial</p>
+            <input type="text" id="input-codigo" placeholder="Escribe el código aquí" style="width: 80%; padding: 15px; font-size: 1.1rem; border-radius: 10px; border: 2px solid #555; background: #2d2d2d; color: white; text-align: center; margin-bottom: 20px;">
+            <button class="btn-principal" onclick="verificarCodigo()">VERIFICAR</button>
+            <button class="btn-secundario" onclick="mostrarPantalla('pantalla-jugadores')">VOLVER</button>
+        </div>
+
         <div id="pantalla-categorias" class="screen hidden">
             <h2>CATEGORÍAS</h2>
             <div id="lista-switches">
@@ -49,7 +58,7 @@
                 <div class="categoria-item"><span>Videojuegos</span><label class="switch"><input type="checkbox" id="cat-Videojuegos" checked><span class="slider"></span></label></div>
                 <div class="categoria-item"><span>Rock Internacional</span><label class="switch"><input type="checkbox" id="cat-RockInt" checked><span class="slider"></span></label></div>
                 <div class="categoria-item"><span>Rock Argentino</span><label class="switch"><input type="checkbox" id="cat-RockArg" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Personas</span><label class="switch"><input type="checkbox" id="cat-Personas" checked><span class="slider"></span></label></div>
+                <div class="categoria-item" id="categoria-personas-item" style="opacity: 0.5; pointer-events: none;"><span>Personas 🔒</span><label class="switch"><input type="checkbox" id="cat-Personas" disabled><span class="slider"></span></label></div>
             </div>
             <button class="btn-principal" onclick="iniciarPartida()">¡EMPEZAR!</button>
         </div>

@@ -95,6 +95,7 @@ let jugadorActual = 1;
 let palabraSecreta = "";
 let categoriaSecreta = "";
 let listaImpostores = [];
+let personasDesbloqueado = false;
 
 function mostrarPantalla(id) {
     document.querySelectorAll('.screen').forEach(s => {
@@ -208,5 +209,33 @@ function siguienteJugador() {
         alert("¡Todos han visto su palabra! Empiecen las pistas.");
         iniciarPartida(); 
         mostrarPantalla('pantalla-preparacion');
+    }
+}
+
+function verificarCodigo() {
+    const input = document.getElementById('input-codigo');
+    const codigo = input.value.trim().toLowerCase();
+    
+    if (codigo === 'impatrq') {
+        personasDesbloqueado = true;
+        
+        // Desbloquear la categoría Personas
+        const itemPersonas = document.getElementById('categoria-personas-item');
+        const checkPersonas = document.getElementById('cat-Personas');
+        
+        itemPersonas.style.opacity = '1';
+        itemPersonas.style.pointerEvents = 'auto';
+        checkPersonas.disabled = false;
+        checkPersonas.checked = true;
+        
+        // Actualizar el texto para mostrar que está desbloqueado
+        itemPersonas.querySelector('span').innerText = 'Personas ✓';
+        
+        alert('¡Código correcto! Categoría "Personas" desbloqueada.');
+        input.value = '';
+        mostrarPantalla('pantalla-jugadores');
+    } else {
+        alert('Código incorrecto. Inténtalo de nuevo.');
+        input.value = '';
     }
 }
