@@ -125,6 +125,12 @@ let listaImpostores = [];
 let personasDesbloqueado = false;
 let modoLocoActivado = false;
 
+// Variables del DOM
+let caja = null;
+let btnRevelar = null;
+let btnSiguiente = null;
+let modoDificil = null;
+
 function mostrarPantalla(id) {
     document.querySelectorAll('.screen').forEach(s => {
         s.classList.add('hidden');
@@ -240,35 +246,68 @@ function iniciarPartida() {
 function iniciarTurnoUno() {
     jugadorActual = 1;
     prepararTurno();
-    mostrarPantalla('pantalla-revelar');
 }
 
 function prepararTurno() {
-    document.getElementById('titulo-turno').innerText = "Jugador " + jugadorActual;
-    document.getElementById('caja-secreta').innerText = "? ? ?";
-    document.getElementById('btn-revelar-clic').classList.remove('hidden');
-    document.getElementById('btn-siguiente').classList.add('hidden');
+    document.getElementById('titulo-turno').innerText = `Jugador ${jugadorActual}`;
+    caja.innerText = '? ? ?';
+    caja.classList.remove('reveal');
+    btnRevelar.classList.remove('hidden');
+    btnSiguiente.classList.add('hidden');
+    mostrarPantalla('pantalla-revelar');
 }
 
 function revelarCliche() {
-    const caja = document.getElementById('caja-secreta');
-    const btnRevelar = document.getElementById('btn-revelar-clic');
-    const btnSiguiente = document.getElementById('btn-siguiente');
-    const modoDificil = document.getElementById('switch-dificil').checked;
+    const palabraSimilarActivada = document.getElementById('switch-palabra-similar').checked;
+    const dificilActivado = modoDificil.checked;
+    
+    // Agregar animación de revelación
+    caja.classList.add('reveal');
+    
+    const esImpostor = listaImpostores.includes(jugadorActual);
+    
+    // Determinar el color según el tema
+    const colorImpostor = document.body.classList.contains('tema-claro') ? '#dc2626' : '#EF4444';
 
-    if(listaImpostores.includes(jugadorActual)) {
-        if (modoDificil) {
-            caja.innerHTML = `<span style="color:#ff4757">¡ERES EL IMPOSTOR!</span>`;
+    setTimeout(() => {
+        if(esImpostor) {
+            if (palabraSimilarActivada) {
+                // Modo Palabra Similar: dar palabra aleatoria de la misma categoría
+                const palabrasCategoria = datos[categoriaSecreta];
+                let palabraImpostor;
+                
+                // Seleccionar palabra aleatoria diferente a la secreta
+                do {
+                    palabraImpostor = palabrasCategoria[Math.floor(Math.random() * palabrasCategoria.length)];
+                } while (palabraImpostor === palabraSecreta && palabrasCategoria.length > 1);
+                
+                if (dificilActivado) {
+                    caja.innerHTML = `<span style="font-weight: bold;">${palabraImpostor}</span>`;
+                } else {
+                    caja.innerHTML = `<span style="font-weight: bold;">${palabraImpostor}</span><br><small>Categoría: ${categoriaSecreta}</small>`;
+                }
+            } else {
+                // Modo normal: mostrar que es impostor
+                if (dificilActivado) {
+                    caja.innerHTML = `<span style="color:${colorImpostor}; font-weight: bold;">¡ERES EL IMPOSTOR!</span>`;
+                } else {
+                    caja.innerHTML = `<span style="color:${colorImpostor}; font-weight: bold;">¡ERES EL IMPOSTOR!</span><br><small>Categoría: ${categoriaSecreta}</small>`;
+                }
+                // Agregar vibración al impostor solo en modo normal
+                caja.classList.add('impostor-vibrate');
+                setTimeout(() => caja.classList.remove('impostor-vibrate'), 1500);
+            }
         } else {
-            caja.innerHTML = `<span style="color:#ff4757">¡ERES EL IMPOSTOR!</span><br><small>Categoría: ${categoriaSecreta}</small>`;
+            if (dificilActivado) {
+                caja.innerHTML = `<span style="font-weight: bold;">${palabraSecreta}</span>`;
+            } else {
+                caja.innerHTML = `<span style="font-weight: bold;">${palabraSecreta}</span><br><small>Categoría: ${categoriaSecreta}</small>`;
+            }
         }
-    } else {
-        if (modoDificil) {
-            caja.innerHTML = `${palabraSecreta}`;
-        } else {
-            caja.innerHTML = `${palabraSecreta}<br><small>Categoría: ${categoriaSecreta}</small>`;
-        }
-    }
+        
+        // Remover animación después de que termine
+        setTimeout(() => caja.classList.remove('reveal'), 600);
+    }, 100);
 
     btnRevelar.classList.add('hidden');
     btnSiguiente.classList.remove('hidden');
@@ -344,6 +383,22 @@ function verificarCodigo() {
         input.value = '';
         
         mostrarPantalla('pantalla-jugadores');
+    } else if (codigo === 'claro') {
+        document.body.classList.add('tema-claro');
+        localStorage.setItem('tema', 'claro');
+        
+        alert('¡Código correcto! Tema CLARO activado. 💜✨');
+        input.value = '';
+        
+        mostrarPantalla('pantalla-jugadores');
+    } else if (codigo === 'oscuro') {
+        document.body.classList.remove('tema-claro');
+        localStorage.setItem('tema', 'oscuro');
+        
+        alert('¡Código correcto! Tema OSCURO activado. 🔴⚫');
+        input.value = '';
+        
+        mostrarPantalla('pantalla-jugadores');
     } else {
         alert('Código incorrecto. Inténtalo de nuevo.');
         input.value = '';
@@ -378,3 +433,28 @@ function activarTemaHippie() {
     document.body.style.backgroundColor = verdeOscuro;
     document.getElementById('game-container').style.backgroundColor = verdeOscuro;
 }
+
+function toggleTema() {
+    const temaClaro = document.getElementById('switch-tema').checked;
+    
+    if (temaClaro) {
+        document.body.classList.add('tema-claro');
+        localStorage.setItem('tema', 'claro');
+    } else {
+        document.body.classList.remove('tema-claro');
+        localStorage.setItem('tema', 'oscuro');
+    }
+}
+
+// Cargar tema guardado al iniciar
+window.addEventListener('DOMContentLoaded', () => {
+    // Siempre iniciar en modo oscuro
+    document.body.classList.remove('tema-claro');
+    localStorage.removeItem('tema');
+    
+    // Inicializar variables del DOM
+    caja = document.getElementById('caja-secreta');
+    btnRevelar = document.getElementById('btn-revelar-clic');
+    btnSiguiente = document.getElementById('btn-siguiente');
+    modoDificil = document.getElementById('switch-dificil');
+});
