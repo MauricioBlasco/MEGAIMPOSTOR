@@ -252,6 +252,7 @@ function prepararTurno() {
     document.getElementById('titulo-turno').innerText = `Jugador ${jugadorActual}`;
     caja.innerText = '? ? ?';
     caja.classList.remove('reveal');
+    caja.classList.remove('impostor-vibrate');
     btnRevelar.classList.remove('hidden');
     btnSiguiente.classList.add('hidden');
     mostrarPantalla('pantalla-revelar');
