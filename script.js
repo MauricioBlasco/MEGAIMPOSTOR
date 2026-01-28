@@ -25,7 +25,7 @@ const datos = {
         "Figo", "Puyol", "Pirlo", "Lahm", "Gerrard", "Lampard", "Scholes", "Raúl", "Shevchenko", "Van Basten",
         "Bergkamp", "Totti", "Del Piero", "Klose", "Foden", "Saka", "Rodri", "Valverde", "Courtois", "Alisson",
         "Van Dijk", "Salah", "Son", "Gavi", "James Rodríguez",
-        "Garrincha", "Zico", "Socrates", "Falcao", "Rivarola", "Chilavert", "Valderrama", "Forlán", "Cavani", "Godín",
+        "Garrincha", "Zico", "Socrates", "Falcao", "Chilavert", "Valderrama", "Forlán", "Cavani", "Godín",
         "Bebeto", "Vieri", "Nedved", "Stoichkov", "Hagi", "Kahn", "Schmeichel", "Van der Sar", "Hugo Sánchez", "Rafa Márquez", "Amengol",
         "Pelé", "Maradona", "Messi", "Cristiano Ronaldo", "Neymar", "Mbappé", "Haaland", "Lewandowski", "Benzema", "Modric",
         "Kroos", "De Bruyne", "Kanté", "Casemiro", "Busquets", "Xavi", "Iniesta", "Zidane", "Ronaldo", "Ronaldinho",
@@ -156,6 +156,23 @@ let categoriaSecreta = "";
 let listaImpostores = [];
 let personasDesbloqueado = false;
 let modoLocoActivado = false;
+let contadorSwitchSimilar = 0;
+let logroAuraDesbloqueado = false;
+let logroMarleyDesbloqueado = false;
+let logroZeusDesbloqueado = false;
+let logroJokerDesbloqueado = false;
+let logroCampeonDesbloqueado = false;
+let logroColeccionistaDesbloqueado = false;
+let logroTheMDesbloqueado = false;
+let logroHadesDesbloqueado = false;
+let logroPrincipianteDesbloqueado = false;
+let logroYSoyYoDesbloqueado = false;
+let logroImposibleDesbloqueado = false;
+let logroSrDesbloqueado = false;
+
+// Variables para el logro Principiante
+let temporizadorComoJugar = null;
+let tiempoEnComoJugar = 0;
 
 // Variables del DOM
 let caja = null;
@@ -164,6 +181,13 @@ let btnSiguiente = null;
 let modoDificil = null;
 
 function mostrarPantalla(id) {
+    // Detener temporizador de cómo jugar si se cambia de pantalla
+    if (temporizadorComoJugar) {
+        clearInterval(temporizadorComoJugar);
+        temporizadorComoJugar = null;
+        tiempoEnComoJugar = 0;
+    }
+    
     document.querySelectorAll('.screen').forEach(s => {
         s.classList.add('hidden');
         s.classList.remove('active');
@@ -171,7 +195,63 @@ function mostrarPantalla(id) {
     const destino = document.getElementById(id);
     destino.classList.remove('hidden');
     destino.classList.add('active');
+    
+    // Iniciar temporizador si se entra a la pantalla de cómo jugar
+    if (id === 'pantalla-como-jugar' && !logroPrincipianteDesbloqueado) {
+        tiempoEnComoJugar = 0;
+        temporizadorComoJugar = setInterval(() => {
+            tiempoEnComoJugar++;
+            if (tiempoEnComoJugar >= 90) {
+                desbloquearLogro('principiante');
+                clearInterval(temporizadorComoJugar);
+                temporizadorComoJugar = null;
+            }
+        }, 1000);
+    }
 }
+function actualizarEstadoBotones(id) {
+    const input = document.getElementById(id);
+    const valorActual = parseInt(input.value);
+    const contenedor = input.parentElement;
+    const botones = contenedor.querySelectorAll('.btn-flecha');
+    const btnMenos = botones[0];
+    const btnMas = botones[1];
+    
+    let min = 1;
+    let max = 16;
+    
+    if (id === 'input-jugadores') {
+        min = modoLocoActivado ? 2 : 3;
+        max = 16;
+    } else if (id === 'input-impostores') {
+        const jugadores = parseInt(document.getElementById('input-jugadores').value);
+        min = 1;
+        max = modoLocoActivado ? jugadores : jugadores - 2;
+    } else if (id === 'input-max-impostores') {
+        const jugadores = parseInt(document.getElementById('input-jugadores').value);
+        min = 1;
+        max = modoLocoActivado ? jugadores : jugadores - 2;
+    }
+    
+    // Actualizar botón menos
+    if (valorActual <= min) {
+        btnMenos.disabled = true;
+        btnMenos.classList.add('disabled');
+    } else {
+        btnMenos.disabled = false;
+        btnMenos.classList.remove('disabled');
+    }
+    
+    // Actualizar botón más
+    if (valorActual >= max) {
+        btnMas.disabled = true;
+        btnMas.classList.add('disabled');
+    } else {
+        btnMas.disabled = false;
+        btnMas.classList.remove('disabled');
+    }
+}
+
 function cambiarValor(id, cambio) {
     const input = document.getElementById(id);
     let valorActual = parseInt(input.value);
@@ -182,6 +262,9 @@ function cambiarValor(id, cambio) {
         if (nuevoValor >= minJugadores && nuevoValor <= 16) {
             input.value = nuevoValor;
             actualizarMaxImpostores();
+            actualizarEstadoBotones(id);
+            actualizarEstadoBotones('input-impostores');
+            actualizarEstadoBotones('input-max-impostores');
         }
     } else if (id === 'input-impostores') {
         const jugadores = parseInt(document.getElementById('input-jugadores').value);
@@ -190,6 +273,7 @@ function cambiarValor(id, cambio) {
         
         if (nuevoValor >= 1 && nuevoValor <= maxImpostores) {
             input.value = nuevoValor;
+            actualizarEstadoBotones(id);
         }
     } else if (id === 'input-max-impostores') {
         const jugadores = parseInt(document.getElementById('input-jugadores').value);
@@ -198,6 +282,7 @@ function cambiarValor(id, cambio) {
         
         if (nuevoValor >= 1 && nuevoValor <= maxPermitido) {
             input.value = nuevoValor;
+            actualizarEstadoBotones(id);
         }
     }
 }
@@ -212,9 +297,11 @@ function toggleRandomizador() {
         controlImpostores.style.display = 'none';
         const jugadores = parseInt(document.getElementById('input-jugadores').value);
         document.getElementById('input-max-impostores').value = Math.max(1, jugadores - 2);
+        actualizarEstadoBotones('input-max-impostores');
     } else {
         controlMaxImpostores.style.display = 'none';
         controlImpostores.style.display = 'flex';
+        actualizarEstadoBotones('input-impostores');
     }
 }
 
@@ -231,6 +318,9 @@ function actualizarMaxImpostores() {
     if (parseInt(inputMaxImp.value) > maxPermitido) {
         inputMaxImp.value = maxPermitido;
     }
+    
+    actualizarEstadoBotones('input-impostores');
+    actualizarEstadoBotones('input-max-impostores');
 }
 
 function iniciarPartida() {
@@ -351,6 +441,23 @@ function siguienteJugador() {
         jugadorActual++;
         prepararTurno();
     } else {
+        // Verificar logro Y soy yo (2 jugadores y 2 impostores)
+        if (numJugadores === 2 && numImpostores === 2 && !logroYSoyYoDesbloqueado) {
+            desbloquearLogro('ysoyyo');
+        }
+        
+        // Verificar logro IMPOSIBLE (modo difícil, palabra similar, 16 jugadores, 1 impostor)
+        const dificilActivado = document.getElementById('switch-dificil').checked;
+        const palabraSimilarActivada = document.getElementById('switch-palabra-similar').checked;
+        if (dificilActivado && palabraSimilarActivada && numJugadores === 16 && numImpostores === 1 && !logroImposibleDesbloqueado) {
+            desbloquearLogro('imposible');
+        }
+        
+        // Verificar logro Sr... si la palabra es "Las chismosas"
+        if (palabraSecreta === "Las chismosas" && !logroSrDesbloqueado) {
+            desbloquearLogro('sr');
+        }
+        
         const randomizadorActivado = document.getElementById('switch-randomizador').checked;
         
         if (randomizadorActivado) {
@@ -397,43 +504,49 @@ function verificarCodigo() {
         
         itemPersonas.querySelector('span').innerText = 'Personas ✓';
         
-        alert('¡Código correcto! Categoría "Personas" desbloqueada.');
         input.value = '';
-        mostrarPantalla('pantalla-jugadores');
+        mostrarModalCodigo('Categoría "Personas" desbloqueada. Ahora puedes jugar con palabras personalizadas de tu grupo.');
     } else if (codigo === 'loco') {
         modoLocoActivado = true;
         
-        alert('¡Código correcto! Modo LOCO activado.\n\nAhora puedes tener igual cantidad de impostores que jugadores.');
+        desbloquearLogro('joker');
+        
         input.value = '';
         
         actualizarMaxImpostores();
+        mostrarModalCodigo('Modo LOCO activado. Ahora puedes tener igual cantidad de impostores que jugadores.');
+        actualizarEstadoBotones('input-jugadores');
+        actualizarEstadoBotones('input-impostores');
+        actualizarEstadoBotones('input-max-impostores');
         
         mostrarPantalla('pantalla-jugadores');
     } else if (codigo === 'bob') {
         activarTemaHippie();
         
-        alert('¡Código correcto! Tema HIPPIE activado. ✌️🌈');
+        desbloquearLogro('marley');
+        
         input.value = '';
         
-        mostrarPantalla('pantalla-jugadores');
+        mostrarModalCodigo('Tema HIPPIE activado. ✌️🌈 Disfruta de los nuevos colores.');
     } else if (codigo === 'claro') {
         document.body.classList.add('tema-claro');
         localStorage.setItem('tema', 'claro');
         
-        alert('¡Código correcto! Tema CLARO activado. 💜✨');
+        desbloquearLogro('zeus');
+        
         input.value = '';
         
-        mostrarPantalla('pantalla-jugadores');
+        mostrarModalCodigo('Tema CLARO activado. 💜✨ El juego ahora tiene un aspecto más luminoso.');
     } else if (codigo === 'oscuro') {
         document.body.classList.remove('tema-claro');
         localStorage.setItem('tema', 'oscuro');
         
-        alert('¡Código correcto! Tema OSCURO activado. 🔴⚫');
+        desbloquearLogro('hades');
+        
         input.value = '';
         
-        mostrarPantalla('pantalla-jugadores');
+        mostrarModalCodigo('Tema OSCURO activado. 🔴⚫ Has vuelto al tema clásico.');
     } else {
-        alert('Código incorrecto. Inténtalo de nuevo.');
         input.value = '';
     }
 }
@@ -467,6 +580,38 @@ function activarTemaHippie() {
     document.getElementById('game-container').style.backgroundColor = verdeOscuro;
 }
 
+function togglePalabraSimilar() {
+    contadorSwitchSimilar++;
+    
+    if (contadorSwitchSimilar === 100 && !logroAuraDesbloqueado) {
+        desbloquearLogro('aura');
+    }
+}
+
+function mostrarLogroAura() {
+    const logroBurbuja = document.createElement('div');
+    logroBurbuja.className = 'logro-burbuja';
+    logroBurbuja.innerHTML = `
+        <div class="logro-titulo">LOGRO DESBLOQUEADO</div>
+        <div class="logro-descripcion">AURA</div>
+    `;
+    
+    document.body.appendChild(logroBurbuja);
+    
+    // Animar entrada
+    setTimeout(() => {
+        logroBurbuja.classList.add('mostrar');
+    }, 100);
+    
+    // Animar salida y eliminar
+    setTimeout(() => {
+        logroBurbuja.classList.remove('mostrar');
+        setTimeout(() => {
+            document.body.removeChild(logroBurbuja);
+        }, 500);
+    }, 4000);
+}
+
 function toggleTema() {
     const temaClaro = document.getElementById('switch-tema').checked;
     
@@ -476,6 +621,356 @@ function toggleTema() {
     } else {
         document.body.classList.remove('tema-claro');
         localStorage.setItem('tema', 'oscuro');
+    }
+}
+
+function guardarLogros() {
+    const logros = {
+        aura: logroAuraDesbloqueado,
+        marley: logroMarleyDesbloqueado,
+        zeus: logroZeusDesbloqueado,
+        joker: logroJokerDesbloqueado,
+        campeon: logroCampeonDesbloqueado,
+        coleccionista: logroColeccionistaDesbloqueado,
+        them: logroTheMDesbloqueado,
+        hades: logroHadesDesbloqueado,
+        principiante: logroPrincipianteDesbloqueado,
+        ysoyyo: logroYSoyYoDesbloqueado,
+        imposible: logroImposibleDesbloqueado,
+        sr: logroSrDesbloqueado
+    };
+    localStorage.setItem('logros', JSON.stringify(logros));
+}
+
+function cargarLogros() {
+    const logrosGuardados = localStorage.getItem('logros');
+    if (logrosGuardados) {
+        const logros = JSON.parse(logrosGuardados);
+        logroAuraDesbloqueado = logros.aura || false;
+        logroMarleyDesbloqueado = logros.marley || false;
+        logroZeusDesbloqueado = logros.zeus || false;
+        logroJokerDesbloqueado = logros.joker || false;
+        logroCampeonDesbloqueado = logros.campeon || false;
+        logroColeccionistaDesbloqueado = logros.coleccionista || false;
+        logroTheMDesbloqueado = logros.them || false;
+        logroHadesDesbloqueado = logros.hades || false;
+        logroPrincipianteDesbloqueado = logros.principiante || false;
+        logroYSoyYoDesbloqueado = logros.ysoyyo || false;
+        logroImposibleDesbloqueado = logros.imposible || false;
+        logroSrDesbloqueado = logros.sr || false;
+    }
+    verificarColeccionista();
+    actualizarVistaLogros();
+}
+
+function desbloquearLogro(nombreLogro) {
+    switch(nombreLogro) {
+        case 'aura':
+            if (!logroAuraDesbloqueado) {
+                logroAuraDesbloqueado = true;
+                mostrarLogroAura();
+                guardarLogros();
+            }
+            break;
+        case 'marley':
+            if (!logroMarleyDesbloqueado) {
+                logroMarleyDesbloqueado = true;
+                mostrarNotificacionLogro('MARLEY');
+                guardarLogros();
+            }
+            break;
+        case 'zeus':
+            if (!logroZeusDesbloqueado) {
+                logroZeusDesbloqueado = true;
+                mostrarNotificacionLogro('ZEUS');
+                guardarLogros();
+            }
+            break;
+        case 'joker':
+            if (!logroJokerDesbloqueado) {
+                logroJokerDesbloqueado = true;
+                mostrarNotificacionLogro('JOKER');
+                guardarLogros();
+            }
+            break;
+        case 'campeon':
+            if (!logroCampeonDesbloqueado) {
+                logroCampeonDesbloqueado = true;
+                mostrarNotificacionLogro('CAMPEON');
+                guardarLogros();
+            }
+            break;
+        case 'them':
+            if (!logroTheMDesbloqueado) {
+                logroTheMDesbloqueado = true;
+                mostrarNotificacionLogro('THE M');
+                guardarLogros();
+            }
+            break;
+        case 'hades':
+            if (!logroHadesDesbloqueado) {
+                logroHadesDesbloqueado = true;
+                mostrarNotificacionLogro('HADES');
+                guardarLogros();
+            }
+            break;
+        case 'principiante':
+            if (!logroPrincipianteDesbloqueado) {
+                logroPrincipianteDesbloqueado = true;
+                mostrarNotificacionLogro('PRINCIPIANTE');
+                guardarLogros();
+            }
+            break;
+        case 'ysoyyo':
+            if (!logroYSoyYoDesbloqueado) {
+                logroYSoyYoDesbloqueado = true;
+                mostrarNotificacionLogro('Y SOY YO');
+                guardarLogros();
+            }
+            break;
+        case 'imposible':
+            if (!logroImposibleDesbloqueado) {
+                logroImposibleDesbloqueado = true;
+                mostrarNotificacionLogro('IMPOSIBLE');
+                guardarLogros();
+            }
+            break;
+        case 'sr':
+            if (!logroSrDesbloqueado) {
+                logroSrDesbloqueado = true;
+                mostrarNotificacionLogro('SR...');
+                guardarLogros();
+            }
+            break;
+    }
+    actualizarVistaLogros();
+    
+    // Verificar si se debe desbloquear Coleccionista
+    if (nombreLogro !== 'coleccionista') {
+        verificarColeccionista();
+    }
+}
+
+function verificarColeccionista() {
+    // Verificar si todos los logros (excepto Coleccionista) están desbloqueados
+    const todosDesbloqueados = logroAuraDesbloqueado && 
+                                logroMarleyDesbloqueado && 
+                                logroZeusDesbloqueado && 
+                                logroJokerDesbloqueado && 
+                                logroCampeonDesbloqueado &&
+                                logroTheMDesbloqueado &&
+                                logroHadesDesbloqueado &&
+                                logroPrincipianteDesbloqueado &&
+                                logroYSoyYoDesbloqueado &&
+                                logroImposibleDesbloqueado &&
+                                logroSrDesbloqueado;
+    
+    if (todosDesbloqueados && !logroColeccionistaDesbloqueado) {
+        // Desbloquear Coleccionista si se tienen todos los logros
+        logroColeccionistaDesbloqueado = true;
+        mostrarNotificacionLogro('COLECCIONISTA');
+        guardarLogros();
+        actualizarVistaLogros();
+    } else if (!todosDesbloqueados && logroColeccionistaDesbloqueado) {
+        // Desactivar Coleccionista si no se tienen todos los logros
+        logroColeccionistaDesbloqueado = false;
+        guardarLogros();
+        actualizarVistaLogros();
+    }
+}
+
+function mostrarNotificacionLogro(nombreLogro) {
+    const logroBurbuja = document.createElement('div');
+    logroBurbuja.className = 'logro-burbuja';
+    logroBurbuja.innerHTML = `
+        <div class="logro-titulo">LOGRO DESBLOQUEADO</div>
+        <div class="logro-descripcion">${nombreLogro}</div>
+    `;
+    
+    document.body.appendChild(logroBurbuja);
+    
+    setTimeout(() => {
+        logroBurbuja.classList.add('mostrar');
+    }, 100);
+    
+    setTimeout(() => {
+        logroBurbuja.classList.remove('mostrar');
+        setTimeout(() => {
+            document.body.removeChild(logroBurbuja);
+        }, 500);
+    }, 4000);
+}
+
+function mostrarModalCodigo(mensaje) {
+    const modal = document.getElementById('modal-codigo');
+    const texto = document.getElementById('modal-codigo-texto');
+    texto.textContent = mensaje;
+    modal.style.display = 'flex';
+}
+
+function cerrarModalCodigo() {
+    const modal = document.getElementById('modal-codigo');
+    modal.style.display = 'none';
+    mostrarPantalla('pantalla-jugadores');
+}
+
+function desbloquearLogroCampeon() {
+    desbloquearLogro('campeon');
+}
+
+function desbloquearLogroTheM() {
+    desbloquearLogro('them');
+}
+
+function actualizarVistaLogros() {
+    // Actualizar COLECCIONISTA
+    const logroColeccionista = document.getElementById('logro-coleccionista');
+    if (logroColeccionista) {
+        if (logroColeccionistaDesbloqueado) {
+            logroColeccionista.classList.add('desbloqueado');
+            logroColeccionista.querySelector('.logro-icono').textContent = '🏅';
+        } else {
+            logroColeccionista.classList.remove('desbloqueado');
+            logroColeccionista.querySelector('.logro-icono').textContent = '🔒';
+        }
+    }
+    
+    // Actualizar corona sobre la M
+    const corona = document.getElementById('corona-coleccionista');
+    if (corona) {
+        corona.style.display = logroColeccionistaDesbloqueado ? 'block' : 'none';
+    }
+    
+    // Actualizar PRINCIPIANTE
+    const logroPrincipiante = document.getElementById('logro-principiante');
+    if (logroPrincipiante) {
+        if (logroPrincipianteDesbloqueado) {
+            logroPrincipiante.classList.add('desbloqueado');
+            logroPrincipiante.querySelector('.logro-icono').textContent = '📖';
+        } else {
+            logroPrincipiante.classList.remove('desbloqueado');
+            logroPrincipiante.querySelector('.logro-icono').textContent = '🔒';
+        }
+    }
+    
+    // Actualizar Y SOY YO
+    const logroYSoyYo = document.getElementById('logro-ysoyyo');
+    if (logroYSoyYo) {
+        if (logroYSoyYoDesbloqueado) {
+            logroYSoyYo.classList.add('desbloqueado');
+            logroYSoyYo.querySelector('.logro-icono').textContent = '👤';
+        } else {
+            logroYSoyYo.classList.remove('desbloqueado');
+            logroYSoyYo.querySelector('.logro-icono').textContent = '🔒';
+        }
+    }
+    
+    // Actualizar IMPOSIBLE
+    const logroImposible = document.getElementById('logro-imposible');
+    if (logroImposible) {
+        if (logroImposibleDesbloqueado) {
+            logroImposible.classList.add('desbloqueado');
+            logroImposible.querySelector('.logro-icono').textContent = '🔥';
+        } else {
+            logroImposible.classList.remove('desbloqueado');
+            logroImposible.querySelector('.logro-icono').textContent = '🔒';
+        }
+    }
+    
+    // Actualizar SR...
+    const logroSr = document.getElementById('logro-sr');
+    if (logroSr) {
+        if (logroSrDesbloqueado) {
+            logroSr.classList.add('desbloqueado');
+            logroSr.querySelector('.logro-icono').textContent = '🎸';
+        } else {
+            logroSr.classList.remove('desbloqueado');
+            logroSr.querySelector('.logro-icono').textContent = '🔒';
+        }
+    }
+    
+    // Actualizar AURA
+    const logroAura = document.getElementById('logro-aura');
+    if (logroAura) {
+        if (logroAuraDesbloqueado) {
+            logroAura.classList.add('desbloqueado');
+            logroAura.querySelector('.logro-icono').textContent = '✨';
+        } else {
+            logroAura.classList.remove('desbloqueado');
+            logroAura.querySelector('.logro-icono').textContent = '🔒';
+        }
+    }
+    
+    // Actualizar MARLEY
+    const logroMarley = document.getElementById('logro-marley');
+    if (logroMarley) {
+        if (logroMarleyDesbloqueado) {
+            logroMarley.classList.add('desbloqueado');
+            logroMarley.querySelector('.logro-icono').textContent = '🌈';
+        } else {
+            logroMarley.classList.remove('desbloqueado');
+            logroMarley.querySelector('.logro-icono').textContent = '🔒';
+        }
+    }
+    
+    // Actualizar ZEUS
+    const logroZeus = document.getElementById('logro-zeus');
+    if (logroZeus) {
+        if (logroZeusDesbloqueado) {
+            logroZeus.classList.add('desbloqueado');
+            logroZeus.querySelector('.logro-icono').textContent = '⚡';
+        } else {
+            logroZeus.classList.remove('desbloqueado');
+            logroZeus.querySelector('.logro-icono').textContent = '🔒';
+        }
+    }
+    
+    // Actualizar JOKER
+    const logroJoker = document.getElementById('logro-joker');
+    if (logroJoker) {
+        if (logroJokerDesbloqueado) {
+            logroJoker.classList.add('desbloqueado');
+            logroJoker.querySelector('.logro-icono').textContent = '🎭';
+        } else {
+            logroJoker.classList.remove('desbloqueado');
+            logroJoker.querySelector('.logro-icono').textContent = '🔒';
+        }
+    }
+    
+    // Actualizar CAMPEON
+    const logroCampeon = document.getElementById('logro-campeon');
+    if (logroCampeon) {
+        if (logroCampeonDesbloqueado) {
+            logroCampeon.classList.add('desbloqueado');
+            logroCampeon.querySelector('.logro-icono').textContent = '🏆';
+        } else {
+            logroCampeon.classList.remove('desbloqueado');
+            logroCampeon.querySelector('.logro-icono').textContent = '🔒';
+        }
+    }
+    
+    // Actualizar THE M
+    const logroTheM = document.getElementById('logro-them');
+    if (logroTheM) {
+        if (logroTheMDesbloqueado) {
+            logroTheM.classList.add('desbloqueado');
+            logroTheM.querySelector('.logro-icono').textContent = '🅼';
+        } else {
+            logroTheM.classList.remove('desbloqueado');
+            logroTheM.querySelector('.logro-icono').textContent = '🔒';
+        }
+    }
+    
+    // Actualizar HADES
+    const logroHades = document.getElementById('logro-hades');
+    if (logroHades) {
+        if (logroHadesDesbloqueado) {
+            logroHades.classList.add('desbloqueado');
+            logroHades.querySelector('.logro-icono').textContent = '🔥';
+        } else {
+            logroHades.classList.remove('desbloqueado');
+            logroHades.querySelector('.logro-icono').textContent = '🔒';
+        }
     }
 }
 
@@ -490,4 +985,12 @@ window.addEventListener('DOMContentLoaded', () => {
     btnRevelar = document.getElementById('btn-revelar-clic');
     btnSiguiente = document.getElementById('btn-siguiente');
     modoDificil = document.getElementById('switch-dificil');
+    
+    // Cargar logros guardados
+    cargarLogros();
+    
+    // Inicializar estado de botones
+    actualizarEstadoBotones('input-jugadores');
+    actualizarEstadoBotones('input-impostores');
+    actualizarEstadoBotones('input-max-impostores');
 });

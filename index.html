@@ -10,7 +10,7 @@
     <div id="game-container">
         
         <div id="pantalla-inicio" class="screen active">
-            <h1 class="titulo-principal">MEGAIMPOSTOR</h1>
+            <h1 class="titulo-principal"><span onclick="desbloquearLogroTheM()" style="cursor: default; position: relative;"><span id="corona-coleccionista" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 1.5rem; display: none;">👑</span>M</span>EGAIMPOSTOR</h1>
             <button class="btn-principal" onclick="mostrarPantalla('pantalla-jugadores')">INICIAR</button>
         </div>
 
@@ -58,10 +58,11 @@
             <div class="control-grupal">
                 <label>Palabra Similar 🎭</label>
                 <label class="switch">
-                    <input type="checkbox" id="switch-palabra-similar">
+                    <input type="checkbox" id="switch-palabra-similar" onchange="togglePalabraSimilar()">
                     <span class="slider"></span>
                 </label>
             </div>
+            <button class="btn-secundario" onclick="mostrarPantalla('pantalla-logros')" style="margin-top: 10px;">🏆 LOGROS</button>
             <button class="btn-principal" onclick="mostrarPantalla('pantalla-categorias')">SIGUIENTE</button>
         </div>
 
@@ -71,6 +72,93 @@
             <input type="text" id="input-codigo" placeholder="Escribe el código aquí" maxlength="12" pattern="[A-Za-z0-9]*" oninput="this.value = this.value.replace(/[^A-Za-z0-9]/g, '')" style="width: 80%; padding: 15px; font-size: 1.1rem; border-radius: 10px; border: 2px solid #555; background: #2d2d2d; color: white; text-align: center; margin-bottom: 20px;">
             <button class="btn-principal" onclick="verificarCodigo()">VERIFICAR</button>
             <button class="btn-secundario" onclick="mostrarPantalla('pantalla-jugadores')">VOLVER</button>
+        </div>
+
+        <div id="pantalla-logros" class="screen hidden">
+            <h2><span id="trofeo-secreto" onclick="desbloquearLogroCampeon()" style="cursor: default;">🏆</span> LOGROS</h2>
+            <div style="max-width: 500px; margin: 20px auto;">
+                <div class="logro-item" id="logro-coleccionista">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">COLECCIONISTA</div>
+                    </div>
+                </div>
+                <div class="logro-item" id="logro-principiante">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">PRINCIPIANTE</div>
+                    </div>
+                </div>
+                <div class="logro-item" id="logro-ysoyyo">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">Y SOY YO</div>
+                    </div>
+                </div>
+                <div class="logro-item" id="logro-imposible">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">IMPOSIBLE</div>
+                    </div>
+                </div>
+                <div class="logro-item" id="logro-sr">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">SR...</div>
+                    </div>
+                </div>
+                <div class="logro-item" id="logro-aura">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">AURA</div>
+                    </div>
+                </div>
+                <div class="logro-item" id="logro-marley">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">MARLEY</div>
+                    </div>
+                </div>
+                <div class="logro-item" id="logro-zeus">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">ZEUS</div>
+                    </div>
+                </div>
+                <div class="logro-item" id="logro-hades">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">HADES</div>
+                    </div>
+                </div>
+                <div class="logro-item" id="logro-joker">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">JOKER</div>
+                    </div>
+                </div>
+                <div class="logro-item" id="logro-campeon">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">CAMPEON</div>
+                    </div>
+                </div>
+                <div class="logro-item" id="logro-them">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">THE M</div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-principal" onclick="mostrarPantalla('pantalla-jugadores')">VOLVER</button>
+        </div>
+
+        <div id="modal-codigo" class="modal-overlay" style="display: none;">
+            <div class="modal-contenido">
+                <h3 style="color: var(--color-primary); margin-bottom: 15px;">✓ Código Correcto</h3>
+                <p id="modal-codigo-texto" style="font-size: 1.1rem; line-height: 1.6; margin: 20px 0;"></p>
+                <button class="btn-principal" onclick="cerrarModalCodigo()">OK</button>
+            </div>
         </div>
 
         <div id="pantalla-categorias" class="screen hidden">

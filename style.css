@@ -276,6 +276,23 @@ body {
     transform: scale(0.95);
 }
 
+.btn-flecha.disabled,
+.btn-flecha:disabled {
+    background: #666;
+    cursor: default;
+    opacity: 0.5;
+}
+
+.btn-flecha.disabled:hover,
+.btn-flecha:disabled:hover {
+    transform: scale(1);
+}
+
+.btn-flecha.disabled:active,
+.btn-flecha:disabled:active {
+    transform: scale(1);
+}
+
 #input-jugadores, #input-impostores, #input-max-impostores {
     border: none !important;
     background: transparent !important;
@@ -461,4 +478,153 @@ input[type="text"]:focus {
     outline: none;
     border-color: #DC2626 !important;
     transform: scale(1.02);
+}
+
+/* Estilos para la burbuja de logro */
+.logro-burbuja {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+    border: 2px solid #DC2626;
+    border-radius: 15px;
+    padding: 20px 30px;
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4);
+    z-index: 10000;
+    opacity: 0;
+    transform: translateX(400px);
+    transition: all 0.5s ease;
+}
+
+.logro-burbuja.mostrar {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.logro-titulo {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #DC2626;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.logro-descripcion {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+    letter-spacing: 2px;
+}
+
+@media (max-width: 600px) {
+    .logro-burbuja {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        padding: 15px 20px;
+    }
+    
+    .logro-titulo {
+        font-size: 0.9rem;
+    }
+    
+    .logro-descripcion {
+        font-size: 1.5rem;
+    }
+}
+
+/* Estilos para la pantalla de logros */
+.logro-item {
+    display: flex;
+    align-items: center;
+    background: var(--bg-control);
+    padding: 20px;
+    margin: 12px 0;
+    border-radius: 15px;
+    border: 2px solid var(--border-secondary);
+    transition: all 0.3s ease;
+    opacity: 0.5;
+}
+
+.logro-item.desbloqueado {
+    opacity: 1;
+    border-color: var(--color-primary);
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(239, 68, 68, 0.05));
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.2);
+}
+
+body.tema-claro .logro-item.desbloqueado {
+    border-color: var(--color-primary);
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(139, 92, 246, 0.05));
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
+}
+
+.logro-icono {
+    font-size: 3rem;
+    margin-right: 20px;
+    min-width: 60px;
+    text-align: center;
+    filter: grayscale(1);
+    transition: filter 0.3s ease;
+}
+
+.logro-item.desbloqueado .logro-icono {
+    filter: grayscale(0);
+}
+
+.logro-info {
+    flex: 1;
+    text-align: left;
+}
+
+.logro-nombre {
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: var(--color-text);
+}
+
+/* Estilos para el modal de código */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-contenido {
+    background: var(--bg-container);
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 400px;
+    width: 85%;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--color-primary);
+    animation: slideIn 0.3s ease;
+}
+
+.modal-contenido h3 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.modal-contenido p {
+    color: var(--color-text);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
