@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEGAIMPOSTOR</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="cascada.css">
 </head>
 <body>
     <div id="game-container">
@@ -60,6 +59,13 @@
                 <label>Palabra Similar 🎭</label>
                 <label class="switch">
                     <input type="checkbox" id="switch-palabra-similar" onchange="togglePalabraSimilar()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="control-grupal">
+                <label>Bot Jugador 🤖</label>
+                <label class="switch">
+                    <input type="checkbox" id="switch-bot" onchange="toggleBot()">
                     <span class="slider"></span>
                 </label>
             </div>
@@ -251,6 +257,27 @@
             <h1 class="titulo-principal">¡EL IMPOSTOR ESTÁ SUELTO!</h1>
             <p style="font-size: 1.3rem; margin: 30px 0;">Es hora de empezar las pistas</p>
             <button class="btn-principal" onclick="continuarDespuesDeInfo()">A JUGAR</button>
+        </div>
+
+        <div id="pantalla-dar-pista" class="screen hidden">
+            <h2 id="titulo-pista-jugador">Jugador 1</h2>
+            <p style="font-size: 1.2rem; margin: 20px 0;">Escribe tu pista para:</p>
+            <div style="background: #2d2d2d; padding: 20px; border-radius: 15px; margin: 20px 0;">
+                <p id="palabra-para-pista" style="font-size: 1.8rem; font-weight: bold; color: var(--color-primary);"></p>
+            </div>
+            <input type="text" id="input-pista" placeholder="Escribe tu pista..." onkeypress="if(event.key==='Enter') guardarPistaYContinuar()" style="width: 90%; max-width: 400px; padding: 15px; font-size: 1.1rem; border-radius: 10px; border: 2px solid #4a90e2; background: #1a1a1a; color: white; margin: 20px 0;">
+            <br>
+            <button class="btn-principal" onclick="guardarPistaYContinuar()">CONFIRMAR PISTA</button>
+        </div>
+
+        <div id="pantalla-votacion" class="screen hidden">
+            <h1 class="titulo-principal">⚖️ VOTACIÓN</h1>
+            <div id="lista-pistas" style="background: #2d2d2d; padding: 20px; border-radius: 15px; margin: 20px 0;"></div>
+            <div id="opciones-votacion" style="margin: 20px 0;"></div>
+        </div>
+
+        <div id="pantalla-resultado" class="screen hidden">
+            <div id="resultado-votacion"></div>
         </div>
 
     </div>

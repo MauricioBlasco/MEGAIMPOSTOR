@@ -171,6 +171,176 @@ let logroImposibleDesbloqueado = false;
 let logroSrDesbloqueado = false;
 let logroMemeDesbloqueado = false;
 
+// Variables para el bot
+let botActivado = false;
+let asociacionesPalabras = {};
+let pistasBloqueadas = {}; // {palabra: [pistas malas]}
+let botEsJugador = false;
+let numJugadoresHumanos = 0;
+let pistasJugadores = {}; // {jugadorNum: pista}
+let votosJugadores = {}; // {votante: votado}
+let jugadorActualPista = 1; // Para el flujo de dar pistas
+
+// El bot aprende automáticamente analizando las categorías
+function botAprendizajeAutomatico() {
+    // Generar asociaciones basadas en categorías
+    Object.keys(datos).forEach(categoria => {
+        datos[categoria].forEach(palabra => {
+            if (!asociacionesPalabras[palabra]) {
+                asociacionesPalabras[palabra] = [];
+            }
+            
+            // Agregar la categoría como pista base
+            asociacionesPalabras[palabra].push(categoria.toLowerCase());
+            
+            // Generar pistas automáticas basadas en características
+            const pistas = generarPistasAutomaticas(palabra, categoria);
+            pistas.forEach(pista => {
+                if (!asociacionesPalabras[palabra].includes(pista)) {
+                    asociacionesPalabras[palabra].push(pista);
+                }
+            });
+        });
+    });
+    
+    guardarAsociacionesBot();
+}
+
+// Generar pistas automáticas inteligentes para una palabra
+function generarPistasAutomaticas(palabra, categoria) {
+    const pistas = [];
+    const palabraLower = palabra.toLowerCase();
+    
+    // Diccionario de pistas específicas por palabra
+    const pistasEspecificas = {
+        // Animales
+        "Perro": ["leal", "ladra", "mejor amigo", "mascota", "canino"],
+        "Gato": ["maúlla", "mascota", "independiente", "felino", "sigiloso"],
+        "Elefante": ["trompa", "grande", "memoria", "gris", "africano"],
+        "Tigre": ["rayado", "felino", "peligroso", "carnívoro", "selva"],
+        "Delfín": ["inteligente", "acuático", "nada", "oceano", "mamífero"],
+        "León": ["melena", "rey", "felino", "sabana", "ruge"],
+        "Águila": ["vuela", "rapaz", "pico", "plumas", "ave"],
+        "Tiburón": ["dientes", "marino", "depredador", "aletas", "océano"],
+        "Pingüino": ["polo", "ave", "no vuela", "frío", "blanco y negro"],
+        "Ballena": ["gigante", "marino", "canta", "mamífero", "océano"],
+        
+        // Lugares
+        "Playa": ["arena", "mar", "verano", "sol", "vacaciones"],
+        "Cine": ["películas", "pantalla", "palomitas", "oscuro", "butacas"],
+        "Estadio": ["fútbol", "gradas", "público", "deporte", "grande"],
+        "Hospital": ["médicos", "salud", "camas", "enfermeros", "curar"],
+        "Escuela": ["estudiar", "maestros", "aulas", "niños", "aprender"],
+        "Aeropuerto": ["aviones", "vuelos", "viajes", "terminal", "maletas"],
+        "Museo": ["arte", "cultura", "cuadros", "historia", "exposiciones"],
+        "Zoológico": ["animales", "jaulas", "visitas", "especies", "salvajes"],
+        "Parque": ["verde", "juegos", "aire libre", "pasear", "naturaleza"],
+        "Biblioteca": ["libros", "silencio", "leer", "estantes", "conocimiento"],
+        "Restaurante": ["comer", "mesas", "menú", "cocina", "meseros"],
+        "Gimnasio": ["ejercicio", "pesas", "fitness", "deporte", "entrenar"],
+        "Montaña": ["alta", "escalar", "nieve", "pico", "naturaleza"],
+        "Acuario": ["peces", "agua", "tanques", "marino", "vidrio"],
+        
+        // Objetos
+        "Teléfono": ["llamar", "pantalla", "móvil", "apps", "contactos"],
+        "Computadora": ["teclas", "pantalla", "internet", "tecnología", "mouse"],
+        "Televisor": ["programas", "pantalla", "control remoto", "canales", "imagen"],
+        "Reloj": ["hora", "tiempo", "pulsera", "manecillas", "minutos"],
+        "Espejo": ["reflejo", "vidrio", "imagen", "verse", "brillo"],
+        "Guitarra": ["cuerdas", "música", "tocar", "instrumento", "sonido"],
+        "Piano": ["teclas", "música", "clásico", "notas", "instrumento"],
+        "Pelota": ["redonda", "jugar", "deporte", "botar", "esférica"],
+        "Bicicleta": ["pedales", "ruedas", "andar", "transporte", "cadena"],
+        "Paraguas": ["lluvia", "protege", "mojarse", "abre", "impermeable"],
+        
+        // Futbolistas
+        "Messi": ["argentino", "Barcelona", "10", "crack", "golazo"],
+        "Cristiano Ronaldo": ["portugués", "7", "Manchester", "Madrid", "goleador"],
+        "Maradona": ["argentino", "leyenda", "86", "mano de dios", "10"],
+        "Pelé": ["brasileño", "rey", "leyenda", "3 mundiales", "goles"],
+        "Neymar": ["brasileño", "PSG", "driblador", "habilidoso", "11"],
+        "Mbappé": ["francés", "rápido", "PSG", "joven", "velocidad"],
+        "Haaland": ["noruego", "goles", "City", "robot", "potente"],
+        "Benzema": ["francés", "Madrid", "9", "goleador", "elegante"],
+        
+        // Series
+        "Breaking Bad": ["drogas", "Walter", "química", "metanfetamina", "desierto"],
+        "Stranger Things": ["80s", "niños", "monstruos", "Hawkins", "sobrenatural"],
+        "Game of Thrones": ["dragones", "tronos", "medieval", "espadas", "reinos"],
+        "Friends": ["café", "Nueva York", "comedia", "6 amigos", "risas"],
+        "The Office": ["oficina", "comedia", "trabajo", "mockumentary", "Dunder"],
+        "Narcos": ["Pablo", "Colombia", "droga", "DEA", "cartel"],
+        "La Casa de Papel": ["atraco", "máscaras", "Bella Ciao", "España", "robo"],
+        "The Walking Dead": ["zombies", "supervivencia", "apocalipsis", "muertos", "Rick"]
+    };
+    
+    // Si existe en el diccionario, usar esas pistas
+    if (pistasEspecificas[palabra]) {
+        pistas.push(...pistasEspecificas[palabra]);
+    }
+    
+    // Pistas inteligentes por categoría
+    const pistasCategoria = generarPistasPorCategoria(palabra, categoria);
+    pistas.push(...pistasCategoria);
+    
+    // Eliminar duplicados y limitar a 10 pistas
+    return [...new Set(pistas)].slice(0, 10);
+}
+
+// Generar pistas inteligentes basadas en la categoría
+function generarPistasPorCategoria(palabra, categoria) {
+    const pistas = [];
+    const palabraLower = palabra.toLowerCase();
+    
+    switch(categoria) {
+        case "Animales":
+            // Clasificaciones
+            if (["Perro", "Gato", "Conejo", "Hámster"].includes(palabra)) pistas.push("mascota", "doméstico");
+            if (["León", "Tigre", "Gato", "Leopardo"].includes(palabra)) pistas.push("felino");
+            if (["Perro", "Lobo", "Zorro"].includes(palabra)) pistas.push("canino");
+            if (["Águila", "Loro", "Pavo Real", "Pingüino"].includes(palabra)) pistas.push("ave", "plumas");
+            if (["Delfín", "Ballena", "Orca"].includes(palabra)) pistas.push("mamífero marino", "inteligente");
+            if (["Tiburón", "Pez"].includes(palabra)) pistas.push("marino", "nada");
+            // Tamaño
+            if (["Elefante", "Ballena", "Jirafa", "Hipopótamo"].includes(palabra)) pistas.push("enorme", "gigante");
+            if (["Hormiga", "Abeja", "Araña"].includes(palabra)) pistas.push("pequeño", "insecto");
+            break;
+            
+        case "Lugares":
+            if (["Playa", "Montaña", "Bosque", "Desierto"].includes(palabra)) pistas.push("naturaleza", "al aire libre");
+            if (["Cine", "Teatro", "Museo"].includes(palabra)) pistas.push("cultural", "espectáculo");
+            if (["Hospital", "Farmacia"].includes(palabra)) pistas.push("salud", "médico");
+            if (["Escuela", "Biblioteca", "Universidad"].includes(palabra)) pistas.push("educación", "aprender");
+            if (["Restaurante", "Café", "Panadería"].includes(palabra)) pistas.push("comida", "comer");
+            if (["Aeropuerto", "Estación"].includes(palabra)) pistas.push("transporte", "viaje");
+            if (["Acuario", "Zoológico"].includes(palabra)) pistas.push("animales", "visitar");
+            break;
+            
+        case "Objetos":
+            if (["Teléfono", "Computadora", "Televisor"].includes(palabra)) pistas.push("electrónico", "tecnología", "pantalla");
+            if (["Guitarra", "Piano", "Batería"].includes(palabra)) pistas.push("musical", "tocar", "sonido");
+            if (["Martillo", "Destornillador", "Llave"].includes(palabra)) pistas.push("herramienta", "arreglar");
+            if (["Plato", "Vaso", "Tenedor", "Cuchillo"].includes(palabra)) pistas.push("cocina", "comer");
+            if (["Pelota", "Raqueta"].includes(palabra)) pistas.push("deportivo", "jugar");
+            break;
+            
+        case "Futbolistas":
+            pistas.push("futbolista", "juega");
+            if (palabraLower.includes("messi") || palabraLower.includes("cristiano") || palabraLower.includes("maradona")) {
+                pistas.push("leyenda", "crack", "histórico");
+            }
+            break;
+            
+        case "Series":
+            pistas.push("serie", "capítulos");
+            if (["Breaking Bad", "Narcos", "Peaky Blinders"].includes(palabra)) pistas.push("crimen", "drama");
+            if (["Friends", "The Office", "Brooklyn Nine-Nine"].includes(palabra)) pistas.push("comedia", "risas");
+            break;
+    }
+    
+    return pistas;
+}
+
 // Variables para el logro Principiante
 let temporizadorComoJugar = null;
 let tiempoEnComoJugar = 0;
@@ -244,16 +414,29 @@ function iniciarCascadaLogros() {
     // Si no hay logros desbloqueados, no mostrar nada
     if (emojisDesbloqueados.length === 0) return;
     
-    // Crear 4 columnas a la izquierda y 4 a la derecha
-    for (let i = 0; i < 4; i++) {
-        crearColumnaEmojis(contenedor, emojisDesbloqueados, i, 'izquierda');
-        crearColumnaEmojis(contenedor, emojisDesbloqueados, i, 'derecha');
+    // Detectar si es móvil
+    const esMobile = window.innerWidth <= 768;
+    
+    if (esMobile) {
+        // En móvil, crear emojis en toda la pantalla (más dispersos y tenues)
+        for (let i = 0; i < 8; i++) {
+            crearColumnaEmojis(contenedor, emojisDesbloqueados, i, 'mobile');
+        }
+    } else {
+        // En desktop, crear 4 columnas a la izquierda y 4 a la derecha
+        for (let i = 0; i < 4; i++) {
+            crearColumnaEmojis(contenedor, emojisDesbloqueados, i, 'izquierda');
+            crearColumnaEmojis(contenedor, emojisDesbloqueados, i, 'derecha');
+        }
     }
 }
 
 function crearColumnaEmojis(contenedor, emojis, columna, lado) {
     let posicionX;
-    if (lado === 'izquierda') {
+    if (lado === 'mobile') {
+        // En móvil, distribuir en toda la pantalla
+        posicionX = (columna * 12.5) + Math.random() * 10;
+    } else if (lado === 'izquierda') {
         // Columnas entre 0% y 25%
         posicionX = (columna * 6) + Math.random() * 5;
     } else {
@@ -261,10 +444,10 @@ function crearColumnaEmojis(contenedor, emojis, columna, lado) {
         posicionX = 75 + (columna * 6) + Math.random() * 5;
     }
     
-    const delay = Math.random() * 3; // Delay aleatorio entre 0-3s
-    const duracion = 6 + Math.random() * 3; // Duración entre 6-9s
-    
     function crearEmoji() {
+        const delay = Math.random() * 4; // Delay aleatorio entre 0-4s
+        const duracion = 6 + Math.random() * 3; // Duración entre 6-9s
+        
         // Usar setTimeout para el delay en lugar de animationDelay
         setTimeout(() => {
             const emoji = document.createElement('div');
@@ -294,6 +477,16 @@ function detenerCascadaLogros() {
     const contenedor = document.getElementById('fondo-logros-cascada');
     if (contenedor) {
         contenedor.innerHTML = '';
+    }
+}
+
+function toggleBot() {
+    botActivado = document.getElementById('switch-bot').checked;
+    botEsJugador = botActivado;
+    
+    if (botActivado) {
+        // Actualizar aprendizaje del bot cada vez que se activa
+        botAprendizajeAutomatico();
     }
 }
 
@@ -414,6 +607,16 @@ function actualizarMaxImpostores() {
 function iniciarPartida() {
     numJugadores = parseInt(document.getElementById('input-jugadores').value);
     
+    // Si el bot está activado, cuenta como un jugador
+    if (botEsJugador) {
+        numJugadoresHumanos = numJugadores - 1;
+    } else {
+        numJugadoresHumanos = numJugadores;
+    }
+    
+    pistasJugadores = {};
+    votosJugadores = {};
+    
     const randomizadorActivado = document.getElementById('switch-randomizador').checked;
     if (randomizadorActivado) {
         const maxImpostores = parseInt(document.getElementById('input-max-impostores').value);
@@ -464,7 +667,15 @@ function iniciarTurnoUno() {
 }
 
 function prepararTurno() {
-    document.getElementById('titulo-turno').innerText = `Jugador ${jugadorActual}`;
+    const esBot = botEsJugador && jugadorActual === numJugadores;
+    
+    if (esBot) {
+        // Es el turno del bot
+        document.getElementById('titulo-turno').innerText = '🤖 BOT';
+    } else {
+        document.getElementById('titulo-turno').innerText = `Jugador ${jugadorActual}`;
+    }
+    
     caja.innerText = '? ? ?';
     caja.classList.remove('reveal');
     caja.classList.remove('impostor-vibrate');
@@ -474,6 +685,14 @@ function prepararTurno() {
 }
 
 function revelarCliche() {
+    const esBot = botEsJugador && jugadorActual === numJugadores;
+    
+    if (esBot) {
+        // El bot no necesita ver su palabra, genera su pista automáticamente
+        revelarParaBot();
+        return;
+    }
+    
     const palabraSimilarActivada = document.getElementById('switch-palabra-similar').checked;
     const dificilActivado = modoDificil.checked;
     
@@ -529,48 +748,78 @@ function revelarCliche() {
     btnSiguiente.classList.remove('hidden');
 }
 
+function revelarParaBot() {
+    const esImpostor = listaImpostores.includes(numJugadores);
+    
+    caja.classList.add('reveal');
+    
+    setTimeout(() => {
+        // No mostrar si es impostor, solo mostrar que es el bot
+        caja.innerHTML = `<span style="font-weight: bold; font-size: 1.8rem;">🤖 BOT</span><br><small>Turno del bot</small>`;
+        
+        // Generar pista internamente sin mostrarla
+        if (esImpostor) {
+            pistasJugadores[numJugadores] = botGenerarPistaImpostor(categoriaSecreta);
+        } else {
+            pistasJugadores[numJugadores] = botGenerarPista(palabraSecreta);
+        }
+        
+        setTimeout(() => caja.classList.remove('reveal'), 600);
+    }, 100);
+    
+    btnRevelar.classList.add('hidden');
+    btnSiguiente.classList.remove('hidden');
+}
+
 function siguienteJugador() {
     if (jugadorActual < numJugadores) {
         jugadorActual++;
         prepararTurno();
     } else {
-        // Verificar logro Y soy yo (2 jugadores y 2 impostores)
-        if (numJugadores === 2 && numImpostores === 2 && !logroYSoyYoDesbloqueado) {
-            desbloquearLogro('ysoyyo');
-        }
-        
-        // Verificar logro IMPOSIBLE (modo difícil, palabra similar, 16 jugadores, 1 impostor)
-        const dificilActivado = document.getElementById('switch-dificil').checked;
-        const palabraSimilarActivada = document.getElementById('switch-palabra-similar').checked;
-        if (dificilActivado && palabraSimilarActivada && numJugadores === 16 && numImpostores === 1 && !logroImposibleDesbloqueado) {
-            desbloquearLogro('imposible');
-        }
-        
-        // Verificar logro Sr... si la palabra es "Las chismosas"
-        if (palabraSecreta === "Las chismosas" && !logroSrDesbloqueado) {
-            desbloquearLogro('sr');
-        }
-        
-        // Verificar logro MEME (6 jugadores y 7 impostores seleccionados)
-        const impostoresSeleccionados = parseInt(document.getElementById('input-impostores').value);
-        if (numJugadores === 6 && impostoresSeleccionados === 7 && !logroMemeDesbloqueado) {
-            desbloquearLogro('meme');
-        }
-        
-        const randomizadorActivado = document.getElementById('switch-randomizador').checked;
-        
-        if (randomizadorActivado) {
-            document.getElementById('cantidad-impostores').innerText = '? ? ?';
-            document.getElementById('btn-revelar-impostores').style.display = 'block';
-            document.getElementById('texto-empezar-pistas').style.display = 'none';
-            document.getElementById('btn-continuar-info').style.display = 'none';
-            
-            mostrarPantalla('pantalla-info-impostores');
+        // Todos revelaron sus palabras
+        if (botEsJugador) {
+            // Modo bot: iniciar flujo de pistas
+            jugadorActualPista = 1;
+            mostrarPantallaDarPista();
         } else {
-            mostrarPantalla('pantalla-todos-listos');
+            // Modo normal: mostrar pista del bot si está activado (modo antiguo)
+            if (botActivado && !botEsJugador) {
+                const pistaBot = botDarPista();
+                if (pistaBot) {
+                    mostrarPistaBot(pistaBot);
+                }
+            }
+            
+            verificarLogrosFinPartida();
+            continuarDespuesDeRevelacion();
         }
     }
 }
+
+function verificarLogrosFinPartida() {
+    if (numJugadores === 2 && numImpostores === 2 && !logroYSoyYoDesbloqueado) {
+        desbloquearLogro('ysoyyo');
+    }
+    
+    // Verificar logro IMPOSIBLE (modo difícil, palabra similar, 16 jugadores, 1 impostor)
+    const dificilActivado = document.getElementById('switch-dificil').checked;
+    const palabraSimilarActivada = document.getElementById('switch-palabra-similar').checked;
+    if (dificilActivado && palabraSimilarActivada && numJugadores === 16 && numImpostores === 1 && !logroImposibleDesbloqueado) {
+        desbloquearLogro('imposible');
+    }
+    
+    // Verificar logro Sr... si la palabra es "Las chismosas"
+    if (palabraSecreta === "Las chismosas" && !logroSrDesbloqueado) {
+        desbloquearLogro('sr');
+    }
+    
+    // Verificar logro MEME (6 jugadores y 7 impostores seleccionados)
+    const impostoresSeleccionados = parseInt(document.getElementById('input-impostores').value);
+    if (numJugadores === 6 && impostoresSeleccionados === 7 && !logroMemeDesbloqueado) {
+        desbloquearLogro('meme');
+    }
+}
+
 
 function revelarCantidadImpostores() {
     const textoImpostores = numImpostores === 1 ? '1 IMPOSTOR' : `${numImpostores} IMPOSTORES`;
@@ -1095,11 +1344,567 @@ function actualizarVistaLogros() {
     }
 }
 
+// ============ SISTEMA DE VOTACIÓN ============
+
+function mostrarPantallaDarPista() {
+    // Si es el turno del bot, saltar a siguiente jugador
+    if (jugadorActualPista === numJugadores && botEsJugador) {
+        // El bot ya generó su pista, ir a votación
+        mostrarPantalla('pantalla-votacion');
+        iniciarVotacion();
+        return;
+    }
+    
+    // Si ya pasaron todos los jugadores humanos, ir a votación
+    if (jugadorActualPista > numJugadores || (botEsJugador && jugadorActualPista > numJugadoresHumanos)) {
+        mostrarPantalla('pantalla-votacion');
+        iniciarVotacion();
+        return;
+    }
+    
+    document.getElementById('titulo-pista-jugador').innerText = `Jugador ${jugadorActualPista}`;
+    
+    // Verificar si el jugador es impostor
+    const esImpostor = listaImpostores.includes(jugadorActualPista);
+    
+    if (esImpostor) {
+        // Si es impostor, mostrar que es impostor y solo la categoría
+        document.getElementById('palabra-para-pista').innerHTML = `
+            <span style="color: #EF4444; font-weight: bold;">¡ERES EL IMPOSTOR!</span><br>
+            <small style="color: #999;">Solo conoces la categoría: ${categoriaSecreta}</small>
+        `;
+    } else {
+        // Si no es impostor, mostrar la palabra secreta
+        document.getElementById('palabra-para-pista').innerText = palabraSecreta;
+    }
+    
+    document.getElementById('input-pista').value = '';
+    mostrarPantalla('pantalla-dar-pista');
+    
+    // Enfocar el input
+    setTimeout(() => {
+        document.getElementById('input-pista').focus();
+    }, 100);
+}
+
+function guardarPistaYContinuar() {
+    const pista = document.getElementById('input-pista').value.trim();
+    
+    if (!pista) {
+        alert('Por favor escribe una pista');
+        return;
+    }
+    
+    pistasJugadores[jugadorActualPista] = pista;
+    jugadorActualPista++;
+    
+    // Continuar con el siguiente jugador o ir a votación
+    mostrarPantallaDarPista();
+}
+
+function iniciarVotacion() {
+    votosJugadores = {};
+    const contenedor = document.getElementById('opciones-votacion');
+    contenedor.innerHTML = '';
+    
+    // Mostrar las pistas de todos
+    let pistasList = '<h3>Pistas dadas:</h3><div style="margin: 20px 0;">';
+    for (let i = 1; i <= numJugadores; i++) {
+        const nombre = i === numJugadores && botEsJugador ? '🤖 BOT' : `Jugador ${i}`;
+        const pista = pistasJugadores[i] || 'sin pista';
+        pistasList += `<p><strong>${nombre}:</strong> "${pista}"</p>`;
+    }
+    pistasList += '</div>';
+    document.getElementById('lista-pistas').innerHTML = pistasList;
+    
+    // Crear botones de votación para cada jugador humano
+    const totalJugadoresHumanos = botEsJugador ? numJugadores - 1 : numJugadores;
+    for (let votante = 1; votante <= totalJugadoresHumanos; votante++) {
+        const div = document.createElement('div');
+        div.style.marginBottom = '30px';
+        div.style.padding = '20px';
+        div.style.background = '#2d2d2d';
+        div.style.borderRadius = '15px';
+        div.id = `votacion-jugador-${votante}`;
+        div.innerHTML = `
+            <h3 style="color: var(--color-primary); margin-bottom: 15px;">Jugador ${votante}, ¿a quién votas?</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                ${generarBotonesVoto(votante)}
+            </div>
+        `;
+        contenedor.appendChild(div);
+    }
+    
+    // El bot vota automáticamente
+    votarBot();
+}
+
+function generarBotonesVoto(votante) {
+    let botones = '';
+    for (let i = 1; i <= numJugadores; i++) {
+        if (i === votante) continue; // No puede votarse a sí mismo
+        
+        const nombre = i === numJugadores && botEsJugador ? '🤖 BOT' : `Jugador ${i}`;
+        botones += `<button class="btn-secundario" onclick="registrarVoto(${votante}, ${i})">${nombre}</button>`;
+    }
+    return botones;
+}
+
+function registrarVoto(votante, votado) {
+    votosJugadores[votante] = votado;
+    
+    // Actualizar visualmente
+    const divVotante = document.getElementById(`votacion-jugador-${votante}`);
+    if (divVotante) {
+        divVotante.innerHTML = `<h3 style="color: var(--color-primary);">✓ Jugador ${votante} ha votado</h3>`;
+    }
+    
+    // Verificar si todos votaron (humanos + bot)
+    const totalVotantes = botEsJugador ? numJugadoresHumanos + 1 : numJugadores;
+    if (Object.keys(votosJugadores).length >= totalVotantes) {
+        setTimeout(() => {
+            mostrarResultadoVotacion();
+        }, 1000);
+    }
+}
+
+function votarBot() {
+    // El bot analiza las pistas y vota al más sospechoso
+    let maxSospecha = -1;
+    let votoBotA = 1;
+    
+    for (let i = 1; i <= numJugadores; i++) {
+        // No votarse a sí mismo
+        if (i === numJugadores) continue;
+        
+        const pista = pistasJugadores[i] || '';
+        let nivelSospecha = analizarSospecha(pista, i);
+        
+        if (nivelSospecha > maxSospecha) {
+            maxSospecha = nivelSospecha;
+            votoBotA = i;
+        }
+    }
+    
+    votosJugadores[numJugadores] = votoBotA;
+}
+
+function analizarSospecha(pista, jugador) {
+    let sospecha = 0;
+    const pistaLower = pista.toLowerCase();
+    const palabraLower = palabraSecreta.toLowerCase();
+    
+    // Pistas vagas o genéricas son sospechosas
+    if (pistaLower.includes('cosa') || pistaLower.includes('algo')) sospecha += 3;
+    if (pistaLower.length < 5) sospecha += 2;
+    if (pistaLower === 'sin pista') sospecha += 5;
+    
+    // Pistas que solo mencionan la categoría son sospechosas
+    if (pistaLower.includes(categoriaSecreta.toLowerCase())) sospecha += 3;
+    
+    // Verificar si la pista parece NO relacionada con la palabra secreta
+    // Comparar con asociaciones conocidas de la palabra
+    if (asociacionesPalabras[palabraSecreta]) {
+        const asociacionesConocidas = asociacionesPalabras[palabraSecreta].map(a => a.toLowerCase());
+        let tieneRelacion = false;
+        
+        // Verificar si alguna palabra de la pista coincide con las asociaciones
+        const palabrasPista = pistaLower.split(' ');
+        for (let palabra of palabrasPista) {
+            if (asociacionesConocidas.some(asoc => asoc.includes(palabra) || palabra.includes(asoc))) {
+                tieneRelacion = true;
+                break;
+            }
+        }
+        
+        // Si no tiene relación con las asociaciones conocidas, es más sospechoso
+        if (!tieneRelacion && asociacionesConocidas.length > 3) {
+            sospecha += 4;
+        }
+    }
+    
+    // Pistas muy específicas y largas son menos sospechosas
+    if (pistaLower.length > 15) sospecha -= 2;
+    
+    // Aleatorio para variedad
+    sospecha += Math.random() * 2;
+    
+    return sospecha;
+}
+
+function mostrarResultadoVotacion() {
+    // Contar votos
+    const conteo = {};
+    for (let votante in votosJugadores) {
+        const votado = votosJugadores[votante];
+        conteo[votado] = (conteo[votado] || 0) + 1;
+    }
+    
+    // Encontrar al más votado
+    let maxVotos = 0;
+    let expulsado = 1;
+    for (let jugador in conteo) {
+        if (conteo[jugador] > maxVotos) {
+            maxVotos = conteo[jugador];
+            expulsado = parseInt(jugador);
+        }
+    }
+    
+    // Mostrar resultado
+    const esImpostor = listaImpostores.includes(expulsado);
+    const nombreExpulsado = expulsado === numJugadores && botEsJugador ? '🤖 BOT' : `Jugador ${expulsado}`;
+    
+    let resultado = `<h2>RESULTADO</h2>`;
+    resultado += `<p style="font-size: 1.3rem; margin: 20px 0;">${nombreExpulsado} ha sido expulsado con ${maxVotos} voto(s)</p>`;
+    
+    if (esImpostor) {
+        resultado += `<p style="font-size: 1.5rem; color: var(--color-primary); font-weight: bold;">✓ ¡ERA EL IMPOSTOR!</p>`;
+        resultado += `<p>La palabra secreta era: <strong>${palabraSecreta}</strong></p>`;
+    } else {
+        resultado += `<p style="font-size: 1.5rem; color: #999; font-weight: bold;">✗ NO ERA EL IMPOSTOR</p>`;
+        resultado += `<p>El impostor era: <strong>${listaImpostores.map(i => i === numJugadores && botEsJugador ? '🤖 BOT' : `Jugador ${i}`).join(', ')}</strong></p>`;
+        resultado += `<p>La palabra secreta era: <strong>${palabraSecreta}</strong></p>`;
+    }
+    
+    resultado += `<button class="btn-principal" onclick="mostrarPantalla('pantalla-inicio')" style="margin-top: 20px;">VOLVER AL INICIO</button>`;
+    
+    document.getElementById('resultado-votacion').innerHTML = resultado;
+    mostrarPantalla('pantalla-resultado');
+    
+    // El bot aprende de esta partida
+    botAprenderDePartida();
+    
+    // Pedir feedback sobre la pista del bot
+    setTimeout(() => {
+        pedirFeedbackPistaBot();
+    }, 1500);
+    
+    verificarLogrosFinPartida();
+}
+
+// ============ SISTEMA DEL BOT ============
+
+// Cargar asociaciones guardadas
+function cargarAsociacionesBot() {
+    const guardadas = localStorage.getItem('asociacionesBot');
+    if (guardadas) {
+        asociacionesPalabras = JSON.parse(guardadas);
+    } else {
+        // Si no hay asociaciones guardadas, el bot aprende automáticamente
+        botAprendizajeAutomatico();
+    }
+    
+    // Cargar también las pistas bloqueadas
+    cargarPistasBloqueadas();
+}
+
+// Guardar asociaciones aprendidas
+function guardarAsociacionesBot() {
+    localStorage.setItem('asociacionesBot', JSON.stringify(asociacionesPalabras));
+}
+
+// El bot aprende una nueva asociación
+function botAprenderAsociacion(palabra, pista) {
+    palabra = palabra.trim();
+    pista = pista.trim().toLowerCase();
+    
+    if (!asociacionesPalabras[palabra]) {
+        asociacionesPalabras[palabra] = [];
+    }
+    
+    if (!asociacionesPalabras[palabra].includes(pista)) {
+        asociacionesPalabras[palabra].push(pista);
+        guardarAsociacionesBot();
+    }
+}
+
+// El bot aprende de las pistas dadas en la partida
+function botAprenderDePartida() {
+    if (!botEsJugador) return;
+    
+    // El bot aprende solo de las pistas de jugadores que NO son impostores
+    for (let jugador in pistasJugadores) {
+        const numeroJugador = parseInt(jugador);
+        const pista = pistasJugadores[jugador];
+        
+        // No aprender de su propia pista ni de pistas vacías
+        if (numeroJugador === numJugadores || !pista || pista === 'sin pista') continue;
+        
+        // Solo aprender si el jugador NO era impostor
+        if (!listaImpostores.includes(numeroJugador)) {
+            // Aprender la asociación entre la palabra secreta y la pista del jugador
+            botAprenderAsociacion(palabraSecreta, pista);
+        }
+    }
+    
+    console.log(`🤖 Bot aprendió de jugadores inocentes para "${palabraSecreta}"`);
+}
+
+// Pedir feedback sobre la pista del bot
+function pedirFeedbackPistaBot() {
+    if (!botEsJugador || !pistasJugadores[numJugadores]) return;
+    
+    const pistaBot = pistasJugadores[numJugadores];
+    const respuesta = confirm(`🤖 La pista del bot fue: "${pistaBot}" para la palabra "${palabraSecreta}"\n\n¿Fue una buena pista?\n\n(OK = Sí, buena pista | Cancelar = No, mala pista)`);
+    
+    if (!respuesta) {
+        // El usuario dijo que la pista fue mala
+        bloquearPista(palabraSecreta, pistaBot);
+        alert(`❌ El bot no usará más "${pistaBot}" para "${palabraSecreta}"`);
+    } else {
+        console.log(`✅ Pista "${pistaBot}" marcada como buena`);
+    }
+}
+
+// Bloquear una pista para que el bot no la use más
+function bloquearPista(palabra, pista) {
+    if (!pistasBloqueadas[palabra]) {
+        pistasBloqueadas[palabra] = [];
+    }
+    
+    if (!pistasBloqueadas[palabra].includes(pista)) {
+        pistasBloqueadas[palabra].push(pista);
+        guardarPistasBloqueadas();
+    }
+}
+
+// Guardar pistas bloqueadas en localStorage
+function guardarPistasBloqueadas() {
+    localStorage.setItem('pistasBloqueadasBot', JSON.stringify(pistasBloqueadas));
+}
+
+// Cargar pistas bloqueadas desde localStorage
+function cargarPistasBloqueadas() {
+    const guardadas = localStorage.getItem('pistasBloqueadasBot');
+    if (guardadas) {
+        pistasBloqueadas = JSON.parse(guardadas);
+    }
+}
+
+// El bot genera una pista arriesgada cuando es impostor (solo conoce la categoría)
+function botGenerarPistaImpostor(categoria) {
+    // Pistas genéricas arriesgadas basadas en la categoría
+    const pistasArriesgadas = {
+        "Animales": [
+            "tiene patas", "se mueve", "es peludo", "tiene cola", "come carne",
+            "vive en la naturaleza", "es salvaje", "puede ser mascota", "es grande",
+            "es pequeño", "hace ruido", "tiene garras", "tiene dientes", "nada",
+            "vuela", "es rápido", "es peligroso", "vive en grupo", "come", "respira"
+        ],
+        "Lugares": [
+            "hay gente", "es público", "se paga para entrar", "está en la ciudad",
+            "tiene techo", "es grande", "es cerrado", "está afuera", "es famoso",
+            "tiene puertas", "es tranquilo", "hay mucho ruido", "se compra algo",
+            "es turístico", "tiene sillas", "se come ahí", "necesitas ticket",
+            "se puede visitar", "hay personas", "espacio físico", "construcción",
+            "está en el mapa", "se entra", "hay horarios", "tiene entrada"
+        ],
+        "Objetos": [
+            "se usa en casa", "es de metal", "es pequeño", "es útil", "se rompe fácil",
+            "es de plástico", "cuesta poco", "todos tienen uno", "es electrónico",
+            "necesita energía", "se carga", "hace ruido", "tiene botones", "es portátil",
+            "es pesado", "es moderno", "es antiguo", "se usa a diario", "tiene función",
+            "se toca", "material sólido", "fabricado"
+        ],
+        "Futbolistas": [
+            "es famoso", "juega bien", "es crack", "mete goles", "es rápido",
+            "tiene buen pie", "es zurdo", "es diestro", "es alto", "es bajo",
+            "juega en Europa", "tiene premios", "es veterano", "es joven",
+            "defiende bien", "ataca mucho", "es técnico", "es fuerte", "profesional",
+            "corre", "en la cancha", "tiene camiseta"
+        ],
+        "Series": [
+            "es popular", "tiene varias temporadas", "es entretenida", "la vi en Netflix",
+            "tiene acción", "es de drama", "es comedia", "es animada", "es moderna",
+            "es antigua", "tiene buenos actores", "es adictiva", "es larga",
+            "es corta", "tiene suspenso", "es de ciencia ficción", "es realista",
+            "tiene capítulos", "se ve en TV", "streaming"
+        ],
+        "Comidas": [
+            "es rica", "es caliente", "es fría", "es dulce", "es salada",
+            "se come con las manos", "necesita cubiertos", "es italiana", "es mexicana",
+            "es rápida de hacer", "es cara", "es barata", "tiene carne", "es vegetariana",
+            "es para desayuno", "es postre", "tiene queso", "se cocina al horno",
+            "alimenta", "nutritivo", "sabroso"
+        ],
+        "Películas": [
+            "es famosa", "tiene acción", "es de miedo", "es divertida", "tiene efectos especiales",
+            "ganó premios", "es taquillera", "la vieron todos", "es moderna", "es clásica",
+            "tiene secuela", "es de Marvel", "es de Disney", "dura mucho", "es emocionante",
+            "tiene actores", "se ve en cine", "tiene director"
+        ]
+    };
+    
+    // Obtener pistas para la categoría (o genéricas si no existe)
+    let pistasDisponibles = pistasArriesgadas[categoria] || [
+        "es interesante", "es conocido", "es único", "es especial", "me gusta",
+        "es común", "es raro", "es bueno", "es malo", "todo el mundo lo conoce"
+    ];
+    
+    // Filtrar pistas que son la categoría misma o muy genéricas
+    const palabrasProhibidas = [
+        categoria.toLowerCase(), // No decir el nombre de la categoría
+        "animales", "lugares", "objetos", "futbolistas", "series", "comidas", "películas",
+        "animal", "lugar", "objeto", "futbolista", "serie", "comida", "película"
+    ];
+    
+    pistasDisponibles = pistasDisponibles.filter(pista => {
+        const pistaLower = pista.toLowerCase();
+        return !palabrasProhibidas.some(prohibida => pistaLower.includes(prohibida));
+    });
+    
+    // Intentar también usar pistas de otras palabras de la misma categoría
+    if (datos[categoria]) {
+        const palabrasCategoria = datos[categoria];
+        const palabraAleatoria = palabrasCategoria[Math.floor(Math.random() * palabrasCategoria.length)];
+        
+        // Intentar conseguir pistas de una palabra aleatoria de la categoría
+        if (asociacionesPalabras[palabraAleatoria] && asociacionesPalabras[palabraAleatoria].length > 0) {
+            // Agregar algunas pistas de otras palabras de la categoría
+            const pistasOtraPalabra = asociacionesPalabras[palabraAleatoria].slice(0, 3);
+            pistasDisponibles = pistasDisponibles.concat(pistasOtraPalabra);
+        }
+    }
+    
+    // Seleccionar una pista aleatoria
+    return pistasDisponibles[Math.floor(Math.random() * pistasDisponibles.length)];
+}
+
+// El bot genera una pista basada en las asociaciones
+function botGenerarPista(palabra) {
+    if (!asociacionesPalabras[palabra] || asociacionesPalabras[palabra].length === 0) {
+        // Si no tiene asociaciones, generar pista genérica pero válida
+        return generarPistaGenerica(palabra);
+    }
+    
+    // Palabras prohibidas que nunca se deben usar como pista
+    const palabrasProhibidas = [
+        "animales", "lugares", "objetos", "futbolistas", "series", "comidas", "películas",
+        "animal", "lugar", "objeto", "futbolista", "serie", "comida", "película"
+    ];
+    
+    // Filtrar pistas bloqueadas Y pistas que contengan palabras prohibidas
+    const pistasDisponibles = asociacionesPalabras[palabra].filter(pista => {
+        const pistaLower = pista.toLowerCase();
+        const tienePalabraProhibida = palabrasProhibidas.some(prohibida => pistaLower.includes(prohibida));
+        const estaBloqueada = pistasBloqueadas[palabra] && pistasBloqueadas[palabra].includes(pista);
+        return !estaBloqueada && !tienePalabraProhibida;
+    });
+    
+    // Si todas las pistas están bloqueadas o prohibidas, generar una genérica
+    if (pistasDisponibles.length === 0) {
+        return generarPistaGenerica(palabra);
+    }
+    
+    // Decidir aleatoriamente entre pista específica (70%) o general (30%)
+    const usarPistaEspecifica = Math.random() < 0.7;
+    
+    if (usarPistaEspecifica && pistasDisponibles.length > 0) {
+        // Usar una pista específica aprendida
+        const pistaAleatoria = pistasDisponibles[Math.floor(Math.random() * pistasDisponibles.length)];
+        return pistaAleatoria;
+    } else {
+        // Generar una pista general para ser competitivo
+        return generarPistaGenerica(palabra);
+    }
+}
+
+// Generar pista genérica pero competitiva para una palabra
+function generarPistaGenerica(palabra) {
+    const palabraLower = palabra.toLowerCase();
+    const pistasGenericas = [];
+    
+    // Pistas basadas en características de la palabra
+    if (palabra.length <= 5) {
+        pistasGenericas.push(`palabra corta`);
+    } else if (palabra.length >= 8) {
+        pistasGenericas.push(`palabra larga`);
+    }
+    
+    pistasGenericas.push(`empieza con ${palabra.charAt(0)}`);
+    pistasGenericas.push(`muy conocido`);
+    pistasGenericas.push(`todo el mundo lo conoce`);
+    
+    // Pistas específicas por categoría (NUNCA mencionar la categoría directamente)
+    if (categoriaSecreta) {
+        const pistasPorCategoria = {
+            "Animales": ["ser vivo", "criatura", "tiene vida", "de la naturaleza", "organismo"],
+            "Lugares": ["se puede visitar", "hay gente ahí", "espacio físico", "destino", "construcción", "está en el mapa"],
+            "Objetos": ["se usa", "tiene función", "útil", "se puede tocar", "material", "fabricado"],
+            "Futbolistas": ["deportista profesional", "jugador famoso", "está en la cancha", "atleta", "corre mucho"],
+            "Series": ["entretenimiento", "para ver", "tiene episodios", "contenido audiovisual", "streaming"],
+            "Comidas": ["comestible", "se cocina", "plato", "alimento", "nutritivo", "sabroso"],
+            "Películas": ["largometraje", "producción cinematográfica", "obra visual", "filmación", "tiene actores"]
+        };
+        
+        if (pistasPorCategoria[categoriaSecreta]) {
+            pistasGenericas.push(...pistasPorCategoria[categoriaSecreta]);
+        }
+    }
+    
+    // Filtrar palabras prohibidas (nunca decir el nombre de la categoría)
+    const palabrasProhibidas = [
+        "animales", "lugares", "objetos", "futbolistas", "series", "comidas", "películas",
+        "animal", "lugar", "objeto", "futbolista", "serie", "comida", "película"
+    ];
+    
+    const pistasFiltradas = pistasGenericas.filter(pista => {
+        const pistaLower = pista.toLowerCase();
+        return !palabrasProhibidas.some(prohibida => pistaLower.includes(prohibida));
+    });
+    
+    return pistasFiltradas[Math.floor(Math.random() * pistasFiltradas.length)] || "muy conocido";
+}
+
+// El bot da una pista durante el juego
+function botDarPista() {
+    if (!botActivado) return null;
+    
+    // El bot da su pista basada en la palabra secreta
+    return botGenerarPista(palabraSecreta);
+}
+
+// Mostrar la pista del bot en pantalla
+function mostrarPistaBot(pista) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+        <div class="modal-contenido">
+            <h3 style="color: var(--color-primary); margin-bottom: 15px;">🤖 PISTA DEL BOT</h3>
+            <p style="font-size: 1.5rem; font-weight: bold; margin: 20px 0; color: var(--color-primary);">${pista}</p>
+            <p style="font-size: 0.9rem; color: var(--color-text-secondary); margin: 10px 0;">El bot asocia esta pista con la palabra secreta</p>
+            <button class="btn-principal" onclick="cerrarModalBot(this)">CONTINUAR</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function cerrarModalBot(btn) {
+    const modal = btn.closest('.modal-overlay');
+    document.body.removeChild(modal);
+}
+
+// Interfaz para entrenar al bot manualmente
+function mostrarEntrenamientoBot() {
+    const palabra = prompt("Palabra para entrenar:");
+    if (!palabra) return;
+    
+    const pista = prompt(`Ingresa una pista para "${palabra}":`);
+    if (!pista) return;
+    
+    botAprenderAsociacion(palabra, pista);
+    alert(`✓ Bot aprendió: "${palabra}" → "${pista}"`);
+}
+
 // Cargar tema guardado al iniciar
 window.addEventListener('DOMContentLoaded', () => {
     // Siempre iniciar en modo oscuro
     document.body.classList.remove('tema-claro');
     localStorage.removeItem('tema');
+    
+    // Cargar asociaciones del bot
+    cargarAsociacionesBot();
     
     // Inicializar variables del DOM
     caja = document.getElementById('caja-secreta');
