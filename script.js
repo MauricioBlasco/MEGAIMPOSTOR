@@ -169,6 +169,7 @@ let logroPrincipianteDesbloqueado = false;
 let logroYSoyYoDesbloqueado = false;
 let logroImposibleDesbloqueado = false;
 let logroSrDesbloqueado = false;
+let logroMemeDesbloqueado = false;
 
 // Variables para el logro Principiante
 let temporizadorComoJugar = null;
@@ -208,7 +209,94 @@ function mostrarPantalla(id) {
             }
         }, 1000);
     }
+    
+    // Iniciar cascada de emojis si se entra a la pantalla de logros
+    if (id === 'pantalla-logros') {
+        iniciarCascadaLogros();
+    } else {
+        detenerCascadaLogros();
+    }
 }
+
+function iniciarCascadaLogros() {
+    const contenedor = document.getElementById('fondo-logros-cascada');
+    if (!contenedor) return;
+    
+    // Limpiar emojis previos
+    contenedor.innerHTML = '';
+    
+    // Obtener emojis desbloqueados
+    const emojisDesbloqueados = [];
+    if (logroColeccionistaDesbloqueado) emojisDesbloqueados.push('🏅');
+    if (logroPrincipianteDesbloqueado) emojisDesbloqueados.push('📖');
+    if (logroYSoyYoDesbloqueado) emojisDesbloqueados.push('👤');
+    if (logroImposibleDesbloqueado) emojisDesbloqueados.push('🔥');
+    if (logroSrDesbloqueado) emojisDesbloqueados.push('🎸');
+    if (logroAuraDesbloqueado) emojisDesbloqueados.push('✨');
+    if (logroMarleyDesbloqueado) emojisDesbloqueados.push('🌈');
+    if (logroZeusDesbloqueado) emojisDesbloqueados.push('⚡');
+    if (logroHadesDesbloqueado) emojisDesbloqueados.push('🔥');
+    if (logroJokerDesbloqueado) emojisDesbloqueados.push('🎭');
+    if (logroCampeonDesbloqueado) emojisDesbloqueados.push('🏆');
+    if (logroTheMDesbloqueado) emojisDesbloqueados.push('🅼');
+    if (logroMemeDesbloqueado) emojisDesbloqueados.push('😂');
+    
+    // Si no hay logros desbloqueados, no mostrar nada
+    if (emojisDesbloqueados.length === 0) return;
+    
+    // Crear 4 columnas a la izquierda y 4 a la derecha
+    for (let i = 0; i < 4; i++) {
+        crearColumnaEmojis(contenedor, emojisDesbloqueados, i, 'izquierda');
+        crearColumnaEmojis(contenedor, emojisDesbloqueados, i, 'derecha');
+    }
+}
+
+function crearColumnaEmojis(contenedor, emojis, columna, lado) {
+    let posicionX;
+    if (lado === 'izquierda') {
+        // Columnas entre 0% y 25%
+        posicionX = (columna * 6) + Math.random() * 5;
+    } else {
+        // Columnas entre 75% y 100%
+        posicionX = 75 + (columna * 6) + Math.random() * 5;
+    }
+    
+    const delay = Math.random() * 3; // Delay aleatorio entre 0-3s
+    const duracion = 6 + Math.random() * 3; // Duración entre 6-9s
+    
+    function crearEmoji() {
+        // Usar setTimeout para el delay en lugar de animationDelay
+        setTimeout(() => {
+            const emoji = document.createElement('div');
+            emoji.className = 'emoji-cayendo';
+            emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            emoji.style.left = posicionX + '%';
+            emoji.style.animationDuration = duracion + 's';
+            contenedor.appendChild(emoji);
+            
+            // Remover el emoji después de que termine la animación
+            setTimeout(() => {
+                if (emoji.parentNode === contenedor) {
+                    contenedor.removeChild(emoji);
+                }
+                // Crear un nuevo emoji para mantener la cascada continua
+                if (contenedor.parentNode) {
+                    crearEmoji();
+                }
+            }, duracion * 1000);
+        }, delay * 1000);
+    }
+    
+    crearEmoji();
+}
+
+function detenerCascadaLogros() {
+    const contenedor = document.getElementById('fondo-logros-cascada');
+    if (contenedor) {
+        contenedor.innerHTML = '';
+    }
+}
+
 function actualizarEstadoBotones(id) {
     const input = document.getElementById(id);
     const valorActual = parseInt(input.value);
@@ -226,11 +314,11 @@ function actualizarEstadoBotones(id) {
     } else if (id === 'input-impostores') {
         const jugadores = parseInt(document.getElementById('input-jugadores').value);
         min = 1;
-        max = modoLocoActivado ? jugadores : jugadores - 2;
+        max = modoLocoActivado ? (jugadores === 6 ? 7 : jugadores) : jugadores - 2;
     } else if (id === 'input-max-impostores') {
         const jugadores = parseInt(document.getElementById('input-jugadores').value);
         min = 1;
-        max = modoLocoActivado ? jugadores : jugadores - 2;
+        max = modoLocoActivado ? (jugadores === 6 ? 7 : jugadores) : jugadores - 2;
     }
     
     // Actualizar botón menos
@@ -269,7 +357,7 @@ function cambiarValor(id, cambio) {
     } else if (id === 'input-impostores') {
         const jugadores = parseInt(document.getElementById('input-jugadores').value);
         const nuevoValor = valorActual + cambio;
-        const maxImpostores = modoLocoActivado ? jugadores : jugadores - 2;
+        const maxImpostores = modoLocoActivado ? (jugadores === 6 ? 7 : jugadores) : jugadores - 2;
         
         if (nuevoValor >= 1 && nuevoValor <= maxImpostores) {
             input.value = nuevoValor;
@@ -278,7 +366,7 @@ function cambiarValor(id, cambio) {
     } else if (id === 'input-max-impostores') {
         const jugadores = parseInt(document.getElementById('input-jugadores').value);
         const nuevoValor = valorActual + cambio;
-        const maxPermitido = modoLocoActivado ? jugadores : jugadores - 2;
+        const maxPermitido = modoLocoActivado ? (jugadores === 6 ? 7 : jugadores) : jugadores - 2;
         
         if (nuevoValor >= 1 && nuevoValor <= maxPermitido) {
             input.value = nuevoValor;
@@ -309,7 +397,7 @@ function actualizarMaxImpostores() {
     const jugadores = parseInt(document.getElementById('input-jugadores').value);
     const inputImp = document.getElementById('input-impostores');
     const inputMaxImp = document.getElementById('input-max-impostores');
-    const maxPermitido = modoLocoActivado ? jugadores : Math.max(1, jugadores - 2);
+    const maxPermitido = modoLocoActivado ? (jugadores === 6 ? 7 : jugadores) : Math.max(1, jugadores - 2);
     
     if (parseInt(inputImp.value) > maxPermitido) {
         inputImp.value = maxPermitido;
@@ -332,6 +420,11 @@ function iniciarPartida() {
         numImpostores = Math.floor(Math.random() * maxImpostores) + 1;
     } else {
         numImpostores = parseInt(document.getElementById('input-impostores').value);
+    }
+    
+    // Limitar el número real de impostores al número de jugadores
+    if (numImpostores > numJugadores) {
+        numImpostores = numJugadores;
     }
     
     let bolsaCombinada = [];
@@ -456,6 +549,12 @@ function siguienteJugador() {
         // Verificar logro Sr... si la palabra es "Las chismosas"
         if (palabraSecreta === "Las chismosas" && !logroSrDesbloqueado) {
             desbloquearLogro('sr');
+        }
+        
+        // Verificar logro MEME (6 jugadores y 7 impostores seleccionados)
+        const impostoresSeleccionados = parseInt(document.getElementById('input-impostores').value);
+        if (numJugadores === 6 && impostoresSeleccionados === 7 && !logroMemeDesbloqueado) {
+            desbloquearLogro('meme');
         }
         
         const randomizadorActivado = document.getElementById('switch-randomizador').checked;
@@ -637,7 +736,8 @@ function guardarLogros() {
         principiante: logroPrincipianteDesbloqueado,
         ysoyyo: logroYSoyYoDesbloqueado,
         imposible: logroImposibleDesbloqueado,
-        sr: logroSrDesbloqueado
+        sr: logroSrDesbloqueado,
+        meme: logroMemeDesbloqueado
     };
     localStorage.setItem('logros', JSON.stringify(logros));
 }
@@ -658,6 +758,7 @@ function cargarLogros() {
         logroYSoyYoDesbloqueado = logros.ysoyyo || false;
         logroImposibleDesbloqueado = logros.imposible || false;
         logroSrDesbloqueado = logros.sr || false;
+        logroMemeDesbloqueado = logros.meme || false;
     }
     verificarColeccionista();
     actualizarVistaLogros();
@@ -742,6 +843,13 @@ function desbloquearLogro(nombreLogro) {
                 guardarLogros();
             }
             break;
+        case 'meme':
+            if (!logroMemeDesbloqueado) {
+                logroMemeDesbloqueado = true;
+                mostrarNotificacionLogro('MEME');
+                guardarLogros();
+            }
+            break;
     }
     actualizarVistaLogros();
     
@@ -763,7 +871,8 @@ function verificarColeccionista() {
                                 logroPrincipianteDesbloqueado &&
                                 logroYSoyYoDesbloqueado &&
                                 logroImposibleDesbloqueado &&
-                                logroSrDesbloqueado;
+                                logroSrDesbloqueado &&
+                                logroMemeDesbloqueado;
     
     if (todosDesbloqueados && !logroColeccionistaDesbloqueado) {
         // Desbloquear Coleccionista si se tienen todos los logros
@@ -831,7 +940,7 @@ function actualizarVistaLogros() {
             logroColeccionista.querySelector('.logro-icono').textContent = '🏅';
         } else {
             logroColeccionista.classList.remove('desbloqueado');
-            logroColeccionista.querySelector('.logro-icono').textContent = '🔒';
+            logroColeccionista.querySelector('.logro-icono').textContent = '🏅';
         }
     }
     
@@ -849,7 +958,7 @@ function actualizarVistaLogros() {
             logroPrincipiante.querySelector('.logro-icono').textContent = '📖';
         } else {
             logroPrincipiante.classList.remove('desbloqueado');
-            logroPrincipiante.querySelector('.logro-icono').textContent = '🔒';
+            logroPrincipiante.querySelector('.logro-icono').textContent = '�';
         }
     }
     
@@ -861,7 +970,7 @@ function actualizarVistaLogros() {
             logroYSoyYo.querySelector('.logro-icono').textContent = '👤';
         } else {
             logroYSoyYo.classList.remove('desbloqueado');
-            logroYSoyYo.querySelector('.logro-icono').textContent = '🔒';
+            logroYSoyYo.querySelector('.logro-icono').textContent = '�';
         }
     }
     
@@ -873,7 +982,7 @@ function actualizarVistaLogros() {
             logroImposible.querySelector('.logro-icono').textContent = '🔥';
         } else {
             logroImposible.classList.remove('desbloqueado');
-            logroImposible.querySelector('.logro-icono').textContent = '🔒';
+            logroImposible.querySelector('.logro-icono').textContent = '�';
         }
     }
     
@@ -885,7 +994,7 @@ function actualizarVistaLogros() {
             logroSr.querySelector('.logro-icono').textContent = '🎸';
         } else {
             logroSr.classList.remove('desbloqueado');
-            logroSr.querySelector('.logro-icono').textContent = '🔒';
+            logroSr.querySelector('.logro-icono').textContent = '🎸';
         }
     }
     
@@ -897,7 +1006,7 @@ function actualizarVistaLogros() {
             logroAura.querySelector('.logro-icono').textContent = '✨';
         } else {
             logroAura.classList.remove('desbloqueado');
-            logroAura.querySelector('.logro-icono').textContent = '🔒';
+            logroAura.querySelector('.logro-icono').textContent = '✨';
         }
     }
     
@@ -909,7 +1018,7 @@ function actualizarVistaLogros() {
             logroMarley.querySelector('.logro-icono').textContent = '🌈';
         } else {
             logroMarley.classList.remove('desbloqueado');
-            logroMarley.querySelector('.logro-icono').textContent = '🔒';
+            logroMarley.querySelector('.logro-icono').textContent = '🌈';
         }
     }
     
@@ -921,7 +1030,7 @@ function actualizarVistaLogros() {
             logroZeus.querySelector('.logro-icono').textContent = '⚡';
         } else {
             logroZeus.classList.remove('desbloqueado');
-            logroZeus.querySelector('.logro-icono').textContent = '🔒';
+            logroZeus.querySelector('.logro-icono').textContent = '⚡';
         }
     }
     
@@ -933,7 +1042,7 @@ function actualizarVistaLogros() {
             logroJoker.querySelector('.logro-icono').textContent = '🎭';
         } else {
             logroJoker.classList.remove('desbloqueado');
-            logroJoker.querySelector('.logro-icono').textContent = '🔒';
+            logroJoker.querySelector('.logro-icono').textContent = '🎭';
         }
     }
     
@@ -945,7 +1054,7 @@ function actualizarVistaLogros() {
             logroCampeon.querySelector('.logro-icono').textContent = '🏆';
         } else {
             logroCampeon.classList.remove('desbloqueado');
-            logroCampeon.querySelector('.logro-icono').textContent = '🔒';
+            logroCampeon.querySelector('.logro-icono').textContent = '🏆';
         }
     }
     
@@ -957,7 +1066,7 @@ function actualizarVistaLogros() {
             logroTheM.querySelector('.logro-icono').textContent = '🅼';
         } else {
             logroTheM.classList.remove('desbloqueado');
-            logroTheM.querySelector('.logro-icono').textContent = '🔒';
+            logroTheM.querySelector('.logro-icono').textContent = '🅼';
         }
     }
     
@@ -969,7 +1078,19 @@ function actualizarVistaLogros() {
             logroHades.querySelector('.logro-icono').textContent = '🔥';
         } else {
             logroHades.classList.remove('desbloqueado');
-            logroHades.querySelector('.logro-icono').textContent = '🔒';
+            logroHades.querySelector('.logro-icono').textContent = '�';
+        }
+    }
+    
+    // Actualizar MEME
+    const logroMeme = document.getElementById('logro-meme');
+    if (logroMeme) {
+        if (logroMemeDesbloqueado) {
+            logroMeme.classList.add('desbloqueado');
+            logroMeme.querySelector('.logro-icono').textContent = '😂';
+        } else {
+            logroMeme.classList.remove('desbloqueado');
+            logroMeme.querySelector('.logro-icono').textContent = '😂';
         }
     }
 }

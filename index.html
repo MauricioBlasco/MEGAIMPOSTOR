@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEGAIMPOSTOR</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cascada.css">
 </head>
 <body>
     <div id="game-container">
@@ -75,8 +76,9 @@
         </div>
 
         <div id="pantalla-logros" class="screen hidden">
+            <div id="fondo-logros-cascada"></div>
             <h2><span id="trofeo-secreto" onclick="desbloquearLogroCampeon()" style="cursor: default;">🏆</span> LOGROS</h2>
-            <div style="max-width: 500px; margin: 20px auto;">
+            <div style="max-width: 500px; margin: 20px auto; position: relative; z-index: 1;">
                 <div class="logro-item" id="logro-coleccionista">
                     <div class="logro-icono">🔒</div>
                     <div class="logro-info">
@@ -147,6 +149,12 @@
                     <div class="logro-icono">🔒</div>
                     <div class="logro-info">
                         <div class="logro-nombre">THE M</div>
+                    </div>
+                </div>
+                <div class="logro-item" id="logro-meme">
+                    <div class="logro-icono">🔒</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">MEME</div>
                     </div>
                 </div>
             </div>

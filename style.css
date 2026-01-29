@@ -564,12 +564,12 @@ body.tema-claro .logro-item.desbloqueado {
     margin-right: 20px;
     min-width: 60px;
     text-align: center;
-    filter: grayscale(1);
+    filter: grayscale(1) brightness(0.3);
     transition: filter 0.3s ease;
 }
 
 .logro-item.desbloqueado .logro-icono {
-    filter: grayscale(0);
+    filter: grayscale(0) brightness(1);
 }
 
 .logro-info {
