@@ -69,6 +69,14 @@
                     <span class="slider"></span>
                 </label>
             </div>
+            <div class="control-grupal" id="control-cantidad-bots" style="display: none;">
+                <label>Bots:</label>
+                <div class="contador-interactivo">
+                    <button class="btn-flecha" onclick="cambiarValor('input-cantidad-bots', -1)">-</button>
+                    <input type="number" id="input-cantidad-bots" value="1" readonly>
+                    <button class="btn-flecha" onclick="cambiarValor('input-cantidad-bots', 1)">+</button>
+                </div>
+            </div>
             <button class="btn-secundario" onclick="mostrarPantalla('pantalla-logros')" style="margin-top: 10px;">🏆 LOGROS</button>
             <button class="btn-principal" onclick="mostrarPantalla('pantalla-categorias')">SIGUIENTE</button>
         </div>
@@ -231,6 +239,41 @@
                 • Se eliminan todos los impostores (ganan los jugadores normales)<br>
                 • Solo quedan 2 jugadores en total (ganan los impostores)<br>
                 • El impostor adivina correctamente la palabra secreta</p>
+
+                <p style="margin-bottom: 15px; margin-top: 30px; font-size: 1.2rem; color: #4a90e2;">🤖 <strong>MODO BOT</strong></p>
+                <p style="margin-bottom: 15px; line-height: 1.7; font-size: 1.05rem;">
+                <strong>1️⃣ Cómo activar el modo bot:</strong><br>
+                • Ve a la pantalla de configuración (después de presionar INICIAR)<br>
+                • Activa el interruptor "Bot Jugador 🤖"<br>
+                • Aparecerá un control para elegir la cantidad de bots<br><br>
+                
+                <strong>2️⃣ Configuración:</strong><br>
+                • Selecciona cuántos bots quieres (de 1 hasta el máximo permitido)<br>
+                • Ejemplo: Si eliges 3 jugadores totales y 2 bots = 1 jugador humano + 2 bots<br>
+                • Los bots aparecerán como "🤖 BOT 1", "🤖 BOT 2", etc.<br><br>
+                
+                <strong>3️⃣ Cómo funciona dar pistas:</strong><br>
+                • Los jugadores humanos escriben sus pistas normalmente<br>
+                • Los turnos de los bots se <strong>saltan automáticamente</strong><br>
+                • Los bots generan sus pistas en segundo plano (no necesitas hacer nada)<br>
+                • Cuando llegue la votación, verás las pistas que dieron los bots<br><br>
+                
+                <strong>4️⃣ Sistema de votación:</strong><br>
+                • Los jugadores humanos votan normalmente<br>
+                • Los bots votan automáticamente analizando las pistas de todos<br>
+                • Durante la votación, puedes hacer clic en "🔍 Ver análisis del bot" para ver cómo los bots evalúan cada pista<br><br>
+                
+                <strong>5️⃣ Análisis de los bots:</strong><br>
+                • El análisis muestra el nivel de sospecha de cada pista (0-10)<br>
+                • Indica si una pista es genérica, muy corta, comparativa, etc.<br>
+                • Muestra qué tan exclusiva es la pista para esa palabra<br>
+                • Te ayuda a entender por qué los bots votaron a cierto jugador<br><br>
+                
+                <strong>6️⃣ Calificar las pistas de los bots:</strong><br>
+                • Al final de cada partida, aparecen globos con las pistas de los bots<br>
+                • Puedes marcarlas como "Sí" (buena pista) o "No" (mala pista)<br>
+                • Las pistas marcadas como malas no se volverán a usar en futuras partidas<br>
+                • Esto ayuda a mejorar la calidad de las pistas de los bots</p>
             </div>
             <button class="btn-principal" onclick="mostrarPantalla('pantalla-preparacion')">VOLVER</button>
         </div>
@@ -265,6 +308,7 @@
             <div style="background: #2d2d2d; padding: 20px; border-radius: 15px; margin: 20px 0;">
                 <p id="palabra-para-pista" style="font-size: 1.8rem; font-weight: bold; color: var(--color-primary);"></p>
             </div>
+            <button class="btn-principal" id="btn-recordar-palabra" onclick="recordarPalabra()" style="display: none;">RECORDAR LA PALABRA</button>
             <input type="text" id="input-pista" placeholder="Escribe tu pista..." onkeypress="if(event.key==='Enter') guardarPistaYContinuar()" style="width: 90%; max-width: 400px; padding: 15px; font-size: 1.1rem; border-radius: 10px; border: 2px solid #4a90e2; background: #1a1a1a; color: white; margin: 20px 0;">
             <br>
             <button class="btn-principal" onclick="guardarPistaYContinuar()">CONFIRMAR PISTA</button>
