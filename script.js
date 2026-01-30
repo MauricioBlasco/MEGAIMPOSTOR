@@ -211,67 +211,998 @@ function generarPistasAutomaticas(palabra, categoria) {
     const pistas = [];
     const palabraLower = palabra.toLowerCase();
     
-    // Diccionario de pistas específicas por palabra
+    // Diccionario MASIVO de pistas específicas por palabra
     const pistasEspecificas = {
         // Animales
-        "Perro": ["leal", "ladra", "mejor amigo", "mascota", "canino"],
-        "Gato": ["maúlla", "mascota", "independiente", "felino", "sigiloso"],
-        "Elefante": ["trompa", "grande", "memoria", "gris", "africano"],
-        "Tigre": ["rayado", "felino", "peligroso", "carnívoro", "selva"],
-        "Delfín": ["inteligente", "acuático", "nada", "oceano", "mamífero"],
-        "León": ["melena", "rey", "felino", "sabana", "ruge"],
-        "Águila": ["vuela", "rapaz", "pico", "plumas", "ave"],
-        "Tiburón": ["dientes", "marino", "depredador", "aletas", "océano"],
-        "Pingüino": ["polo", "ave", "no vuela", "frío", "blanco y negro"],
-        "Ballena": ["gigante", "marino", "canta", "mamífero", "océano"],
+        "Perro": ["mejor amigo", "ladra", "collar", "hueso", "fiel"],
+        "Gato": ["maúlla", "siete vidas", "ágil", "bigotes", "ovillo"],
+        "Elefante": ["trompa", "colmillos", "orejas grandes", "memoria", "paquidermo"],
+        "Tigre": ["rayas", "garras", "selva", "felino", "naranja"],
+        "Delfín": ["inteligente", "mar", "salta", "eco-localización", "aleta"],
+        "Lobo": ["aúlla", "manada", "luna llena", "carnívoro", "bosque"],
+        "León": ["melena", "rugido", "rey", "sabana", "depredador"],
+        "Cebra": ["rayas blancas y negras", "sabana", "herbívoro", "parecido al caballo", "África"],
+        "Jirafa": ["cuello largo", "manchas", "lengua azul", "alta", "hojas de árboles"],
+        "Oso": ["hibernación", "miel", "peludo", "garras", "bosque"],
+        "Panda": ["blanco y negro", "bambú", "China", "tierno", "oso"],
+        "Pingüino": ["Antártida", "no vuela", "esmoquin natural", "hielo", "nada muy bien"],
+        "Tiburón": ["dientes afilados", "océano", "aleta dorsal", "depredador", "escualo"],
+        "Águila": ["vista aguda", "vuela alto", "pico curvo", "nido", "símbolo nacional"],
+        "Serpiente": ["reptil", "sin patas", "lengua bífida", "veneno", "escamas"],
+        "Caballo": ["galope", "silla de montar", "crin", "herraduras", "equino"],
+        "Vaca": ["leche", "pasto", "mugido", "cuernos", "ganadería"],
+        "Cerdo": ["rosado", "granja", "hocico", "jamón", "lodo"],
+        "Mono": ["primate", "banana", "trepa", "ágil", "ruidoso"],
+        "Gorila": ["gran tamaño", "espalda plateada", "fuerte", "selva", "primate"],
+        "Canguro": ["salta", "bolsa", "Australia", "cola fuerte", "boxeador"],
+        "Hipopótamo": ["río", "boca enorme", "pesado", "África", "peligroso"],
+        "Rinoceronte": ["cuerno", "piel gruesa", "pesado", "sabana", "amenazado"],
+        "Tortuga": ["caparazón", "lenta", "reptil", "longeva", "huevo"],
+        "Conejo": ["orejas largas", "zanahoria", "salta", "madriguera", "dientes delanteros"],
+        "Hámster": ["rueda", "mejillas grandes", "mascota", "pequeño", "roedor"],
+        "Loro": ["habla", "plumas coloridas", "pirata", "pico", "ave"],
+        "Pavo Real": ["cola desplegable", "colores brillantes", "ave", "elegante", "ojos en plumas"],
+        "Ballena": ["gigante", "mamífero marino", "sopla agua", "océano", "canto"],
+        "Pulpo": ["ocho tentáculos", "tinta", "camuflaje", "mar", "tres corazones"],
+        "Medusa": ["transparente", "tentáculos", "pica", "mar", "gelatina"],
+        "Abeja": ["poliniza", "miel", "rayas amarillas y negras", "colmena", "aguijón"],
+        "Hormiga": ["pequeña", "fuerza", "hormiguero", "fila", "trabajadora"],
+        "Mariposa": ["metamorfosis", "alas coloridas", "flores", "oruga", "vuela"],
+        "Araña": ["ocho patas", "telaraña", "seda", "veneno", "insectívoro"],
+        "Escorpión": ["cola venenosa", "pinzas", "desierto", "arácnido", "nocturno"],
+        "Cocodrilo": ["reptil", "dientes grandes", "río", "piel dura", "lagarto gigante"],
+        "Camaleón": ["cambia de color", "lengua larga", "ojos independientes", "lento", "camuflaje"],
+        "Murciélago": ["vuela", "nocturno", "radar", "cueva", "mamífero"],
+        "Zorro": ["astuto", "cola peluda", "pelaje rojizo", "nocturno", "orejas puntiagudas"],
+        "Ardilla": ["nuez", "cola esponjosa", "trepa árboles", "roedor", "rápida"],
+        "Mapache": ["máscara natural", "manos hábiles", "nocturno", "basura", "cola anillada"],
+        "Ciervo": ["cornamenta", "bosque", "Bambi", "rápido", "herbívoro"],
+        "Cabra": ["cuernos", "montaña", "leche", "salta", "barba"],
+        "Oveja": ["lana", "balido", "rebaño", "blanco", "herbívoro"],
+        "Gallo": ["despertador", "cresta", "plumas", "cacareo", "granja"],
+        "Pato": ["cuac", "nada", "pico plano", "plumas", "laguna"],
+        "Cisne": ["cuello elegante", "blanco", "lago", "patito feo", "majestuoso"],
+        "orca": ["ballena asesina", "blanco y negro", "depredador", "océano", "inteligente"],
+        "foca": ["aletas", "frío", "hielo", "nada", "bigotes"],
         
         // Lugares
-        "Playa": ["arena", "mar", "verano", "sol", "vacaciones"],
-        "Cine": ["películas", "pantalla", "palomitas", "oscuro", "butacas"],
-        "Estadio": ["fútbol", "gradas", "público", "deporte", "grande"],
-        "Hospital": ["médicos", "salud", "camas", "enfermeros", "curar"],
-        "Escuela": ["estudiar", "maestros", "aulas", "niños", "aprender"],
-        "Aeropuerto": ["aviones", "vuelos", "viajes", "terminal", "maletas"],
-        "Museo": ["arte", "cultura", "cuadros", "historia", "exposiciones"],
-        "Zoológico": ["animales", "jaulas", "visitas", "especies", "salvajes"],
-        "Parque": ["verde", "juegos", "aire libre", "pasear", "naturaleza"],
-        "Biblioteca": ["libros", "silencio", "leer", "estantes", "conocimiento"],
-        "Restaurante": ["comer", "mesas", "menú", "cocina", "meseros"],
-        "Gimnasio": ["ejercicio", "pesas", "fitness", "deporte", "entrenar"],
-        "Montaña": ["alta", "escalar", "nieve", "pico", "naturaleza"],
-        "Acuario": ["peces", "agua", "tanques", "marino", "vidrio"],
+        "Playa": ["arena", "mar", "sol", "vacaciones", "sombrilla"],
+        "Cine": ["películas", "palomitas", "pantalla grande", "butacas", "estrenos"],
+        "Estadio": ["cancha", "tribunas", "deportes", "gritos", "multitud"],
+        "Hospital": ["médicos", "enfermos", "medicina", "camillas", "urgencias"],
+        "Escuela": ["estudiantes", "maestros", "pupitres", "recreo", "aprendizaje"],
+        "Aeropuerto": ["aviones", "maletas", "terminal", "pasaportes", "viajes"],
+        "Biblioteca": ["libros", "silencio", "estantes", "estudio", "lectura"],
+        "Museo": ["arte", "historia", "exposiciones", "cuadros", "guía"],
+        "Zoológico": ["animales", "jaulas", "visita", "cautiverio", "especies"],
+        "Parque": ["árboles", "juegos", "aire libre", "pasto", "pasear"],
+        "Restaurante": ["comida", "menú", "mozo", "mesa", "propina"],
+        "Hotel": ["habitación", "vacaciones", "recepción", "cama", "desayuno"],
+        "Gimnasio": ["pesas", "ejercicio", "sudor", "máquinas", "entrenamiento"],
+        "Farmacia": ["medicamentos", "recetas", "farmacéutico", "salud", "botiquín"],
+        "Supermercado": ["carrito", "comida", "cajas", "pasillos", "compras"],
+        "Banco": ["dinero", "cajero", "cuentas", "ahorros", "intereses"],
+        "Iglesia": ["rezo", "campanas", "religión", "altar", "misa"],
+        "Castillo": ["rey", "murallas", "foso", "historia", "fortaleza"],
+        "Cárcel": ["presos", "celdas", "guardias", "rejas", "condena"],
+        "Bosque": ["árboles", "naturaleza", "senderos", "pinos", "fauna"],
+        "Desierto": ["arena", "calor", "camellos", "dunas", "oasis"],
+        "Montaña": ["altura", "nieve", "escalar", "pico", "senderismo"],
+        "Isla": ["mar por todos lados", "palmeras", "aislada", "náufrago", "bote"],
+        "Volcán": ["lava", "magma", "erupción", "cráter", "ceniza"],
+        "Río": ["agua corriente", "peces", "cauce", "orilla", "desembocadura"],
+        "Cascada": ["caída de agua", "altura", "catarata", "ruido", "naturaleza"],
+        "Puerto": ["barcos", "contenedores", "mar", "muelle", "aduana"],
+        "Estación de Tren": ["vías", "andén", "vagones", "pasajeros", "locomotoras"],
+        "Gasolinera": ["nafta", "combustible", "autos", "manguera", "ruta"],
+        "Panadería": ["pan", "facturas", "harina", "horno", "olor rico"],
+        "Peluquería": ["corte", "pelo", "tijeras", "espejo", "peinado"],
+        "Teatro": ["actores", "escenario", "funciones", "aplausos", "telón"],
+        "Casino": ["apuestas", "cartas", "ruleta", "azar", "fichas"],
+        "Circo": ["payasos", "carpa", "acrobacias", "malabares", "espectáculo"],
+        "Acuario": ["peces", "peceras", "agua", "tiburones", "exhibición"],
+        "Planetario": ["estrellas", "espacio", "telescopio", "domo", "astronomía"],
+        "Cementerio": ["tumbas", "lápidas", "flores", "silencio", "muertos"],
+        "Granja": ["animales", "campo", "cultivo", "tractor", "establo"],
+        "Puente": ["cruce", "río", "altura", "estructura", "camino"],
+        "Cabaña": ["madera", "bosque", "acogedora", "montaña", "chimenea"],
+        "Cueva": ["oscuridad", "murciélagos", "estalactitas", "rocas", "eco"],
+        "Jungla": ["selva densa", "mucha lluvia", "animales salvajes", "verde", "Tarzán"],
+        "Pantano": ["agua estancada", "cocodrilos", "lodo", "mosquitos", "humedad"],
         
         // Objetos
-        "Teléfono": ["llamar", "pantalla", "móvil", "apps", "contactos"],
-        "Computadora": ["teclas", "pantalla", "internet", "tecnología", "mouse"],
-        "Televisor": ["programas", "pantalla", "control remoto", "canales", "imagen"],
-        "Reloj": ["hora", "tiempo", "pulsera", "manecillas", "minutos"],
-        "Espejo": ["reflejo", "vidrio", "imagen", "verse", "brillo"],
-        "Guitarra": ["cuerdas", "música", "tocar", "instrumento", "sonido"],
-        "Piano": ["teclas", "música", "clásico", "notas", "instrumento"],
-        "Pelota": ["redonda", "jugar", "deporte", "botar", "esférica"],
-        "Bicicleta": ["pedales", "ruedas", "andar", "transporte", "cadena"],
-        "Paraguas": ["lluvia", "protege", "mojarse", "abre", "impermeable"],
+        "Lámpara": ["luz", "bombilla", "noche", "escritorio", "encender"],
+        "Reloj": ["tiempo", "horas", "agujas", "muñeca", "tic-tac"],
+        "Espejo": ["reflejo", "cristal", "verse", "baño", "vanidad"],
+        "Martillo": ["clavos", "herramienta", "golpear", "carpintería", "mango"],
+        "Tenedor": ["comer", "pinchar", "cubierto", "cuatro puntas", "metal"],
+        "Cuchillo": ["cortar", "filo", "cocina", "peligroso", "mango"],
+        "Cuchara": ["sopa", "cubierto", "cóncava", "tomar", "postre"],
+        "Plato": ["vajilla", "redondo", "comida", "porcelana", "mesa"],
+        "Vaso": ["beber", "líquido", "cristal", "transparente", "sed"],
+        "Sartén": ["cocinar", "freír", "mango", "fuego", "teflón"],
+        "Llave": ["abrir", "cerradura", "metal", "llavero", "puerta"],
+        "Candado": ["seguridad", "llave", "cadena", "cerrar", "protección"],
+        "Teléfono": ["llamadas", "celular", "pantalla", "comunicación", "aplicaciones"],
+        "Computadora": ["pantalla", "teclado", "internet", "trabajo", "procesador"],
+        "Televisor": ["canales", "pantalla", "control remoto", "series", "salón"],
+        "Radio": ["música", "locutor", "sintonizar", "ondas", "antena"],
+        "Cámara": ["fotos", "lente", "flash", "recuerdos", "disparador"],
+        "Libro": ["páginas", "leer", "autor", "historia", "biblioteca"],
+        "Lápiz": ["escribir", "grafito", "borrar", "dibujo", "escolar"],
+        "Mochila": ["espalda", "libros", "cargar", "correas", "escolar"],
+        "Maleta": ["viaje", "ropa", "aeropuerto", "ruedas", "equipaje"],
+        "Paraguas": ["lluvia", "cubrirse", "mango", "abrir", "mojarse"],
+        "Gafas": ["vista", "lentes", "ojos", "ver mejor", "montura"],
+        "Billetera": ["dinero", "tarjetas", "bolsillo", "cuero", "documentos"],
+        "Moneda": ["dinero", "metal", "cara o cruz", "cambio", "valor"],
+        "Destornillador": ["tornillo", "herramienta", "girar", "punta", "ajustar"],
+        "Tijeras": ["cortar", "papel", "dos hojas", "dedos", "manualidades"],
+        "Peine": ["pelo", "desenredar", "púas", "peinado", "cabeza"],
+        "Jabón": ["limpieza", "burbujas", "baño", "espuma", "olor"],
+        "Toalla": ["secarse", "baño", "tela", "playa", "suave"],
+        "Almohada": ["dormir", "cabeza", "cama", "suave", "funda"],
+        "Manta": ["frío", "cama", "abrigo", "taparse", "suave"],
+        "Silla": ["sentarse", "cuatro patas", "respaldo", "mueble", "mesa"],
+        "Mesa": ["mueble", "patas", "comer", "superficie", "madera"],
+        "Sofá": ["salón", "sentarse", "cómodo", "cojines", "televisión"],
+        "Cama": ["dormir", "colchón", "sábanas", "noche", "descanso"],
+        "Bicicleta": ["dos ruedas", "pedales", "cadena", "transporte", "casco"],
+        "Guitarra": ["cuerdas", "música", "instrumento", "acústica", "trastes"],
+        "Piano": ["teclas", "blancas y negras", "música", "instrumento", "notas"],
+        "Pelota": ["redonda", "jugar", "deporte", "patear", "rebote"],
+        "Raqueta": ["tenis", "cuerdas", "red", "golpe", "deporte"],
+        "Botella": ["envase", "líquido", "tapa", "plástico", "vidrio"],
+        "Encendedor": ["fuego", "llama", "cigarrillo", "gas", "chispa"],
+        "trompeta": ["viento", "metal", "boquilla", "tres pistones", "música"],
+        "Escoba": ["barrer", "piso", "cerdas", "palo", "limpieza"],
+        "bateria": ["percusión", "palillos", "ritmo", "música", "platillos"],
+        "bajo": ["cuerdas", "música", "grave", "instrumento", "ritmo"],
         
         // Futbolistas
-        "Messi": ["argentino", "Barcelona", "10", "crack", "golazo"],
-        "Cristiano Ronaldo": ["portugués", "7", "Manchester", "Madrid", "goleador"],
-        "Maradona": ["argentino", "leyenda", "86", "mano de dios", "10"],
-        "Pelé": ["brasileño", "rey", "leyenda", "3 mundiales", "goles"],
-        "Neymar": ["brasileño", "PSG", "driblador", "habilidoso", "11"],
-        "Mbappé": ["francés", "rápido", "PSG", "joven", "velocidad"],
-        "Haaland": ["noruego", "goles", "City", "robot", "potente"],
-        "Benzema": ["francés", "Madrid", "9", "goleador", "elegante"],
+        "Puskás": ["húngaro", "Real Madrid", "premio al mejor gol", "histórico", "zurdo"],
+        "Eusébio": ["pantera negra", "Portugal", "Benfica", "goleador", "leyenda"],
+        "Gerd Müller": ["el torpedo", "alemán", "Bayern Munich", "goleador histórico", "mundialista"],
+        "George Best": ["quinto Beatle", "Irlanda del Norte", "United", "talento", "rebelde"],
+        "Yashin": ["araña negra", "portero", "Unión Soviética", "Balón de Oro", "gorra"],
+        "Baresi": ["defensa", "Milan", "italiano", "capitán", "número 6"],
+        "Maldini": ["eterno capitán", "Milan", "defensa", "italiano", "elegancia"],
+        "Passarella": ["gran capitán", "defensor", "argentino", "dos mundiales", "River"],
+        "Kempes": ["el Matador", "goleador del 78", "argentino", "Valencia", "delantero"],
+        "Batistuta": ["Bati-gol", "goleador", "Argentina", "Fiorentina", "número 9"],
+        "Figo": ["Portugal", "Madrid y Barça", "extremo", "Balón de Oro", "técnica"],
+        "Puyol": ["Tarzán", "defensa", "Barcelona", "capitán", "garra"],
+        "Pirlo": ["el arquitecto", "italiano", "mediocampista", "tiros libres", "Juventus"],
+        "Lahm": ["lateral", "alemán", "capitán del 2014", "Bayern", "polivalente"],
+        "Gerrard": ["Liverpool", "capitán", "mediocampista", "potente remate", "inglés"],
+        "Lampard": ["Chelsea", "mediocampista goleador", "inglés", "leyenda", "técnico"],
+        "Scholes": ["Manchester United", "colorado", "mediocampista", "visión", "remate"],
+        "Raúl": ["el Ángel de Madrid", "número 7", "delantero", "español", "leyenda"],
+        "Shevchenko": ["ucraniano", "Milan", "delantero", "Balón de Oro", "goleador"],
+        "Van Basten": ["holandés", "volea histórica", "Milan", "delantero", "Balón de Oro"],
+        "Bergkamp": ["holandés", "control de balón", "Arsenal", "técnico", "elegancia"],
+        "Totti": ["il Capitano", "Roma", "italiano", "número 10", "lealtad"],
+        "Del Piero": ["Pinturicchio", "Juventus", "italiano", "delantero", "tiros libres"],
+        "Klose": ["máximo goleador en mundiales", "alemán", "delantero", "cabezazo", "eficaz"],
+        "Foden": ["City", "inglés", "joven talento", "zurdo", "Pep Guardiola"],
+        "Saka": ["Arsenal", "inglés", "extremo", "joven", "rápido"],
+        "Rodri": ["City", "pivote", "mediocampista", "español", "gol en final Champions"],
+        "Valverde": ["el Pajarito", "uruguayo", "Madrid", "potencia", "despliegue"],
+        "Courtois": ["portero", "belga", "Madrid", "alto", "atajadas"],
+        "Alisson": ["portero", "brasileño", "Liverpool", "barba", "seguro"],
+        "Van Dijk": ["defensa", "holandés", "Liverpool", "fuerte", "liderazgo"],
+        "Salah": ["faraón", "egipcio", "Liverpool", "zurdo", "velocidad"],
+        "Son": ["surcoreano", "Tottenham", "rápido", "delantero", "Premier League"],
+        "Gavi": ["joven", "Barcelona", "intensidad", "mediocampista", "español"],
+        "James Rodríguez": ["colombiano", "zurdo", "gol mundial 2014", "10", "talento"],
+        "Garrincha": ["la alegría del pueblo", "brasileño", "gambeta", "piernas arqueadas", "campeón"],
+        "Zico": ["Pelé blanco", "Flamengo", "brasileño", "tiros libres", "10"],
+        "Socrates": ["doctor", "brasileño", "elegancia", "mediocampista", "barbudo"],
+        "Falcao": ["Tigre", "colombiano", "delantero", "Porto/Atlético", "goleador"],
+        "Chilavert": ["portero", "paraguayo", "goles de tiro libre", "temperamento", "Velez"],
+        "Valderrama": ["el Pibe", "colombiano", "pelo rubio rizado", "mediocampista", "técnica"],
+        "Forlán": ["Cachavacha", "uruguayo", "mejor jugador 2010", "rubio", "remate"],
+        "Cavani": ["el Matador", "uruguayo", "delantero", "pelo largo", "goleador"],
+        "Godín": ["defensa", "uruguayo", "Atlético de Madrid", "cabezazo", "garra"],
+        "Bebeto": ["brasileño", "festejo del bebé", "delantero", "campeón 94", "técnica"],
+        "Vieri": ["el Toro", "italiano", "delantero", "fuerte", "goleador"],
+        "Nedved": ["checo", "Juventus", "rubio", "Balón de Oro", "mediocampista"],
+        "Stoichkov": ["búlgaro", "Barcelona", "carácter", "zurdo", "Balón de Oro"],
+        "Hagi": ["Maradona de los Cárpatos", "rumano", "10", "talento", "zurdo"],
+        "Kahn": ["el Titán", "portero", "alemán", "Bayern", "carácter"],
+        "Schmeichel": ["danés", "portero", "United", "gran envergadura", "leyenda"],
+        "Van der Sar": ["holandés", "portero", "United/Ajax", "alto", "seguro"],
+        "Hugo Sánchez": ["mexicano", "Real Madrid", "chilenas", "goleador", "rulos"],
+        "Rafa Márquez": ["Káiser", "mexicano", "defensa", "Barcelona", "salida limpia"],
+        "Pelé": ["O Rei", "brasileño", "3 mundiales", "10", "Santos"],
+        "Maradona": ["el Diego", "argentino", "10", "gol del siglo", "mano de Dios"],
+        "Messi": ["La Pulga", "argentino", "8 Balones de Oro", "zurdo", "el mejor"],
+        "Cristiano Ronaldo": ["CR7", "portugués", "bicho", "goles", "trabajo duro"],
+        "Neymar": ["brasileño", "regate", "Santos/Barça/PSG", "10", "magia"],
+        "Mbappé": ["tortuga", "francés", "velocidad", "Madrid", "campeón del mundo"],
+        "Haaland": ["androide", "noruego", "City", "goles", "fuerza"],
+        "Lewandowski": ["polaco", "delantero", "goleador", "Bayern/Barça", "9"],
+        "Benzema": ["el gato", "francés", "Madrid", "Balón de Oro", "delantero técnico"],
+        "Modric": ["croata", "mediocampista", "Madrid", "Balón de Oro", "exterior"],
+        "Kroos": ["alemán", "precisión", "Madrid", "mediocampista", "retiro reciente"],
+        "De Bruyne": ["belga", "City", "asistencias", "visión", "colorado"],
+        "Kanté": ["francés", "pulmones", "humilde", "mediocampista", "recuperador"],
+        "Casemiro": ["brasileño", "muro", "United/Madrid", "mediocampista defensivo", "fuerza"],
+        "Busquets": ["pulpo", "Barcelona", "mediocampista", "inteligencia", "español"],
+        "Xavi": ["arquitecto", "Barcelona", "mediocampista", "pases", "visión"],
+        "Iniesta": ["el cerebro", "gol del mundial", "Barcelona", "mediocampista", "magia"],
+        "Zidane": ["Zizou", "francés", "elegancia", "Madrid", "cabezazo"],
+        "Ronaldo": ["el fenómeno", "brasileño", "9", "regate", "goles"],
+        "Ronaldinho": ["sonrisa", "brasileño", "magia", "Barcelona", "regate"],
+        "Romario": ["el Chapulín", "brasileño", "goleador de área", "campeón 94", "corto"],
+        "Rivaldo": ["brasileño", "zurdo", "Barcelona", "Balón de Oro", "elegante"],
+        "Kaká": ["brasileño", "Milan", "Balón de Oro", "elegante", "potencia"],
+        "Roberto Carlos": ["potencia", "lateral izquierdo", "brasileño", "tiros libres", "velocidad"],
+        "Cafu": ["lateral derecho", "brasileño", "dos mundiales", "recorrido", "leyenda"],
+        "Thiago Silva": ["defensa", "brasileño", "Milan/Chelsea/PSG", "experiencia", "líder"],
+        "Marcelo": ["lateral izquierdo", "brasileño", "técnica", "Madrid", "pelo afro"],
+        "Dani Alves": ["lateral derecho", "brasileño", "más títulos", "ofensivo", "Barça"],
+        "Ramos": ["defensa", "central", "Madrid", "goles de cabeza", "capitán"],
+        "Piqué": ["defensa", "Barcelona", "alto", "presidencia King's League", "español"],
+        "Kompany": ["defensa", "City", "belga", "capitán", "líder"],
+        "Terry": ["defensa", "Chelsea", "capitán", "inglés", "líder"],
+        "Ferdinand": ["defensa", "United", "inglés", "central", "elegante"],
+        "Vidic": ["defensa", "United", "serbio", "fuerte", "muro"],
+        "Chiellini": ["defensa", "italiano", "fuerte", "Juventus", "central"],
+        "Bonucci": ["defensa", "italiano", "salida de balón", "Juventus", "central"],
+        "Cannavaro": ["defensa", "Balón de Oro", "italiano", "campeón 2006", "central"],
+        "Nesta": ["defensa", "italiano", "elegancia", "Milan", "central"],
+        "Thuram": ["defensa", "francés", "campeón 98", "fuerte", "lateral/central"],
+        "Neuer": ["portero líbero", "alemán", "Bayern", "campeón 2014", "gigante"],
+        "Buffon": ["portero", "italiano", "leyenda", "longevidad", "Juventus"],
+        "Casillas": ["San Iker", "portero", "español", "Madrid", "paradas milagrosas"],
+        "Oblak": ["portero", "esloveno", "Atlético de Madrid", "seguro", "reflejos"],
+        "Ter Stegen": ["portero", "alemán", "Barcelona", "juego de pies", "reflejos"],
+        "Ederson": ["portero", "brasileño", "City", "juego de pies", "tatuajes"],
+        "Donnarumma": ["portero", "italiano", "PSG", "alto", "joven"],
+        "Navas": ["halcón", "portero", "costarricense", "Madrid", "reflejos"],
+        "De Gea": ["portero", "español", "United", "reflejos bajo palos", "flaco"],
+        "Cech": ["portero", "casco", "checo", "Chelsea", "leyenda"],
+        "Henry": ["Tití", "delantero", "francés", "Arsenal", "velocidad"],
+        "Drogba": ["delantero", "Costa de Marfil", "Chelsea", "fuerza", "leyenda"],
+        "Eto'o": ["delantero", "camerunés", "Barça/Inter", "velocidad", "goles"],
+        "Weah": ["delantero", "liberiano", "Balón de Oro", "presidente", "potencia"],
+        "Suárez": ["pistolero", "uruguayo", "delantero", "9", "goles"],
+        "Agüero": ["Kun", "argentino", "delantero", "City", "streaming"],
+        "Ibrahimovic": ["Ibra", "sueco", "delantero", "acrobacias", "ego"],
+        "Rooney": ["Bad Boy", "inglés", "delantero", "United", "potencia"],
+        "Van Persie": ["holandés", "delantero", "zurdo", "gol de palomita", "United"],
+        "Griezmann": ["el principito", "francés", "Atlético", "mediapunta", "pelo corto/largo"],
+        "Pogba": ["mediocampista", "francés", "talento", "peinados", "potente"],
+        "Vieira": ["mediocampista", "francés", "Arsenal", "fuerte", "líder"],
+        "Makélélé": ["mediocampista", "francés", "recuperador", "pequeño", "Madrid/Chelsea"],
+        "Seedorf": ["mediocampista", "holandés", "fuerte", "campeón con 3 equipos", "elegante"],
+        "Gattuso": ["mediocampista", "italiano", "garra", "fuerte", "Milan"],
+        "Ballack": ["mediocampista", "alemán", "potente", "líder", "13"],
+        "Özil": ["mago de Oz", "alemán", "asistencias", "ojos grandes", "10"],
+        "Dybala": ["la Joya", "argentino", "zurdo", "Roma", "máscara"],
+        "Lautaro": ["el Toro", "argentino", "Inter", "delantero", "9"],
+        "Julián Álvarez": ["la Araña", "argentino", "City/Atlético", "delantero", "campeón"],
+        "Enzo Fernández": ["mediocampista", "argentino", "Chelsea", "mejor joven mundial", "talento"],
+        "Mac Allister": ["mediocampista", "argentino", "Liverpool", "colorado", "pases"],
+        "Dibu Martínez": ["portero", "argentino", "penales", "atajadas", "Villa"],
+        "Otamendi": ["el General", "defensa", "argentino", "central", "tatuajes"],
+        "Cuti Romero": ["defensa", "argentino", "central", "agresivo", "Tottenham"],
+        "Tagliafico": ["lateral izquierdo", "argentino", "Lyon", "despliegue", "entrega"],
+        "Montiel": ["cachete", "lateral derecho", "penal decisivo", "argentino", "Sevilla"],
+        "Riquelme": ["Román", "argentino", "Boca", "10", "pausa"],
+        "Verón": ["la Brujita", "argentino", "mediocampista", "Estudiantes", "visión"],
+        "Aimar": ["el Payaso", "argentino", "mediocampista", "talento", "ídolo de Messi"],
+        "Ortega": ["el Burrito", "argentino", "gambeta", "River", "10"],
+        "Redondo": ["mediocampista", "argentino", "taco de Old Trafford", "elegancia", "Madrid"],
+        "Simeone": ["el Cholo", "argentino", "mediocampista", "garra", "técnico Atlético"],
+        "Mascherano": ["el Jefecito", "argentino", "mediocampista", "entrega", "Barcelona"],
+        "Zanetti": ["el Pupi", "argentino", "lateral/medio", "Inter", "eterno"],
+        "Crespo": ["Valdanito", "argentino", "delantero", "goleador", "elegante"],
+        "Palermo": ["el Titán", "argentino", "Boca", "goles increíbles", "optimista del gol"],
+        "Tevez": ["el Apache", "argentino", "delantero", "garra", "Boca/United/City"],
+        "Higuaín": ["Pipa", "argentino", "delantero", "goles", "Madrid/Juventus"],
+        "Di María": ["el Fideo", "argentino", "goles en finales", "zurdo", "Benfica"],
+        "Papu Gómez": ["argentino", "baile", "mediocampista", "Sevilla", "pequeño"],
+        "Lo Celso": ["mediocampista", "argentino", "zurdo", "pases", "Tottenham"],
+        "Paredes": ["mediocampista", "argentino", "pegada", "Roma", "5"],
+        "Acuña": ["el Huevo", "argentino", "lateral izquierdo", "fuerte", "Sevilla"],
         
         // Series
-        "Breaking Bad": ["drogas", "Walter", "química", "metanfetamina", "desierto"],
-        "Stranger Things": ["80s", "niños", "monstruos", "Hawkins", "sobrenatural"],
-        "Game of Thrones": ["dragones", "tronos", "medieval", "espadas", "reinos"],
-        "Friends": ["café", "Nueva York", "comedia", "6 amigos", "risas"],
-        "The Office": ["oficina", "comedia", "trabajo", "mockumentary", "Dunder"],
-        "Narcos": ["Pablo", "Colombia", "droga", "DEA", "cartel"],
-        "La Casa de Papel": ["atraco", "máscaras", "Bella Ciao", "España", "robo"],
-        "The Walking Dead": ["zombies", "supervivencia", "apocalipsis", "muertos", "Rick"]
+        "Breaking Bad": ["Walter White", "metanfetamina", "Heisenberg", "química", "desierto"],
+        "Stranger Things": ["Hawkins", "Demogorgon", "años 80", "Eleven", "Upside Down"],
+        "Game of Thrones": ["dragones", "Trono de Hierro", "Invierno llega", "Westeros", "medieval"],
+        "The Office": ["Dunder Mifflin", "Scranton", "mockumentary", "Michael Scott", "oficina"],
+        "Friends": ["Central Perk", "seis amigos", "Nueva York", "café", "Ross y Rachel"],
+        "Dark": ["viajes en el tiempo", "alemana", "bucles temporales", "Winden", "tres generaciones"],
+        "La Casa de Papel": ["Bella Ciao", "máscaras de Dalí", "Profesor", "atraco", "Tokio"],
+        "The Crown": ["Reina Isabel", "familia real", "británica", "historia", "política"],
+        "Black Mirror": ["tecnología", "distópico", "episodios independientes", "futuro oscuro", "reflexión"],
+        "The Mandalorian": ["Baby Yoda", "Grogu", "Star Wars", "cazarrecompensas", "western espacial"],
+        "The Witcher": ["Geralt", "brujo", "monstruos", "espadas", "fantasía"],
+        "Peaky Blinders": ["Birmingham", "Thomas Shelby", "gángsters", "años 20", "gorras con cuchillas"],
+        "The Boys": ["superhéroes corruptos", "Homelander", "Vought", "violencia", "sátira"],
+        "Narcos": ["Pablo Escobar", "Colombia", "DEA", "drogas", "Medellín"],
+        "Better Call Saul": ["Saul Goodman", "abogado", "Breaking Bad", "prequel", "Albuquerque"],
+        "Sherlock": ["detective", "Benedick Cumberbatch", "Londres", "casos", "John Watson"],
+        "The Walking Dead": ["zombies", "apocalipsis", "Rick Grimes", "supervivencia", "muertos vivientes"],
+        "Suits": ["abogados", "Nueva York", "Harvey Specter", "firma legal", "trajes"],
+        "Succession": ["familia rica", "imperio mediático", "hermanos", "poder", "Logan Roy"],
+        "True Detective": ["detectives", "casos oscuros", "antología", "Matthew McConaughey", "misterio"],
+        "The Last of Us": ["hongos zombies", "Joel y Ellie", "apocalipsis", "videojuego adaptado", "supervivencia"],
+        "Ozark": ["lavado de dinero", "Marty Byrde", "Ozarks", "cartel", "familia"],
+        "House of Cards": ["Frank Underwood", "política", "manipulación", "Washington", "poder"],
+        "Rick and Morty": ["científico loco", "nieto", "viajes interdimensionales", "comedia", "animada"],
+        "BoJack Horseman": ["caballo", "actor deprimido", "Hollywood", "animada", "drama"],
+        "Arcane": ["League of Legends", "Vi y Jinx", "Piltover y Zaun", "animación", "hermanas"],
+        "Squid Game": ["juegos mortales", "coreana", "456 participantes", "dalgona", "supervivencia"],
+        "Money Heist": ["otro nombre Casa de Papel", "atraco", "España", "Berlín", "plan"],
+        "Westworld": ["parque temático", "robots", "cowboys", "consciencia", "futuro"],
+        "Chernobyl": ["desastre nuclear", "miniserie", "Ucrania", "1986", "radiación"],
+        "Lost": ["isla misteriosa", "avión estrellado", "supervivientes", "misterio", "números"],
+        "Prison Break": ["Michael Scofield", "escape de prisión", "tatuaje", "plan", "hermanos"],
+        "How I Met Your Mother": ["Ted Mosby", "madre", "grupo de amigos", "Nueva York", "historia larga"],
+        "The Big Bang Theory": ["científicos nerds", "Sheldon Cooper", "física", "Penny", "comedia"],
+        "Vikings": ["Ragnar Lothbrok", "vikingos", "conquistas", "medieval", "nórdicos"],
+        "The Sopranos": ["Tony Soprano", "mafia", "Nueva Jersey", "terapia", "familia criminal"],
+        "Dexter": ["asesino en serie", "forense", "Miami", "código Harry", "laboratorio"],
+        "Mad Men": ["Don Draper", "publicidad", "años 60", "Madison Avenue", "Nueva York"],
+        "Fargo": ["antología", "crímenes", "Minnesota", "nieve", "hermanos Coen"],
+        "The Handmaid's Tale": ["distopía", "June", "Gilead", "servidoras", "opresión"],
+        "Mindhunter": ["FBI", "asesinos seriales", "perfiles criminales", "años 70", "psicología"],
+        "Euphoria": ["adolescentes", "Rue", "drogas", "drama", "Zendaya"],
+        "Wednesday": ["Addams", "Tim Burton", "academia", "gótica", "Merlina"],
+        "The Umbrella Academy": ["superhéroes disfuncionales", "familia adoptiva", "apocalipsis", "viajes en el tiempo", "comic"],
+        "Cobra Kai": ["Karate Kid", "continuación", "Daniel LaRusso", "Johnny Lawrence", "dojo"],
+        "You": ["Joe Goldberg", "acosador", "obsesión", "librería", "asesinatos"],
+        "The Queen's Gambit": ["ajedrez", "Beth Harmon", "años 60", "prodigio", "adicciones"],
+        "The Bear": ["restaurante", "chef", "Chicago", "familia", "cocina"],
+        "Yellowstone": ["rancho", "Montana", "familia Dutton", "cowboys modernos", "tierra"],
+        "Ted Lasso": ["entrenador de fútbol americano", "fútbol inglés", "optimista", "comedia", "Richmond"],
+        "Loki": ["dios del engaño", "TVA", "variantes", "Marvel", "viajes en el tiempo"],
+        "WandaVision": ["Wanda", "Vision", "realidad alterada", "sitcoms", "Marvel"],
+        "The Falcon and the Winter Soldier": ["Sam Wilson", "Bucky Barnes", "escudo del Capitán América", "Marvel", "acción"],
+        "What If...?": ["realidades alternativas", "Marvel", "animada", "Multiverso", "Uatu"],
+        "The Punisher": ["Frank Castle", "venganza", "vigilante", "Marvel", "violencia"],
+        "Daredevil": ["Matt Murdock", "abogado ciego", "Hell's Kitchen", "Marvel", "acrobacias"],
+        "Jessica Jones": ["detective privada", "fuerza sobrehumana", "Kilgrave", "Marvel", "trauma"],
+        "Lucifer": ["diablo", "Los Ángeles", "detective", "club nocturno", "casos"],
+        "Gotham": ["Batman precuela", "joven Bruce Wayne", "Gotham City", "orígenes villanos", "Jim Gordon"],
+        "Arrow": ["Oliver Queen", "arquero", "Star City", "vigilante", "isla"],
+        "The Flash": ["Barry Allen", "velocista", "Central City", "viajes en el tiempo", "equipo"],
+        
+        // Comida
+        "Pizza": ["italiana", "masa", "queso", "horno", "porciones"],
+        "Hamburguesa": ["pan", "carne", "lechuga", "tomate", "americana"],
+        "Sushi": ["japonés", "arroz", "pescado crudo", "soja", "wasabi"],
+        "Taco": ["mexicano", "tortilla", "carne", "guacamole", "picante"],
+        "Pasta": ["italiana", "fideos", "salsa", "hervir", "trigo"],
+        "Asado": ["carne a la parrilla", "carbón", "argentino", "chimichurri", "tiras"],
+        "Empanada": ["relleno", "masa", "repulgue", "horno o frita", "argentina"],
+        "Helado": ["frío", "cremoso", "sabores", "cucurucho", "verano"],
+        "Milanesa": ["carne empanada", "pan rallado", "frita", "argentina", "huevo"],
+        "Sopa": ["caldo", "caliente", "verduras", "cuchara", "líquida"],
+        "Chocolate": ["cacao", "dulce", "barra", "derretir", "postre"],
+        "Churros": ["frito", "azúcar", "masa", "dulce de leche", "español"],
+        "Paella": ["española", "arroz", "azafrán", "mariscos", "valenciana"],
+        "Ramen": ["japonés", "fideos", "caldo", "huevo", "caliente"],
+        "Burrito": ["mexicano", "tortilla grande", "frijoles", "arroz", "enrollado"],
+        "Falafel": ["medio oriente", "garbanzos", "frito", "pan pita", "vegano"],
+        "Ceviche": ["peruano", "pescado crudo", "limón", "cebolla", "fresco"],
+        "Croissant": ["francés", "hojaldre", "mantequilla", "media luna", "desayuno"],
+        "Tacos al pastor": ["mexicano", "carne de cerdo", "piña", "especias", "trompo"],
+        "Lasaña": ["italiana", "capas", "pasta", "carne", "queso"],
+        "Fajitas": ["mexicano", "tiras de carne", "pimientos", "tortillas", "cebolla"],
+        "Pho": ["vietnamita", "sopa de fideos", "caldo de res", "hierbas", "aromática"],
+        "Carbonara": ["italiana", "pasta", "huevo", "panceta", "queso"],
+        "Quesadilla": ["mexicana", "tortilla", "queso derretido", "doblada", "plancha"],
+        "Tiramisu": ["italiano", "postre", "café", "mascarpone", "capas"],
+        "Sándwich": ["pan", "relleno", "práctico", "variado", "almuerzo"],
+        "Tortilla española": ["huevos", "papas", "cebolla", "redonda", "española"],
+        "Guacamole": ["mexicano", "aguacate", "limón", "cebolla", "dip"],
+        "Pad Thai": ["tailandés", "fideos de arroz", "tamarindo", "maní", "salteado"],
+        "Hummus": ["medio oriente", "garbanzos", "tahini", "limón", "dip"],
+        "Hot dog": ["salchicha", "pan alargado", "mostaza", "ketchup", "rápido"],
+        "Baguette": ["francés", "pan largo", "crujiente", "miga suave", "tradicional"],
+        "Donas": ["fritas", "azúcar", "glaseadas", "redondas con agujero", "americanas"],
+        "Brownie": ["chocolate", "cuadrado", "denso", "nueces", "postre"],
+        "Cheesecake": ["queso crema", "base de galleta", "postre", "cremoso", "NY"],
+        "Curry": ["indio", "especias", "salsa", "picante", "arroz"],
+        "Fish and chips": ["británico", "pescado frito", "papas fritas", "rebozado", "tradicional"],
+        "Goulash": ["húngaro", "estofado", "pimentón", "carne", "especias"],
+        "Moussaka": ["griego", "berenjenas", "carne picada", "bechamel", "horneado"],
+        "Pierogi": ["polaco", "empanadas", "papas", "queso", "hervidos"],
+        "Shawarma": ["medio oriente", "carne asada", "pan pita", "especias", "vertical"],
+        "Tamales": ["mexicano", "masa de maíz", "hoja", "relleno", "vapor"],
+        "Waffles": ["masa", "hierro con cuadrados", "desayuno", "miel", "belgas"],
+        "Crepes": ["francés", "masa delgada", "relleno dulce o salado", "doblados", "sartén"],
+        "Pancakes": ["americano", "masa esponjosa", "desayuno", "miel", "apilados"],
+        "Bao": ["chino", "pan al vapor", "esponjoso", "relleno", "blanco"],
+        "Dumplings": ["chino", "masa rellena", "vapor o fritos", "pequeños", "dim sum"],
+        "Naan": ["indio", "pan plano", "horno tandoor", "mantequilla", "curry"],
+        "Poke": ["hawaiano", "pescado crudo", "arroz", "aguacate", "soja"],
+        "Tempura": ["japonés", "rebozado ligero", "frito", "verduras o mariscos", "crujiente"],
+        "Baklava": ["medio oriente", "hojaldre", "miel", "nueces", "dulce"],
+        "Mochi": ["japonés", "arroz glutinoso", "relleno", "suave", "dulce"],
+        "Pretzel": ["alemán", "masa retorcida", "sal gorda", "horneado", "forma especial"],
+        "Samosa": ["indio", "masa frita", "triangular", "papas y especias", "crujiente"],
+        "Spring rolls": ["asiático", "enrollado", "verduras", "papel de arroz", "fresco o frito"],
+        "Croquetas": ["español", "empanadas", "bechamel", "fritas", "cremosas"],
+        "Churrasco": ["latinoamericano", "carne asada", "parrilla", "corte grueso", "jugoso"],
+        "Risotto": ["italiano", "arroz cremoso", "caldo", "parmesano", "lento"],
+        "Gnocchi": ["italiano", "pasta de papa", "pequeños", "salsa", "hervidos"],
+        "Poutine": ["canadiense", "papas fritas", "queso", "gravy", "Quebec"],
+        "Fondue": ["suizo", "queso derretido", "pan", "compartir", "olla"],
+        "Escargot": ["francés", "caracoles", "mantequilla", "ajo", "gourmet"],
+        "Souvlaki": ["griego", "brochetas", "carne asada", "pan pita", "tzatziki"],
+        "Bibimbap": ["coreano", "arroz", "verduras", "huevo", "gochujang"],
+        "Arepas": ["venezolano/colombiano", "masa de maíz", "redondas", "relleno", "plancha"],
+        "Feijoada": ["brasileño", "frijoles negros", "carne de cerdo", "estofado", "tradicional"],
+        "Kimchi": ["coreano", "col fermentada", "picante", "acompañamiento", "probiótico"],
+        
+        // Deportes
+        "Fútbol": ["balón", "11 jugadores", "arco", "mundial", "goles"],
+        "Básquet": ["pelota naranja", "aro", "cancha", "NBA", "cinco jugadores"],
+        "Tenis": ["raqueta", "pelota amarilla", "red", "Wimbledon", "sets"],
+        "Natación": ["agua", "pileta", "estilos", "brazadas", "cronómetro"],
+        "Atletismo": ["pista", "carrera", "velocidad", "saltos", "lanzamientos"],
+        "Boxeo": ["guantes", "ring", "rounds", "golpes", "nocaut"],
+        "Rugby": ["balón ovalado", "15 jugadores", "tackle", "try", "scrum"],
+        "Voleibol": ["red alta", "saque", "remate", "6 jugadores", "pelota"],
+        "Golf": ["palos", "hoyo", "green", "18 hoyos", "swing"],
+        "Automovilismo": ["autos", "pista", "velocidad", "F1", "boxes"],
+        "Ciclismo": ["bicicleta", "pedales", "Tour de France", "etapas", "pelotón"],
+        "Ski": ["nieve", "montaña", "tablas", "descenso", "bastones"],
+        "Snowboard": ["nieve", "tabla", "trucos", "halfpipe", "descenso"],
+        "Surf": ["olas", "tabla", "playa", "equilibrio", "mar"],
+        "Skate": ["patineta", "trucos", "rampa", "ollie", "ruedas"],
+        "Escalada": ["roca", "arnés", "altura", "agarre", "pared"],
+        "Gimnasia": ["acrobacias", "flexibilidad", "barras", "colchoneta", "Olimpiadas"],
+        "Halterofilia": ["pesas", "levantamiento", "barra", "fuerza", "Olimpiadas"],
+        "Esgrima": ["espada", "tocado", "máscara", "duelo", "pista"],
+        "Arco y flecha": ["arco", "flechas", "diana", "puntería", "Olimpiadas"],
+        "Judo": ["tatami", "kimono", "llaves", "ippon", "arte marcial"],
+        "Karate": ["kimono", "katas", "golpes", "cinturones", "arte marcial"],
+        "Taekwondo": ["patadas", "kimono", "arte marcial coreano", "cinturones", "combate"],
+        "Lucha libre": ["ring", "máscaras", "llaves", "lucha mexicana", "espectáculo"],
+        "Hockey sobre hielo": ["patines", "puck", "stick", "hielo", "portería"],
+        "Hockey sobre césped": ["stick", "pelota", "césped", "arco", "Olimpiadas"],
+        "Béisbol": ["bat", "pelota", "home run", "9 innings", "MLB"],
+        "Cricket": ["bat", "wicket", "británico", "test match", "pelota roja"],
+        "Fútbol americano": ["ovalado", "touchdown", "NFL", "casco", "yardas"],
+        "MMA": ["octágono", "artes marciales mixtas", "UFC", "nocaut", "sumisión"],
+        
+        // Videojuegos
+        "Minecraft": ["cubos", "crafteo", "supervivencia", "creeper", "mundo abierto"],
+        "Fortnite": ["battle royale", "construcción", "100 jugadores", "bailes", "isla"],
+        "League of Legends": ["MOBA", "5v5", "campeones", "Riot", "nexo"],
+        "Counter-Strike": ["FPS", "terroristas", "bombas", "AK-47", "headshot"],
+        "GTA": ["mundo abierto", "crimen", "autos", "Rockstar", "misiones"],
+        "The Legend of Zelda": ["Link", "Zelda", "Hyrule", "aventura", "triforce"],
+        "Mario Bros": ["fontanero", "hongos", "saltos", "Nintendo", "Bowser"],
+        "Pokémon": ["monstruos", "atrapar", "evolucionar", "combates", "Pikachu"],
+        "Call of Duty": ["FPS", "guerra", "multijugador", "Activision", "campañas"],
+        "FIFA": ["fútbol", "equipos reales", "Ultimate Team", "EA Sports", "simulación"],
+        "Valorant": ["FPS táctico", "agentes", "habilidades", "Riot", "5v5"],
+        "Apex Legends": ["battle royale", "leyendas", "habilidades", "escuadrones", "respawn"],
+        "Overwatch": ["FPS", "héroes", "objetivos", "Blizzard", "6v6"],
+        "Rocket League": ["autos", "fútbol", "acrobático", "multijugador", "goles"],
+        "Among Us": ["impostores", "tripulación", "tareas", "votar", "traición"],
+        "Roblox": ["plataforma", "juegos creados por usuarios", "bloques", "social", "avatares"],
+        "Terraria": ["2D", "exploración", "construcción", "jefes", "ítems"],
+        "Stardew Valley": ["granja", "pixel art", "cultivos", "pueblo", "relajante"],
+        "Animal Crossing": ["isla", "vecinos animales", "decorar", "relajante", "Nintendo"],
+        "The Sims": ["simulador de vida", "casas", "relaciones", "EA", "vecindarios"],
+        "Halo": ["Master Chief", "Covenant", "FPS", "Xbox", "sci-fi"],
+        "God of War": ["Kratos", "mitología", "acción", "PlayStation", "hacha"],
+        "The Last of Us": ["zombies", "Joel y Ellie", "supervivencia", "post-apocalíptico", "Naughty Dog"],
+        "Uncharted": ["Nathan Drake", "tesoros", "aventura", "PlayStation", "escaladas"],
+        "Red Dead Redemption": ["vaqueros", "oeste", "mundo abierto", "Rockstar", "Arthur Morgan"],
+        "The Witcher": ["Geralt", "brujo", "monstruos", "magia", "CD Projekt"],
+        "Skyrim": ["dragones", "Dovahkiin", "RPG", "mundo abierto", "gritos"],
+        "Fallout": ["post-apocalíptico", "refugios", "mutantes", "RPG", "radiación"],
+        "Bioshock": ["Rapture", "plasmidos", "Big Daddy", "distopía", "underwater"],
+        "Portal": ["portales", "GLaDOS", "puzzles", "Aperture Science", "primera persona"],
+        "Half-Life": ["Gordon Freeman", "Combine", "FPS", "Valve", "palanca"],
+        "Team Fortress 2": ["clases", "sombreros", "Valve", "cartoon", "multijugador"],
+        "Dota 2": ["MOBA", "Valve", "5v5", "héroes", "antiguo"],
+        "Hearthstone": ["cartas", "Warcraft", "Blizzard", "estrategia", "maná"],
+        "World of Warcraft": ["MMORPG", "Azeroth", "razas", "clases", "Blizzard"],
+        "Destiny": ["Bungie", "shooter looter", "guardianes", "sci-fi", "raids"],
+        "Warframe": ["ninjas espaciales", "free to play", "cooperativo", "sci-fi", "parkour"],
+        "Dark Souls": ["difícil", "FromSoftware", "bonfires", "jefes épicos", "muerte constante"],
+        "Bloodborne": ["victoriano", "horror", "FromSoftware", "difícil", "bestias"],
+        "Elden Ring": ["FromSoftware", "mundo abierto", "George R.R. Martin", "difícil", "Anillo"],
+        "Sekiro": ["samurai", "FromSoftware", "deflexión", "Japón feudal", "difícil"],
+        "Monster Hunter": ["cazar monstruos", "armas gigantes", "Capcom", "cooperativo", "crafteo"],
+        "Street Fighter": ["peleas", "Ryu", "Hadouken", "Capcom", "combos"],
+        "Mortal Kombat": ["Fatality", "pelea brutal", "Sub-Zero", "Scorpion", "sangre"],
+        "Tekken": ["pelea 3D", "Mishima", "King", "Namco", "combos"],
+        "Super Smash Bros": ["peleas", "Nintendo", "crossover", "plataformas", "porcentaje"],
+        "Splatoon": ["tinta", "calamares", "Nintendo", "shooter", "colorido"],
+        "Metroid": ["Samus", "exploración", "sci-fi", "Nintendo", "power-ups"],
+        "Donkey Kong": ["gorila", "barriles", "plátanos", "Nintendo", "plataformas"],
+        "Kirby": ["rosa", "copiar habilidades", "Nintendo", "adorable", "volar"],
+        "Sonic": ["erizo azul", "velocidad", "anillos", "Sega", "Dr. Eggman"],
+        "Mega Man": ["robot azul", "Capcom", "jefes", "copiar armas", "plataformas"],
+        "Castlevania": ["vampiros", "Belmont", "látigo", "Drácula", "gótico"],
+        "Silent Hill": ["horror psicológico", "niebla", "Pyramid Head", "Konami", "perturbador"],
+        "Resident Evil": ["zombies", "survival horror", "Capcom", "mansión", "T-Virus"],
+        "Dead Space": ["horror espacial", "necromorphs", "Isaac Clarke", "desmembramiento", "EA"],
+        "Outlast": ["horror", "cámara", "asilo", "huir", "primera persona"],
+        "Amnesia": ["horror", "oscuridad", "cordura", "monstruos", "esconderse"],
+        "Five Nights at Freddy's": ["animatrónicos", "pizzería", "cámaras", "sustos", "indie"],
+        "Undertale": ["indie", "RPG", "monstruos", "pacifista o genocida", "Toby Fox"],
+        "Celeste": ["plataformas difícil", "montaña", "pixel art", "indie", "Madeline"],
+        "Hollow Knight": ["metroidvania", "insectos", "indie", "difícil", "Hallownest"],
+        "Cuphead": ["run and gun", "cartoon años 30", "difícil", "jefes", "cooperativo"],
+        "Hades": ["roguelike", "mitología griega", "Zagreus", "Supergiant", "escape"],
+        "Dead Cells": ["roguelike", "metroidvania", "difícil", "pixel art", "mutaciones"],
+        "Binding of Isaac": ["roguelike", "perturbador", "lágrimas", "indie", "Edmund McMillen"],
+        "Don't Starve": ["supervivencia", "Tim Burton style", "hambre", "crafting", "indie"],
+        "Subnautica": ["supervivencia", "océano alienígena", "exploración submarina", "crafteo", "miedo al agua"],
+        "No Man's Sky": ["exploración espacial", "procedural", "planetas", "Hello Games", "multijugador"],
+        "Rust": ["supervivencia", "multijugador", "construcción", "PvP", "desnudo"],
+        "ARK": ["dinosaurios", "supervivencia", "domar", "tribus", "prehistórico"],
+        "DayZ": ["zombies", "supervivencia", "realista", "Bohemia", "post-apocalíptico"],
+        "Genshin Impact": ["gacha", "mundo abierto", "anime", "elementos", "free to play"],
+        "Honkai": ["gacha", "acción", "anime", "miHoYo", "sci-fi"],
+        "Final Fantasy": ["JRPG", "Square Enix", "chocobos", "magia", "historia épica"],
+        "Dragon Quest": ["JRPG", "slimes", "Akira Toriyama", "Square Enix", "medieval"],
+        "Persona": ["JRPG", "escuela", "personas", "Atlus", "relaciones sociales"],
+        "Fire Emblem": ["estrategia por turnos", "permadeath", "Nintendo", "medieval", "táctico"],
+        "XCOM": ["estrategia por turnos", "alienígenas", "escuadrones", "táctico", "difícil"],
+        "Civilization": ["estrategia por turnos", "construir imperio", "4X", "Sid Meier", "histórico"],
+        "Age of Empires": ["RTS", "histórico", "recursos", "civilizaciones", "Microsoft"],
+        "StarCraft": ["RTS", "Blizzard", "sci-fi", "Zerg Terran Protoss", "eSports"],
+        "Warcraft": ["RTS", "Orcos", "Humanos", "Blizzard", "fantasía"],
+        
+        // Clash Royale
+        "Caballero": ["común", "cuerpo a cuerpo", "3 elixir", "bigote", "escudo y espada"],
+        "Arqueras": ["común", "distancia", "3 elixir", "dos unidades", "pelo rosa"],
+        "Gigante": ["raro", "tanque", "5 elixir", "ataca edificios", "lento"],
+        "P.E.K.K.A": ["épica", "robot", "7 elixir", "espada grande", "fuerte"],
+        "Príncipe": ["épica", "carga", "5 elixir", "caballo", "lanza"],
+        "Mago": ["raro", "área", "5 elixir", "bola de fuego", "barba blanca"],
+        "Bruja": ["épica", "invoca esqueletos", "5 elixir", "pelo morado", "distancia"],
+        "Golem": ["épica", "tanque", "8 elixir", "se divide", "roca"],
+        "Montapuercos": ["épica", "edificios", "4 elixir", "martillo", "cerdo"],
+        "Globo": ["épica", "aéreo", "5 elixir", "bomba", "edificios"],
+        "Dragón infernal": ["legendaria", "aéreo", "4 elixir", "rayo", "se calienta"],
+        "Tronco": ["legendaria", "hechizo", "2 elixir", "empuja", "daño área"],
+        "Princesa": ["legendaria", "distancia", "3 elixir", "flecha larga", "área"],
+        "Minero": ["legendaria", "aparece", "3 elixir", "pico", "torre"],
+        "Leñador": ["legendaria", "rabia", "4 elixir", "hacha", "barbudo"],
+        "Mago eléctrico": ["legendaria", "aturdimiento", "4 elixir", "electricidad", "área"],
+        "Bandida": ["legendaria", "dash", "3 elixir", "daga", "rápida"],
+        "Mago de hielo": ["legendaria", "ralentiza", "3 elixir", "hielo", "área"],
+        "Megacaballero": ["legendaria", "salto", "7 elixir", "área al caer", "tanque"],
+        "Ariete de batalla": ["raro", "edificios", "4 elixir", "dos bárbaros", "madera"],
+        "Bárbaros": ["común", "cinco unidades", "5 elixir", "bigotes", "espadas"],
+        "Duendes con lanza": ["común", "tres unidades", "2 elixir", "distancia", "verdes"],
+        "Minions": ["común", "aéreo", "3 elixir", "tres unidades", "negros voladores"],
+        "Mini P.E.K.K.A": ["raro", "robot pequeño", "4 elixir", "espada", "fuerte"],
+        "Mosquetero": ["raro", "distancia", "4 elixir", "rifle", "sombrero"],
+        "Valquiria": ["raro", "área", "4 elixir", "hacha giratoria", "pelirroja"],
+        "Bebé dragón": ["épica", "aéreo", "4 elixir", "fuego", "área"],
+        "Esqueletos": ["común", "cuatro unidades", "1 elixir", "huesos", "ciclo"],
+        "Bola de fuego": ["raro", "hechizo", "4 elixir", "daño grande", "empuje"],
+        "Flechas": ["común", "hechizo", "3 elixir", "área", "rápido"],
+        "Rayo": ["épica", "hechizo", "6 elixir", "daño alto", "aturdimiento"],
+        "Veneno": ["épica", "hechizo", "4 elixir", "duración", "ralentiza"],
+        "Tornado": ["épica", "hechizo", "3 elixir", "atrae", "activación rey"],
+        "Clon": ["épica", "hechizo", "3 elixir", "duplica", "1 HP"],
+        "Congelar": ["épica", "hechizo", "4 elixir", "paraliza", "duración"],
+        "Espejo": ["épica", "hechizo", "variable", "copia", "+1 nivel"],
+        "Furia": ["épica", "hechizo", "2 elixir", "velocidad", "área"],
+        "Torre de bombas": ["raro", "edificio", "4 elixir", "área", "muerte"],
+        "Cañón": ["común", "edificio", "3 elixir", "defensa", "barato"],
+        "Torre tesla": ["común", "edificio", "4 elixir", "eléctrica", "se esconde"],
+        "Torre infernal": ["raro", "edificio", "5 elixir", "se calienta", "un objetivo o multi"],
+        "Choza de duendes": ["raro", "edificio", "4 elixir", "invoca duendes", "vida"],
+        "Cabaña de bárbaros": ["raro", "edificio", "6 elixir", "invoca bárbaros", "spawn"],
+        "Horno": ["raro", "edificio", "4 elixir", "espíritus de fuego", "spawn"],
+        "Lápida": ["raro", "edificio", "3 elixir", "esqueletos", "muerte"],
+        "Ejército de esqueletos": ["épica", "15 unidades", "3 elixir", "enjambre", "defensa"],
+        "Pandilla de duendes": ["común", "seis unidades", "3 elixir", "enjambre", "rápidos"],
+        "Horda de esbirros": ["común", "aéreo", "5 elixir", "seis unidades", "enjambre"],
+        "Montapuercos oscuro": ["épica", "edificios", "6 elixir", "invoca", "oscuridad"],
+        "Guardia": ["épica", "tres unidades", "3 elixir", "escudo", "lanza"],
+        "Espíritus de hielo": ["común", "tres unidades", "1 elixir", "congelan", "saltan"],
+        "Espíritus de fuego": ["común", "tres unidades", "1 elixir", "fuego", "torre"],
+        "Espíritu electrocutador": ["común", "una unidad", "1 elixir", "aturdimiento", "salta"],
+        "Bola de nieve": ["común", "hechizo", "2 elixir", "ralentiza", "empuja"],
+        "Terremoto": ["raro", "hechizo", "3 elixir", "edificios", "corona"],
+        "Chispas": ["legendaria", "hechizo", "1 elixir", "tres rayos", "flexible"],
+        "Curar": ["raro", "hechizo", "1 elixir", "vida", "tropas"],
+        "Barbacoa real": ["épica", "hechizo", "6 elixir", "jamón", "cura mucho"],
+        "Bombardero": ["común", "área", "2 elixir", "bomba", "tierra"],
+        "Verdugo": ["legendaria", "daño alto", "5 elixir", "hacha ejecutora", "escudo"],
+        "Descarga": ["común", "hechizo", "2 elixir", "aturdimiento", "multi objetivo"],
+        
+        // Rock Internacional
+        "Queen": ["Bohemian Rhapsody", "Freddie Mercury", "británica", "We Will Rock You", "años 70-80"],
+        "The Beatles": ["británica", "Liverpool", "Lennon y McCartney", "Let It Be", "años 60"],
+        "Led Zeppelin": ["Stairway to Heaven", "británica", "blues rock", "Robert Plant", "años 70"],
+        "Pink Floyd": ["The Wall", "psicodélica", "británica", "Dark Side of the Moon", "progresivo"],
+        "The Rolling Stones": ["británica", "Satisfaction", "Mick Jagger", "gira constante", "años 60"],
+        "AC/DC": ["australiana", "Highway to Hell", "Angus Young", "hard rock", "uniformes escolares"],
+        "Nirvana": ["grunge", "Kurt Cobain", "Smells Like Teen Spirit", "Seattle", "años 90"],
+        "Guns N' Roses": ["Appetite for Destruction", "Slash", "Sweet Child O' Mine", "hard rock", "años 80-90"],
+        "Metallica": ["thrash metal", "Master of Puppets", "Nothing Else Matters", "San Francisco", "años 80"],
+        "The Doors": ["Jim Morrison", "psicodélica", "Light My Fire", "años 60", "Los Ángeles"],
+        "Jimi Hendrix": ["guitarra", "Purple Haze", "Woodstock", "años 60", "virtuoso"],
+        "The Who": ["My Generation", "británica", "rock ópera", "Pete Townshend", "años 60-70"],
+        "Black Sabbath": ["heavy metal", "Ozzy Osbourne", "Paranoid", "británica", "oscura"],
+        "Deep Purple": ["Smoke on the Water", "británica", "hard rock", "órgano", "años 70"],
+        "Aerosmith": ["Dream On", "Steven Tyler", "americana", "hard rock", "años 70"],
+        "U2": ["irlandesa", "Bono", "With or Without You", "activismo", "años 80"],
+        "R.E.M.": ["Losing My Religion", "rock alternativo", "Athens Georgia", "años 80-90", "Stipe"],
+        "Radiohead": ["Creep", "británica", "OK Computer", "experimental", "Thom Yorke"],
+        "Oasis": ["Wonderwall", "británica", "hermanos Gallagher", "Britpop", "años 90"],
+        "The Cure": ["Just Like Heaven", "gótica", "Robert Smith", "post-punk", "años 80"],
+        "The Smiths": ["británica", "Morrissey", "indie rock", "años 80", "guitarra jangle"],
+        "Red Hot Chili Peppers": ["californiana", "funk rock", "Flea", "Californication", "años 80"],
+        "Foo Fighters": ["Dave Grohl", "Everlong", "post-grunge", "años 90", "alternativa"],
+        "Pearl Jam": ["grunge", "Seattle", "Eddie Vedder", "Alive", "años 90"],
+        "Soundgarden": ["grunge", "Chris Cornell", "Black Hole Sun", "Seattle", "años 90"],
+        "Alice in Chains": ["grunge", "Seattle", "Layne Staley", "Man in the Box", "años 90"],
+        "The Clash": ["punk rock", "británica", "London Calling", "política", "años 70-80"],
+        "Ramones": ["punk rock", "New York", "Blitzkrieg Bop", "chaquetas de cuero", "años 70"],
+        "Sex Pistols": ["punk", "británica", "Anarchy in the UK", "Johnny Rotten", "años 70"],
+        "Green Day": ["punk rock", "Basket Case", "American Idiot", "años 90-2000", "californiana"],
+        "Blink-182": ["pop punk", "californiana", "All the Small Things", "años 90-2000", "juvenil"],
+        "The Offspring": ["punk rock", "californiana", "Self Esteem", "años 90", "Come Out and Play"],
+        "Linkin Park": ["nu metal", "Chester Bennington", "In the End", "rap rock", "años 2000"],
+        "System of a Down": ["metal alternativo", "armenia", "Toxicity", "Chop Suey!", "política"],
+        "Rage Against the Machine": ["rap metal", "política", "Killing in the Name", "años 90", "Tom Morello"],
+        "Iron Maiden": ["heavy metal", "británica", "Eddie mascota", "Bruce Dickinson", "años 80"],
+        "Judas Priest": ["heavy metal", "británica", "Rob Halford", "cuero", "años 70-80"],
+        "Slayer": ["thrash metal", "Reign in Blood", "extremo", "años 80", "californiana"],
+        "Megadeth": ["thrash metal", "Dave Mustaine", "años 80", "Symphony of Destruction", "técnico"],
+        "Anthrax": ["thrash metal", "New York", "años 80", "rap metal fusion", "Big Four"],
+        "Kiss": ["glam rock", "maquillaje", "Gene Simmons", "Rock and Roll All Nite", "años 70"],
+        "Van Halen": ["hard rock", "Eddie Van Halen", "Jump", "tapping", "años 80"],
+        "Bon Jovi": ["rock melódico", "Livin' on a Prayer", "New Jersey", "años 80", "power ballads"],
+        "Def Leppard": ["hard rock británica", "Photograph", "años 80", "Hysteria", "melódico"],
+        "Mötley Crüe": ["glam metal", "años 80", "Dr. Feelgood", "excesos", "Sunset Strip"],
+        
+        // Rock Argentino
+        "Soda Stereo": ["Gustavo Cerati", "De Música Ligera", "new wave", "argentina", "años 80-90"],
+        "Los Fabulosos Cadillacs": ["ska", "Matador", "Vicentico", "coloridos", "años 80-90"],
+        "Divididos": ["Ricardo Mollo", "rock duro", "Que Vas a Hacer Tan Sola", "argentina", "años 90"],
+        "Sumo": ["Luca Prodan", "reggae rock", "La Rubia Tarada", "años 80", "italiano"],
+        "Charly García": ["Clics Modernos", "piano", "Say No More", "icono", "años 80"],
+        "Virus": ["Federico Moura", "synth-pop", "Wadu Wadu", "años 80", "estética"],
+        "Patricio Rey y sus Redonditos de Ricota": ["Indio Solari", "culto", "Jijiji", "underground", "mítica"],
+        "Los Enanitos Verdes": ["Lamento Boliviano", "Luz de Día", "Mendoza", "años 80", "melódico"],
+        "Attaque 77": ["punk rock", "Arrancacorazones", "años 80", "Buenos Aires", "hardcore"],
+        "La Renga": ["hard rock", "Panic Show", "Chizzo", "years 90", "culto"],
+        "Los Piojos": ["rock popular", "Cuervo", "años 90", "Buenos Aires", "masivo"],
+        "Rata Blanca": ["heavy metal", "La Leyenda del Hada y el Mago", "Giardino", "años 80", "powermetal"],
+        "Andrés Calamaro": ["solista", "Flaca", "Los Rodríguez", "prolífico", "años 90"],
+        "Fito Páez": ["El Amor Después del Amor", "piano", "Rosario", "Giros", "años 80-90"],
+        "Luis Alberto Spinetta": ["Muchacha Ojos de Papel", "Almendra", "poético", "icono", "años 70"],
+        "Bersuit Vergarabat": ["fusión", "La Argentinidad al Palo", "murguero", "años 90", "fiesta"],
+        "Las Pelotas": ["rock duro", "Será", "Sumo continuación", "Germán Daffunchio", "años 90"],
+        "Los Auténticos Decadentes": ["ska festivo", "Loco Tu Forma de Ser", "fiesta", "años 90", "Cucho"],
+        "Los Ratones Paranoicos": ["rock and roll", "Reina Madre", "Juanse", "Stone's argentinos", "años 80-90"],
+        "Catupecu Machu": ["rock alternativo", "Magia Veneno", "años 90", "energía", "Ale Sergi"],
+        "Viejas Locas": ["rock barrial", "Hermoza Locura", "Pity Álvarez", "años 90", "crudo"],
+        "Callejeros": ["rock popular", "tragedia Cromañón", "Rotos", "años 90-2000", "Fontanet"],
+        "Las Pastillas del Abuelo": ["rock festivo", "Lo Más Valioso", "años 2000", "fiesta", "masivo"],
+        "No Te Va Gustar": ["uruguaya", "fusión", "Chau", "reggae rock", "masivo"],
+        "La Vela Puerca": ["uruguaya", "rock festivo", "Zafar", "murga rock", "años 90"],
+        "Tan Biónica": ["pop rock", "Ciudad Mágica", "años 2000", "Chano", "masivo"],
+        "El Bordo": ["Ella", "rock popular", "años 2000", "Buenos Aires", "barrial"],
+        "Estelares": ["indie rock", "Aire", "Manuel Moretti", "años 90", "melódico"],
+        "Juana Molina": ["experimental", "cantautora", "loops", "única", "hija de"],
+        "Babasónicos": ["rock alternativo", "Putita", "experimental", "años 90", "Adrián Dárgelos"],
+        "Los Pericos": ["reggae", "El Ritual de la Banana", "Juanchi", "años 80", "fiesta"],
+        "Karamelo Santo": ["fusión", "ska punk", "Que No Digan Nunca", "Goy", "años 90"],
+        "Turf": ["indie rock", "Pasos al Costado", "años 90", "Buenos Aires", "melódico"],
+        "Miranda!": ["electropop", "Yo Te Diré", "Ale Sergi", "años 2000", "festivo"],
+        "Illya Kuryaki and the Valderramas": ["hip hop rock", "Abarajame", "Dante y Emmanuel", "fusión", "años 90"],
+        "Kapanga": ["rock festivo", "El Mono Relojero", "años 90", "fiesta", "cumbia rock"],
+        "Massacre": ["punk hardcore", "años 80", "Stuka", "extremo", "underground"],
+        "Los Violadores": ["punk", "Represión", "Stuka", "años 80", "pioneros"],
+        "2 Minutos": ["punk rock", "Arrebato", "Valentín", "años 90", "directo"],
+        "Fun People": ["hardcore punk", "años 90", "indie", "Nekro", "emocional"],
+        "Hermética": ["heavy metal", "Iorio", "thrash", "años 80-90", "nacional"],
+        "Almafuerte": ["heavy metal", "Ricardo Iorio", "años 90", "Toro y Pampa", "crudo"],
+        "Pappo": ["blues rock", "Riff", "guitarra", "icono", "años 70-80"],
+        "Manal": ["blues rock pionero", "Avellaneda Blues", "años 60", "Javier Martínez", "fundacional"],
+        "Pescado Rabioso": ["Spinetta", "rock progresivo", "Post Crucifixión", "años 70", "experimental"],
+        "Invisible": ["Spinetta", "progresivo", "Durazno Sangrando", "años 70", "conceptual"],
+        "Serú Girán": ["Charly García", "progresivo", "Seminare", "años 70-80", "supergrupo"],
+        "Moris": ["pionero", "De Nada Sirve", "años 60", "beat", "fundacional"],
+        "Litto Nebbia": ["Los Gatos", "La Balsa", "años 60", "pionero", "fundacional"],
+        "León Gieco": ["folk rock", "Solo le Pido a Dios", "años 70", "social", "protesta"],
+        "Mercedes Sosa": ["folklore", "voz potente", "Alfonsina y el Mar", "Tucumán", "icono"],
+        "GIT": ["Gustavo Nápoli", "rock progresivo", "años 80", "instrumental", "técnico"],
+        "V8": ["heavy metal", "Cautivo del Sistema", "Ricardo Iorio", "años 80", "pionero"],
+        "A.N.I.M.A.L": ["metal", "thrash", "años 90", "El Nuevo Camino del Hombre", "Andrés Giménez"],
+        "Ciro y Los Persas": ["rock popular", "Ciro", "ex Piojos", "años 2010", "masivo"],
+        "Él Mato a un Policía Motorizado": ["indie rock", "años 2000", "noise pop", "La Plata", "underground"],
+        "Conociendo Rusia": ["indie pop", "Cabildo y Juramento", "años 2010", "melódico", "Mateo Sujatovich"],
+        "Bandalos Chinos": ["indie rock", "El Ídolo", "años 2010", "Buenos Aires", "moderno"],
+        "Cuentos Borgeanos": ["stoner rock", "Lomas de Zamora", "años 90", "pesado", "underground"],
+        
+        // Películas
+        "El Padrino": ["mafia", "Vito Corleone", "oferta que no puede rechazar", "Coppola", "años 70"],
+        "Pulp Fiction": ["Tarantino", "no lineal", "maletín", "danza", "años 90"],
+        "El Señor de los Anillos": ["Frodo", "anillo", "Tierra Media", "épica", "trilogía"],
+        "Star Wars": ["Jedi", "Vader", "espacio", "saga", "La Fuerza"],
+        "Titanic": ["barco", "iceberg", "Jack y Rose", "hundimiento", "años 90"],
+        "Forrest Gump": ["pluma", "corre", "Tom Hanks", "historia americana", "chocolates"],
+        "Matrix": ["Neo", "píldoras", "simulación", "kung fu", "Wachowski"],
+        "Inception": ["sueños", "Cobb", "trompo", "Nolan", "niveles"],
+        "Interstellar": ["espacio", "agujero de gusano", "Cooper", "Nolan", "tiempo"],
+        "The Dark Knight": ["Joker", "Heath Ledger", "Gotham", "Batman", "Nolan"],
+        "Fight Club": ["Brad Pitt", "reglas", "jabón", "Tyler Durden", "twist"],
+        "Gladiador": ["Roma", "Maximus", "arena", "venganza", "Russell Crowe"],
+        "Volver al Futuro": ["DeLorean", "viaje en el tiempo", "Marty", "Doc", "años 80"],
+        "Jurassic Park": ["dinosaurios", "isla", "T-Rex", "Spielberg", "clonación"],
+        "E.T.": ["extraterrestre", "dedo", "bicicleta", "Spielberg", "niños"],
+        "Tiburón": ["playa", "aleta", "Amity", "Spielberg", "terror"],
+        "Indiana Jones": ["arqueólogo", "látigo", "aventuras", "Spielberg", "tesoros"],
+        "Toy Story": ["juguetes", "Woody", "Buzz", "Pixar", "animada"],
+        "El Rey León": ["Simba", "sabana", "Mufasa", "Hakuna Matata", "Disney"],
+        "Shrek": ["ogro", "pantano", "Burro", "DreamWorks", "princesa"],
+        "Buscando a Nemo": ["pez payaso", "océano", "Dory", "Pixar", "acuario"],
+        "Frozen": ["Let It Go", "Elsa", "hielo", "Disney", "hermanas"],
+        "Coco": ["Día de Muertos", "Miguel", "guitarra", "Pixar", "familia"],
+        "Up": ["globos", "casa voladora", "Carl", "Pixar", "aventura"],
+        "Wall-E": ["robot", "basura", "espacio", "Pixar", "amor"],
+        "Los Increíbles": ["superhéroes", "familia", "Mr. Increíble", "Pixar", "retiro"],
+        "Ratatouille": ["rata", "cocina", "París", "Pixar", "chef"],
+        "Intensamente": ["emociones", "Riley", "cerebro", "Pixar", "Alegría y Tristeza"],
+        "Moana": ["océano", "Maui", "isla", "Disney", "corazón de Te Fiti"],
+        "Enredados": ["Rapunzel", "torre", "pelo largo", "Disney", "sartén"],
+        "La Bella y la Bestia": ["rosa", "castillo", "Belle", "Disney", "hechizo"],
+        "La Sirenita": ["Ariel", "mar", "voz", "Disney", "Bajo el Mar"],
+        "Aladdin": ["genio", "lámpara", "alfombra", "Disney", "Agrabah"],
+        "El Viaje de Chihiro": ["Ghibli", "Miyazaki", "Sin Rostro", "Yubaba", "fantasía"],
+        "Mi Vecino Totoro": ["Ghibli", "espíritu del bosque", "niñas", "Miyazaki", "paraguas"],
+        "La Princesa Mononoke": ["Ghibli", "bosque", "San", "Miyazaki", "naturaleza"],
+        "Harry Potter": ["mago", "Hogwarts", "varita", "saga", "Voldemort"],
+        "El Hobbit": ["Bilbo", "Smaug", "anillo", "Peter Jackson", "Tierra Media"],
+        "Piratas del Caribe": ["Jack Sparrow", "Perla Negra", "mar", "Johnny Depp", "fantasía"],
+        "Avatar": ["Pandora", "Na'vi", "James Cameron", "azul", "3D"],
+        "Los Vengadores": ["superhéroes", "Marvel", "equipo", "Thanos", "Infinity War"],
+        "Iron Man": ["Tony Stark", "armadura", "Marvel", "reactor arc", "Robert Downey Jr"],
+        "Capitán América": ["Steve Rogers", "escudo", "Marvel", "súper soldado", "WWII"],
+        "Thor": ["Asgard", "martillo", "Odín", "Marvel", "dios del trueno"],
+        "Spider-Man": ["araña", "telaraña", "Peter Parker", "Marvel", "Nueva York"],
+        "Black Panther": ["Wakanda", "T'Challa", "vibranium", "Marvel", "África"],
+        "Doctor Strange": ["hechicero supremo", "ojo de Agamotto", "Marvel", "dimensiones", "magia"],
+        "Guardianes de la Galaxia": ["espacio", "Groot", "Star-Lord", "Marvel", "walkman"],
+        "Deadpool": ["antihéroe", "rompe cuarta pared", "Marvel", "mercenario", "humor"],
+        "The Batman": ["Gotham", "Riddler", "Robert Pattinson", "detective", "oscura"],
+        "Joker": ["Joaquin Phoenix", "Gotham", "payaso", "origen", "escaleras"],
+        "El Caballero de la Noche Asciende": ["Bane", "Batman", "Gotham", "Nolan", "final"],
+        "Superman": ["Krypton", "capa roja", "Clark Kent", "DC", "vuela"],
+        "Wonder Woman": ["amazona", "lazo", "Diana", "DC", "WWI"],
+        "Shazam": ["niño héroe", "palabra mágica", "DC", "familia", "comedia"],
+        "Aquaman": ["Atlantis", "tridente", "mar", "DC", "Jason Momoa"],
+        "El Conjuro": ["Warren", "casa embrujada", "terror", "James Wan", "exorcismo"],
+        "Annabelle": ["muñeca poseída", "terror", "El Conjuro universo", "Warren", "maldita"],
+        "Insidious": ["James Wan", "astral", "niño", "terror", "la Ulterior"],
+        "Actividad Paranormal": ["cámara fija", "noche", "casa", "found footage", "terror"],
+        "The Ring": ["videocinta", "7 días", "Samara", "pozo", "terror"],
+        "IT": ["payaso", "Pennywise", "Derry", "Stephen King", "alcantarilla"],
+        "El Exorcista": ["posesión", "niña", "sacerdote", "terror", "años 70"],
+        "Psicosis": ["Hitchcock", "ducha", "motel", "madre", "Norman Bates"],
+        "El Resplandor": ["hotel", "laberinto", "Jack", "Kubrick", "Here's Johnny"],
+        "Alien": ["espacio", "xenomorfo", "Ripley", "nave", "horror"],
+        "Terminator": ["T-800", "Schwarzenegger", "futuro", "Skynet", "I'll be back"],
+        "Depredador": ["selva", "alien cazador", "Schwarzenegger", "camuflaje", "acción"],
+        "Rocky": ["boxeo", "Filadelfia", "Stallone", "escaleras", "underdog"],
+        "Rambo": ["Stallone", "Vietnam", "supervivencia", "acción", "cuchillo"],
+        "John Wick": ["asesino", "perro", "Keanu Reeves", "Continental", "venganza"],
+        "Mad Max": ["desierto", "post-apocalíptico", "Fury Road", "autos", "Immortan Joe"],
+        
+        // Pokémon
+        "Pikachu": ["eléctrico", "ratón amarillo", "mejillas rojas", "mascota de Ash", "cola de rayo"],
+        "Charizard": ["fuego y volador", "dragón naranja", "escupe fuego", "alas", "evolución de Charmeleon"],
+        "Bulbasaur": ["planta y veneno", "bulbo en la espalda", "starter", "cuadrúpedo", "número 1 de la Pokédex"],
+        "Squirtle": ["agua", "tortuga azul", "caparazón", "starter", "escuadrón"],
+        "Mewtwo": ["psíquico", "legendario", "clonado de Mew", "poderoso", "cola larga"],
+        "Mew": ["psíquico", "legendario rosa", "ancestro de todos", "puede aprender todo", "flotante"],
+        "Eevee": ["normal", "evoluciones múltiples", "peludo marrón", "cola esponjosa", "ocho evoluciones"],
+        "Snorlax": ["normal", "duerme todo el tiempo", "muy gordo", "bloquea rutas", "flauta pokémon"],
+        "Gengar": ["fantasma y veneno", "sombra", "sonrisa", "morado", "lengua larga"],
+        "Dragonite": ["dragón y volador", "naranja", "amigable", "pseudo legendario", "antenas"],
+        "Gyarados": ["agua y volador", "serpiente azul", "agresivo", "evoluciona de Magikarp", "bigotes"],
+        "Lucario": ["lucha y acero", "chacal azul", "aura", "pinchos", "mega evolución"],
+        "Greninja": ["agua y siniestro", "rana ninja", "lengua como bufanda", "Ash-Greninja", "rápido"],
+        "Blaziken": ["fuego y lucha", "pollo", "patadas", "starter final Hoenn", "mega evolución"],
+        "Umbreon": ["siniestro", "evolución de Eevee", "negro con anillos", "brilla de noche", "felino"],
+        "Espeon": ["psíquico", "evolución de Eevee", "lila", "cola bífida", "evoluciona de día"],
+        "Jolteon": ["eléctrico", "evolución de Eevee", "amarillo con púas", "muy rápido", "piedra trueno"],
+        "Vaporeon": ["agua", "evolución de Eevee", "azul sirena", "cola de pez", "piedra agua"],
+        "Flareon": ["fuego", "evolución de Eevee", "naranja peludo", "collar esponjoso", "piedra fuego"],
+        "Leafeon": ["planta", "evolución de Eevee", "verde con hojas", "roca musgo", "cola hoja"],
+        "Glaceon": ["hielo", "evolución de Eevee", "azul celeste", "cristales de hielo", "roca hielo"],
+        "Sylveon": ["hada", "evolución de Eevee", "rosa con lazos", "listones", "amistad"],
+        "Meowth": ["normal", "gato moneda", "Team Rocket", "habla humano", "moneda en frente"],
+        "Psyduck": ["agua", "pato amarillo", "dolor de cabeza", "confundido", "poderes psíquicos"],
+        "Machamp": ["lucha", "cuatro brazos", "muy musculoso", "cinturón campeón", "intercambio"],
+        "Alakazam": ["psíquico", "cucharas en las manos", "IQ alto", "bigote", "intercambio"],
+        "Golem": ["roca y tierra", "redondo con espinas", "resistente", "intercambio", "piedra"],
+        "Raichu": ["eléctrico", "evolución de Pikachu", "naranja", "cola rayos", "piedra trueno"],
+        "Arcanine": ["fuego", "perro tigre", "muy rápido", "leal", "majestuoso"],
+        "Ninetales": ["fuego", "zorro nueve colas", "místico", "piedra fuego", "pelaje dorado"],
+        "Pidgeot": ["normal y volador", "pájaro grande", "cresta colorida", "mega evolución", "rápido"],
+        "Fearow": ["normal y volador", "ave rapaz", "pico largo", "agresivo", "cuello"],
+        "Sandslash": ["tierra", "pangolín con espinas", "garras afiladas", "amarillo", "cava"],
+        "Nidoking": ["veneno y tierra", "cuerno púrpura", "muy fuerte", "piedra lunar", "macho"],
+        "Nidoqueen": ["veneno y tierra", "azul robusta", "protectora", "piedra lunar", "hembra"],
+        "Clefable": ["hada", "rosado alado", "orejas puntiagudas", "piedra lunar", "mágico"],
+        "Wigglytuff": ["normal y hada", "globo rosa", "ojos grandes", "canta", "piedra lunar"],
+        "Venomoth": ["bicho y veneno", "polilla morada", "alas con escalas", "tóxico", "vuela"],
+        "Dugtrio": ["tierra", "tres topos", "nariz rosa", "bajo tierra", "trío"],
+        "Persian": ["normal", "gato elegante", "gema en frente", "sofisticado", "cuadrúpedo"],
+        "Golduck": ["agua", "pato azul", "gema roja", "nadador rápido", "psíquico"],
+        "Primeape": ["lucha", "mono furioso", "puños cerrados", "siempre enojado", "cola en espiral"],
+        "Poliwrath": ["agua y lucha", "rana musculosa", "espiral en abdomen", "nadador", "piedra agua"],
+        "Abra": ["psíquico", "siempre duerme", "teletransporte", "huye", "primera etapa"],
+        "Kadabra": ["psíquico", "una cuchara", "cola gruesa", "estrella en frente", "intercambio"],
+        "Machoke": ["lucha", "culturista", "cinturón de energía", "muy fuerte", "intercambio"],
+        "Victreebel": ["planta y veneno", "carnívora", "boca grande", "come insectos", "piedra hoja"],
+        "Tentacruel": ["agua y veneno", "medusa grande", "tentáculos", "gemas rojas", "océano"],
+        "Rapidash": ["fuego", "caballo con llamas", "cuerno", "muy veloz", "carreras"],
+        "Slowbro": ["agua y psíquico", "Shellder en cola", "rosa gordo", "lento", "despistado"],
+        "Magneton": ["eléctrico y acero", "tres imanes", "levita", "sin género", "campo magnético"],
+        "Dodrio": ["normal y volador", "tres cabezas", "no vuela", "muy rápido", "avestruz"],
+        "Dewgong": ["agua y hielo", "foca blanca", "cuerno", "nada en hielo", "elegante"],
+        "Muk": ["veneno", "lodo tóxico", "morado baboso", "olor fétido", "amorfo"],
+        "Cloyster": ["agua y hielo", "almeja con púas", "concha negra", "defensa alta", "piedra agua"],
+        "Haunter": ["fantasma y veneno", "manos flotantes", "lengua larga", "pesadillas", "intercambio"],
+        "Hypno": ["psíquico", "péndulo en mano", "hipnotiza", "amarillo peludo", "sueño"],
+        "Kingler": ["agua", "cangrejo grande", "pinza gigante", "rojo", "camina de lado"],
+        "Electrode": ["eléctrico", "pokébola invertida", "explota", "muy rápido", "esférico"],
+        "Exeggutor": ["planta y psíquico", "palmera con huevos", "tres cabezas", "alto", "piedra hoja"],
+        "Marowak": ["tierra", "hueso como arma", "cráneo puesto", "madre fallecida", "guerrero"],
+        "Hitmonlee": ["lucha", "piernas elásticas", "patadas", "sin cabeza aparente", "Bruce Lee"],
+        "Hitmonchan": ["lucha", "puños", "boxeador", "guantes", "Jackie Chan"],
+        "Lickitung": ["normal", "lengua enorme", "rosa", "lame todo", "torpe"],
+        "Koffing": ["veneno", "bola flotante", "gases tóxicos", "calavera", "explota"],
+        "Weezing": ["veneno", "dos cabezas", "gases", "James", "contamina"],
+        "Rhyhorn": ["tierra y roca", "rinoceronte", "carga", "armadura", "primera evolución"],
+        "Rhydon": ["tierra y roca", "taladro", "fuerte", "bipedo", "evoluciona más"],
+        "Chansey": ["normal", "huevo", "enfermera Joy", "rosada", "feliz"],
+        "Tangela": ["planta", "enredaderas", "ojos escondidos", "azul", "enredado"],
+        "Kangaskhan": ["normal", "canguro", "bebé en bolsa", "maternal", "mega evolución"],
+        "Horsea": ["agua", "caballito de mar", "azul", "tinta", "enroscado"],
+        "Seadra": ["agua", "dragón marino", "espinas", "evoluciona más", "veneno"],
+        "Starmie": ["agua y psíquico", "estrella de mar", "gema roja", "gira", "piedra agua"],
+        "Mr. Mime": ["psíquico y hada", "mimo", "barreras invisibles", "payaso", "Ash madre"],
+        "Scyther": ["bicho y volador", "mantis", "guadañas", "verde", "rápido"],
+        "Jynx": ["hielo y psíquico", "humanoid", "beso", "canta", "cabello rubio"],
+        "Electabuzz": ["eléctrico", "amarillo y negro", "rayos", "cola", "central eléctrica"],
+        "Magmar": ["fuego", "pato de fuego", "rojo y amarillo", "cola llama", "volcán"],
+        "Pinsir": ["bicho", "escarabajo", "cuernos pinza", "mega evolución", "bosque"],
+        "Tauros": ["normal", "toro", "tres colas", "embiste", "Ash tiene 30"],
+        "Magikarp": ["agua", "inútil", "salpicadura", "evolución poderosa", "pez"],
+        "Lapras": ["agua y hielo", "transporte", "canta", "caparazón", "en peligro"],
+        "Ditto": ["normal", "transforma", "rosa gelatina", "cara simple", "crianza"],
+        "Vaporeon": ["agua", "evolución Eevee", "sirena", "cola pez", "piedra agua"],
+        "Porygon": ["normal", "digital", "polígonos", "cyber", "episodio prohibido"],
+        "Omanyte": ["roca y agua", "fósil", "espiral", "tentáculos", "extinto"],
+        "Omastar": ["roca y agua", "amonita", "espiral grande", "fósil", "concha"],
+        "Kabuto": ["roca y agua", "fósil", "herradura", "plano", "cúpula"],
+        "Kabutops": ["roca y agua", "fósil", "hoces", "depredador", "camina"],
+        "Aerodactyl": ["roca y volador", "pterodáctilo", "fósil", "dientes", "mega evolución"],
+        "Snorlax": ["normal", "duerme", "gordo", "flauta", "bloquea"],
+        "Articuno": ["hielo y volador", "legendario", "ave azul", "congela", "trío de aves"],
+        "Zapdos": ["eléctrico y volador", "legendario", "ave amarilla", "truenos", "trío de aves"],
+        "Moltres": ["fuego y volador", "legendario", "ave de fuego", "llamas", "trío de aves"],
+        "Dratini": ["dragón", "serpiente azul", "cristal frente", "primera evolución", "lago"],
+        "Dragonair": ["dragón", "serpiente", "alas en cabeza", "cristales", "mítico"],
+        "Dragonite": ["dragón y volador", "naranja", "antenas", "amigable", "pseudo legendario"],
+        "Mewtwo": ["psíquico", "clonado", "poderoso", "película", "cola"],
+        "Mew": ["psíquico", "ancestro", "rosa", "legendario", "transforma"],
+        "Chikorita": ["planta", "hoja en cabeza", "starter Johto", "cuello", "olor"],
+        "Bayleef": ["planta", "cuello largo", "hoja", "aroma", "Johto"],
+        "Meganium": ["planta", "cuello de flor", "antenas", "fragancia", "starter final"],
+        "Cyndaquil": ["fuego", "ratón", "llamas en espalda", "starter Johto", "tímido"],
+        "Quilava": ["fuego", "fuego en espalda", "comadreja", "Johto", "rápido"],
+        "Typhlosion": ["fuego", "tejón", "explosión", "starter final", "Johto"],
+        "Totodile": ["agua", "cocodrilo", "mandíbulas", "starter Johto", "baila"],
+        "Croconaw": ["agua", "cocodrilo", "muerde", "Johto", "agresivo"],
+        "Feraligatr": ["agua", "cocodrilo grande", "mandíbulas poderosas", "starter final", "intimidante"],
+        "Sentret": ["normal", "ardilla", "vigía", "cola", "Johto"],
+        "Furret": ["normal", "largo", "camina en dos patas", "cola rayada", "delgado"],
+        "Hoothoot": ["normal y volador", "búho", "una pata", "reloj interno", "noche"],
+        "Noctowl": ["normal y volador", "búho grande", "cejas", "dorado shiny", "Ash"],
+        "Ledyba": ["bicho y volador", "mariquita", "cinco puntos", "tímido", "grupo"],
+        "Ledian": ["bicho y volador", "mariquita grande", "cuatro brazos", "puntos", "boxea"],
+        "Spinarak": ["bicho y veneno", "araña", "cara", "telaraña", "nocturno"],
+        "Ariados": ["bicho y veneno", "araña", "cuerno", "patas largas", "cuatro ojos"],
+        "Crobat": ["veneno y volador", "murciélago", "cuatro alas", "rápido", "amistad"],
+        "Chinchou": ["agua y eléctrico", "pez linterna", "antenas luz", "océano profundo", "amarillo"],
+        "Lanturn": ["agua y eléctrico", "rape", "luz", "océano", "antena"],
+        "Pichu": ["eléctrico", "pre-evolución Pikachu", "bebé", "amistad", "se daña solo"],
+        "Cleffa": ["hada", "bebé", "estrella", "amistad", "cola"],
+        "Igglybuff": ["normal y hada", "bebé", "globo", "amistad", "rosado"],
+        "Togepi": ["hada", "huevo", "cáscara", "Misty", "felicidad"],
+        "Togetic": ["hada y volador", "alegría", "vuela", "felicidad", "alas"],
+        "Natu": ["psíquico y volador", "pájaro", "no vuela aún", "mira fijo", "pequeño"],
+        "Xatu": ["psíquico y volador", "tótem", "ve futuro", "pájaro", "quieto"],
+        "Mareep": ["eléctrico", "oveja", "lana", "cola", "granja"],
+        "Flaaffy": ["eléctrico", "oveja rosa", "sin lana completa", "cola bola", "electricidad"],
+        "Ampharos": ["eléctrico", "faro", "cola luz", "mega evolución", "dragón mega"],
+        "Bellossom": ["planta", "hawaiano", "baila", "sol", "piedra sol"],
+        "Marill": ["agua y hada", "ratón azul", "cola bola", "oreja redonda", "Azurill"],
+        "Azumarill": ["agua y hada", "conejo", "orejas largas", "patrón", "barriga"],
+        "Sudowoodo": ["roca", "parece árbol", "llora", "imitación", "roca spray"],
+        "Politoed": ["agua", "rana", "rizo en cabeza", "canta", "rey"],
+        "Hoppip": ["planta y volador", "diente de león", "vuela con viento", "rosa", "hojas"],
+        "Skiploom": ["planta y volador", "flor", "vuela", "sol", "feliz"],
+        "Jumpluff": ["planta y volador", "algodón", "semillas", "vuela lejos", "tres pompones"],
+        "Aipom": ["normal", "mono", "cola mano", "púrpura", "travieso"],
+        "Sunkern": ["planta", "semilla", "más débil", "sol", "amarillo"],
+        "Sunflora": ["planta", "girasol", "baila", "sol", "feliz"],
+        "Yanma": ["bicho y volador", "libélula", "ojos rojos", "velocidad", "verde"],
+        "Wooper": ["agua y tierra", "ajolote", "sonriente", "baboso", "cola"],
+        "Quagsire": ["agua y tierra", "salamandra", "tranquilo", "bobo", "despistado"],
+        "Espeon": ["psíquico", "Eevee", "lila", "gema frente", "día"],
+        "Umbreon": ["siniestro", "Eevee", "negro", "anillos", "noche"],
+        "Murkrow": ["siniestro y volador", "cuervo", "sombrero bruja", "noche", "mala suerte"],
+        "Slowking": ["agua y psíquico", "Shellder en cabeza", "corona", "inteligente", "rey"],
+        "Misdreavus": ["fantasma", "grito", "perlas", "pelo", "noche"],
+        "Unown": ["psíquico", "alfabeto", "ojo", "dimensión", "ruinas"],
+        "Wobbuffet": ["psíquico", "azul", "contra", "cola", "Jessie"],
+        "Girafarig": ["normal y psíquico", "jirafa", "dos cabezas", "cola cerebro", "palindromo"],
+        "Pineco": ["bicho", "piña", "explota", "trampa", "acero"],
+        "Forretress": ["bicho y acero", "fortaleza", "púas", "explota", "defensa"],
+        "Dunsparce": ["normal", "serpiente", "alas", "raro", "taladro"],
+        "Gligar": ["tierra y volador", "escorpión", "alas", "cola", "vampiro"],
+        "Steelix": ["acero y tierra", "serpiente metal", "enorme", "intercambio", "mandíbulas"],
+        "Snubbull": ["hada", "bulldog", "rosa", "colmillos", "gruñón"],
+        "Granbull": ["hada", "bulldog púrpura", "colmillos grandes", "tierno", "fuerte"],
+        "Qwilfish": ["agua y veneno", "pez globo", "púas", "veneno", "infla"],
+        "Scizor": ["bicho y acero", "pinzas", "rojo", "intercambio", "mega evolución"],
+        "Shuckle": ["bicho y roca", "caparazón", "fermenta", "defensa máxima", "tentáculos"],
+        "Heracross": ["bicho y lucha", "escarabajo", "cuerno", "fuerte", "mega evolución"],
+        "Sneasel": ["siniestro y hielo", "comadreja", "garras", "gema frente", "rápido"],
+        "Teddiursa": ["normal", "osito", "luna frente", "miel", "bebé"],
+        "Ursaring": ["normal", "oso", "anillo", "fuerte", "agresivo"],
+        "Slugma": ["fuego", "lava", "babosa", "caliente", "magma"],
+        "Magcargo": ["fuego y roca", "caracol lava", "caparazón", "caliente", "volcán"],
+        "Swinub": ["hielo y tierra", "jabalí", "peludo", "olfato", "nieve"],
+        "Piloswine": ["hielo y tierra", "mamut", "colmillos", "pelo cubre ojos", "evoluciona más"],
+        "Corsola": ["agua y roca", "coral", "rosa", "ramas", "océano"],
+        "Remoraid": ["agua", "pez", "pistola", "evolución rara", "Octillery"],
+        "Octillery": ["agua", "pulpo", "ventosas", "tinta", "cañón"],
+        "Delibird": ["hielo y volador", "pingüino", "saco regalos", "Navidad", "reparte"],
+        "Mantine": ["agua y volador", "manta raya", "alas", "Remoraid", "océano"],
+        "Skarmory": ["acero y volador", "pájaro metal", "afilado", "nido", "armadura"],
+        "Houndour": ["siniestro y fuego", "perro", "cuernos", "aúlla", "manada"],
+        "Houndoom": ["siniestro y fuego", "perro", "cuernos", "mega evolución", "demonio"],
+        "Kingdra": ["agua y dragón", "dragón marino", "escamas dragón", "intercambio", "profundo"],
+        "Phanpy": ["tierra", "elefante", "trompa", "rueda", "bebé"],
+        "Donphan": ["tierra", "elefante", "rueda", "colmillos", "gira"],
+        "Porygon2": ["normal", "evolución", "mejora", "digital", "dudoso"],
+        "Stantler": ["normal", "ciervo", "astas", "hipnosis", "Navidad"],
+        "Smeargle": ["normal", "pintor", "cola pincel", "bosquejo", "arte"],
+        "Tyrogue": ["lucha", "bebé", "pañal", "tres evoluciones", "stats"],
+        "Hitmontop": ["lucha", "trompo", "gira", "cabeza", "baila"],
+        "Smoochum": ["hielo y psíquico", "bebé", "beso", "rubio", "Jynx"],
+        "Elekid": ["eléctrico", "bebé", "enchufe", "gira brazos", "Electabuzz"],
+        "Magby": ["fuego", "bebé", "pato", "cola llama", "Magmar"],
+        "Miltank": ["normal", "vaca", "leche", "Whitney", "rueda"],
+        "Blissey": ["normal", "enfermera", "huevo", "felicidad", "defensa especial"],
+        "Raikou": ["eléctrico", "legendario", "tigre", "trueno", "perro legendario"],
+        "Entei": ["fuego", "legendario", "león", "volcán", "perro legendario"],
+        "Suicune": ["agua", "legendario", "leopardo", "aurora", "perro legendario"],
+        "Larvitar": ["roca y tierra", "come montañas", "verde", "pseudo", "primera"],
+        "Pupitar": ["roca y tierra", "crisálida", "capullo", "duro", "segunda"],
+        "Tyranitar": ["roca y siniestro", "Godzilla", "pseudo legendario", "destructivo", "mega evolución"],
+        "Lugia": ["psíquico y volador", "guardián del mar", "plata", "película", "legendario"],
+        "Ho-Oh": ["fuego y volador", "fénix", "arcoiris", "sagrado", "legendario"],
+        "Celebi": ["psíquico y planta", "viajes tiempo", "bosque", "mítico", "verde"]
     };
     
     // Si existe en el diccionario, usar esas pistas
@@ -283,8 +1214,8 @@ function generarPistasAutomaticas(palabra, categoria) {
     const pistasCategoria = generarPistasPorCategoria(palabra, categoria);
     pistas.push(...pistasCategoria);
     
-    // Eliminar duplicados y limitar a 10 pistas
-    return [...new Set(pistas)].slice(0, 10);
+    // Eliminar duplicados y limitar a 15 pistas
+    return [...new Set(pistas)].slice(0, 15);
 }
 
 // Generar pistas inteligentes basadas en la categoría
@@ -794,6 +1725,10 @@ function siguienteJugador() {
             continuarDespuesDeRevelacion();
         }
     }
+}
+
+function continuarDespuesDeRevelacion() {
+    mostrarPantalla('pantalla-info-impostores');
 }
 
 function verificarLogrosFinPartida() {
@@ -1566,7 +2501,7 @@ function mostrarResultadoVotacion() {
         resultado += `<p>La palabra secreta era: <strong>${palabraSecreta}</strong></p>`;
     }
     
-    resultado += `<button class="btn-principal" onclick="mostrarPantalla('pantalla-inicio')" style="margin-top: 20px;">VOLVER AL INICIO</button>`;
+    resultado += `<button class="btn-principal" onclick="mostrarPantalla('pantalla-preparacion')" style="margin-top: 20px;">VOLVER AL JUEGO</button>`;
     
     document.getElementById('resultado-votacion').innerHTML = resultado;
     mostrarPantalla('pantalla-resultado');
@@ -1683,86 +2618,93 @@ function cargarPistasBloqueadas() {
 
 // El bot genera una pista arriesgada cuando es impostor (solo conoce la categoría)
 function botGenerarPistaImpostor(categoria) {
-    // Pistas genéricas arriesgadas basadas en la categoría
-    const pistasArriesgadas = {
+    // El bot como impostor debe dar pistas vagas que apliquen a muchas palabras de la categoría
+    // pero que no sean tan obvias como para delatarlo
+    
+    const pistasImpostorInteligentes = {
         "Animales": [
-            "tiene patas", "se mueve", "es peludo", "tiene cola", "come carne",
-            "vive en la naturaleza", "es salvaje", "puede ser mascota", "es grande",
-            "es pequeño", "hace ruido", "tiene garras", "tiene dientes", "nada",
-            "vuela", "es rápido", "es peligroso", "vive en grupo", "come", "respira"
+            "cuatro patas", "se alimenta", "respira oxígeno", "tiene movimiento", "parte naturaleza",
+            "está vivo", "tiene nombre científico", "reconocible", "popular", "todos conocen"
         ],
         "Lugares": [
-            "hay gente", "es público", "se paga para entrar", "está en la ciudad",
-            "tiene techo", "es grande", "es cerrado", "está afuera", "es famoso",
-            "tiene puertas", "es tranquilo", "hay mucho ruido", "se compra algo",
-            "es turístico", "tiene sillas", "se come ahí", "necesitas ticket",
-            "se puede visitar", "hay personas", "espacio físico", "construcción",
-            "está en el mapa", "se entra", "hay horarios", "tiene entrada"
+            "se puede ir", "tiene ubicación", "espacio físico", "coordenadas GPS", "la gente va",
+            "destino posible", "en el mundo", "se visita", "existe realmente", "está en mapas"
         ],
         "Objetos": [
-            "se usa en casa", "es de metal", "es pequeño", "es útil", "se rompe fácil",
-            "es de plástico", "cuesta poco", "todos tienen uno", "es electrónico",
-            "necesita energía", "se carga", "hace ruido", "tiene botones", "es portátil",
-            "es pesado", "es moderno", "es antiguo", "se usa a diario", "tiene función",
-            "se toca", "material sólido", "fabricado"
+            "se puede usar", "tiene utilidad", "ocupa espacio", "material sólido", "se puede tocar",
+            "creado por humanos", "tiene función", "útil para algo", "se fabrica", "existe físicamente"
         ],
         "Futbolistas": [
-            "es famoso", "juega bien", "es crack", "mete goles", "es rápido",
-            "tiene buen pie", "es zurdo", "es diestro", "es alto", "es bajo",
-            "juega en Europa", "tiene premios", "es veterano", "es joven",
-            "defiende bien", "ataca mucho", "es técnico", "es fuerte", "profesional",
-            "corre", "en la cancha", "tiene camiseta"
+            "juega fútbol", "profesional", "conocido mundialmente", "tiene equipo", "corre en cancha",
+            "deportista", "usa botines", "pelota", "estadio", "aficionados"
         ],
         "Series": [
-            "es popular", "tiene varias temporadas", "es entretenida", "la vi en Netflix",
-            "tiene acción", "es de drama", "es comedia", "es animada", "es moderna",
-            "es antigua", "tiene buenos actores", "es adictiva", "es larga",
-            "es corta", "tiene suspenso", "es de ciencia ficción", "es realista",
-            "tiene capítulos", "se ve en TV", "streaming"
+            "tiene episodios", "para ver", "pantalla", "entretenimiento", "actúan personas",
+            "producción audiovisual", "temporadas", "plataforma streaming", "historia narrada", "se transmite"
         ],
         "Comidas": [
-            "es rica", "es caliente", "es fría", "es dulce", "es salada",
-            "se come con las manos", "necesita cubiertos", "es italiana", "es mexicana",
-            "es rápida de hacer", "es cara", "es barata", "tiene carne", "es vegetariana",
-            "es para desayuno", "es postre", "tiene queso", "se cocina al horno",
-            "alimenta", "nutritivo", "sabroso"
+            "comestible", "alimenta", "tiene sabor", "se prepara", "plato", "ingredientes",
+            "nutrientes", "se sirve", "para comer", "receta"
+        ],
+        "Deportes": [
+            "actividad física", "se practica", "competencia", "atletas", "reglas",
+            "ejercicio", "deporte olímpico", "equipamiento", "entrenamiento", "mundial"
+        ],
+        "Videojuegos": [
+            "se juega", "consola PC", "gráficos", "controles", "entretenimiento digital",
+            "pantalla", "jugadores", "misiones niveles", "virtual", "se descarga"
         ],
         "Películas": [
-            "es famosa", "tiene acción", "es de miedo", "es divertida", "tiene efectos especiales",
-            "ganó premios", "es taquillera", "la vieron todos", "es moderna", "es clásica",
-            "tiene secuela", "es de Marvel", "es de Disney", "dura mucho", "es emocionante",
-            "tiene actores", "se ve en cine", "tiene director"
+            "se ve en pantalla", "director", "filmación", "cine", "actores protagonistas",
+            "duración horas", "género cinematográfico", "taquilla", "premios", "producción"
+        ],
+        "Peliculas": [
+            "se ve en pantalla", "director", "filmación", "cine", "actores protagonistas",
+            "duración horas", "género cinematográfico", "taquilla", "premios", "producción"
+        ],
+        "Rock Internacional": [
+            "banda musical", "instrumentos", "conciertos", "álbumes", "guitarras",
+            "música", "canciones", "fans", "gira mundial", "rock and roll"
+        ],
+        "Rock Argentino": [
+            "banda nacional", "música argentina", "rock local", "recitales", "letras español",
+            "historia musical", "ídolos", "conciertos", "guitarras", "clásicos"
+        ],
+        "Pokemon": [
+            "criatura", "evoluciona", "tipo elemental", "ataque", "capturar",
+            "pokédex", "entrenador", "batalla", "nivel", "habilidad"
+        ],
+        "Clash Royale": [
+            "carta", "elixir", "arena", "torre", "ataca", "defensa",
+            "mazo", "nivel", "subir copas", "estrategia"
+        ],
+        "Personas": [
+            "tiene nombre", "persona real", "conocido en grupo", "amigo o conocido", "argentino",
+            "tiene apellido", "ser humano", "individualidad", "identidad", "único"
         ]
     };
     
-    // Obtener pistas para la categoría (o genéricas si no existe)
-    let pistasDisponibles = pistasArriesgadas[categoria] || [
-        "es interesante", "es conocido", "es único", "es especial", "me gusta",
-        "es común", "es raro", "es bueno", "es malo", "todo el mundo lo conoce"
+    // Obtener pistas para la categoría
+    let pistasDisponibles = pistasImpostorInteligentes[categoria] || [
+        "muy reconocido", "bastante conocido", "popular", "todos lo conocen", "está en la lista"
     ];
     
-    // Filtrar pistas que son la categoría misma o muy genéricas
-    const palabrasProhibidas = [
-        categoria.toLowerCase(), // No decir el nombre de la categoría
-        "animales", "lugares", "objetos", "futbolistas", "series", "comidas", "películas",
-        "animal", "lugar", "objeto", "futbolista", "serie", "comida", "película"
-    ];
-    
-    pistasDisponibles = pistasDisponibles.filter(pista => {
-        const pistaLower = pista.toLowerCase();
-        return !palabrasProhibidas.some(prohibida => pistaLower.includes(prohibida));
-    });
-    
-    // Intentar también usar pistas de otras palabras de la misma categoría
-    if (datos[categoria]) {
+    // El bot impostor intenta aprender de otras palabras de la categoría
+    if (datos[categoria] && Math.random() < 0.4) {
+        // 40% de probabilidad de intentar usar una pista de otra palabra de la categoría
         const palabrasCategoria = datos[categoria];
         const palabraAleatoria = palabrasCategoria[Math.floor(Math.random() * palabrasCategoria.length)];
         
-        // Intentar conseguir pistas de una palabra aleatoria de la categoría
         if (asociacionesPalabras[palabraAleatoria] && asociacionesPalabras[palabraAleatoria].length > 0) {
-            // Agregar algunas pistas de otras palabras de la categoría
-            const pistasOtraPalabra = asociacionesPalabras[palabraAleatoria].slice(0, 3);
-            pistasDisponibles = pistasDisponibles.concat(pistasOtraPalabra);
+            // Filtrar pistas muy específicas que podrían delatarlo
+            const pistasOtraPalabra = asociacionesPalabras[palabraAleatoria].filter(p => {
+                // Evitar pistas muy específicas que mencionen nombres propios o características únicas
+                return p.length < 20 && !p.includes(palabraAleatoria.toLowerCase());
+            });
+            
+            if (pistasOtraPalabra.length > 0) {
+                pistasDisponibles = pistasDisponibles.concat(pistasOtraPalabra.slice(0, 2));
+            }
         }
     }
     
@@ -1772,15 +2714,18 @@ function botGenerarPistaImpostor(categoria) {
 
 // El bot genera una pista basada en las asociaciones
 function botGenerarPista(palabra) {
+    // Primero verificar si tiene asociaciones aprendidas
     if (!asociacionesPalabras[palabra] || asociacionesPalabras[palabra].length === 0) {
-        // Si no tiene asociaciones, generar pista genérica pero válida
-        return generarPistaGenerica(palabra);
+        // Si no tiene asociaciones, generar pista inteligente basada en la palabra
+        return generarPistaInteligente(palabra);
     }
     
     // Palabras prohibidas que nunca se deben usar como pista
     const palabrasProhibidas = [
         "animales", "lugares", "objetos", "futbolistas", "series", "comidas", "películas",
-        "animal", "lugar", "objeto", "futbolista", "serie", "comida", "película"
+        "animal", "lugar", "objeto", "futbolista", "serie", "comida", "película",
+        "deportes", "deporte", "videojuegos", "videojuego", "pokemon", "rock", "peliculas",
+        "pelicula", "clash royale", "clash", "royale", "carta", "cartas"
     ];
     
     // Filtrar pistas bloqueadas Y pistas que contengan palabras prohibidas
@@ -1788,72 +2733,166 @@ function botGenerarPista(palabra) {
         const pistaLower = pista.toLowerCase();
         const tienePalabraProhibida = palabrasProhibidas.some(prohibida => pistaLower.includes(prohibida));
         const estaBloqueada = pistasBloqueadas[palabra] && pistasBloqueadas[palabra].includes(pista);
-        return !estaBloqueada && !tienePalabraProhibida;
+        
+        // Filtrar pistas muy genéricas o vagas
+        const esDemasiadoGenerica = [
+            "conocido", "famoso", "popular", "común", "raro", "especial", "único",
+            "interesante", "bueno", "malo", "grande", "pequeño", "importante"
+        ].some(gen => pistaLower === gen || pistaLower === `es ${gen}` || pistaLower === `muy ${gen}`);
+        
+        return !estaBloqueada && !tienePalabraProhibida && !esDemasiadoGenerica;
     });
     
-    // Si todas las pistas están bloqueadas o prohibidas, generar una genérica
+    // Si todas las pistas están bloqueadas o prohibidas, generar una inteligente
     if (pistasDisponibles.length === 0) {
-        return generarPistaGenerica(palabra);
+        return generarPistaInteligente(palabra);
     }
     
-    // Decidir aleatoriamente entre pista específica (70%) o general (30%)
-    const usarPistaEspecifica = Math.random() < 0.7;
+    // Priorizar pistas más específicas (más largas y con más información)
+    const pistasEspecificas = pistasDisponibles.filter(p => p.length > 8 && !p.startsWith("es ") && !p.startsWith("tiene "));
     
-    if (usarPistaEspecifica && pistasDisponibles.length > 0) {
-        // Usar una pista específica aprendida
-        const pistaAleatoria = pistasDisponibles[Math.floor(Math.random() * pistasDisponibles.length)];
-        return pistaAleatoria;
-    } else {
-        // Generar una pista general para ser competitivo
-        return generarPistaGenerica(palabra);
+    // 80% de probabilidad de usar pista específica si hay disponibles
+    if (pistasEspecificas.length > 0 && Math.random() < 0.8) {
+        return pistasEspecificas[Math.floor(Math.random() * pistasEspecificas.length)];
     }
+    
+    // Usar cualquier pista disponible
+    return pistasDisponibles[Math.floor(Math.random() * pistasDisponibles.length)];
 }
 
-// Generar pista genérica pero competitiva para una palabra
-function generarPistaGenerica(palabra) {
+// Generar pista inteligente y específica para una palabra
+function generarPistaInteligente(palabra) {
     const palabraLower = palabra.toLowerCase();
-    const pistasGenericas = [];
     
-    // Pistas basadas en características de la palabra
-    if (palabra.length <= 5) {
-        pistasGenericas.push(`palabra corta`);
-    } else if (palabra.length >= 8) {
-        pistasGenericas.push(`palabra larga`);
+    // Analizar características de la palabra para dar pistas inteligentes
+    const caracteristicas = analizarPalabra(palabra, categoriaSecreta);
+    
+    // Pistas basadas en análisis inteligente
+    const pistasInteligentes = [];
+    
+    // Agregar pistas de características específicas
+    if (caracteristicas.longitud) pistasInteligentes.push(caracteristicas.longitud);
+    if (caracteristicas.origen) pistasInteligentes.push(caracteristicas.origen);
+    if (caracteristicas.caracteristica1) pistasInteligentes.push(caracteristicas.caracteristica1);
+    if (caracteristicas.caracteristica2) pistasInteligentes.push(caracteristicas.caracteristica2);
+    if (caracteristicas.relacionado) pistasInteligentes.push(caracteristicas.relacionado);
+    
+    // Si tiene pistas inteligentes, usar una
+    if (pistasInteligentes.length > 0) {
+        return pistasInteligentes[Math.floor(Math.random() * pistasInteligentes.length)];
     }
     
-    pistasGenericas.push(`empieza con ${palabra.charAt(0)}`);
-    pistasGenericas.push(`muy conocido`);
-    pistasGenericas.push(`todo el mundo lo conoce`);
-    
-    // Pistas específicas por categoría (NUNCA mencionar la categoría directamente)
-    if (categoriaSecreta) {
-        const pistasPorCategoria = {
-            "Animales": ["ser vivo", "criatura", "tiene vida", "de la naturaleza", "organismo"],
-            "Lugares": ["se puede visitar", "hay gente ahí", "espacio físico", "destino", "construcción", "está en el mapa"],
-            "Objetos": ["se usa", "tiene función", "útil", "se puede tocar", "material", "fabricado"],
-            "Futbolistas": ["deportista profesional", "jugador famoso", "está en la cancha", "atleta", "corre mucho"],
-            "Series": ["entretenimiento", "para ver", "tiene episodios", "contenido audiovisual", "streaming"],
-            "Comidas": ["comestible", "se cocina", "plato", "alimento", "nutritivo", "sabroso"],
-            "Películas": ["largometraje", "producción cinematográfica", "obra visual", "filmación", "tiene actores"]
-        };
-        
-        if (pistasPorCategoria[categoriaSecreta]) {
-            pistasGenericas.push(...pistasPorCategoria[categoriaSecreta]);
-        }
-    }
-    
-    // Filtrar palabras prohibidas (nunca decir el nombre de la categoría)
-    const palabrasProhibidas = [
-        "animales", "lugares", "objetos", "futbolistas", "series", "comidas", "películas",
-        "animal", "lugar", "objeto", "futbolista", "serie", "comida", "película"
+    // Pistas de último recurso (pero nunca mencionar la categoría)
+    const pistasUltimoRecurso = [
+        `empieza con ${palabra.charAt(0)}`,
+        `tiene ${palabra.length} letras`,
+        "muy reconocido",
+        "bastante conocido",
+        "lo conocen todos"
     ];
     
-    const pistasFiltradas = pistasGenericas.filter(pista => {
-        const pistaLower = pista.toLowerCase();
-        return !palabrasProhibidas.some(prohibida => pistaLower.includes(prohibida));
-    });
+    return pistasUltimoRecurso[Math.floor(Math.random() * pistasUltimoRecurso.length)];
+}
+
+// Analizar palabra para generar pistas inteligentes
+function analizarPalabra(palabra, categoria) {
+    const caracteristicas = {};
     
-    return pistasFiltradas[Math.floor(Math.random() * pistasFiltradas.length)] || "muy conocido";
+    // Análisis de longitud
+    if (palabra.length <= 5) {
+        caracteristicas.longitud = "nombre corto";
+    } else if (palabra.length >= 10) {
+        caracteristicas.longitud = "nombre largo";
+    }
+    
+    // Análisis específico por categoría
+    switch(categoria) {
+        case "Animales":
+            if (["Perro", "Gato", "Conejo", "Hámster"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "mascota común";
+            } else if (["León", "Tigre", "Oso", "Lobo"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "depredador salvaje";
+            } else if (["Águila", "Loro", "Pavo Real", "Pingüino"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "tiene plumas";
+            } else if (["Delfín", "Ballena", "Tiburón", "Orca"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "vive en agua";
+            }
+            
+            if (["Elefante", "Ballena", "Jirafa", "Hipopótamo", "Rinoceronte"].includes(palabra)) {
+                caracteristicas.caracteristica2 = "tamaño gigante";
+            } else if (["Hormiga", "Abeja", "Araña", "Mariposa"].includes(palabra)) {
+                caracteristicas.caracteristica2 = "muy pequeño";
+            }
+            break;
+            
+        case "Lugares":
+            if (["Playa", "Montaña", "Bosque", "Desierto", "Isla"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "naturaleza pura";
+            } else if (["Cine", "Teatro", "Museo", "Circo"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "entretenimiento";
+            } else if (["Hospital", "Farmacia", "Clínica"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "relacionado salud";
+            } else if (["Escuela", "Biblioteca", "Universidad"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "educativo";
+            }
+            break;
+            
+        case "Objetos":
+            if (["Teléfono", "Computadora", "Televisor", "Radio"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "electrónico moderno";
+            } else if (["Guitarra", "Piano", "Trompeta", "Batería", "Bajo"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "instrumento musical";
+            } else if (["Martillo", "Destornillador", "Tijeras", "Llave"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "herramienta útil";
+            } else if (["Plato", "Vaso", "Tenedor", "Cuchillo"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "usar al comer";
+            }
+            break;
+            
+        case "Futbolistas":
+            if (["Messi", "Cristiano Ronaldo", "Maradona", "Pelé", "Zidane"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "leyenda histórica";
+            } else if (["Mbappé", "Haaland", "Vinicius", "Pedri"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "joven promesa";
+            }
+            
+            if (palabra.includes("Messi") || palabra.includes("Maradona") || palabra.includes("Di María")) {
+                caracteristicas.origen = "argentino";
+            } else if (palabra.includes("Neymar") || palabra.includes("Ronaldo") || palabra.includes("Pelé")) {
+                caracteristicas.origen = "brasileño";
+            } else if (palabra.includes("Cristiano")) {
+                caracteristicas.origen = "portugués";
+            }
+            break;
+            
+        case "Series":
+            if (["Breaking Bad", "The Sopranos", "Peaky Blinders"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "crimen drama";
+            } else if (["Friends", "The Office", "Brooklyn Nine-Nine"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "comedia pura";
+            } else if (["Game of Thrones", "The Witcher", "House of Dragon"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "fantasía épica";
+            }
+            break;
+            
+        case "Comidas":
+            if (["Pizza", "Pasta", "Lasaña"].includes(palabra)) {
+                caracteristicas.origen = "italiana";
+            } else if (["Taco", "Burrito", "Quesadilla"].includes(palabra)) {
+                caracteristicas.origen = "mexicana";
+            } else if (["Sushi", "Ramen"].includes(palabra)) {
+                caracteristicas.origen = "japonesa";
+            }
+            
+            if (["Helado", "Chocolate", "Churros", "Donas"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "dulce postre";
+            } else if (["Asado", "Hamburguesa", "Milanesa"].includes(palabra)) {
+                caracteristicas.caracteristica1 = "tiene carne";
+            }
+            break;
+    }
+    
+    return caracteristicas;
 }
 
 // El bot da una pista durante el juego
