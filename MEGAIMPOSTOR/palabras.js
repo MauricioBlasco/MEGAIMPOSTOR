@@ -1,4 +1,3 @@
-// Base de datos de palabras por categoría
 const datos = {
     "Animales": [
         "Perro", "Gato", "Elefante", "Tigre", "Delfín", "Lobo", "León", "Cebra", "Jirafa", "Oso", 

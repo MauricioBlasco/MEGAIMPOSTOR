@@ -3,329 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEGAIMPOSTOR</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="palabras.js"></script>
+    <title>Selección de Juego</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            color: white;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2em;
+            margin-bottom: 50px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .games-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .game-card {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 300px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            display: block;
+            animation: fadeIn 1s ease;
+            border: 2px solid #262626;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(220, 38, 38, 0.4);
+            border-color: #DC2626;
+        }
+
+        .game-card.impostor {
+            background: linear-gradient(135deg, #DC2626, #EF4444);
+            color: white;
+            border-color: #DC2626;
+        }
+
+        .game-card.subasta {
+            background: linear-gradient(135deg, #262626, #404040);
+            color: white;
+            border-color: #404040;
+        }
+
+        .game-card.impostor:hover {
+            box-shadow: 0 15px 40px rgba(220, 38, 38, 0.6);
+        }
+
+        .game-card.subasta:hover {
+            box-shadow: 0 15px 40px rgba(64, 64, 64, 0.6);
+            border-color: #666;
+        }
+
+        .game-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .game-description {
+            font-size: 1em;
+            opacity: 0.9;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Tablet landscape */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 700px;
+            }
+
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .game-card {
+                width: 280px;
+            }
+        }
+
+        /* Tablet portrait */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2em;
+                margin-bottom: 15px;
+            }
+
+            .subtitle {
+                font-size: 1em;
+                margin-bottom: 30px;
+            }
+
+            .games-container {
+                gap: 20px;
+            }
+
+            .game-card {
+                width: 100%;
+                max-width: 400px;
+                padding: 30px 25px;
+            }
+
+            .game-icon {
+                font-size: 3.5em;
+            }
+
+            .game-title {
+                font-size: 1.8em;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 10px;
+            }
+
+            .subtitle {
+                font-size: 0.9em;
+                margin-bottom: 25px;
+            }
+
+            .games-container {
+                gap: 15px;
+            }
+
+            .game-card {
+                padding: 25px 20px;
+            }
+
+            .game-icon {
+                font-size: 3em;
+                margin-bottom: 15px;
+            }
+
+            .game-title {
+                font-size: 1.5em;
+                margin-bottom: 12px;
+            }
+
+            .game-description {
+                font-size: 0.9em;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="game-container">
+    <div class="container">
+        <h1>🎮 MEGAJUEGOS 🎮</h1>
+        <p class="subtitle">Selecciona tu juego favorito</p>
         
-        <div id="pantalla-inicio" class="screen active">
-            <h1 class="titulo-principal"><span onclick="desbloquearLogroTheM()" style="cursor: default; position: relative;"><span id="corona-coleccionista" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 1.5rem; display: none;">👑</span>M</span>EGAIMPOSTOR</h1>
-            <button class="btn-principal" onclick="mostrarPantalla('pantalla-jugadores')">INICIAR</button>
+        <div class="games-container">
+            <a href="MEGAIMPOSTOR/index.html" class="game-card impostor">
+                <div class="game-icon">🕵️</div>
+                <div class="game-title">MEGAIMPOSTOR</div>
+                <div class="game-description">
+                    Descubre la palabra secreta y encuentra al impostor entre todos los jugadores. ¿Podrás identificarlo?
+                </div>
+            </a>
+
+            <a href="MEGASUBASTA/index.html" class="game-card subasta">
+                <div class="game-icon">💰</div>
+                <div class="game-title">MEGASUBASTA</div>
+                <div class="game-description">
+                    Participa en una emocionante subasta y demuestra tu estrategia. ¡Que gane el mejor postor!
+                </div>
+            </a>
         </div>
-
-        <div id="pantalla-jugadores" class="screen hidden">
-            <button id="boton-secreto" onclick="mostrarPantalla('pantalla-codigo')"></button>
-            <h2>Configuración</h2>
-            <div class="control-grupal">
-                <label>Jugadores:</label>
-                <div class="contador-interactivo">
-                    <button class="btn-flecha" onclick="cambiarValor('input-jugadores', -1)">-</button>
-                    <input type="number" id="input-jugadores" value="3" readonly>
-                    <button class="btn-flecha" onclick="cambiarValor('input-jugadores', 1)">+</button>
-                </div>
-            </div>
-            <div class="control-grupal" id="control-impostores" style="display: none;">
-                <label>Impostores:</label>
-                <div class="contador-interactivo">
-                    <button class="btn-flecha" onclick="cambiarValor('input-impostores', -1)">-</button>
-                    <input type="number" id="input-impostores" value="1" readonly>
-                    <button class="btn-flecha" onclick="cambiarValor('input-impostores', 1)">+</button>
-                </div>
-            </div>
-            <div class="control-grupal">
-                <label>Randomizador</label>
-                <label class="switch">
-                    <input type="checkbox" id="switch-randomizador" onchange="toggleRandomizador()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="control-grupal" id="control-max-impostores" style="display: none;">
-                <label>Máximo de impostores:</label>
-                <div class="contador-interactivo">
-                    <button class="btn-flecha" onclick="cambiarValor('input-max-impostores', -1)">-</button>
-                    <input type="number" id="input-max-impostores" value="1" readonly>
-                    <button class="btn-flecha" onclick="cambiarValor('input-max-impostores', 1)">+</button>
-                </div>
-            </div>
-            <div class="control-grupal">
-                <label>DIFICIL 😈</label>
-                <label class="switch">
-                    <input type="checkbox" id="switch-dificil">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="control-grupal">
-                <label>Palabra Similar 🎭</label>
-                <label class="switch">
-                    <input type="checkbox" id="switch-palabra-similar" onchange="togglePalabraSimilar()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="control-grupal">
-                <label>Bot Jugador 🤖</label>
-                <label class="switch">
-                    <input type="checkbox" id="switch-bot" onchange="toggleBot()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="control-grupal" id="control-cantidad-bots" style="display: none;">
-                <label>Bots:</label>
-                <div class="contador-interactivo">
-                    <button class="btn-flecha" onclick="cambiarValor('input-cantidad-bots', -1)">-</button>
-                    <input type="number" id="input-cantidad-bots" value="1" readonly>
-                    <button class="btn-flecha" onclick="cambiarValor('input-cantidad-bots', 1)">+</button>
-                </div>
-            </div>
-            <button class="btn-secundario" onclick="mostrarPantalla('pantalla-logros')" style="margin-top: 10px;">🏆 LOGROS</button>
-            <button class="btn-principal" onclick="mostrarPantalla('pantalla-categorias')">SIGUIENTE</button>
-        </div>
-
-        <div id="pantalla-codigo" class="screen hidden">
-            <h2>Código Secreto</h2>
-            <p style="margin: 20px 0;">Ingresa el código para desbloquear contenido especial</p>
-            <input type="text" id="input-codigo" placeholder="Escribe el código aquí" maxlength="12" pattern="[A-Za-z0-9]*" oninput="this.value = this.value.replace(/[^A-Za-z0-9]/g, '')" style="width: 80%; padding: 15px; font-size: 1.1rem; border-radius: 10px; border: 2px solid #555; background: #2d2d2d; color: white; text-align: center; margin-bottom: 20px;">
-            <button class="btn-principal" onclick="verificarCodigo()">VERIFICAR</button>
-            <button class="btn-secundario" onclick="mostrarPantalla('pantalla-jugadores')">VOLVER</button>
-        </div>
-
-        <div id="pantalla-logros" class="screen hidden">
-            <div id="fondo-logros-cascada"></div>
-            <h2><span id="trofeo-secreto" onclick="desbloquearLogroCampeon()" style="cursor: default;">🏆</span> LOGROS</h2>
-            <div style="max-width: 500px; margin: 20px auto; position: relative; z-index: 1;">
-                <div class="logro-item" id="logro-coleccionista">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">COLECCIONISTA</div>
-                    </div>
-                </div>
-                <div class="logro-item" id="logro-principiante">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">PRINCIPIANTE</div>
-                    </div>
-                </div>
-                <div class="logro-item" id="logro-ysoyyo">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">Y SOY YO</div>
-                    </div>
-                </div>
-                <div class="logro-item" id="logro-imposible">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">IMPOSIBLE</div>
-                    </div>
-                </div>
-                <div class="logro-item" id="logro-sr">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">SR...</div>
-                    </div>
-                </div>
-                <div class="logro-item" id="logro-aura">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">AURA</div>
-                    </div>
-                </div>
-                <div class="logro-item" id="logro-marley">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">MARLEY</div>
-                    </div>
-                </div>
-                <div class="logro-item" id="logro-zeus">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">ZEUS</div>
-                    </div>
-                </div>
-                <div class="logro-item" id="logro-hades">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">HADES</div>
-                    </div>
-                </div>
-                <div class="logro-item" id="logro-joker">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">JOKER</div>
-                    </div>
-                </div>
-                <div class="logro-item" id="logro-campeon">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">CAMPEON</div>
-                    </div>
-                </div>
-                <div class="logro-item" id="logro-them">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">THE M</div>
-                    </div>
-                </div>
-                <div class="logro-item" id="logro-meme">
-                    <div class="logro-icono">🔒</div>
-                    <div class="logro-info">
-                        <div class="logro-nombre">MEME</div>
-                    </div>
-                </div>
-            </div>
-            <button class="btn-principal" onclick="mostrarPantalla('pantalla-jugadores')">VOLVER</button>
-        </div>
-
-        <div id="modal-codigo" class="modal-overlay" style="display: none;">
-            <div class="modal-contenido">
-                <h3 style="color: var(--color-primary); margin-bottom: 15px;">✓ Código Correcto</h3>
-                <p id="modal-codigo-texto" style="font-size: 1.1rem; line-height: 1.6; margin: 20px 0;"></p>
-                <button class="btn-principal" onclick="cerrarModalCodigo()">OK</button>
-            </div>
-        </div>
-
-        <div id="pantalla-categorias" class="screen hidden">
-            <h2>CATEGORÍAS</h2>
-            <button class="btn-secundario" onclick="desactivarTodasCategorias()" ontouchstart="desactivarTodasCategorias()" style="margin-bottom: 15px;">Desactivar todas las categorías</button>
-            <div id="lista-switches">
-                <div class="categoria-item"><span>Animales</span><label class="switch"><input type="checkbox" id="cat-Animales" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Lugares</span><label class="switch"><input type="checkbox" id="cat-Lugares" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Objetos</span><label class="switch"><input type="checkbox" id="cat-Objetos" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Futbolistas</span><label class="switch"><input type="checkbox" id="cat-Futbolistas" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Series</span><label class="switch"><input type="checkbox" id="cat-Series" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Clash Royale</span><label class="switch"><input type="checkbox" id="cat-ClashRoyale" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Comida</span><label class="switch"><input type="checkbox" id="cat-Comida" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Deportes</span><label class="switch"><input type="checkbox" id="cat-Deportes" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Videojuegos</span><label class="switch"><input type="checkbox" id="cat-Videojuegos" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Rock Internacional</span><label class="switch"><input type="checkbox" id="cat-RockInt" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Rock Argentino</span><label class="switch"><input type="checkbox" id="cat-RockArg" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Peliculas</span><label class="switch"><input type="checkbox" id="cat-Peliculas" checked><span class="slider"></span></label></div>
-                <div class="categoria-item"><span>Pokemon</span><label class="switch"><input type="checkbox" id="cat-Pokemon" checked><span class="slider"></span></label></div>
-                <div class="categoria-item" id="categoria-personas-item" style="opacity: 0.5; pointer-events: none;"><span>Personas 🔒</span><label class="switch"><input type="checkbox" id="cat-Personas" disabled><span class="slider"></span></label></div>
-            </div>
-            <button class="btn-principal" onclick="iniciarPartida()">¡EMPEZAR!</button>
-        </div>
-
-        <div id="pantalla-preparacion" class="screen hidden">
-            <h1 class="titulo-principal">¡HORA DE JUGAR!</h1>
-            <p style="margin-bottom: 20px;">Pasen el celular al Jugador 1</p>
-            <button class="btn-principal" onclick="iniciarTurnoUno()">COMENZAR PARTIDA</button>
-            <button class="btn-secundario" onclick="mostrarPantalla('pantalla-como-jugar')">❓ CÓMO SE JUEGA?</button>
-            <button class="btn-secundario" onclick="mostrarPantalla('pantalla-jugadores')">⚙️ CAMBIAR CONFIGURACIÓN</button>
-        </div>
-
-        <div id="pantalla-como-jugar" class="screen hidden">
-            <h2>CÓMO SE JUEGA</h2>
-            <div style="background: #2d2d2d; padding: 20px; border-radius: 15px; margin: 20px 0; text-align: left;">
-                <p style="margin-bottom: 15px; font-size: 1.2rem; color: #4a90e2;">📝 <strong>OBJETIVO DEL JUEGO</strong></p>
-                <p style="margin-bottom: 25px; line-height: 1.7; font-size: 1.05rem;">El juego reparte una <strong>palabra secreta</strong> de una categoría seleccionada a todos los jugadores, <strong>excepto a uno o más</strong> que recibirán el rol de <strong style="color: #ff4757;">IMPOSTOR</strong>. El objetivo de los jugadores normales es descubrir quién es el impostor, mientras que el impostor debe identificar la palabra sin ser descubierto.</p>
-                
-                <p style="margin-bottom: 15px; font-size: 1.2rem; color: #4a90e2;">💬 <strong>RONDAS DE PISTAS</strong></p>
-                <p style="margin-bottom: 25px; line-height: 1.7; font-size: 1.05rem;">Comenzando desde el <strong>Jugador 1</strong>, cada jugador debe dar <strong>una pista relacionada con su palabra</strong>. Las pistas deben ser:<br>
-                • Lo suficientemente claras para que los demás jugadores sepan que conoces la palabra<br>
-                • Lo suficientemente ambiguas para que el impostor no la descubra fácilmente<br>
-                • Evita ser demasiado obvio o decir la palabra directamente</p>
-                
-                <p style="margin-bottom: 15px; font-size: 1.2rem; color: #4a90e2;">🎯 <strong>ROL DEL IMPOSTOR</strong></p>
-                <p style="margin-bottom: 25px; line-height: 1.7; font-size: 1.05rem;">El impostor debe:<br>
-                • Escuchar atentamente las pistas de los demás<br>
-                • Intentar adivinar la palabra secreta<br>
-                • Dar pistas vagas que no delaten que no conoce la palabra<br>
-                • Mezclarse con el grupo sin levantar sospechas</p>
-                
-                <p style="margin-bottom: 15px; font-size: 1.2rem; color: #4a90e2;">🗳️ <strong>VOTACIÓN Y FIN DEL JUEGO</strong></p>
-                <p style="margin-bottom: 10px; line-height: 1.7; font-size: 1.05rem;">Después de que todos den su pista (una vuelta completa), se realiza una <strong>votación</strong> donde todos deben elegir a quién creen que es el impostor.<br><br>
-                El jugador más votado es eliminado. Si aún quedan impostores en el juego, se continúa con otra ronda de pistas.<br><br>
-                <strong>El juego termina cuando:</strong><br>
-                • Se eliminan todos los impostores (ganan los jugadores normales)<br>
-                • Solo quedan 2 jugadores en total (ganan los impostores)<br>
-                • El impostor adivina correctamente la palabra secreta</p>
-
-                <p style="margin-bottom: 15px; margin-top: 30px; font-size: 1.2rem; color: #4a90e2;">🤖 <strong>MODO BOT</strong></p>
-                <p style="margin-bottom: 15px; line-height: 1.7; font-size: 1.05rem;">
-                <strong>1️⃣ Cómo activar el modo bot:</strong><br>
-                • Ve a la pantalla de configuración (después de presionar INICIAR)<br>
-                • Activa el interruptor "Bot Jugador 🤖"<br>
-                • Aparecerá un control para elegir la cantidad de bots<br><br>
-                
-                <strong>2️⃣ Configuración:</strong><br>
-                • Selecciona cuántos bots quieres (de 1 hasta el máximo permitido)<br>
-                • Ejemplo: Si eliges 3 jugadores totales y 2 bots = 1 jugador humano + 2 bots<br>
-                • Los bots aparecerán como "🤖 BOT 1", "🤖 BOT 2", etc.<br><br>
-                
-                <strong>3️⃣ Cómo funciona dar pistas:</strong><br>
-                • Los jugadores humanos escriben sus pistas normalmente<br>
-                • Los turnos de los bots se <strong>saltan automáticamente</strong><br>
-                • Los bots generan sus pistas en segundo plano (no necesitas hacer nada)<br>
-                • Cuando llegue la votación, verás las pistas que dieron los bots<br><br>
-                
-                <strong>4️⃣ Sistema de votación:</strong><br>
-                • Los jugadores humanos votan normalmente<br>
-                • Los bots votan automáticamente analizando las pistas de todos<br>
-                • Durante la votación, puedes hacer clic en "🔍 Ver análisis del bot" para ver cómo los bots evalúan cada pista<br><br>
-                
-                <strong>5️⃣ Análisis de los bots:</strong><br>
-                • El análisis muestra el nivel de sospecha de cada pista (0-10)<br>
-                • Indica si una pista es genérica, muy corta, comparativa, etc.<br>
-                • Muestra qué tan exclusiva es la pista para esa palabra<br>
-                • Te ayuda a entender por qué los bots votaron a cierto jugador<br><br>
-                
-                <strong>6️⃣ Calificar las pistas de los bots:</strong><br>
-                • Al final de cada partida, aparecen globos con las pistas de los bots<br>
-                • Puedes marcarlas como "Sí" (buena pista) o "No" (mala pista)<br>
-                • Las pistas marcadas como malas no se volverán a usar en futuras partidas<br>
-                • Esto ayuda a mejorar la calidad de las pistas de los bots</p>
-            </div>
-            <button class="btn-principal" onclick="mostrarPantalla('pantalla-preparacion')">VOLVER</button>
-        </div>
-
-        <div id="pantalla-revelar" class="screen hidden">
-            <h2 id="titulo-turno">Jugador 1</h2>
-            <div id="caja-secreta" class="hidden-word">? ? ?</div>
-            <button class="btn-principal" id="btn-revelar-clic" onclick="revelarCliche()">VER MI PALABRA</button>
-            <button onclick="siguienteJugador()" id="btn-siguiente" class="btn-principal hidden">YA LO VI, PASAR CELULAR</button>
-        </div>
-
-        <div id="pantalla-info-impostores" class="screen hidden">
-            <h1 class="titulo-principal">¡TODOS HAN VISTO SU PALABRA!</h1>
-            <div style="background: #2d2d2d; padding: 25px; border-radius: 15px; margin: 20px 0;">
-                <p style="font-size: 1.3rem; margin-bottom: 10px;">En esta partida hay:</p>
-                <h2 id="cantidad-impostores" style="color: #ff4757; font-size: 2.5rem; margin: 15px 0;">? ? ?</h2>
-            </div>
-            <button class="btn-principal" id="btn-revelar-impostores" onclick="revelarCantidadImpostores()">VER CANTIDAD DE IMPOSTORES</button>
-            <p id="texto-empezar-pistas" style="font-size: 1.1rem; margin-bottom: 20px; display: none;">Empiecen las pistas</p>
-            <button class="btn-principal" id="btn-continuar-info" onclick="continuarDespuesDeInfo()" style="display: none;">CONTINUAR</button>
-        </div>
-
-        <div id="pantalla-todos-listos" class="screen hidden">
-            <h1 class="titulo-principal">¡EL IMPOSTOR ESTÁ SUELTO!</h1>
-            <p style="font-size: 1.3rem; margin: 30px 0;">Es hora de empezar las pistas</p>
-            <button class="btn-principal" onclick="continuarDespuesDeInfo()">A JUGAR</button>
-        </div>
-
-        <div id="pantalla-dar-pista" class="screen hidden">
-            <h2 id="titulo-pista-jugador">Jugador 1</h2>
-            <p style="font-size: 1.2rem; margin: 20px 0;">Escribe tu pista para:</p>
-            <div style="background: #2d2d2d; padding: 20px; border-radius: 15px; margin: 20px 0;">
-                <p id="palabra-para-pista" style="font-size: 1.8rem; font-weight: bold; color: var(--color-primary);"></p>
-            </div>
-            <button class="btn-principal" id="btn-recordar-palabra" onclick="recordarPalabra()" style="display: none;">RECORDAR LA PALABRA</button>
-            <input type="text" id="input-pista" placeholder="Escribe tu pista..." onkeypress="if(event.key==='Enter') guardarPistaYContinuar()" style="width: 90%; max-width: 400px; padding: 15px; font-size: 1.1rem; border-radius: 10px; border: 2px solid #4a90e2; background: #1a1a1a; color: white; margin: 20px 0;">
-            <br>
-            <button class="btn-principal" onclick="guardarPistaYContinuar()">CONFIRMAR PISTA</button>
-        </div>
-
-        <div id="pantalla-votacion" class="screen hidden">
-            <h1 class="titulo-principal">⚖️ VOTACIÓN</h1>
-            <div id="lista-pistas" style="background: #2d2d2d; padding: 20px; border-radius: 15px; margin: 20px 0;"></div>
-            <div id="opciones-votacion" style="margin: 20px 0;"></div>
-        </div>
-
-        <div id="pantalla-resultado" class="screen hidden">
-            <div id="resultado-votacion"></div>
-        </div>
-
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
