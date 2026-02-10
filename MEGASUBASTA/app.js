@@ -43,13 +43,19 @@ const ViewManager = {
       <div class="screen" id="title-screen">
         <h1>MEGASUBASTA</h1>
         <div style="font-weight:600;margin-bottom:8px">Subasta Futbolera</div>
-        <button id="start-btn">Iniciar</button>
+        <div id="controls">
+          <button id="start-btn">Iniciar</button>
+          <button id="back-btn" style="background:#EFF3F5;color:#192229;border:2px solid #192229;">← VOLVER A SELECCIÓN</button>
+        </div>
       </div>
     `;
     
-    // Asignar evento
+    // Asignar eventos
     document.getElementById('start-btn').addEventListener('click', () => {
       this.showView('config');
+    });
+    document.getElementById('back-btn').addEventListener('click', () => {
+      window.location.href = '../index.html';
     });
   },
   

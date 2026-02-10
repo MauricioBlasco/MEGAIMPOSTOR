@@ -13,11 +13,15 @@
         <div id="pantalla-inicio" class="screen active">
             <h1 class="titulo-principal"><span onclick="desbloquearLogroTheM()" style="cursor: default; position: relative;"><span id="corona-coleccionista" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 1.5rem; display: none;">👑</span>M</span>EGAIMPOSTOR</h1>
             <button class="btn-principal" onclick="mostrarPantalla('pantalla-jugadores')">INICIAR</button>
+            <button class="btn-secundario" onclick="window.location.href='../index.html'" style="margin-top: 10px;">← VOLVER A SELECCIÓN</button>
         </div>
 
         <div id="pantalla-jugadores" class="screen hidden">
             <button id="boton-secreto" onclick="mostrarPantalla('pantalla-codigo')"></button>
-            <h2>Configuración</h2>
+            <div style="position: relative; width: 100%; text-align: center; margin-bottom: 20px;">
+                <button onclick="mostrarPantalla('pantalla-inicio')" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: linear-gradient(135deg, #DC2626, #EF4444); border: 2px solid #DC2626; color: white; font-size: 1.8em; cursor: pointer; padding: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 10px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-50%) scale(1.1)'; this.style.boxShadow='0 6px 20px rgba(220, 38, 38, 0.6)';" onmouseout="this.style.transform='translateY(-50%) scale(1)'; this.style.boxShadow='0 4px 12px rgba(220, 38, 38, 0.4)';">↶</button>
+                <h2 style="margin: 0;">Configuración</h2>
+            </div>
             <div class="control-grupal">
                 <label>Jugadores:</label>
                 <div class="contador-interactivo">
