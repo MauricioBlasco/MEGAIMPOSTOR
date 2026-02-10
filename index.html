@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEGAIMPOSTOR</title>
     <link rel="stylesheet" href="style.css">
+    <script src="palabras.js"></script>
 </head>
 <body>
     <div id="game-container">
@@ -25,7 +26,7 @@
                     <button class="btn-flecha" onclick="cambiarValor('input-jugadores', 1)">+</button>
                 </div>
             </div>
-            <div class="control-grupal">
+            <div class="control-grupal" id="control-impostores" style="display: none;">
                 <label>Impostores:</label>
                 <div class="contador-interactivo">
                     <button class="btn-flecha" onclick="cambiarValor('input-impostores', -1)">-</button>

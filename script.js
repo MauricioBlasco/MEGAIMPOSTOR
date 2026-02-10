@@ -1,153 +1,5 @@
-const datos = {
-    "Animales": [
-        "Perro", "Gato", "Elefante", "Tigre", "Delfín", "Lobo", "León", "Cebra", "Jirafa", "Oso", 
-        "Panda", "Pingüino", "Tiburón", "Águila", "Serpiente", "Caballo", "Vaca", "Cerdo", "Mono", "Gorila", 
-        "Canguro", "Hipopótamo", "Rinoceronte", "Tortuga", "Conejo", "Hámster", "Loro", "Pavo Real", "Ballena", "Pulpo", 
-        "Medusa", "Abeja", "Hormiga", "Mariposa", "Araña", "Escorpión", "Cocodrilo", "Camaleón", "Murciélago", "Zorro", 
-        "Ardilla", "Mapache", "Ciervo", "Cabra", "Oveja", "Gallo", "Pato", "Cisne", "orca", "foca"
-    ],
-    "Lugares": [
-        "Playa", "Cine", "Estadio", "Hospital", "Escuela", "Aeropuerto", "Biblioteca", "Museo", "Zoológico", 
-        "Parque", "Restaurante", "Hotel", "Gimnasio", "Farmacia", "Supermercado", "Banco", "Iglesia", "Castillo", "Cárcel", 
-        "Bosque", "Desierto", "Montaña", "Isla", "Volcán", "Río", "Cascada", "Puerto", "Estación de Tren", "Gasolinera", 
-        "Panadería", "Peluquería", "Teatro", "Casino", "Circo", "Acuario", "Planetario", "Cementerio", "Granja", 
-        "Puente", "Cabaña", "Cueva", "Jungla", "Pantano"
-    ],
-    "Objetos": [
-        "Lámpara", "Reloj", "Espejo", "Martillo", "Tenedor", "Cuchillo", "Cuchara", "Plato", "Vaso", "Sartén", 
-        "Llave", "Candado", "Teléfono", "Computadora", "Televisor", "Radio", "Cámara", "Libro", "Lápiz", 
-        "Mochila", "Maleta", "Paraguas", "Gafas", "Billetera", "Moneda", "Destornillador", "Tijeras", 
-        "Peine", "Jabón", "Toalla", "Almohada", "Manta", "Silla", "Mesa", "Sofá", "Cama", 
-        "Bicicleta", "Guitarra", "Piano", "Pelota", "Raqueta", "Botella", "Encendedor", "trompeta", "Escoba", "bateria", "bajo"
-    ],
-    "Futbolistas": [
-        "Puskás", "Eusébio", "Gerd Müller", "George Best", "Yashin", "Baresi", "Maldini", "Passarella", "Kempes", "Batistuta",
-        "Figo", "Puyol", "Pirlo", "Lahm", "Gerrard", "Lampard", "Scholes", "Raúl", "Shevchenko", "Van Basten",
-        "Bergkamp", "Totti", "Del Piero", "Klose", "Foden", "Saka", "Rodri", "Valverde", "Courtois", "Alisson",
-        "Van Dijk", "Salah", "Son", "Gavi", "James Rodríguez",
-        "Garrincha", "Zico", "Socrates", "Falcao", "Chilavert", "Valderrama", "Forlán", "Cavani", "Godín",
-        "Bebeto", "Vieri", "Nedved", "Stoichkov", "Hagi", "Kahn", "Schmeichel", "Van der Sar", "Hugo Sánchez", "Rafa Márquez", "Amengol",
-        "Pelé", "Maradona", "Messi", "Cristiano Ronaldo", "Neymar", "Mbappé", "Haaland", "Lewandowski", "Benzema", "Modric",
-        "Kroos", "De Bruyne", "Kanté", "Casemiro", "Busquets", "Xavi", "Iniesta", "Zidane", "Ronaldo", "Ronaldinho",
-        "Romario", "Rivaldo", "Kaká", "Roberto Carlos", "Cafu", "Thiago Silva", "Marcelo", "Dani Alves", "Ramos",
-        "Piqué", "Kompany", "Terry", "Ferdinand", "Vidic", "Chiellini", "Bonucci", "Cannavaro", "Nesta", "Thuram",
-        "Neuer", "Buffon", "Casillas", "Oblak", "Ter Stegen", "Ederson", "Donnarumma", "Navas", "De Gea", "Cech",
-        "Henry", "Drogba", "Eto'o", "Weah", "Suárez", "Agüero", "Ibrahimovic", "Rooney", "Van Persie",
-        "Griezmann", "Pogba", "Vieira", "Makélélé", "Seedorf", "Gattuso", "Ballack", "Özil",
-        "Dybala", "Lautaro", "Julián Álvarez", "Enzo Fernández", "Mac Allister", "Dibu Martínez", "Otamendi", "Cuti Romero", "Tagliafico", "Montiel",
-        "Riquelme", "Verón", "Aimar", "Ortega", "Redondo", "Simeone", "Mascherano", "Zanetti",
-        "Crespo", "Palermo", "Tevez", "Higuaín", "Di María", "Papu Gómez", "Lo Celso", "Paredes", "Acuña"
-    ],
-    "Series": [
-        "Stranger Things", "Breaking Bad", "The Office", "Harry Potter", "Spider-Man", "Game of Thrones", "Friends", "Dark",
-        "La Casa de Papel", "The Mandalorian", "The Last of Us", "Black Mirror", "Peaky Blinders", "Better Call Saul", "Narcos", "Vikings", 
-        "Grey's Anatomy", "Lost", "The Walking Dead", "Modern Family", "The Big Bang Theory", "How I Met Your Mother", "Simpson", "South Park", "Rick and Morty", 
-        "One Piece", "Naruto", "Dragon Ball", "Attack on Titan", "Demon Slayer", "Cobra Kai", "The Boys", "Invincible", 
-        "Dexter", "Mr. Robot", "Brooklyn Nine-Nine", "Ted Lasso", "The Witcher", "Loki", "Wandavision",
-        "The Crown", "The Sopranos", "Wednesday",
-        "Sherlock", "Doctor Who", "House", "Prison Break",
-        "Arcane", "Love Death Robots", "Castlevania", "Avatar La Leyenda de Aang", "Fullmetal Alchemist", "Death Note", "Bleach", "Hunter x Hunter", "My Hero Academia",
-        "Jujutsu Kaisen", "Chainsaw Man", "Spy x Family", "One Punch Man", "Tokyo Ghoul", "Sword Art Online",
-        "The Umbrella Academy", "Squid Game", "Lucifer", "The Flash", "Arrow", "Supergirl", "Legends of Tomorrow",
-        "Daredevil", "The Punisher", "Moon Knight", "Hawkeye", "She Hulk", "Ms Marvel", "Falcon and Winter Soldier"
-    ],
-    "Comida": [
-        "Pizza", "Hamburguesa", "Sushi", "Taco", "Pasta", "Asado", "Empanada", "Paella", "Ramen", "Lasaña", 
-        "Panchito", "Nuggets", "Ensalada", "Sopa", "Milanesa", "Puré", "Arroz", "Huevo Frito", "Tortilla", "Pan", 
-        "Queso", "Jamón", "Salame", "Sándwich", "Ceviche", "Burrito", "Nachos", "Kebab", "Choripán",
-        "Helado", "Chocolate", "Tarta", "Flan", "Churros", "Donas", "Galletas", "Alfajor", "Papas Fritas", "Pochoclos", 
-        "Manzana", "Banana", "Frutilla", "Sandía", "Uva", "Naranja", "Limón", "Palta", "Tomate", "Lechuga", "Pepino", "Zanahoria", "Berenjena",
-        "Ravioles", "Ñoquis", "Sorrentinos", "Pollo al horno", "Vacío", "Morcilla", "Chorizo", "Provoleta",
-        "Humita", "Tamales", "Guiso", "Puchero", "Bondiola", "Osobuco",
-        "Quesadilla",
-        "Croissant", "Panqueques", "Waffles", "Muffin", "Brownie", "Tiramisú",
-        "Chocotorta", "Pastafrola", "Rogel", "Lemon Pie", "Budín"
-    ],
-    "Deportes": [
-        "Tenis", "Básquet", "Natación", "Rugby", "Golf", "Vóley", "Fútbol", "Boxeo", "Ciclismo", 
-        "Atletismo", "Gimnasia", "Hockey", "Béisbol", "Surf", "Skate", "Snowboard", "Esquí", "Karate",
-        "Esgrima", "Arquería", "Remo", "Ajedrez", "Pádel", "Ping Pong", "Dardos", 
-        "Bowling", "Sumo", "Lucha Libre", 
-        "Handball"
-    ],
-    "Videojuegos": [
-        "Minecraft", "Fortnite", "Mario Bros", "FIFA", "GTA", "Zelda", "Rocket league", "Red Dead Redemption", "Fallout", "Tetris", 
-        "Terraria", "League of Legends", "Valorant", "Counter-Strike", "Roblox", "Among Us", "Fall Guys", "God of War", "Elden Ring", "Dark Souls", 
-        "Halo", "Call of Duty", "Resident Evil", "Silent Hill", "Mortal Kombat", "Street Fighter", "Sonic", "Pac-Man", "The Sims", "Stardew Valley", 
-        "Pokemon", "Final Fantasy", "Apex Legends", "Overwatch", "Cyberpunk 2077", "The Witcher 3", "Assassins Creed", "Uncharted", 
-        "The Last of Us", "Skyrim", "Portal", "Half-Life", "BioShock", "Undertale", "Cuphead", "Hollow Knight", "Doom", "gangbeast", "kirby", "polytopia", "crash bandicoot", "need 4 speed",
-        "Outer Wilds", "Brawl Stars", "Clash of Clans", "Genshin Impact", "Dead by Daylight", "Phasmophobia", "Baldurs Gate 3",
-        "Bloodborne", "Sekiro", "Ghost of Tsushima", "Horizon", "Gran Turismo", "F1", "NBA 2K", "PES", "Smash Bros",
-        "Animal Crossing", "Splatoon", "Metroid", "Donkey Kong", "Mega Man", "Castlevania", "Metal Gear Solid", "Devil May Cry",
-        "Diablo", "World of Warcraft", "StarCraft", "Team Fortress 2", "Left 4 Dead", "Payday", "Rainbow Six Siege",
-        "Battlefield", "Destiny", "Borderlands", "Yakuza", "Injustice",
-        "Celeste", "Hades", "Dead Cells", "Subnautica", "No Man's Sky"
-    ],
-  "Clash Royale": [
-        "Gigante", "Montapuercos", "P.E.K.K.A", "Mago eléctrico", "Tronco", "Zap", "Bárbaros", "Arqueras", "Esqueletos", "Gólem",
-        "Sabueso de lava", "Globo bombástico", "Minero", "Princesa", "Mago de hielo", "Bruja", "Ejército de esqueletos", "Barril de duendes", "Cohete", "Bola de fuego",
-        "Veneno", "Tornado", "Verdugo", "Dragón infernal", "Torre infernal", "Ballesta", "Mortero", "Chispitas", "Megacaballero", "Bandida",
-        "Fantasma real", "Arquero mágico", "Montacarneros", "Pescador", "Lanzarrocas", "Lanzafuegos", "Duende lanzadardos", "Pandilla de duendes", "Murciélagos", "Trío de mosqueteras",
-        "Príncipe", "Príncipe oscuro", "Espíritu de hielo", "Espíritu de fuego", "Curandera guerrera", "Paquete real", "Dragones esqueléticos", "Bruja madre",
-        "Rompemuros", "Fénix", "Monje", "Rey Esqueleto", "Reina Arquera", "Caballero Dorado", "Principito", "Duendes con lanza",
-        "Gigante Noble", "Bárbaros de élite", "Horda de esbirros", "Esbirros", "Cazador", "Mago", "Mini P.E.K.K.A", "Valquiria", "Golem de elíxir",
-        "Cañón", "Cañón con ruedas", "Máquina voladora", "Choza de duendes", "Choza de bárbaros", "Lápida", "Horno", "Recolector de elíxir", "Jaula del forzudo", "Terremoto",
-        "Flechas", "Rayo", "Clon", "Espejo", "Furia"
-    ],
-    "Rock Internacional": [
-        "The Beatles", "Queen", "Led Zeppelin", "Pink Floyd", "The Rolling Stones", "AC/DC", "Nirvana", "Guns N' Roses", "Metallica", "Radiohead",
-        "The Doors", "Aerosmith", "U2", "Deep Purple", "Black Sabbath", "The Who", "Red Hot Chili Peppers", "Pearl Jam", "Linkin Park", "Iron Maiden",
-        "Coldplay", "Green Day", "Bon Jovi", "The Police", "Oasis", "Arctic Monkeys", "The Killers", "Foo Fighters", "Muse",
-        "The Clash", "Ramones", "Sex Pistols", "KISS", "Van Halen", "The Cure", "The Smiths",
-        "Imagine Dragons", "Gorillaz", "Twenty One Pilots", "System of a Down", "Slipknot", "Mötley Crüe", "Journey", "Toto", "Fleetwood Mac", "Dire Straits", "Las chismosas"
-    ],
-    "Rock Argentino": [
-        "Soda Stereo", "Patricio Rey", "Serú Girán", "Pescado Rabioso", "Sumo", "Los Abuelos de la Nada", "Enanitos Verdes", "Los Fabulosos Cadillacs", "Los Auténticos Decadentes", "Babasónicos",
-        "La Renga", "Los Piojos", "Ratones Paranoicos", "Divididos", "Las Pelotas", "Catupecu Machu", "Bersuit Vergarabat", "Callejeros", "Intoxicados", "Viejas Locas",
-        "Virus", "Rata Blanca", "Attaque 77", "Dos Minutos", "Almafuerte", "Hermética", "V8", "Los Tipitos", "Estelares", "Guasones",
-        "El Mató a un Policía Motorizado", "Airbag", "Tan Biónica", "Los Gardelitos", "Los fundamentalistas", "La Beriso", "Los Caballeros de la Quema", "Arbol", "Kapanga", "Memphis la Blusera",
-        "Vox Dei", "Almendra", "Sui Generis", "Manal", "Los Gatos", "Pappo's Blues", "Riff", "SKAY", "Miranda!", "Turf", "Las chismosas",
-        "León Gieco", "Fito Páez",
-        "No Te Va Gustar", "La Vela Puerca", "Ciro y Los Persas", "La Mosca", "Los Cafres", "Nonpalidece", "Dread Mar I",
-        "Los Pericos", "Flema",
-        "Horcas", "Malón", "Asspera"
-    ],
-    "Peliculas": [
-        "Titanic", "Avatar", "El Padrino", "Pulp Fiction", "Forrest Gump", "Gladiador", "Matrix", "Inception", "Interstellar", "El Rey León",
-        "Jurassic Park", "Star Wars", "El Señor de los Anillos", "Harry Potter", "Toy Story", "Buscando a Nemo", "Frozen", "Los Increíbles", "Shrek", "Up",
-        "Avengers", "Iron Man", "Spider-Man", "Batman", "Superman", "Joker", "Deadpool", "Black Panther", "Guardianes de la Galaxia", "Thor",
-        "Volver al Futuro", "Rocky", "Rambo", "Terminator", "Alien", "Depredador", "Duro de Matar", "Mad Max", "300", "Troya",
-        "La La Land", "Coco", "Intensa Mente", "Moana", "Enredados", "Blancanieves", "La Sirenita", "Aladdin", "Mulan", "Pocahontas",
-        "Scarface", "El Lobo de Wall Street", "Fight Club", "Kung Fu Panda", "Cómo Entrenar a tu Dragón", "Madagascar", "Ratatouille", "Monsters Inc",
-        "Piratas del Caribe", "Indiana Jones", "E.T.", "Tiburón", "Goodfellas", "Casino", "Taxi Driver", "El Silencio de los Inocentes",
-        "Kill Bill", "Dune", "Blade Runner", "El Caballero de la Noche",
-        "Espartaco",
-        "Casablanca", "La Naranja Mecánica", "2001 Odisea del Espacio", "El Resplandor", "Psicosis",
-        "Relatos Salvajes", "El Secreto de sus Ojos", "Nueve Reinas", "El Ángel", "Metegol", "La Odisea de los Giles",
-        "John Wick"
-    ],
-    "Pokemon": [
-        "Pikachu", "Charizard", "Bulbasaur", "Squirtle", "Mewtwo", "Mew", "Eevee", "Snorlax", "Gengar", "Dragonite",
-        "Gyarados", "Lucario", "Greninja", "Blaziken", "Umbreon", "Espeon", "Jolteon", "Vaporeon", "Flareon", "Leafeon",
-        "Glaceon", "Sylveon", "Meowth", "Psyduck", "Machamp", "Alakazam", "Golem", "Raichu", "Arcanine", "Ninetales", "Pidgeot", "Fearow", "Sandslash", "Nidoking", "Nidoqueen", "Clefable", "Wigglytuff", "Venomoth", "Dugtrio", "Persian",
-        "Golduck", "Primeape", "Poliwrath", "Abra", "Kadabra", "Machoke", "Victreebel", "Tentacruel", "Rapidash", "Slowbro", "Magneton", "Dodrio", "Dewgong", "Muk", "Cloyster", "Haunter", "Hypno", "Kingler", "Electrode", "Exeggutor",
-        "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung", "Weezing", "Rhydon", "Chansey", "Tangela", "Kangaskhan", "Seadra", "Seaking", "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir", "Tauros", "Lapras",
-        "Ditto", "Porygon", "Omastar", "Kabutops", "Aerodactyl", "Articuno", "Zapdos", "Moltres", "Dratini", "Dragonair", "Totodile", "Cyndaquil", "Chikorita", "Typhlosion", "Feraligatr", "Meganium", "Ampharos", "Heracross", "Scizor", "Tyranitar",
-        "Lugia", "Ho-Oh", "Celebi", "Slowking", "Wobbuffet", "Forretress", "Steelix", "Shuckle", "Treecko", "Torchic", "Mudkip", "Gardevoir", "Aggron", "Flygon", "Milotic", "Absol", "Salamence", "Metagross",
-        "Latias", "Latios", "Kyogre", "Groudon", "Rayquaza", "Jirachi", "Deoxys", "Sceptile", "Swampert", "Breloom", "Slaking", "Hariyama", "Manectric", "Sharpedo", "Wailord", "Altaria", "Zangoose", "Seviper", "Armaldo", "Banette",
-        "Torterra", "Infernape", "Empoleon", "Garchomp", "Luxray", "Roserade", "Gallade", "Dialga", "Palkia", "Giratina", "Darkrai", "Arceus", "Zoroark", "Chandelure", "Hydreigon", "Reshiram", "Zekrom", "Kyurem", "Mimikyu"
-    ],
-    "Personas":[
-        "Mauro","Lopa", "Euge", "vicky B", "Melina", "eze", "Isidro", "Raul", "Nacho", "Tejeda", "prato", "Luna", "Valen", "lio", "Viva", "monti", "Arguello", 
-        "Testa", "Estela", "Luciano Bricola", "Mariano Bricola", "Poggi", "Pablo", "coffler", "Pablito del pañol", "Facu Led", "mendez", "Spagno", "sosin", "shasemnbag", 
-        "Maffei", "Altinier", "zarate", "serrudo", "Colo barco", "Abregu", "gabri", "octa", "tatin", "Amenta", "Jorge Herrera", "germauro papa", "Titi", "Santi Lautolucito", "Pepi Puente",
-        "giamo", "Gian", "Matarollo", "Lain", "mauri trillo", "bissoni", "garabato", "santi white", "santi taza", "camilito", "rios", "fabri", "medina", "palmieri", "sofi morey", "vicky lupica", 
-        "manuchongod", "mateo orlando", "alejo almeyra", "nelli", "mati karam", "milo rada", "joaquino", "lesme", "luis", "tanque de velez", "darda", "arguello papa", "vila 🐐"
-        , "franva", "valensar", "barbara", "rebeca", "sansone", "lord braulio", "benja trillo", "abrulop", "elian", "kofman", "fausto", "lara", "pagano", "numa", "tizi paredes", "cesar", "salinas"
-        , "schiner", "degodoy", "zukaritas", "venenzoni", "pereyra", "iara", "benja", "thiago diarte", "chapa zarate", "yami canchas", "anzoategui", "heir", "firpo", "thepenke", "lobo zerrillo"
-        , "viole giu", "jaz", "tomi teje", "lau G vila", "Gavidron"
-    ]
-};
+// Las palabras se cargan desde palabras.js
+
 let numJugadores = 0;
 let numImpostores = 0;
 let jugadorActual = 1;
@@ -182,27 +34,57 @@ let pistasJugadores = {}; // {jugadorNum: pista}
 let votosJugadores = {}; // {votante: votado}
 let jugadorActualPista = 1; // Para el flujo de dar pistas
 
+// Función auxiliar para obtener palabras seleccionadas
+function obtenerBolsaCombinada() {
+    const categorias = [
+        { id: 'cat-Animales', nombre: 'Animales' },
+        { id: 'cat-Lugares', nombre: 'Lugares' },
+        { id: 'cat-Objetos', nombre: 'Objetos' },
+        { id: 'cat-Futbolistas', nombre: 'Futbolistas' },
+        { id: 'cat-Series', nombre: 'Series' },
+        { id: 'cat-ClashRoyale', nombre: 'Clash Royale' },
+        { id: 'cat-Comida', nombre: 'Comida' },
+        { id: 'cat-Deportes', nombre: 'Deportes' },
+        { id: 'cat-Videojuegos', nombre: 'Videojuegos' },
+        { id: 'cat-RockInt', nombre: 'Rock Internacional' },
+        { id: 'cat-RockArg', nombre: 'Rock Argentino' },
+        { id: 'cat-Peliculas', nombre: 'Peliculas' },
+        { id: 'cat-Pokemon', nombre: 'Pokemon' },
+        { id: 'cat-Personas', nombre: 'Personas' }
+    ];
+    
+    const bolsa = [];
+    categorias.forEach(({ id, nombre }) => {
+        const checkbox = document.getElementById(id);
+        if (checkbox && checkbox.checked && datos[nombre]) {
+            datos[nombre].forEach(p => bolsa.push({ p, c: nombre }));
+        }
+    });
+    
+    return bolsa;
+}
+
 // El bot aprende automáticamente analizando las categorías
 function botAprendizajeAutomatico() {
     // Generar asociaciones basadas en categorías
-    Object.keys(datos).forEach(categoria => {
-        datos[categoria].forEach(palabra => {
+    for (const categoria in datos) {
+        const palabras = datos[categoria];
+        for (const palabra of palabras) {
             if (!asociacionesPalabras[palabra]) {
-                asociacionesPalabras[palabra] = [];
+                asociacionesPalabras[palabra] = [categoria.toLowerCase()];
+            } else if (!asociacionesPalabras[palabra].includes(categoria.toLowerCase())) {
+                asociacionesPalabras[palabra].push(categoria.toLowerCase());
             }
-            
-            // Agregar la categoría como pista base
-            asociacionesPalabras[palabra].push(categoria.toLowerCase());
             
             // Generar pistas automáticas basadas en características
             const pistas = generarPistasAutomaticas(palabra, categoria);
-            pistas.forEach(pista => {
+            for (const pista of pistas) {
                 if (!asociacionesPalabras[palabra].includes(pista)) {
                     asociacionesPalabras[palabra].push(pista);
                 }
-            });
-        });
-    });
+            }
+        }
+    }
     
     guardarAsociacionesBot();
 }
@@ -706,16 +588,16 @@ function generarPistasAutomaticas(palabra, categoria) {
         "Voleibol": ["red alta", "saque", "remate", "6 jugadores", "pelota", "bloqueo", "volea", "rotación", "set", "cancha"],
         "Golf": ["palos", "hoyo", "green", "18 hoyos", "swing", "tee", "putt", "caddie", "birdie", "par"],
         "Automovilismo": ["autos", "pista", "velocidad", "F1", "boxes", "pole", "podio", "vuelta", "neumáticos", "circuito"],
-        "Ciclismo": ["bicicleta", "pedales", "Tour de France", "etapas", "pelotón", "montaña", "sprint", "amarillo", "vuelta", "casco"],
-        "Ski": ["nieve", "montaña", "tablas", "descenso", "bastones", "pista", "slalom", "telesilla", "botas", "alpino"],
-        "Snowboard": ["nieve", "tabla", "trucos", "halfpipe", "descenso", "saltos", "freestyle", "montaña", "botas", "slope"],
+        "Ciclismo": ["bicicleta", "pedales", "Tour de France", "etapas", "pelotón", "montaña", "sprint", "maillot amarillo", "vuelta", "casco"],
+        "Ski": ["nieve", "montaña", "tablas", "descenso", "bastones", "pista", "slalom", "telesilla", "botas rígidas", "alpino"],
+        "Snowboard": ["nieve", "tabla", "trucos", "halfpipe", "descenso", "saltos", "freestyle", "montaña", "botas blandas", "slope style"],
         "Surf": ["olas", "tabla", "playa", "equilibrio", "mar", "remo", "tubo", "marea", "wax", "wetsuit"],
         "Skate": ["patineta", "trucos", "rampa", "ollie", "ruedas", "kickflip", "calle", "park", "lija", "trucks"],
         "Escalada": ["roca", "arnés", "altura", "agarre", "pared", "mosquetón", "cuerda", "búlder", "indoor", "montaña"],
-        "Gimnasia": ["acrobacias", "flexibilidad", "barras", "colchoneta", "Olimpiadas", "viga", "suelo", "anillas", "salto", "rutina"],
-        "Halterofilia": ["pesas", "levantamiento", "barra", "fuerza", "Olimpiadas", "arrancada", "envión", "discos", "peso", "potencia"],
+        "Gimnasia": ["acrobacias", "flexibilidad", "barras", "colchoneta", "Olimpiadas", "viga equilibrio", "suelo", "anillas", "salto", "rutina"],
+        "Halterofilia": ["pesas", "levantamiento", "barra", "fuerza", "Olimpiadas", "arrancada", "envión", "discos", "peso muerto", "potencia"],
         "Esgrima": ["espada", "tocado", "máscara", "duelo", "pista", "florete", "sable", "estocada", "punto", "blanco"],
-        "Arco y flecha": ["arco", "flechas", "diana", "puntería", "Olimpiadas", "carcaj", "centro", "tensión", "puntos", "tiro"],
+        "Arco y flecha": ["arco", "flechas", "diana", "puntería", "Olimpiadas", "carcaj", "centro", "tensión", "puntos 10", "tiro"],
         "Judo": ["tatami", "kimono", "llaves", "ippon", "arte marcial", "proyección", "cinturón", "combate", "judoca", "agarre"],
         "Karate": ["kimono", "katas", "golpes", "cinturones", "arte marcial", "puñetazo", "patada", "kata", "kumite", "dojo"],
         "Taekwondo": ["patadas", "kimono", "arte marcial coreano", "cinturones", "combate", "dobok", "poomsae", "giro", "salto", "puntos"],
@@ -727,13 +609,13 @@ function generarPistasAutomaticas(palabra, categoria) {
         "Fútbol americano": ["ovalado", "touchdown", "NFL", "casco", "yardas", "quarterback", "pase", "tackle", "touchdown", "campo"],
         "MMA": ["octágono", "artes marciales mixtas", "UFC", "nocaut", "sumisión", "rounds", "golpes", "patadas", "llave", "referee"],
         "Vóley": ["red alta", "saque", "remate", "6 jugadores", "pelota", "bloqueo", "volea", "rotación", "set", "cancha"],
-        "Pádel": ["raqueta", "parejas", "pared", "pelota", "vidrio", "volea", "bandeja", "dobles", "red", "saque"],
-        "Ping Pong": ["raqueta pequeña", "pelota blanca", "mesa", "red baja", "paleta", "efecto", "saque", "rally", "individual", "dobles"],
-        "Dardos": ["flechas", "diana", "puntería", "pub", "centro", "bullseye", "180", "triple", "lanzar", "puntos"],
-        "Bowling": ["bolos", "bola", "pista", "strike", "spare", "10 pinos", "chuza", "zapatos", "canaleta", "juego"],
-        "Sumo": ["luchadores", "japonés", "ring circular", "obesidad", "tradición", "mawashi", "ritual", "empujar", "dohyo", "yokozuna"],
+        "Pádel": ["raqueta agujereada", "parejas", "pared vidrio", "pelota", "cancha cerrada", "volea", "bandeja", "dobles siempre", "red baja", "saque bajo"],
+        "Ping Pong": ["raqueta pequeña paleta", "pelota blanca", "mesa", "red baja", "tenis de mesa", "efecto", "saque", "rally", "individual dobles", "11 puntos"],
+        "Dardos": ["flechas", "diana circular", "puntería", "pub", "centro", "bullseye", "180", "triple 20", "lanzar", "puntos"],
+        "Bowling": ["bolos", "bola pesada", "pista", "strike", "spare", "10 pinos", "chuza", "zapatos especiales", "canaleta", "juego"],
+        "Sumo": ["luchadores gordos", "japonés", "ring circular dohyo", "obesidad", "tradición", "mawashi", "ritual", "empujar", "suelo", "yokozuna"],
         "Gimnasia": ["acrobacias", "flexibilidad", "barras", "colchoneta", "Olimpiadas", "viga", "suelo", "anillas", "salto", "rutina"],
-        "Handball": ["pelota", "arco", "7 jugadores", "pase", "gol", "área", "lanzamiento", "portero", "saque", "cancha"],
+        "Handball": ["pelota", "arco", "7 jugadores", "pase", "gol", "área", "lanzamiento", "portero", "saque lateral", "cancha interior"],
         
         // Videojuegos
         "Minecraft": ["cubos", "crafteo", "supervivencia", "creeper", "mundo abierto", "Mojang", "Steve", "bloques", "minar", "pixelado"],
@@ -847,21 +729,21 @@ function generarPistasAutomaticas(palabra, categoria) {
         "Injustice": ["pelea", "DC Comics", "NetherRealm", "superhéroes", "Superman", "story mode", "gear", "combos", "villanos", "multiverso"],
         
         // Clash Royale
-        "Gigante": ["tanque", "edificios", "5 elixir", "lento", "pelo negro", "torre", "resistente", "común", "distracción", "daño bajo"],
-        "Montapuercos": ["martillo", "cerdo", "4 elixir", "edificios", "épica", "salto", "fast", "jinete", "rápido", "rush"],
-        "P.E.K.K.A": ["robot", "espada", "7 elixir", "tanque", "épica", "mariposas", "armadura", "destructora", "alto daño", "lenta"],
-        "Mago eléctrico": ["electricidad", "aturdimiento", "legendaria", "4 elixir", "área", "barba blanca", "hechicero", "zap", "refleja", "rayo"],
-        "Tronco": ["hechizo", "empuje", "2 elixir", "legendaria", "madera", "knockback", "rueda", "bajo costo", "pequeñas tropas", "log"],
-        "Zap": ["hechizo", "electricidad", "2 elixir", "aturdimiento", "común", "instante", "reset", "rápido", "torre", "stun"],
+        "Gigante": ["tanque", "edificios", "5 elixir", "lento", "pelo negro", "torre", "resistente", "común", "distracción", "win condition"],
+        "Montapuercos": ["martillo", "cerdo", "4 elixir", "edificios", "épica", "salto", "fast", "jinete", "rápido", "win condition"],
+        "P.E.K.K.A": ["robot", "espada", "7 elixir", "tanque", "épica", "mariposas", "armadura", "destructora", "alto daño", "tanque killer"],
+        "Mago eléctrico": ["electricidad", "aturdimiento", "legendaria", "4 elixir", "área", "barba blanca", "hechicero", "zap", "refleja proyectiles", "rayo"],
+        "Tronco": ["hechizo", "empuje", "2 elixir", "legendaria", "madera", "knockback", "rueda", "bajo costo", "tropas pequeñas", "meta"],
+        "Zap": ["hechizo", "electricidad", "2 elixir", "aturdimiento", "común", "instante", "reset", "rápido", "torre", "ciclo"],
         "Bárbaros": ["bigotes", "espadas", "5 elixir", "cinco unidades", "común", "defensa", "musculosos", "pelaje", "rubios", "fuertes"],
         "Arqueras": ["dos unidades", "pelo rosa", "3 elixir", "distancia", "común", "arco", "trenzas", "flechas", "apoyo", "dúo"],
         "Esqueletos": ["huesos", "1 elixir", "cuatro unidades", "común", "ciclo", "distracciones", "muertos", "frágiles", "rápidos", "bajo costo"],
         "Gólem": ["tanque", "8 elixir", "épica", "roca", "golemitas", "se divide", "destructor", "edificios", "alto costo", "pusheo"],
         "Sabueso de lava": ["aéreo", "lava pups", "7 elixir", "legendaria", "se divide", "tanque", "fuego", "perro", "globo combo", "lavacachorritos"],
         "Globo bombástico": ["aéreo", "bomba", "5 elixir", "edificios", "épica", "esqueleto", "muerte", "globo", "rage combo", "torre"],
-        "Minero": ["legendaria", "3 elixir", "pico", "aparece anywhere", "torre", "chip damage", "excavador", "versatil", "tanque pequeño", "inesperado"],
-        "Princesa": ["legendaria", "arco", "3 elixir", "largo alcance", "área", "corona", "flecha", "apoyo", "cabello negro", "torre desde puente"],
-        "Mago de hielo": ["legendaria", "hielo", "3 elixir", "ralentiza", "área", "barba", "congelamiento", "defensive", "wizard", "slow"],
+        "Minero": ["legendaria", "3 elixir", "pico", "aparece en cualquier lugar", "torre", "chip damage", "excavador", "versatil", "tanque pequeño", "prediction"],
+        "Princesa": ["legendaria", "arco", "3 elixir", "largo alcance", "área", "corona", "flecha", "apoyo", "cabello negro", "puente"],
+        "Mago de hielo": ["legendaria", "hielo", "3 elixir", "ralentiza", "área", "barba", "congelamiento", "defensive", "wizard", "tanque killer"],
         "Bruja": ["invoca esqueletos", "5 elixir", "épica", "morado", "distancia", "área", "spawn", "hechicera", "bola de fuego", "defensa"],
         "Ejército de esqueletos": ["15 esqueletos", "3 elixir", "épica", "enjambre", "defensa", "huesos", "horda", "counter", "surrounds", "distracción"],
         "Barril de duendes": ["hechizo", "3 elixir", "épica", "torre", "tres duendes", "chip", "barril", "prediction", "daño directo", "verde"],
@@ -871,14 +753,14 @@ function generarPistasAutomaticas(palabra, categoria) {
         "Tornado": ["hechizo", "3 elixir", "épica", "atrae", "activación rey", "tornado", "viento", "agrupa", "king tower", "synergy"],
         "Verdugo": ["legendaria", "hacha", "5 elixir", "escudo", "alto daño", "ejecutora", "princesa counter", "tanque", "destructor", "arma grande"],
         "Dragón infernal": ["legendaria", "aéreo", "4 elixir", "rayo", "se calienta", "tanque killer", "dragón", "beam", "morado", "incremental"],
-        "Torre infernal": ["edificio", "5 elixir", "raro", "se calienta", "single o multi", "defensa", "torre", "beam", "tanque killer", "modes"],
-        "Ballesta": ["edificio", "6 elixir", "épica", "win condition", "distancia", "siege", "flechas", "torre", "defensa", "largo alcance"],
-        "Mortero": ["edificio", "4 elixir", "común", "siege", "área", "proyectiles", "torre", "distancia", "chip", "barato"],
+        "Torre infernal": ["edificio", "5 elixir", "raro", "se calienta", "single o multi", "defensa", "torre", "beam rayo", "tanque killer", "modos"],
+        "Ballesta": ["edificio", "6 elixir", "épica", "win condition", "distancia", "siege sitio", "flechas", "torre", "defensa", "largo alcance"],
+        "Mortero": ["edificio", "4 elixir", "común", "siege sitio", "área", "proyectiles", "torre", "distancia", "chip", "barato"],
         "Chispitas": ["hechizo", "1 elixir", "legendaria", "tres rayos", "versatil", "flexible", "eléctrico", "multi uso", "ciclo", "zap pequeño"],
-        "Megacaballero": ["legendaria", "7 elixir", "salto", "área al caer", "tanque", "bigote", "armadura", "destructivo", "counter push", "jump"],
-        "Bandida": ["legendaria", "3 elixir", "dash", "daga", "invisible al dashearse", "rápida", "pañuelo", "counter", "versatil", "burst"],
-        "Fantasma real": ["legendaria", "3 elixir", "invisible", "carga", "espada", "fantasma", "dash attack", "esquiva", "cape", "burst"],
-        "Arquero mágico": ["legendaria", "4 elixir", "arco mágico", "primera flecha penetra", "distancia", "apoyo", "long range", "músico", "magic", "support"],
+        "Megacaballero": ["legendaria", "7 elixir", "salto", "área al caer", "tanque", "bigote", "armadura", "destructivo", "counter push", "MK"],
+        "Bandida": ["legendaria", "3 elixir", "dash", "daga", "invisible al dash", "rápida", "pañuelo", "counter", "versatil", "burst"],
+        "Fantasma real": ["legendaria", "3 elixir", "invisible", "carga", "espada", "fantasma", "dash attack", "esquiva", "capa", "burst"],
+        "Arquero mágico": ["legendaria", "4 elixir", "arco mágico", "primera flecha penetra", "distancia", "apoyo", "largo alcance", "músico", "magia", "support"],
         "Montacarneros": ["ariete", "4 elixir", "raro", "edificios", "dos bárbaros", "madera", "push", "charge", "barbarians", "ram"],
         "Pescador": ["legendaria", "3 elixir", "anzuelo", "atrae", "caña", "hook", "fisherman", "activation", "synergy", "pull"],
         "Lanzarrocas": ["edificios", "6 elixir", "común", "distancia", "win condition", "edificio spawn", "boulders", "rocas", "siege", "tower"],
@@ -897,11 +779,11 @@ function generarPistasAutomaticas(palabra, categoria) {
         "Bruja madre": ["4 elixir", "legendaria", "murciélagos", "cura", "invocadora", "morado", "support", "bats", "heal", "night witch"],
         "Rompemuros": ["2 elixir", "épica", "edificios", "rápido", "wallbreaker", "explosión", "kamikaze", "suicide", "barrel", "bomber"],
         "Fénix": ["4 elixir", "legendaria", "aéreo", "renace", "huevos", "phoenix", "revive", "egg", "fuego", "reborn"],
-        "Monje": ["4 elixir", "legendaria", "refleja habilidades", "karate", "puño", "ability reflect", "counter", "martial arts", "monk", "ponsuke"],
-        "Rey Esqueleto": ["4 elixir", "legendaria", "invoca", "esqueletos", "corona", "king", "bones", "spawner", "graveyard-like", "skeleton king"],
-        "Reina Arquera": ["5 elixir", "legendaria", "arco", "invisible", "torre", "archer queen", "cloak", "ability", "long range", "royal"],
-        "Caballero Dorado": ["4 elixir", "legendaria", "carga", "invulnerable al cargar", "dorado", "golden", "dash", "immunity", "knight", "shiny"],
-        "Principito": ["2 elixir", "legendaria", "carga", "caballo pequeño", "niño", "little prince", "young", "charge", "mini", "baby"],
+        "Monje": ["4 elixir", "legendaria", "refleja habilidades", "karate", "puño", "ability reflect", "counter", "artes marciales", "campeón", "ponsuke"],
+        "Rey Esqueleto": ["4 elixir", "legendaria", "invoca esqueletos", "corona", "habilidadárea", "campeón", "huesos", "spawner", "graveyard", "skeleton king"],
+        "Reina Arquera": ["5 elixir", "legendaria", "arco", "invisible al activar", "torre", "campeón", "cloak", "habilidad", "largo alcance", "royal"],
+        "Caballero Dorado": ["4 elixir", "legendaria", "carga", "invulnerable al cargar", "dorado", "campeón", "dash", "inmunidad", "knight", "shiny"],
+        "Principito": ["2 elixir", "legendaria", "carga", "caballo pequeño", "niño", "campeón", "joven", "charge", "mini", "baby"],
         "Duendes con lanza": ["2 elixir", "común", "tres duendes", "lanzas", "distancia", "goblins", "spear", "cheap", "verde", "trio"],
         "Gigante Noble": ["6 elixir", "raro", "tanque", "mustache", "dos duendes lanza", "spawn", "noble", "torre", "royal giant", "guns"],
         "Bárbaros de élite": ["6 elixir", "común", "dos bárbaros", "rápidos", "espadas", "elite", "fast", "muscular", "rush", "dps"],
@@ -1045,78 +927,78 @@ function generarPistasAutomaticas(palabra, categoria) {
         "Cuentos Borgeanos": ["stoner rock", "Lomas de Zamora", "años 90", "pesado", "underground", "riffs", "sludge", "instrumental", "psicodélico", "denso"],
         
         // Películas
-        "El Padrino": ["mafia", "Vito Corleone", "oferta que no puede rechazar", "Coppola", "años 70"],
-        "Pulp Fiction": ["Tarantino", "no lineal", "maletín", "danza", "años 90"],
-        "El Señor de los Anillos": ["Frodo", "anillo", "Tierra Media", "épica", "trilogía"],
-        "Star Wars": ["Jedi", "Vader", "espacio", "saga", "La Fuerza"],
-        "Titanic": ["barco", "iceberg", "Jack y Rose", "hundimiento", "años 90"],
-        "Forrest Gump": ["pluma", "corre", "Tom Hanks", "historia americana", "chocolates"],
-        "Matrix": ["Neo", "píldoras", "simulación", "kung fu", "Wachowski"],
-        "Inception": ["sueños", "Cobb", "trompo", "Nolan", "niveles"],
-        "Interstellar": ["espacio", "agujero de gusano", "Cooper", "Nolan", "tiempo"],
-        "The Dark Knight": ["Joker", "Heath Ledger", "Gotham", "Batman", "Nolan"],
-        "Fight Club": ["Brad Pitt", "reglas", "jabón", "Tyler Durden", "twist"],
-        "Gladiador": ["Roma", "Maximus", "arena", "venganza", "Russell Crowe"],
-        "Volver al Futuro": ["DeLorean", "viaje en el tiempo", "Marty", "Doc", "años 80"],
-        "Jurassic Park": ["dinosaurios", "isla", "T-Rex", "Spielberg", "clonación"],
-        "E.T.": ["extraterrestre", "dedo", "bicicleta", "Spielberg", "niños"],
-        "Tiburón": ["playa", "aleta", "Amity", "Spielberg", "terror"],
-        "Indiana Jones": ["arqueólogo", "látigo", "aventuras", "Spielberg", "tesoros"],
-        "Toy Story": ["juguetes", "Woody", "Buzz", "Pixar", "animada"],
-        "El Rey León": ["Simba", "sabana", "Mufasa", "Hakuna Matata", "Disney"],
-        "Shrek": ["ogro", "pantano", "Burro", "DreamWorks", "princesa"],
-        "Buscando a Nemo": ["pez payaso", "océano", "Dory", "Pixar", "acuario"],
-        "Frozen": ["Let It Go", "Elsa", "hielo", "Disney", "hermanas"],
-        "Coco": ["Día de Muertos", "Miguel", "guitarra", "Pixar", "familia"],
-        "Up": ["globos", "casa voladora", "Carl", "Pixar", "aventura"],
-        "Wall-E": ["robot", "basura", "espacio", "Pixar", "amor"],
-        "Los Increíbles": ["superhéroes", "familia", "Mr. Increíble", "Pixar", "retiro"],
-        "Ratatouille": ["rata", "cocina", "París", "Pixar", "chef"],
-        "Intensamente": ["emociones", "Riley", "cerebro", "Pixar", "Alegría y Tristeza"],
-        "Moana": ["océano", "Maui", "isla", "Disney", "corazón de Te Fiti"],
-        "Enredados": ["Rapunzel", "torre", "pelo largo", "Disney", "sartén"],
-        "La Bella y la Bestia": ["rosa", "castillo", "Belle", "Disney", "hechizo"],
-        "La Sirenita": ["Ariel", "mar", "voz", "Disney", "Bajo el Mar"],
-        "Aladdin": ["genio", "lámpara", "alfombra", "Disney", "Agrabah"],
-        "El Viaje de Chihiro": ["Ghibli", "Miyazaki", "Sin Rostro", "Yubaba", "fantasía"],
-        "Mi Vecino Totoro": ["Ghibli", "espíritu del bosque", "niñas", "Miyazaki", "paraguas"],
-        "La Princesa Mononoke": ["Ghibli", "bosque", "San", "Miyazaki", "naturaleza"],
-        "Harry Potter": ["mago", "Hogwarts", "varita", "saga", "Voldemort"],
-        "El Hobbit": ["Bilbo", "Smaug", "anillo", "Peter Jackson", "Tierra Media"],
-        "Piratas del Caribe": ["Jack Sparrow", "Perla Negra", "mar", "Johnny Depp", "fantasía"],
-        "Avatar": ["Pandora", "Na'vi", "James Cameron", "azul", "3D"],
-        "Los Vengadores": ["superhéroes", "Marvel", "equipo", "Thanos", "Infinity War"],
-        "Iron Man": ["Tony Stark", "armadura", "Marvel", "reactor arc", "Robert Downey Jr"],
-        "Capitán América": ["Steve Rogers", "escudo", "Marvel", "súper soldado", "WWII"],
-        "Thor": ["Asgard", "martillo", "Odín", "Marvel", "dios del trueno"],
-        "Spider-Man": ["araña", "telaraña", "Peter Parker", "Marvel", "Nueva York"],
-        "Black Panther": ["Wakanda", "T'Challa", "vibranium", "Marvel", "África"],
-        "Doctor Strange": ["hechicero supremo", "ojo de Agamotto", "Marvel", "dimensiones", "magia"],
-        "Guardianes de la Galaxia": ["espacio", "Groot", "Star-Lord", "Marvel", "walkman"],
-        "Deadpool": ["antihéroe", "rompe cuarta pared", "Marvel", "mercenario", "humor"],
-        "The Batman": ["Gotham", "Riddler", "Robert Pattinson", "detective", "oscura"],
-        "Joker": ["Joaquin Phoenix", "Gotham", "payaso", "origen", "escaleras"],
-        "El Caballero de la Noche Asciende": ["Bane", "Batman", "Gotham", "Nolan", "final"],
-        "Superman": ["Krypton", "capa roja", "Clark Kent", "DC", "vuela"],
-        "Wonder Woman": ["amazona", "lazo", "Diana", "DC", "WWI"],
-        "Shazam": ["niño héroe", "palabra mágica", "DC", "familia", "comedia"],
-        "Aquaman": ["Atlantis", "tridente", "mar", "DC", "Jason Momoa"],
-        "El Conjuro": ["Warren", "casa embrujada", "terror", "James Wan", "exorcismo"],
-        "Annabelle": ["muñeca poseída", "terror", "El Conjuro universo", "Warren", "maldita"],
-        "Insidious": ["James Wan", "astral", "niño", "terror", "la Ulterior"],
-        "Actividad Paranormal": ["cámara fija", "noche", "casa", "found footage", "terror"],
-        "The Ring": ["videocinta", "7 días", "Samara", "pozo", "terror"],
-        "IT": ["payaso", "Pennywise", "Derry", "Stephen King", "alcantarilla"],
-        "El Exorcista": ["posesión", "niña", "sacerdote", "terror", "años 70"],
-        "Psicosis": ["Hitchcock", "ducha", "motel", "madre", "Norman Bates"],
-        "El Resplandor": ["hotel", "laberinto", "Jack", "Kubrick", "Here's Johnny"],
-        "Alien": ["espacio", "xenomorfo", "Ripley", "nave", "horror"],
-        "Terminator": ["T-800", "Schwarzenegger", "futuro", "Skynet", "I'll be back"],
-        "Depredador": ["selva", "alien cazador", "Schwarzenegger", "camuflaje", "acción"],
-        "Rocky": ["boxeo", "Filadelfia", "Stallone", "escaleras", "underdog"],
-        "Rambo": ["Stallone", "Vietnam", "supervivencia", "acción", "cuchillo"],
-        "John Wick": ["asesino", "perro", "Keanu Reeves", "Continental", "venganza"],
-        "Mad Max": ["desierto", "post-apocalíptico", "Fury Road", "autos", "Immortan Joe"],
+        "El Padrino": ["mafia", "Vito Corleone", "oferta que no puede rechazar", "Coppola", "años 70", "familia Corleone", "Marlon Brando", "cabeza de caballo", "Sicily", "Michael"],
+        "Pulp Fiction": ["Tarantino", "no lineal", "maletín", "danza", "años 90", "Vincent y Jules", "John Travolta", "Samuel L. Jackson", "Quarter Pounder", "cronología mezclada"],
+        "El Señor de los Anillos": ["Frodo", "anillo", "Tierra Media", "épica", "trilogía", "Gandalf", "Mordor", "Aragorn", "Gollum", "Peter Jackson"],
+        "Star Wars": ["Jedi", "Vader", "espacio", "saga", "La Fuerza", "Luke Skywalker", "Leia", "sable de luz", "George Lucas", "Death Star"],
+        "Titanic": ["barco", "iceberg", "Jack y Rose", "hundimiento", "años 90", "Leonardo DiCaprio", "Kate Winslet", "James Cameron", "My Heart Will Go On", "dibujo"],
+        "Forrest Gump": ["pluma", "corre", "Tom Hanks", "historia americana", "chocolates", "banco", "Jenny", "Vietnam", "Bubba", "ping pong"],
+        "Matrix": ["Neo", "píldoras", "simulación", "kung fu", "Wachowski", "Morpheus", "Trinity", "píldora roja", "Agente Smith", "código verde"],
+        "Inception": ["sueños", "Cobb", "trompo", "Nolan", "niveles", "Leonardo DiCaprio", "sueño dentro de sueño", "Ariadne", "patada", "final abierto"],
+        "Interstellar": ["espacio", "agujero de gusano", "Cooper", "Nolan", "tiempo", "Matthew McConaughey", "TARS", "dimensiones", "Murph", "gravedad"],
+        "The Dark Knight": ["Joker", "Heath Ledger", "Gotham", "Batman", "Nolan", "Two-Face", "¿por qué tan serio?", "camión", "lápiz", "Christian Bale"],
+        "Fight Club": ["Brad Pitt", "reglas", "jabón", "Tyler Durden", "twist", "Edward Norton", "insomnio", "Marla", "explosión", "primera regla"],
+        "Gladiador": ["Roma", "Maximus", "arena", "venganza", "Russell Crowe", "¿no te entretengo?", "Commodus", "gladiador", "Coliseo", "mi nombre es"],
+        "Volver al Futuro": ["DeLorean", "viaje en el tiempo", "Marty", "Doc", "años 80", "1955", "88 millas por hora", "condensador de flujo", "Michael J. Fox", "reloj torre"],
+        "Jurassic Park": ["dinosaurios", "isla", "T-Rex", "Spielberg", "clonación", "ADN", "ámbar", "agua vibrando", "raptores", "la vida encuentra camino"],
+        "E.T.": ["extraterrestre", "dedo", "bicicleta", "Spielberg", "niños", "teléfono casa", "Elliott", "luna", "dulces Reese's", "volando"],
+        "Tiburón": ["playa", "aleta", "Amity", "Spielberg", "terror", "gran tiburón blanco", "música icónica", "barco Orca", "Roy Scheider", "vamos a necesitar un bote más grande"],
+        "Indiana Jones": ["arqueólogo", "látigo", "aventuras", "Spielberg", "tesoros", "Harrison Ford", "sombrero fedora", "arca perdida", "serpientes", "años 80"],
+        "Toy Story": ["juguetes", "Woody", "Buzz", "Pixar", "animada", "Andy", "al infinito y más allá", "vaquero", "astronauta", "Tom Hanks"],
+        "El Rey León": ["Simba", "sabana", "Mufasa", "Hakuna Matata", "Disney", "Scar", "Timón y Pumba", "Circle of Life", "Rey de la Roca", "Nala"],
+        "Shrek": ["ogro", "pantano", "Burro", "DreamWorks", "princesa", "Fiona", "Lord Farquaad", "cebolla capas", "Eddie Murphy", "dragón"],
+        "Buscando a Nemo": ["pez payaso", "océano", "Dory", "Pixar", "acuario", "Marlin", "aleta afortunada", "P. Sherman", "tortugas", "solo sigue nadando"],
+        "Frozen": ["Let It Go", "Elsa", "hielo", "Disney", "hermanas", "Anna", "Olaf", "Kristoff", "Arendelle", "muñeco de nieve"],
+        "Coco": ["Día de Muertos", "Miguel", "guitarra", "Pixar", "familia", "México", "Héctor", "Ernesto de la Cruz", "Remember Me", "ofrenda"],
+        "Up": ["globos", "casa voladora", "Carl", "Pixar", "aventura", "Russell", "Paradise Falls", "Ellie", "perro Doug", "explorador"],
+        "Wall-E": ["robot", "basura", "espacio", "Pixar", "amor", "EVE", "compactador", "planta", "tierra abandonada", "futuro"],
+        "Los Increíbles": ["superhéroes", "familia", "Mr. Increíble", "Pixar", "retiro", "Elastigirl", "Syndrome", "capa", "Dash", "Jack-Jack"],
+        "Ratatouille": ["rata", "cocina", "París", "Pixar", "chef", "Remy", "Linguini", "Gusteau", "cualquiera puede cocinar", "crítico Anton Ego"],
+        "Intensamente": ["emociones", "Riley", "cerebro", "Pixar", "Alegría y Tristeza", "Furia", "Asco", "Miedo", "recuerdos", "islas de personalidad"],
+        "Moana": ["océano", "Maui", "isla", "Disney", "corazón de Te Fiti", "navegante", "Polinesia", "How Far I'll Go", "tatuajes", "Hei Hei"],
+        "Enredados": ["Rapunzel", "torre", "pelo largo", "Disney", "sartén", "Flynn Rider", "Madre Gothel", "lámparas", "Pascal", "Maximus"],
+        "La Bella y la Bestia": ["rosa", "castillo", "Belle", "Disney", "hechizo", "Bestia", "Lumière", "biblioteca", "Gastón", "Tale as Old as Time"],
+        "La Sirenita": ["Ariel", "mar", "voz", "Disney", "Bajo el Mar", "Príncipe Eric", "Úrsula", "Sebastián", "Flounder", "tenedor"],
+        "Aladdin": ["genio", "lámpara", "alfombra", "Disney", "Agrabah", "Jazmín", "Jafar", "tres deseos", "Robin Williams", "A Whole New World"],
+        "El Viaje de Chihiro": ["Ghibli", "Miyazaki", "Sin Rostro", "Yubaba", "fantasía", "baños", "Haku", "espíritus", "Japón", "cerdos"],
+        "Mi Vecino Totoro": ["Ghibli", "espíritu del bosque", "niñas", "Miyazaki", "paraguas", "Satsuki", "Mei", "gatobús", "Japón rural", "gris peludo"],
+        "La Princesa Mononoke": ["Ghibli", "bosque", "San", "Miyazaki", "naturaleza", "Ashitaka", "dioses", "lobos", "espíritu", "Japón feudal"],
+        "Harry Potter": ["mago", "Hogwarts", "varita", "saga", "Voldemort", "cicatriz rayo", "Hermione", "Ron", "Daniel Radcliffe", "el niño que vivió"],
+        "El Hobbit": ["Bilbo", "Smaug", "anillo", "Peter Jackson", "Tierra Media", "Gandalf", "Thorin", "enanos", "dragón", "Gollum"],
+        "Piratas del Caribe": ["Jack Sparrow", "Perla Negra", "mar", "Johnny Depp", "fantasía", "rum", "brújula", "Will Turner", "maldición", "capitán"],
+        "Avatar": ["Pandora", "Na'vi", "James Cameron", "azul", "3D", "Jake Sully", "Neytiri", "Eywa", "taquilla récord", "helicópteros"],
+        "Los Vengadores": ["superhéroes", "Marvel", "equipo", "Thanos", "Infinity War", "Iron Man", "Capitán América", "Thor", "Hulk", "viuda negra"],
+        "Iron Man": ["Tony Stark", "armadura", "Marvel", "reactor arc", "Robert Downey Jr", "Jarvis", "genio millonario", "Mark I", "Pepper Potts", "pecho brillante"],
+        "Capitán América": ["Steve Rogers", "escudo", "Marvel", "súper soldado", "WWII", "vibranium", "Bucky", "yo puedo hacer esto todo el día", "años 40", "congelado"],
+        "Thor": ["Asgard", "martillo", "Odín", "Marvel", "dios del trueno", "Mjolnir", "Loki", "Chris Hemsworth", "rayos", "digno"],
+        "Spider-Man": ["araña", "telaraña", "Peter Parker", "Marvel", "Nueva York", "sentido arácnido", "tío Ben", "gran poder gran responsabilidad", "traje rojo", "trepa paredes"],
+        "Black Panther": ["Wakanda", "T'Challa", "vibranium", "Marvel", "África", "Killmonger", "Shuri", "traje negro", "Chadwick Boseman", "para siempre"],
+        "Doctor Strange": ["hechicero supremo", "ojo de Agamotto", "Marvel", "dimensiones", "magia", "Benedict Cumberbatch", "accidente auto", "manos", "tiempo", "cirujano"],
+        "Guardianes de la Galaxia": ["espacio", "Groot", "Star-Lord", "Marvel", "walkman", "Gamora", "Rocket", "yo soy Groot", "Drax", "80s music"],
+        "Deadpool": ["antiheroe", "rompe cuarta pared", "Marvel", "mercenario", "humor", "traje rojo", "Ryan Reynolds", "regeneración", "Vanessa", "chimichangas"],
+        "The Batman": ["Gotham", "Riddler", "Robert Pattinson", "detective", "oscura", "Acertijo", "nueva versión", "Catwoman", "Pingüino", "2022"],
+        "Joker": ["Joaquin Phoenix", "Gotham", "payaso", "origen", "escaleras", "Arthur Fleck", "baile", "risa", "sociedad", "Phoenix ganó Oscar"],
+        "El Caballero de la Noche Asciende": ["Bane", "Batman", "Gotham", "Nolan", "final", "máscara", "Catwoman", "trilogía", "ascenso desde pozo", "Tom Hardy"],
+        "Superman": ["Krypton", "capa roja", "Clark Kent", "DC", "vuela", "Lois Lane", "kriptonita", "Christopher Reeve", "S en pecho", "Fortaleza de la Soledad"],
+        "Wonder Woman": ["amazona", "lazo", "Diana", "DC", "WWI", "Gal Gadot", "Themyscira", "brazaletes", "Steve Trevor", "espada"],
+        "Shazam": ["niño héroe", "palabra mágica", "DC", "familia", "comedia", "Billy Batson", "rayo", "Zachary Levi", "transformación", "siete pecados"],
+        "Aquaman": ["Atlantis", "tridente", "mar", "DC", "Jason Momoa", "Mera", "Orm", "medio atlánte", "Arthur Curry", "océano"],
+        "El Conjuro": ["Warren", "casa embrujada", "terror", "James Wan", "exorcismo", "Ed y Lorraine", "Annabelle", "Perron", "basado en hechos reales", "década 70"],
+        "Annabelle": ["muñeca poseída", "terror", "El Conjuro universo", "Warren", "maldita", "porcelana", "ojos", "secuela", "demoníaca", "vitrina"],
+        "Insidious": ["James Wan", "astral", "niño", "terror", "la Ulterior", "demonio rojo", "Patrick Wilson", "Rose Byrne", "coma", "Darth Maul demon"],
+        "Actividad Paranormal": ["cámara fija", "noche", "casa", "found footage", "terror", "pareja", "demon", "bajo presupuesto", "Katie", "secuencias nocturnas"],
+        "The Ring": ["videocinta", "7 días", "Samara", "pozo", "terror", "teléfono", "niña pelo largo", "VHS", "maldición", "televisión"],
+        "IT": ["payaso", "Pennywise", "Derry", "Stephen King", "alcantarilla", "globo rojo", "niños Perdedores", "Bill Skarsgard", "todos flotamos", "27 años"],
+        "El Exorcista": ["posesión", "niña", "sacerdote", "terror", "años 70", "Regan", "cabeza gira", "escaleras", "crucifico", "vomito verde"],
+        "Psicosis": ["Hitchcock", "ducha", "motel", "madre", "Norman Bates", "Bates Motel", "cuchillo", "Janet Leigh", "asesinato", "twist final"],
+        "El Resplandor": ["hotel", "laberinto", "Jack", "Kubrick", "Here's Johnny", "Overlook", "gemelas", "habitación 237", "Jack Nicholson", "All work no play"],
+        "Alien": ["espacio", "xenomorfo", "Ripley", "nave", "horror", "Nostromo", "Sigourney Weaver", "chestburster", "en el espacio nadie puede oírte gritar", "H.R. Giger"],
+        "Terminator": ["T-800", "Schwarzenegger", "futuro", "Skynet", "I'll be back", "Sarah Connor", "Kyle Reese", "máquinas", "viaje en el tiempo", "endoesqueleto"],
+        "Depredador": ["selva", "alien cazador", "Schwarzenegger", "camuflaje", "acción", "invisibilidad", "láser hombro", "Yautja", "caza trofeos", "Dutch"],
+        "Rocky": ["boxeo", "Filadelfia", "Stallone", "escaleras", "underdog", "Adrian", "Apollo Creed", "Eye of the Tiger", "entrenamiento", "Yo Adrian"],
+        "Rambo": ["Stallone", "Vietnam", "supervivencia", "acción", "cuchillo", "John Rambo", "veterano", "First Blood", "arco", "selva"],
+        "John Wick": ["asesino", "perro", "Keanu Reeves", "Continental", "venganza", "traje negro", "Baba Yaga", "lápiz", "moneda oro", "coreografía"],
+        "Mad Max": ["desierto", "post-apocalíptico", "Fury Road", "autos", "Immortan Joe", "Furiosa", "guitarrista fuego", "gasolina", "Tom Hardy", "Valhalla"],
         
         // Pokémon
         "Pikachu": ["eléctrico", "ratón amarillo", "mejillas rojas", "mascota de Ash", "cola de rayo"],
@@ -1339,36 +1221,58 @@ function generarPistasPorCategoria(palabra, categoria) {
     const pistas = [];
     const palabraLower = palabra.toLowerCase();
     
+    // Sets para búsquedas más rápidas (O(1) vs O(n))
+    const mascotas = new Set(["Perro", "Gato", "Conejo", "Hámster"]);
+    const felinos = new Set(["León", "Tigre", "Gato", "Leopardo"]);
+    const caninos = new Set(["Perro", "Lobo", "Zorro"]);
+    const aves = new Set(["Águila", "Loro", "Pavo Real", "Pingüino"]);
+    const mamiferos_marinos = new Set(["Delfín", "Ballena", "Orca"]);
+    const marinos = new Set(["Tiburón", "Pez"]);
+    const enormes = new Set(["Elefante", "Ballena", "Jirafa", "Hipopótamo"]);
+    const insectos = new Set(["Hormiga", "Abeja", "Araña"]);
+    
     switch(categoria) {
         case "Animales":
-            // Clasificaciones
-            if (["Perro", "Gato", "Conejo", "Hámster"].includes(palabra)) pistas.push("mascota", "doméstico");
-            if (["León", "Tigre", "Gato", "Leopardo"].includes(palabra)) pistas.push("felino");
-            if (["Perro", "Lobo", "Zorro"].includes(palabra)) pistas.push("canino");
-            if (["Águila", "Loro", "Pavo Real", "Pingüino"].includes(palabra)) pistas.push("ave", "plumas");
-            if (["Delfín", "Ballena", "Orca"].includes(palabra)) pistas.push("mamífero marino", "inteligente");
-            if (["Tiburón", "Pez"].includes(palabra)) pistas.push("marino", "nada");
-            // Tamaño
-            if (["Elefante", "Ballena", "Jirafa", "Hipopótamo"].includes(palabra)) pistas.push("enorme", "gigante");
-            if (["Hormiga", "Abeja", "Araña"].includes(palabra)) pistas.push("pequeño", "insecto");
+            if (mascotas.has(palabra)) pistas.push("mascota", "doméstico");
+            if (felinos.has(palabra)) pistas.push("felino");
+            if (caninos.has(palabra)) pistas.push("canino");
+            if (aves.has(palabra)) pistas.push("ave", "plumas");
+            if (mamiferos_marinos.has(palabra)) pistas.push("mamífero marino", "inteligente");
+            if (marinos.has(palabra)) pistas.push("marino", "nada");
+            if (enormes.has(palabra)) pistas.push("enorme", "gigante");
+            if (insectos.has(palabra)) pistas.push("pequeño", "insecto");
             break;
             
         case "Lugares":
-            if (["Playa", "Montaña", "Bosque", "Desierto"].includes(palabra)) pistas.push("naturaleza", "al aire libre");
-            if (["Cine", "Teatro", "Museo"].includes(palabra)) pistas.push("cultural", "espectáculo");
-            if (["Hospital", "Farmacia"].includes(palabra)) pistas.push("salud", "médico");
-            if (["Escuela", "Biblioteca", "Universidad"].includes(palabra)) pistas.push("educación", "aprender");
-            if (["Restaurante", "Café", "Panadería"].includes(palabra)) pistas.push("comida", "comer");
-            if (["Aeropuerto", "Estación"].includes(palabra)) pistas.push("transporte", "viaje");
-            if (["Acuario", "Zoológico"].includes(palabra)) pistas.push("animales", "visitar");
+            const naturaleza = new Set(["Playa", "Montaña", "Bosque", "Desierto"]);
+            const cultural = new Set(["Cine", "Teatro", "Museo"]);
+            const salud = new Set(["Hospital", "Farmacia"]);
+            const educacion = new Set(["Escuela", "Biblioteca", "Universidad"]);
+            const comida = new Set(["Restaurante", "Café", "Panadería"]);
+            const transporte = new Set(["Aeropuerto", "Estación"]);
+            const animales = new Set(["Acuario", "Zoológico"]);
+            
+            if (naturaleza.has(palabra)) pistas.push("naturaleza", "al aire libre");
+            if (cultural.has(palabra)) pistas.push("cultural", "espectáculo");
+            if (salud.has(palabra)) pistas.push("salud", "médico");
+            if (educacion.has(palabra)) pistas.push("educación", "aprender");
+            if (comida.has(palabra)) pistas.push("comida", "comer");
+            if (transporte.has(palabra)) pistas.push("transporte", "viaje");
+            if (animales.has(palabra)) pistas.push("animales", "visitar");
             break;
             
         case "Objetos":
-            if (["Teléfono", "Computadora", "Televisor"].includes(palabra)) pistas.push("electrónico", "tecnología", "pantalla");
-            if (["Guitarra", "Piano", "Batería"].includes(palabra)) pistas.push("musical", "tocar", "sonido");
-            if (["Martillo", "Destornillador", "Llave"].includes(palabra)) pistas.push("herramienta", "arreglar");
-            if (["Plato", "Vaso", "Tenedor", "Cuchillo"].includes(palabra)) pistas.push("cocina", "comer");
-            if (["Pelota", "Raqueta"].includes(palabra)) pistas.push("deportivo", "jugar");
+            const electronicos = new Set(["Teléfono", "Computadora", "Televisor"]);
+            const musicales = new Set(["Guitarra", "Piano", "Batería"]);
+            const herramientas = new Set(["Martillo", "Destornillador", "Llave"]);
+            const cocina = new Set(["Plato", "Vaso", "Tenedor", "Cuchillo"]);
+            const deportivos = new Set(["Pelota", "Raqueta"]);
+            
+            if (electronicos.has(palabra)) pistas.push("electrónico", "tecnología", "pantalla");
+            if (musicales.has(palabra)) pistas.push("musical", "tocar", "sonido");
+            if (herramientas.has(palabra)) pistas.push("herramienta", "arreglar");
+            if (cocina.has(palabra)) pistas.push("cocina", "comer");
+            if (deportivos.has(palabra)) pistas.push("deportivo", "jugar");
             break;
             
         case "Futbolistas":
@@ -1380,8 +1284,11 @@ function generarPistasPorCategoria(palabra, categoria) {
             
         case "Series":
             pistas.push("serie", "capítulos");
-            if (["Breaking Bad", "Narcos", "Peaky Blinders"].includes(palabra)) pistas.push("crimen", "drama");
-            if (["Friends", "The Office", "Brooklyn Nine-Nine"].includes(palabra)) pistas.push("comedia", "risas");
+            const seriesDrama = new Set(["Breaking Bad", "Narcos", "Peaky Blinders"]);
+            const seriesComedia = new Set(["Friends", "The Office", "Brooklyn Nine-Nine"]);
+            
+            if (seriesDrama.has(palabra)) pistas.push("crimen", "drama");
+            if (seriesComedia.has(palabra)) pistas.push("comedia", "risas");
             break;
     }
     
@@ -1653,18 +1560,19 @@ function cambiarValor(id, cambio) {
 function toggleRandomizador() {
     const randomizadorActivado = document.getElementById('switch-randomizador').checked;
     const controlMaxImpostores = document.getElementById('control-max-impostores');
-    const controlImpostores = document.querySelector('.control-grupal:has(#input-impostores)');
+    const controlImpostores = document.getElementById('control-impostores');
     
     if (randomizadorActivado) {
+        // Mostrar "Máximo de impostores"
         controlMaxImpostores.style.display = 'flex';
         controlImpostores.style.display = 'none';
         const jugadores = parseInt(document.getElementById('input-jugadores').value);
         document.getElementById('input-max-impostores').value = Math.max(1, jugadores - 2);
         actualizarEstadoBotones('input-max-impostores');
     } else {
+        // Ocultar ambos controles cuando el randomizador está desactivado
         controlMaxImpostores.style.display = 'none';
-        controlImpostores.style.display = 'flex';
-        actualizarEstadoBotones('input-impostores');
+        controlImpostores.style.display = 'none';
     }
 }
 
@@ -1714,22 +1622,7 @@ function iniciarPartida() {
         numImpostores = numJugadores;
     }
     
-    let bolsaCombinada = [];
-    if(document.getElementById('cat-Animales').checked) datos["Animales"].forEach(p => bolsaCombinada.push({p: p, c: "Animales"}));
-    if(document.getElementById('cat-Lugares').checked) datos["Lugares"].forEach(p => bolsaCombinada.push({p: p, c: "Lugares"}));
-    if(document.getElementById('cat-Objetos').checked) datos["Objetos"].forEach(p => bolsaCombinada.push({p: p, c: "Objetos"}));
-    if(document.getElementById('cat-Futbolistas').checked) datos["Futbolistas"].forEach(p => bolsaCombinada.push({p: p, c: "Futbolistas"}));
-    if(document.getElementById('cat-Series').checked) datos["Series"].forEach(p => bolsaCombinada.push({p: p, c: "Series"}));
-    if(document.getElementById('cat-ClashRoyale').checked) datos["Clash Royale"].forEach(p => bolsaCombinada.push({p: p, c: "Clash Royale"}));
-    if(document.getElementById('cat-Comida').checked) datos["Comida"].forEach(p => bolsaCombinada.push({p: p, c: "Comida"}));
-    if(document.getElementById('cat-Deportes').checked) datos["Deportes"].forEach(p => bolsaCombinada.push({p: p, c: "Deportes"}));
-    if(document.getElementById('cat-Videojuegos').checked) datos["Videojuegos"].forEach(p => bolsaCombinada.push({p: p, c: "Videojuegos"}));
-    if(document.getElementById('cat-RockInt').checked) datos["Rock Internacional"].forEach(p => bolsaCombinada.push({p: p, c: "Rock Internacional"}));
-    if(document.getElementById('cat-RockArg').checked) datos["Rock Argentino"].forEach(p => bolsaCombinada.push({p: p, c: "Rock Argentino"}));
-    if(document.getElementById('cat-Peliculas').checked) datos["Peliculas"].forEach(p => bolsaCombinada.push({p: p, c: "Peliculas"}));
-    if(document.getElementById('cat-Pokemon').checked) datos["Pokemon"].forEach(p => bolsaCombinada.push({p: p, c: "Pokemon"}));
-    if(document.getElementById('cat-Personas').checked) datos["Personas"].forEach(p => bolsaCombinada.push({p: p, c: "Personas"}));
-
+    const bolsaCombinada = obtenerBolsaCombinada();
     const seleccion = bolsaCombinada[Math.floor(Math.random() * bolsaCombinada.length)];
     palabraSecreta = seleccion.p;
     categoriaSecreta = seleccion.c;
@@ -1753,22 +1646,7 @@ function reiniciarJuego() {
     jugadorActualPista = 1;
     
     // Generar nueva palabra aleatoria
-    let bolsaCombinada = [];
-    if(document.getElementById('cat-Animales').checked) datos["Animales"].forEach(p => bolsaCombinada.push({p: p, c: "Animales"}));
-    if(document.getElementById('cat-Lugares').checked) datos["Lugares"].forEach(p => bolsaCombinada.push({p: p, c: "Lugares"}));
-    if(document.getElementById('cat-Objetos').checked) datos["Objetos"].forEach(p => bolsaCombinada.push({p: p, c: "Objetos"}));
-    if(document.getElementById('cat-Futbolistas').checked) datos["Futbolistas"].forEach(p => bolsaCombinada.push({p: p, c: "Futbolistas"}));
-    if(document.getElementById('cat-Series').checked) datos["Series"].forEach(p => bolsaCombinada.push({p: p, c: "Series"}));
-    if(document.getElementById('cat-ClashRoyale').checked) datos["Clash Royale"].forEach(p => bolsaCombinada.push({p: p, c: "Clash Royale"}));
-    if(document.getElementById('cat-Comida').checked) datos["Comida"].forEach(p => bolsaCombinada.push({p: p, c: "Comida"}));
-    if(document.getElementById('cat-Deportes').checked) datos["Deportes"].forEach(p => bolsaCombinada.push({p: p, c: "Deportes"}));
-    if(document.getElementById('cat-Videojuegos').checked) datos["Videojuegos"].forEach(p => bolsaCombinada.push({p: p, c: "Videojuegos"}));
-    if(document.getElementById('cat-RockInt').checked) datos["Rock Internacional"].forEach(p => bolsaCombinada.push({p: p, c: "Rock Internacional"}));
-    if(document.getElementById('cat-RockArg').checked) datos["Rock Argentino"].forEach(p => bolsaCombinada.push({p: p, c: "Rock Argentino"}));
-    if(document.getElementById('cat-Peliculas').checked) datos["Peliculas"].forEach(p => bolsaCombinada.push({p: p, c: "Peliculas"}));
-    if(document.getElementById('cat-Pokemon').checked) datos["Pokemon"].forEach(p => bolsaCombinada.push({p: p, c: "Pokemon"}));
-    if(document.getElementById('cat-Personas').checked) datos["Personas"].forEach(p => bolsaCombinada.push({p: p, c: "Personas"}));
-
+    const bolsaCombinada = obtenerBolsaCombinada();
     const seleccion = bolsaCombinada[Math.floor(Math.random() * bolsaCombinada.length)];
     palabraSecreta = seleccion.p;
     categoriaSecreta = seleccion.c;
@@ -2799,16 +2677,18 @@ function analizarCalidadPista(pista, palabra, categoria) {
         puntuacionCalidad: 100 // Empieza con 100, se descuenta
     };
     
-    // 1. Detectar palabras genéricas
-    const palabrasGenericas = ['cosa', 'algo', 'objeto', 'tipo', 'especie', 'clase', 'forma', 'manera'];
-    if (palabrasGenericas.some(gen => pistaLower.includes(gen))) {
-        resultado.esGenerica = true;
-        resultado.puntuacionCalidad -= 30;
+    // 1. Detectar palabras genéricas (usando Set es más rápido)
+    const palabrasGenericas = new Set(['cosa', 'algo', 'objeto', 'tipo', 'especie', 'clase', 'forma', 'manera']);
+    for (const gen of palabrasGenericas) {
+        if (pistaLower.includes(gen)) {
+            resultado.esGenerica = true;
+            resultado.puntuacionCalidad -= 30;
+            break;
+        }
     }
     
     // 2. Detectar frases comparativas
-    const patronesComparativos = /^(como|tipo|parecido|similar|igual|parece|se parece|semejante)(\s|$)/i;
-    if (patronesComparativos.test(pistaLower)) {
+    if (/^(como|tipo|parecido|similar|igual|parece|se parece|semejante)(\s|$)/i.test(pistaLower)) {
         resultado.esComparativa = true;
         resultado.puntuacionCalidad -= 25;
     }
@@ -2827,10 +2707,16 @@ function analizarCalidadPista(pista, palabra, categoria) {
     
     // 5. Verificar si está en las asociaciones conocidas
     if (asociacionesPalabras[palabra]) {
-        const asociacionesConocidas = asociacionesPalabras[palabra].map(a => a.toLowerCase());
-        const pistaEstaEnAsociaciones = asociacionesConocidas.some(asoc => 
-            asoc.includes(pistaLower) || pistaLower.includes(asoc)
-        );
+        const asociacionesConocidas = asociacionesPalabras[palabra];
+        let pistaEstaEnAsociaciones = false;
+        
+        for (const asoc of asociacionesConocidas) {
+            const asocLower = asoc.toLowerCase();
+            if (asocLower.includes(pistaLower) || pistaLower.includes(asocLower)) {
+                pistaEstaEnAsociaciones = true;
+                break;
+            }
+        }
         
         if (!pistaEstaEnAsociaciones) {
             resultado.noEstaEnAsociaciones = true;
@@ -3459,6 +3345,9 @@ window.addEventListener('DOMContentLoaded', () => {
     
     // Cargar asociaciones del bot
     cargarAsociacionesBot();
+    
+    // Inicializar el bot con los datos
+    botAprendizajeAutomatico();
     
     // Inicializar variables del DOM
     caja = document.getElementById('caja-secreta');
