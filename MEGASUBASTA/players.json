@@ -2616,6 +2616,13 @@
       "basePrice": 50000000,
       "tmValue": 50000000
     },
+        {
+      "name": "Bruja Berti",
+      "emoji": "🔫🦈",
+      "quality": "A",
+      "basePrice": 100000000,
+      "tmValue": 100000000
+    },
     {
       "name": "Ansu Fati",
       "emoji": "🌱🎯",

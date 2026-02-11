@@ -1,3 +1,99 @@
+// ========== SISTEMA DE LOGROS ==========
+
+const AchievementSystem = {
+  achievements: {
+    cabra: false,
+    mr: false
+  },
+  
+  init() {
+    this.loadAchievements();
+  },
+  
+  loadAchievements() {
+    const saved = localStorage.getItem('megasubasta_achievements');
+    if (saved) {
+      try {
+        this.achievements = JSON.parse(saved);
+      } catch (e) {
+        console.error('Error loading achievements:', e);
+      }
+    }
+    this.updateAchievementsView();
+  },
+  
+  saveAchievements() {
+    localStorage.setItem('megasubasta_achievements', JSON.stringify(this.achievements));
+  },
+  
+  unlock(achievementKey) {
+    if (!this.achievements[achievementKey]) {
+      this.achievements[achievementKey] = true;
+      this.saveAchievements();
+      this.showNotification(achievementKey);
+      this.updateAchievementsView();
+    }
+  },
+  
+  showNotification(achievementKey) {
+    const notifications = {
+      cabra: { title: 'CABRA', icon: '🐐' },
+      mr: { title: 'MR...', icon: '🐞' }
+    };
+    
+    const notif = notifications[achievementKey];
+    if (!notif) return;
+    
+    // Crear notificación
+    const bubble = document.createElement('div');
+    bubble.className = 'achievement-notification';
+    bubble.innerHTML = `
+      <div class="achievement-icon">${notif.icon}</div>
+      <div class="achievement-text">
+        <div class="achievement-unlock">¡Logro desbloqueado!</div>
+        <div class="achievement-title">${notif.title}</div>
+      </div>
+    `;
+    
+    document.body.appendChild(bubble);
+    
+    // Animación de entrada
+    setTimeout(() => bubble.classList.add('show'), 100);
+    
+    // Remover después de 4 segundos
+    setTimeout(() => {
+      bubble.classList.remove('show');
+      setTimeout(() => bubble.remove(), 300);
+    }, 4000);
+  },
+  
+  updateAchievementsView() {
+    // Actualizar vista de logros si existe
+    const cabraItem = document.getElementById('achievement-cabra');
+    const mrItem = document.getElementById('achievement-mr');
+    
+    if (cabraItem) {
+      if (this.achievements.cabra) {
+        cabraItem.classList.add('unlocked');
+        cabraItem.querySelector('.achievement-item-icon').textContent = '🐐';
+      } else {
+        cabraItem.classList.remove('unlocked');
+        cabraItem.querySelector('.achievement-item-icon').textContent = '🔒';
+      }
+    }
+    
+    if (mrItem) {
+      if (this.achievements.mr) {
+        mrItem.classList.add('unlocked');
+        mrItem.querySelector('.achievement-item-icon').textContent = '🐞';
+      } else {
+        mrItem.classList.remove('unlocked');
+        mrItem.querySelector('.achievement-item-icon').textContent = '🔒';
+      }
+    }
+  }
+};
+
 // ========== SISTEMA DE VISTAS ==========
 // Funciones para crear y gestionar vistas dinámicamente
 
@@ -10,10 +106,18 @@ const ViewManager = {
       console.error('Contenedor #app no encontrado');
       return;
     }
+    console.log('ViewManager inicializado correctamente');
   },
   
   // Función principal para cambiar de vista
   showView(viewName) {
+    if (!this.container) {
+      console.error('No hay contenedor disponible');
+      return;
+    }
+    
+    console.log('Mostrando vista:', viewName);
+    
     // Limpiar completamente el contenedor
     this.container.innerHTML = '';
     this.container.scrollTop = 0; // Asegurar que esté arriba
@@ -25,6 +129,12 @@ const ViewManager = {
         break;
       case 'config':
         this.renderConfigView();
+        break;
+      case 'achievements':
+        this.renderAchievementsView();
+        break;
+      case 'secret-code':
+        this.renderSecretCodeView();
         break;
       case 'auction':
         this.renderAuctionView();
@@ -45,7 +155,7 @@ const ViewManager = {
         <div style="font-weight:600;margin-bottom:8px">Subasta Futbolera</div>
         <div id="controls">
           <button id="start-btn">Iniciar</button>
-          <button id="back-btn" style="background:#EFF3F5;color:#192229;border:2px solid #192229;">← VOLVER A SELECCIÓN</button>
+          <button id="back-btn" class="btn-back">← VOLVER A SELECCIÓN</button>
         </div>
       </div>
     `;
@@ -64,17 +174,16 @@ const ViewManager = {
     this.container.innerHTML = `
       <div class="screen" id="config-screen">
         <div class="config-panel">
+          <button id="return-to-title-btn" class="btn-return-title">↶</button>
           <h2>CONFIGURACIÓN</h2>
           <p class="config-subtitle">Configura los parámetros de la subasta</p>
           
           <div class="config-group">
             <label>Presupuesto por equipo</label>
             <div class="input-wrapper">
+              <button type="button" class="btn-flecha" data-target="budget" data-step="-50">-</button>
               <input id="budget-input" type="number" min="50" value="100" step="50" readonly>
-              <div class="triangle-controls">
-                <button type="button" class="triangle-btn triangle-up" data-target="budget" data-step="50"></button>
-                <button type="button" class="triangle-btn triangle-down" data-target="budget" data-step="50"></button>
-              </div>
+              <button type="button" class="btn-flecha" data-target="budget" data-step="50">+</button>
             </div>
             <small class="input-help">Cantidad en millones de euros</small>
           </div>
@@ -82,17 +191,30 @@ const ViewManager = {
           <div class="config-group">
             <label>Cantidad de equipos</label>
             <div class="input-wrapper">
+              <button type="button" class="btn-flecha" data-target="teams" data-step="-1">-</button>
               <input id="teams-input" type="number" min="2" max="8" value="4" readonly>
-              <div class="triangle-controls">
-                <button type="button" class="triangle-btn triangle-up" data-target="teams" data-step="1"></button>
-                <button type="button" class="triangle-btn triangle-down" data-target="teams" data-step="1"></button>
-              </div>
+              <button type="button" class="btn-flecha" data-target="teams" data-step="1">+</button>
             </div>
             <small class="input-help">Entre 2 y 8 equipos</small>
           </div>
           
+          <div class="config-group" id="team-names-group">
+            <label>Nombres de equipos</label>
+            <div id="team-names-container" style="display: flex; flex-direction: column; gap: 8px;">
+            </div>
+          </div>
+          
+          <div class="config-group" style="display: flex; justify-content: space-between; align-items: center;">
+            <label style="margin: 0;">Modo Claro</label>
+            <label class="switch">
+              <input type="checkbox" id="light-mode-toggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          
           <div class="config-actions">
             <button id="back-btn" class="btn-secondary">Volver</button>
+            <button id="achievements-btn" class="btn-secondary">🏆 Logros</button>
             <button id="create-btn" class="btn-primary">Crear y empezar</button>
           </div>
           <div id="loading-msg"></div>
@@ -120,17 +242,47 @@ const ViewManager = {
       loadingMsg.textContent = '¡Listo para empezar!';
     }
     
-    // Event listeners para botones triangulares
-    document.querySelectorAll('.triangle-btn').forEach(btn => {
+    // Función para actualizar campos de nombres de equipos
+    const updateTeamNameInputs = (numTeams) => {
+      const container = document.getElementById('team-names-container');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      for (let i = 0; i < numTeams; i++) {
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = 'display: flex; align-items: center; gap: 8px;';
+        
+        const label = document.createElement('span');
+        label.textContent = `${i + 1}.`;
+        label.style.cssText = 'min-width: 20px; font-weight: 600; color: var(--color-text);';
+        
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = `team-name-${i}`;
+        input.placeholder = `Equipo ${i + 1}`;
+        input.value = `Equipo ${i + 1}`;
+        input.maxLength = 20;
+        input.style.cssText = 'flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-secondary); background: var(--bg-input); color: var(--color-text); font-size: 14px; transition: all 0.3s ease;';
+        
+        wrapper.appendChild(label);
+        wrapper.appendChild(input);
+        container.appendChild(wrapper);
+      }
+    };
+    
+    // Inicializar campos de nombres con valor actual
+    updateTeamNameInputs(parseInt(document.getElementById('teams-input').value) || 4);
+    
+    // Event listeners para botones de flechas
+    document.querySelectorAll('.btn-flecha').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const target = btn.dataset.target;
         const step = parseInt(btn.dataset.step);
-        const isUp = btn.classList.contains('triangle-up');
         const input = target === 'budget' ? document.getElementById('budget-input') : document.getElementById('teams-input');
         
         let currentValue = parseInt(input.value) || 0;
-        let newValue = isUp ? currentValue + step : currentValue - step;
+        let newValue = currentValue + step;
         
         // Validar límites
         const min = parseInt(input.min) || 0;
@@ -138,12 +290,44 @@ const ViewManager = {
         newValue = Math.max(min, Math.min(max, newValue));
         
         input.value = newValue;
+        
+        // Actualizar campos de nombres si cambió la cantidad de equipos
+        if (target === 'teams') {
+          updateTeamNameInputs(newValue);
+        }
       });
     });
     
+    // Configurar el estado inicial del switch de tema
+    const lightModeToggle = document.getElementById('light-mode-toggle');
+    const savedTheme = localStorage.getItem('megasubasta_theme');
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-mode');
+      lightModeToggle.checked = true;
+    }
+    
+    // Event listener para el switch de tema
+    lightModeToggle.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        document.body.classList.add('light-mode');
+        localStorage.setItem('megasubasta_theme', 'light');
+      } else {
+        document.body.classList.remove('light-mode');
+        localStorage.setItem('megasubasta_theme', 'dark');
+      }
+    });
+    
     // Asignar eventos
+    document.getElementById('return-to-title-btn').addEventListener('click', () => {
+      this.showView('inicio');
+    });
+    
     document.getElementById('back-btn').addEventListener('click', () => {
       this.showView('inicio');
+    });
+    
+    document.getElementById('achievements-btn').addEventListener('click', () => {
+      this.showView('achievements');
     });
     
     createBtn.addEventListener('click', () => {
@@ -154,10 +338,121 @@ const ViewManager = {
       
       const budget = Math.max(1, parseInt(document.getElementById('budget-input').value) || 100);
       const numTeams = Math.min(8, Math.max(2, parseInt(document.getElementById('teams-input').value) || 4));
+      
+      // Obtener nombres personalizados de equipos
+      const teamNames = [];
+      for (let i = 0; i < numTeams; i++) {
+        const nameInput = document.getElementById(`team-name-${i}`);
+        const name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : `Equipo ${i + 1}`;
+        teamNames.push(name);
+      }
+      
       GameController.settings.budget = budget;
       GameController.settings.numTeams = numTeams;
+      GameController.settings.teamNames = teamNames;
       GameController.setupGame();
       this.showView('auction');
+    });
+  },
+  
+  // Vista de Logros
+  renderAchievementsView() {
+    this.container.innerHTML = `
+      <div class="screen" id="achievements-screen">
+        <div class="config-panel" style="position: relative;">
+          <button id="secret-code-btn" class="btn-secret"></button>
+          <h2>🏆 LOGROS</h2>
+          <p class="config-subtitle">Desbloquea logros comprando jugadores especiales</p>
+          
+          <div style="max-width: 500px; margin: 20px auto;">
+            <div class="achievement-item" id="achievement-cabra">
+              <div class="achievement-item-icon">🔒</div>
+              <div class="achievement-item-info">
+                <div class="achievement-item-name">CABRA</div>
+              </div>
+            </div>
+            
+            <div class="achievement-item" id="achievement-mr">
+              <div class="achievement-item-icon">🔒</div>
+              <div class="achievement-item-info">
+                <div class="achievement-item-name">MR...</div>
+              </div>
+            </div>
+          </div>
+          
+          <div style="margin-top: 30px;">
+            <button id="back-achievements-btn" class="btn-secondary">Volver</button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Asignar eventos
+    document.getElementById('back-achievements-btn').addEventListener('click', () => {
+      this.showView('config');
+    });
+    
+    document.getElementById('secret-code-btn').addEventListener('click', () => {
+      this.showView('secret-code');
+    });
+    
+    // Actualizar vista de logros
+    AchievementSystem.updateAchievementsView();
+  },
+  
+  // Vista de Código Secreto
+  renderSecretCodeView() {
+    this.container.innerHTML = `
+      <div class="screen" id="secret-code-screen">
+        <div class="config-panel">
+          <h2>Código Secreto</h2>
+          <p class="config-subtitle">Ingresa el código para desbloquear contenido especial</p>
+          
+          <input 
+            type="text" 
+            id="secret-code-input" 
+            placeholder="Escribe el código aquí" 
+            maxlength="12" 
+            style="width: 100%; padding: 15px; font-size: 1.1rem; border-radius: 0; border: 2px solid #192229; background: #fff; color: #192229; text-align: center; margin-bottom: 20px; font-family: 'Inter', sans-serif; box-sizing: border-box;"
+          />
+          
+          <div style="margin-top: 30px; display: flex; gap: 12px;">
+            <button id="back-code-btn" class="btn-secondary" style="flex: 1;">Volver</button>
+            <button id="verify-code-btn" class="btn-primary" style="flex: 1;">Verificar</button>
+          </div>
+          
+          <div id="code-message" style="margin-top: 20px; text-align: center; font-size: 14px; color: #192229;"></div>
+        </div>
+      </div>
+    `;
+    
+    // Asignar eventos
+    document.getElementById('back-code-btn').addEventListener('click', () => {
+      this.showView('achievements');
+    });
+    
+    const verifyBtn = document.getElementById('verify-code-btn');
+    const codeInput = document.getElementById('secret-code-input');
+    const codeMessage = document.getElementById('code-message');
+    
+    // Permitir solo alfanuméricos
+    codeInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/[^A-Za-z0-9]/g, '');
+    });
+    
+    // Verificar al hacer clic
+    verifyBtn.addEventListener('click', () => {
+      const code = codeInput.value.trim().toLowerCase();
+      
+      codeMessage.textContent = '✗ Código incorrecto. Inténtalo de nuevo.';
+      codeMessage.style.color = '#DC2626';
+    });
+    
+    // Verificar al presionar Enter
+    codeInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        verifyBtn.click();
+      }
     });
   },
   
@@ -181,11 +476,11 @@ const ViewManager = {
               <div id="player-emoji" class="emoji">⚽️</div>
               <div class="player-info">
                 <div class="info-row">
-                  <span class="info-label">CALIDAD</span>
+                  <span class="info-label">POSICIÓN</span>
                   <span id="player-quality" class="info-value">-</span>
                 </div>
                 <div class="info-row">
-                  <span class="info-label">PRECIO BASE</span>
+                  <span class="info-label">VALOR MERCADO</span>
                   <span id="base-price" class="info-value">0M</span>
                 </div>
               </div>
@@ -322,10 +617,11 @@ const GameController = {
     }
     
     this.teams = [];
+    const teamNames = this.settings.teamNames || [];
     for(let i=0; i<this.settings.numTeams; i++) {
       this.teams.push({
         id: i+1,
-        name: `Equipo ${i+1}`,
+        name: teamNames[i] || `Equipo ${i+1}`,
         budget: this.settings.budget * 1000000,
         roster: []
       });
@@ -422,10 +718,10 @@ const GameController = {
     
     const marketVal = this.getMarketValue(next);
     if(playerQuality) {
-      playerQuality.textContent = `Posición: ${task?task.label:'-'} — Calidad: ${next.quality}`;
+      playerQuality.textContent = `${task?task.label:'-'} / ${next.quality}`;
     }
     if(basePriceDiv) {
-      basePriceDiv.textContent = `Valor mercado: ${this.formatMoney(marketVal)} — Precio mínimo: ${this.formatMoney(next.basePrice)}`;
+      basePriceDiv.textContent = this.formatMoney(marketVal);
     }
     if(currentBidDiv) currentBidDiv.textContent = 'Oferta actual: -';
     if(currentWinnerDiv) currentWinnerDiv.textContent = 'Lider: -';
@@ -502,9 +798,9 @@ const GameController = {
     if(playerEmoji) playerEmoji.innerHTML = player.emoji;
     
     const marketVal = this.getMarketValue(player);
-    if(playerQuality) playerQuality.textContent = `Calidad: ${player.quality}`;
+    if(playerQuality) playerQuality.textContent = `- / ${player.quality}`;
     if(basePriceDiv) {
-      basePriceDiv.textContent = `Valor mercado: ${this.formatMoney(marketVal)} — Precio mínimo: ${this.formatMoney(player.basePrice)}`;
+      basePriceDiv.textContent = this.formatMoney(marketVal);
     }
     if(currentBidDiv) currentBidDiv.textContent = `Precio mínimo: ${this.formatMoney(player.basePrice)}`;
     if(currentWinnerDiv) currentWinnerDiv.textContent = 'Asignar manualmente';
@@ -591,6 +887,13 @@ const GameController = {
       position: posLabel
     });
     team.budget -= amount;
+    
+    // Verificar logros
+    if (this.currentDisplayedPlayer.name === 'Lionel Messi') {
+      AchievementSystem.unlock('cabra');
+    } else if (this.currentDisplayedPlayer.name === 'Cristiano Ronaldo') {
+      AchievementSystem.unlock('mr');
+    }
     
     this.renderTeams();
     this.currentDisplayedPlayer = null;
@@ -863,20 +1166,48 @@ const GameController = {
 
 // ========== INICIALIZACIÓN ==========
 
+// Aplicar tema guardado ANTES de que se cargue el DOM
+const savedTheme = localStorage.getItem('megasubasta_theme');
+if (savedTheme === 'light') {
+  document.documentElement.classList.add('light-mode');
+  if (document.body) {
+    document.body.classList.add('light-mode');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM cargado, iniciando aplicación...');
+  
+  // Asegurar que el tema se aplique al body
+  const theme = localStorage.getItem('megasubasta_theme');
+  if (theme === 'light') {
+    document.body.classList.add('light-mode');
+  }
+  
+  // Inicializar el sistema de logros
+  AchievementSystem.init();
+  console.log('Sistema de logros inicializado');
+  
   // Inicializar el gestor de vistas
   ViewManager.init();
   
   // Cargar base de datos de jugadores
+  console.log('Cargando base de datos de jugadores...');
   fetch('players.json')
-    .then(r => r.json())
+    .then(r => {
+      console.log('Respuesta recibida de players.json');
+      return r.json();
+    })
     .then(json => {
+      console.log('JSON parseado correctamente');
       GameController.playersDB = GameController.normalizePlayers(json);
+      console.log('Base de datos normalizada');
       // Mostrar la vista inicial
       ViewManager.showView('inicio');
     })
     .catch(err => {
       console.error('Error cargando jugadores:', err);
+      // Mostrar vista inicial de todos modos
       ViewManager.showView('inicio');
     });
 });
