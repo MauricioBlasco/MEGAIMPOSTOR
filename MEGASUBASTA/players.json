@@ -596,6 +596,20 @@
       "quality": "C",
       "basePrice": 15000000,
       "tmValue": 15000000
+    },
+    {
+      "name": "Nicolás Tagliafico",
+      "emoji": "📐⚔️",
+      "quality": "B",
+      "basePrice": 50000000,
+      "tmValue": 50000000
+    },
+    {
+      "name": "Marcos Acuña",
+      "emoji": "🥚🚜",
+      "quality": "B",
+      "basePrice": 45000000,
+      "tmValue": 45000000
     }
   ],
   "right_backs": [
@@ -843,6 +857,13 @@
       "quality": "C",
       "basePrice": 20000000,
       "tmValue": 20000000
+    },
+    {
+      "name": "Gianluca Zambrotta",
+      "emoji": "🚄🎢",
+      "quality": "A",
+      "basePrice": 120000000,
+      "tmValue": 120000000
     }
   ],
   "center_backs": [
@@ -1545,6 +1566,34 @@
       "quality": "C",
       "basePrice": 20000000,
       "tmValue": 20000000
+    },
+    {
+      "name": "Marcel Desailly",
+      "emoji": "🧱🦾",
+      "quality": "A",
+      "basePrice": 140000000,
+      "tmValue": 140000000
+    },
+    {
+      "name": "Laurent Blanc",
+      "emoji": "💋🧠",
+      "quality": "A",
+      "basePrice": 130000000,
+      "tmValue": 130000000
+    },
+    {
+      "name": "Roberto Ayala",
+      "emoji": "🐀🧱",
+      "quality": "A",
+      "basePrice": 135000000,
+      "tmValue": 135000000
+    },
+    {
+      "name": "Nicolás Otamendi",
+      "emoji": "🧔🏻‍♂️🛡️",
+      "quality": "B",
+      "basePrice": 50000000,
+      "tmValue": 50000000
     }
   ],
   "midfielders": [
@@ -2107,6 +2156,132 @@
       "quality": "C",
       "basePrice": 20000000,
       "tmValue": 20000000
+    },
+    {
+      "name": "Gheorghe Hagi",
+      "emoji": "🎩🏔️",
+      "quality": "A",
+      "basePrice": 155000000,
+      "tmValue": 155000000
+    },
+    {
+      "name": "Bastian Schweinsteiger",
+      "emoji": "🧠🧱",
+      "quality": "A",
+      "basePrice": 155000000,
+      "tmValue": 155000000
+    },
+    {
+      "name": "Xabi Alonso",
+      "emoji": "🎩📏",
+      "quality": "A",
+      "basePrice": 150000000,
+      "tmValue": 150000000
+    },
+    {
+      "name": "Rui Costa",
+      "emoji": "🪄👣",
+      "quality": "A",
+      "basePrice": 145000000,
+      "tmValue": 145000000
+    },
+    {
+      "name": "Edgar Davids",
+      "emoji": "🥽🐕",
+      "quality": "A",
+      "basePrice": 140000000,
+      "tmValue": 140000000
+    },
+    {
+      "name": "Juan Sebastián Verón",
+      "emoji": "🧙‍♂️🛰️",
+      "quality": "A",
+      "basePrice": 135000000,
+      "tmValue": 135000000
+    },
+    {
+      "name": "Stefan Effenberg",
+      "emoji": "🐯🧨",
+      "quality": "A",
+      "basePrice": 130000000,
+      "tmValue": 130000000
+    },
+    {
+      "name": "Claude Makélélé",
+      "emoji": "⚓🚧",
+      "quality": "A",
+      "basePrice": 125000000,
+      "tmValue": 125000000
+    },
+    {
+      "name": "Gennaro Gattuso",
+      "emoji": "🐕💢",
+      "quality": "A",
+      "basePrice": 120000000,
+      "tmValue": 120000000
+    },
+    {
+      "name": "Fernando Redondo",
+      "emoji": "🎩💇‍♂️",
+      "quality": "A",
+      "basePrice": 145000000,
+      "tmValue": 145000000
+    },
+    {
+      "name": "Javier Mascherano",
+      "emoji": "🛡️🧱",
+      "quality": "A",
+      "basePrice": 140000000,
+      "tmValue": 140000000
+    },
+    {
+      "name": "Juan Román Riquelme",
+      "emoji": "👂🪄",
+      "quality": "A",
+      "basePrice": 160000000,
+      "tmValue": 160000000
+    },
+    {
+      "name": "Omar Sivori",
+      "emoji": "🧦💎",
+      "quality": "A",
+      "basePrice": 145000000,
+      "tmValue": 145000000
+    },
+    {
+      "name": "Ariel Ortega",
+      "emoji": "🐴🍷",
+      "quality": "A",
+      "basePrice": 135000000,
+      "tmValue": 135000000
+    },
+    {
+      "name": "Rodrigo De Paul",
+      "emoji": "🔋🛡️",
+      "quality": "B",
+      "basePrice": 60000000,
+      "tmValue": 60000000
+    },
+    {
+      "name": "Leandro Paredes",
+      "emoji": "🎯⛓️",
+      "quality": "B",
+      "basePrice": 50000000,
+      "tmValue": 50000000
+    },
+    {
+      "name": "Guido Rodríguez",
+      "emoji": "🧭⚓",
+      "quality": "C",
+      "basePrice": 35000000,
+      "tmValue": 35000000
+    },
+    {
+      "name": "Giovani Lo Celso",
+      "emoji": "🎻🔭",
+      "quality": "B",
+      "basePrice": 45000000,
+      "tmValue": 45000000
     }
   ],
   "right_wingers": [
@@ -2454,11 +2629,32 @@
       "tmValue": 8000000
     },
     {
+      "name": "Claudio Caniggia",
+      "emoji": "👱🏻‍♂️🦅",
+      "quality": "A",
+      "basePrice": 150000000,
+      "tmValue": 150000000
+    },
+    {
+      "name": "Papu Gómez",
+      "emoji": "🕺🧧",
+      "quality": "B",
+      "basePrice": 50000000,
+      "tmValue": 50000000
+    },
+    {
       "name": "Ángel Di María",
       "emoji": "🍝🪄",
       "quality": "B",
       "basePrice": 45000000,
       "tmValue": 45000000
+    },
+    {
+      "name": "Paulo Dybala",
+      "emoji": "🎭💎",
+      "quality": "B",
+      "basePrice": 55000000,
+      "tmValue": 55000000
     }
   ],
   "left_wingers": [
@@ -3352,6 +3548,174 @@
       "quality": "B",
       "basePrice": 55000000,
       "tmValue": 55000000
+    },
+    {
+      "name": "Roberto Baggio",
+      "emoji": "🐎🧶",
+      "quality": "A",
+      "basePrice": 180000000,
+      "tmValue": 180000000
+    },
+    {
+      "name": "Rivaldo",
+      "emoji": "🚲☄️",
+      "quality": "A",
+      "basePrice": 170000000,
+      "tmValue": 170000000
+    },
+    {
+      "name": "Raúl González",
+      "emoji": "💍🏹",
+      "quality": "A",
+      "basePrice": 165000000,
+      "tmValue": 165000000
+    },
+    {
+      "name": "Andriy Shevchenko",
+      "emoji": "🔫🛡️",
+      "quality": "A",
+      "basePrice": 170000000,
+      "tmValue": 170000000
+    },
+    {
+      "name": "Alessandro Del Piero",
+      "emoji": "🎨📐",
+      "quality": "A",
+      "basePrice": 165000000,
+      "tmValue": 165000000
+    },
+    {
+      "name": "Dennis Bergkamp",
+      "emoji": "🧊🎨",
+      "quality": "A",
+      "basePrice": 165000000,
+      "tmValue": 165000000
+    },
+    {
+      "name": "Eric Cantona",
+      "emoji": "🧥👑",
+      "quality": "A",
+      "basePrice": 160000000,
+      "tmValue": 160000000
+    },
+    {
+      "name": "Fernando Torres",
+      "emoji": "👦🏼🌪️",
+      "quality": "A",
+      "basePrice": 160000000,
+      "tmValue": 160000000
+    },
+    {
+      "name": "Samuel Eto'o",
+      "emoji": "🦁💎",
+      "quality": "A",
+      "basePrice": 155000000,
+      "tmValue": 155000000
+    },
+    {
+      "name": "Patrick Kluivert",
+      "emoji": "🦅⚽",
+      "quality": "A",
+      "basePrice": 155000000,
+      "tmValue": 155000000
+    },
+    {
+      "name": "Ruud van Nistelrooy",
+      "emoji": "📦🥅",
+      "quality": "A",
+      "basePrice": 150000000,
+      "tmValue": 150000000
+    },
+    {
+      "name": "Didier Drogba",
+      "emoji": "👑🛡️",
+      "quality": "A",
+      "basePrice": 150000000,
+      "tmValue": 150000000
+    },
+    {
+      "name": "Filippo Inzaghi",
+      "emoji": "🔍🚩",
+      "quality": "A",
+      "basePrice": 145000000,
+      "tmValue": 145000000
+    },
+    {
+      "name": "Kenny Dalglish",
+      "emoji": "👑🏟️",
+      "quality": "A",
+      "basePrice": 145000000,
+      "tmValue": 145000000
+    },
+    {
+      "name": "David Trezeguet",
+      "emoji": "👑🎯",
+      "quality": "A",
+      "basePrice": 140000000,
+      "tmValue": 140000000
+    },
+    {
+      "name": "Ian Rush",
+      "emoji": "👨🏻🔴",
+      "quality": "A",
+      "basePrice": 140000000,
+      "tmValue": 140000000
+    },
+    {
+      "name": "Jürgen Klinsmann",
+      "emoji": "✈️👱‍♂️",
+      "quality": "A",
+      "basePrice": 140000000,
+      "tmValue": 140000000
+    },
+    {
+      "name": "Michael Owen",
+      "emoji": "⚡🏆",
+      "quality": "A",
+      "basePrice": 140000000,
+      "tmValue": 140000000
+    },
+    {
+      "name": "Davor Šuker",
+      "emoji": "👟🪄",
+      "quality": "A",
+      "basePrice": 135000000,
+      "tmValue": 135000000
+    },
+    {
+      "name": "Gary Lineker",
+      "emoji": "🧊🧼",
+      "quality": "A",
+      "basePrice": 130000000,
+      "tmValue": 130000000
+    },
+    {
+      "name": "Sergio Agüero",
+      "emoji": "🎮🤟",
+      "quality": "A",
+      "basePrice": 170000000,
+      "tmValue": 170000000
+    },
+    {
+      "name": "Mario Kempes",
+      "emoji": "🏹🪵",
+      "quality": "A",
+      "basePrice": 155000000,
+      "tmValue": 155000000
+    },
+    {
+      "name": "Hernán Crespo",
+      "emoji": "🧬🎯",
+      "quality": "A",
+      "basePrice": 150000000,
+      "tmValue": 150000000
+    },
+    {
+      "name": "Carlos Tevez",
+      "emoji": "🛖😤",
+      "quality": "A",
+      "basePrice": 155000000,
+      "tmValue": 155000000
     }
   ]
 }
