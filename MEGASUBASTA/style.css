@@ -278,12 +278,14 @@ input:checked + .slider:before{transform:translateX(22px)}
 	#auction-screen main{
 		flex-direction:column;
 		align-items:center;
+		padding-bottom:32px;
 	}
 	#sidebar{
 		width:100%;
 		max-width:100%;
 		min-width:0;
 		max-height:none;
+		margin-bottom:20px;
 	}
 	#auction-area{
 		width:100%;
@@ -335,6 +337,19 @@ input:checked + .slider:before{transform:translateX(22px)}
 	.screen{
 		padding:0 16px;
 	}
+	#auction-screen main{
+		padding:0 12px 40px 12px;
+	}
+	#auction-area{
+		padding:12px;
+		max-height:50vh;
+		min-height:auto;
+	}
+	#sidebar{
+		padding:12px;
+		max-height:45vh;
+		margin-bottom:16px;
+	}
 	#title-screen h1{
 		font-size:36px;
 		letter-spacing:2px;
@@ -355,7 +370,41 @@ input:checked + .slider:before{transform:translateX(22px)}
 	#auction-area{padding:10px}
 	#player-card{
 		gap:6px;
-		padding:16px 14px;
+		padding:12px 10px;
+	}
+	.emoji{
+		font-size:42px;
+	}
+	.info-row{
+		padding:6px 10px;
+	}
+	.info-label{
+		font-size:9px;
+	}
+	.info-value{
+		font-size:13px;
+	}
+	.info-value.big{
+		font-size:17px;
+	}
+	.sidebar-title{
+		font-size:10px;
+		margin-bottom:8px;
+		padding-bottom:4px;
+	}
+	.team{
+		padding:10px 14px;
+		margin-bottom:6px;
+	}
+	.team-name{
+		font-size:13px;
+	}
+	.team-budget{
+		font-size:11px;
+	}
+	.roster .item{
+		font-size:10px;
+		padding:4px 6px;
 	}
 	.config-panel{
 		width:95%;
@@ -438,6 +487,9 @@ input:checked + .slider:before{transform:translateX(22px)}
 		font-size:11px;
 		padding:5px 8px;
 	}
+	#teams-list{
+		margin-bottom:12px;
+	}
 }
 
 /* Small mobile */
@@ -445,8 +497,19 @@ input:checked + .slider:before{transform:translateX(22px)}
 	#title-screen h1{
 		font-size:28px;
 	}
+	#auction-screen main{
+		padding:0 10px 50px 10px;
+	}
+	#auction-area{
+		padding:10px;
+		max-height:45vh;
+	}
+	#sidebar{
+		padding:10px;
+		max-height:40vh;
+	}
 	.emoji{
-		font-size:40px;
+		font-size:36px;
 	}
 	.config-panel{
 		padding:20px 16px;
