@@ -161,7 +161,7 @@ input:checked + .slider:before{transform:translateX(22px)}
 #final-screen{display:flex;flex-direction:column;align-items:center}
 #auction-area{flex:1 1 65%;background:var(--bg-panel-gradient);padding:18px;border-radius:24px;min-height:48vh;max-height:72vh;box-sizing:border-box;overflow:auto;color:var(--color-text);border:none;animation:slideIn 0.6s ease-out;box-shadow:0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);transition:box-shadow 0.3s ease}
 #auction-area:hover{box-shadow:0 12px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.08)}
-#sidebar{flex:0 0 30%;width:30%;max-width:320px;min-width:220px;background:var(--bg-panel-gradient);padding:16px;border-radius:24px;box-sizing:border-box;max-height:68vh;overflow:auto;color:var(--color-text);border:none;animation:slideIn 0.7s ease-out;box-shadow:0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);transition:box-shadow 0.3s ease}
+#sidebar{flex:0 0 30%;width:30%;max-width:320px;min-width:220px;background:var(--bg-panel-gradient);padding:16px 16px 24px 16px;border-radius:24px;box-sizing:border-box;max-height:68vh;overflow:auto;color:var(--color-text);border:none;animation:slideIn 0.7s ease-out;box-shadow:0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);transition:box-shadow 0.3s ease}
 #sidebar:hover{box-shadow:0 12px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.08)}
 #player-card{display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 18px;margin-top:0;background:var(--bg-control);border-radius:12px;border:1px solid transparent;animation:fadeIn 0.6s ease-out;transition:all 0.3s ease}
 #player-card:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(0,0,0,0.25);border-color:var(--border-color)}
@@ -229,6 +229,7 @@ input:checked + .slider:before{transform:translateX(22px)}
 #player-card .meta{font-size:15px;color:var(--color-text);font-weight:400}
 #player-card .value{font-weight:600;color:var(--color-primary);font-size:20px}
 #teams-list .team{border:1px dashed #ddd;padding:8px;margin-bottom:8px;border-radius:6px}
+#teams-list{padding-bottom:20px}
 #teams-list .team{border:1px solid transparent;padding:13px 20px;margin-bottom:9px;border-radius:12px;background:var(--bg-control);animation:slideIn 0.6s ease-out;transition:all 0.3s ease}
 #teams-list .team:nth-child(1){animation-delay:0.1s}
 #teams-list .team:nth-child(2){animation-delay:0.2s}
@@ -286,6 +287,7 @@ input:checked + .slider:before{transform:translateX(22px)}
 		min-width:0;
 		max-height:none;
 		margin-bottom:20px;
+		padding:16px 16px 28px 16px;
 	}
 	#auction-area{
 		width:100%;
@@ -346,7 +348,7 @@ input:checked + .slider:before{transform:translateX(22px)}
 		min-height:auto;
 	}
 	#sidebar{
-		padding:12px;
+		padding:12px 12px 24px 12px;
 		max-height:45vh;
 		margin-bottom:16px;
 	}
@@ -489,6 +491,7 @@ input:checked + .slider:before{transform:translateX(22px)}
 	}
 	#teams-list{
 		margin-bottom:12px;
+		padding-bottom:16px;
 	}
 }
 
@@ -505,7 +508,7 @@ input:checked + .slider:before{transform:translateX(22px)}
 		max-height:45vh;
 	}
 	#sidebar{
-		padding:10px;
+		padding:10px 10px 20px 10px;
 		max-height:40vh;
 	}
 	.emoji{
