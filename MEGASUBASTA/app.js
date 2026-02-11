@@ -176,46 +176,75 @@ const ViewManager = {
         <div class="config-panel">
           <button id="return-to-title-btn" class="btn-return-title">↶</button>
           <h2>CONFIGURACIÓN</h2>
-          <p class="config-subtitle">Configura los parámetros de la subasta</p>
+          <p class="config-subtitle">Personaliza tu subasta futbolera</p>
           
-          <div class="config-group">
-            <label>Presupuesto por equipo</label>
-            <div class="input-wrapper">
-              <button type="button" class="btn-flecha" data-target="budget" data-step="-50">-</button>
-              <input id="budget-input" type="number" min="50" value="100" step="50" readonly>
-              <button type="button" class="btn-flecha" data-target="budget" data-step="50">+</button>
+          <div class="config-sections">
+            <!-- Sección: PARÁMETROS PRINCIPALES -->
+            <div class="config-section">
+              <h3 class="section-title">⚙️ Parámetros Principales</h3>
+              
+              <div class="config-group">
+                <label>💰 Presupuesto por equipo</label>
+                <div class="input-wrapper">
+                  <button type="button" class="btn-flecha btn-minus" data-target="budget" data-step="-50" aria-label="Reducir presupuesto">−</button>
+                  <div class="value-capsule">
+                    <span id="budget-display">100</span><span class="unit">M€</span>
+                  </div>
+                  <input id="budget-input" type="number" min="50" value="100" step="50" readonly style="display:none;">
+                  <button type="button" class="btn-flecha btn-plus" data-target="budget" data-step="50" aria-label="Aumentar presupuesto">+</button>
+                </div>
+                <small class="input-help">El dinero inicial que tendrá cada equipo</small>
+              </div>
+              
+              <div class="config-group">
+                <label>👥 Cantidad de equipos</label>
+                <div class="input-wrapper">
+                  <button type="button" class="btn-flecha btn-minus" data-target="teams" data-step="-1" aria-label="Reducir equipos">−</button>
+                  <div class="value-capsule">
+                    <span id="teams-display">4</span><span class="unit">equipos</span>
+                  </div>
+                  <input id="teams-input" type="number" min="2" max="8" value="4" readonly style="display:none;">
+                  <button type="button" class="btn-flecha btn-plus" data-target="teams" data-step="1" aria-label="Aumentar equipos">+</button>
+                </div>
+                <small class="input-help">Número de participantes (2-8)</small>
+              </div>
             </div>
-            <small class="input-help">Cantidad en millones de euros</small>
-          </div>
-          
-          <div class="config-group">
-            <label>Cantidad de equipos</label>
-            <div class="input-wrapper">
-              <button type="button" class="btn-flecha" data-target="teams" data-step="-1">-</button>
-              <input id="teams-input" type="number" min="2" max="8" value="4" readonly>
-              <button type="button" class="btn-flecha" data-target="teams" data-step="1">+</button>
+            
+            <!-- Sección: NOMBRES DE EQUIPOS -->
+            <div class="config-section">
+              <h3 class="section-title">✏️ Nombres de Equipos</h3>
+              <div id="team-names-container" class="team-names-grid"></div>
             </div>
-            <small class="input-help">Entre 2 y 8 equipos</small>
-          </div>
-          
-          <div class="config-group" id="team-names-group">
-            <label>Nombres de equipos</label>
-            <div id="team-names-container" style="display: flex; flex-direction: column; gap: 8px;">
+            
+            <!-- Sección: PREFERENCIAS -->
+            <div class="config-section">
+              <h3 class="section-title">🎨 Preferencias</h3>
+              <div class="theme-toggle-group">
+                <div class="theme-option">
+                  <div class="theme-info">
+                    <span class="theme-icon">🌙</span>
+                    <span class="theme-label">Modo Claro</span>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="light-mode-toggle">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
-          
-          <div class="config-group" style="display: flex; justify-content: space-between; align-items: center;">
-            <label style="margin: 0;">Modo Claro</label>
-            <label class="switch">
-              <input type="checkbox" id="light-mode-toggle">
-              <span class="slider"></span>
-            </label>
           </div>
           
           <div class="config-actions">
-            <button id="back-btn" class="btn-secondary">Volver</button>
-            <button id="achievements-btn" class="btn-secondary">🏆 Logros</button>
-            <button id="create-btn" class="btn-primary">Crear y empezar</button>
+            <button id="back-btn" class="btn-secondary">
+              <span>← Volver</span>
+            </button>
+            <button id="achievements-btn" class="btn-secondary">
+              <span>🏆 Logros</span>
+            </button>
+            <button id="create-btn" class="btn-primary">
+              <span>🚀 Crear y empezar</span>
+            </button>
           </div>
           <div id="loading-msg"></div>
         </div>
@@ -250,19 +279,19 @@ const ViewManager = {
       container.innerHTML = '';
       for (let i = 0; i < numTeams; i++) {
         const wrapper = document.createElement('div');
-        wrapper.style.cssText = 'display: flex; align-items: center; gap: 8px;';
+        wrapper.className = 'team-name-input-wrapper';
         
         const label = document.createElement('span');
-        label.textContent = `${i + 1}.`;
-        label.style.cssText = 'min-width: 20px; font-weight: 600; color: var(--color-text);';
+        label.className = 'team-number';
+        label.textContent = `${i + 1}`;
         
         const input = document.createElement('input');
         input.type = 'text';
         input.id = `team-name-${i}`;
+        input.className = 'team-name-input';
         input.placeholder = `Equipo ${i + 1}`;
         input.value = `Equipo ${i + 1}`;
         input.maxLength = 20;
-        input.style.cssText = 'flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-secondary); background: var(--bg-input); color: var(--color-text); font-size: 14px; transition: all 0.3s ease;';
         
         wrapper.appendChild(label);
         wrapper.appendChild(input);
@@ -280,6 +309,7 @@ const ViewManager = {
         const target = btn.dataset.target;
         const step = parseInt(btn.dataset.step);
         const input = target === 'budget' ? document.getElementById('budget-input') : document.getElementById('teams-input');
+        const display = target === 'budget' ? document.getElementById('budget-display') : document.getElementById('teams-display');
         
         let currentValue = parseInt(input.value) || 0;
         let newValue = currentValue + step;
@@ -290,6 +320,25 @@ const ViewManager = {
         newValue = Math.max(min, Math.min(max, newValue));
         
         input.value = newValue;
+        display.textContent = newValue;
+        
+        // Actualizar estado de botones (feedback visual)
+        const wrapper = btn.closest('.input-wrapper');
+        const minusBtn = wrapper.querySelector('.btn-minus');
+        const plusBtn = wrapper.querySelector('.btn-plus');
+        
+        // Deshabilitar botón si llegó al límite
+        if (newValue <= min) {
+          minusBtn.classList.add('disabled');
+        } else {
+          minusBtn.classList.remove('disabled');
+        }
+        
+        if (newValue >= max) {
+          plusBtn.classList.add('disabled');
+        } else {
+          plusBtn.classList.remove('disabled');
+        }
         
         // Actualizar campos de nombres si cambió la cantidad de equipos
         if (target === 'teams') {
@@ -297,6 +346,25 @@ const ViewManager = {
         }
       });
     });
+    
+    // Inicializar estado de botones
+    const budgetInput = document.getElementById('budget-input');
+    const teamsInput = document.getElementById('teams-input');
+    
+    // Budget buttons
+    const budgetWrapper = budgetInput.closest('.input-wrapper');
+    if (parseInt(budgetInput.value) <= parseInt(budgetInput.min)) {
+      budgetWrapper.querySelector('.btn-minus').classList.add('disabled');
+    }
+    
+    // Teams buttons
+    const teamsWrapper = teamsInput.closest('.input-wrapper');
+    if (parseInt(teamsInput.value) <= parseInt(teamsInput.min)) {
+      teamsWrapper.querySelector('.btn-minus').classList.add('disabled');
+    }
+    if (parseInt(teamsInput.value) >= parseInt(teamsInput.max)) {
+      teamsWrapper.querySelector('.btn-plus').classList.add('disabled');
+    }
     
     // Configurar el estado inicial del switch de tema
     const lightModeToggle = document.getElementById('light-mode-toggle');
