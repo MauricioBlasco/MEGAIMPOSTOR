@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEGAPOKEMON - Primera Generación</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Pantalla de Inicio -->
+    <div id="start-screen" class="screen active">
+        <div class="title-container">
+            <h1 class="game-title">MEGAPOKEMON</h1>
+            <div class="pokeball-decoration"></div>
+        </div>
+        <button id="start-button" class="main-button">INICIAR</button>
+        <div class="credits">Edición Primera Generación</div>
+    </div>
+    
+    <!-- Pantalla de Selección de Partida -->
+    <div id="save-select-screen" class="screen">
+        <div class="title-container">
+            <h1 class="game-title">MEGAPOKEMON</h1>
+            <div class="pokeball-decoration"></div>
+        </div>
+        <h2 style="color: #FFCB05; text-align: center; margin: 20px 0;">SELECCIONA UNA PARTIDA</h2>
+        <div class="save-slots">
+            <div class="save-slot" data-slot="1">
+                <div class="slot-header">PARTIDA 1</div>
+                <div class="slot-content" id="slot-1-content">
+                    <p class="empty-slot">Partida Nueva</p>
+                </div>
+                <button class="slot-button" onclick="selectSaveSlot(1)">Seleccionar</button>
+            </div>
+            <div class="save-slot" data-slot="2">
+                <div class="slot-header">PARTIDA 2</div>
+                <div class="slot-content" id="slot-2-content">
+                    <p class="empty-slot">Partida Nueva</p>
+                </div>
+                <button class="slot-button" onclick="selectSaveSlot(2)">Seleccionar</button>
+            </div>
+            <div class="save-slot" data-slot="3">
+                <div class="slot-header">PARTIDA 3</div>
+                <div class="slot-content" id="slot-3-content">
+                    <p class="empty-slot">Partida Nueva</p>
+                </div>
+                <button class="slot-button" onclick="selectSaveSlot(3)">Seleccionar</button>
+            </div>
+        </div>
+        <div class="credits">Edición Primera Generación</div>
+    </div>
+
+    <!-- Pantalla de Selección de Inicial -->
+    <div id="selection-screen" class="screen">
+        <div class="selection-header">
+            <h2>COMIENZA LA AVENTURA EN EL MUNDO POKEMON</h2>
+            <p class="professor-text">¡Bienvenido entrenador! El Profesor Oak te ofrece estos Pokémon:</p>
+        </div>
+        
+        <div class="pokemon-selection">
+            <div class="pokemon-card" data-pokemon="pikachu">
+                <div class="pokemon-image">
+                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/25.png" alt="Pikachu">
+                </div>
+                <div class="pokemon-info">
+                    <h3>Pikachu</h3>
+                    <span class="pokemon-type electric">⚡ Eléctrico</span>
+                    <div class="pokemon-stats">
+                        <div class="stat">HP: 35</div>
+                        <div class="stat">ATK: 55</div>
+                        <div class="stat">DEF: 40</div>
+                        <div class="stat">SPD: 90</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pokemon-card" data-pokemon="charmander">
+                <div class="pokemon-image">
+                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/4.png" alt="Charmander">
+                </div>
+                <div class="pokemon-info">
+                    <h3>Charmander</h3>
+                    <span class="pokemon-type fire">🔥 Fuego</span>
+                    <div class="pokemon-stats">
+                        <div class="stat">HP: 39</div>
+                        <div class="stat">ATK: 52</div>
+                        <div class="stat">DEF: 43</div>
+                        <div class="stat">SPD: 65</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pokemon-card" data-pokemon="squirtle">
+                <div class="pokemon-image">
+                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/7.png" alt="Squirtle">
+                </div>
+                <div class="pokemon-info">
+                    <h3>Squirtle</h3>
+                    <span class="pokemon-type water">💧 Agua</span>
+                    <div class="pokemon-stats">
+                        <div class="stat">HP: 44</div>
+                        <div class="stat">ATK: 48</div>
+                        <div class="stat">DEF: 65</div>
+                        <div class="stat">SPD: 43</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pokemon-card" data-pokemon="bulbasaur">
+                <div class="pokemon-image">
+                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/1.png" alt="Bulbasaur">
+                </div>
+                <div class="pokemon-info">
+                    <h3>Bulbasaur</h3>
+                    <span class="pokemon-type grass">🌿 Planta</span>
+                    <div class="pokemon-stats">
+                        <div class="stat">HP: 45</div>
+                        <div class="stat">ATK: 49</div>
+                        <div class="stat">DEF: 49</div>
+                        <div class="stat">SPD: 45</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Juego -->
+    <div id="game-screen" class="screen">
+        <!-- Barra superior con controles -->
+        <div class="top-bar">
+            <button id="map-btn" class="top-button">🗺️ Mapa</button>
+            <button id="bag-btn" class="top-button">🎒 Mochila</button>
+            <button id="pc-btn" class="top-button">💻 PC</button>
+            <button id="audio-btn" class="top-button" title="Alternar sonido">🔊 Audio</button>
+            <div class="zone-display">📍 <span id="zone-name">Pueblo Paleta</span></div>
+            <div class="progress-display">
+                Paso: <span id="wild-count">0</span> | <span id="trainer-count">Inicio</span>
+            </div>
+            <div class="money-display">💰 <span id="money-display">$3000</span></div>
+        </div>
+
+        <div class="game-content">
+            <!-- Panel de Pokémon del jugador -->
+            <div class="pokemon-display">
+                <img id="current-pokemon-sprite" src="" alt="Tu Pokémon">
+                <div class="pokemon-details">
+                    <h2 id="current-pokemon-name">-</h2>
+                    <div class="level-badge">Nivel <span id="current-level">5</span></div>
+                    <div class="hp-bar-container">
+                        <div class="hp-label">HP: <span id="current-hp">0</span> / <span id="max-hp">0</span></div>
+                        <div class="hp-bar">
+                            <div id="hp-fill" class="hp-fill"></div>
+                        </div>
+                    </div>
+                    <div class="exp-bar-container">
+                        <div class="exp-label">EXP: <span id="current-exp">0</span> / <span id="needed-exp">100</span></div>
+                        <div class="exp-bar">
+                            <div id="exp-fill" class="exp-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de acciones -->
+            <div class="action-panel">
+                <button id="advance-btn" class="action-button main-advance-btn">➡️ AVANZAR</button>
+            </div>
+
+            <!-- Caja de mensajes -->
+            <div id="message-box" class="message-box">
+                <p id="game-message">¡Bienvenido a Pueblo Paleta! Tu aventura comienza aquí.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Mochila -->
+    <div id="bag-modal" class="modal">
+        <div class="modal-content bag-content">
+            <h2>🎒 Mochila</h2>
+            <div class="bag-tabs">
+                <button class="bag-tab active" data-tab="items">Objetos</button>
+                <button class="bag-tab" data-tab="pokeballs">Pokéballs</button>
+            </div>
+            <div class="bag-inventory" id="bag-inventory">
+                <!-- Inventario dinámico -->
+            </div>
+            <button id="close-bag" class="main-button">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Mapa -->
+    <div id="map-modal" class="modal">
+        <div class="modal-content map-content">
+            <h2>🗺️ Mapa de Kanto</h2>
+            <div class="map-display" id="map-display">
+                <!-- Mapa dinámico -->
+            </div>
+            <button id="close-map" class="main-button">Cerrar</button>
+        </div>
+    </div>
+    
+    <!-- Modal de PC -->
+    <div id="pc-modal" class="modal">
+        <div class="modal-content pc-content">
+            <h2>💻 Sistema de Almacenamiento PC</h2>
+            <div class="pc-sections">
+                <div class="pc-section">
+                    <h3>Tu Equipo (Máx: 6)</h3>
+                    <div id="pc-team" class="pokemon-grid"></div>
+                </div>
+                <div class="pc-section">
+                    <h3>PC de Bill</h3>
+                    <div id="pc-storage" class="pokemon-grid"></div>
+                </div>
+            </div>
+            <button id="close-pc" class="main-button">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Tienda -->
+    <div id="shop-modal" class="modal">
+        <div class="modal-content shop-content">
+            <h2>🏪 Tienda Pokémon</h2>
+            <p class="shop-money">💰 Dinero: <span id="player-money">3000</span>₽</p>
+            <div class="shop-items" id="shop-items">
+                <!-- Items de tienda dinámicos -->
+            </div>
+            <button id="close-shop" class="main-button">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Batalla -->
+    <div id="battle-modal" class="modal">
+        <div class="modal-content battle-content">
+            <h2 id="battle-title">⚔️ Batalla Pokémon</h2>
+            <div class="battle-scene">
+                <div class="enemy-pokemon">
+                    <div class="pokemon-info-battle">
+                        <h3 id="enemy-name">-</h3>
+                        <div class="level-badge-small">Nv. <span id="enemy-level">5</span></div>
+                    </div>
+                    <img id="enemy-sprite" src="" alt="Enemigo">
+                    <div class="hp-bar-container">
+                        <div class="hp-bar">
+                            <div id="enemy-hp-fill" class="hp-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="vs-text">VS</div>
+                <div class="player-pokemon-battle">
+                    <img id="player-battle-sprite" src="" alt="Tu Pokémon">
+                    <div class="pokemon-info-battle">
+                        <h3 id="player-battle-name">-</h3>
+                        <div class="level-badge-small">Nv. <span id="player-battle-level">5</span></div>
+                    </div>
+                    <div class="hp-bar-container">
+                        <div class="hp-bar">
+                            <div id="player-battle-hp-fill" class="hp-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="battle-message" id="battle-message">¡Comienza la batalla!</div>
+            
+            <!-- Menú principal de batalla -->
+            <div class="battle-actions" id="battle-main-menu">
+                <button id="fight-btn" class="battle-button">⚔️ ATACAR</button>
+                <button id="items-btn" class="battle-button">🎒 OBJETOS</button>
+                <button id="pokemon-btn" class="battle-button">🐾 POKEMONES</button>
+                <button id="run-btn" class="battle-button">🏃 HUIR</button>
+            </div>
+            
+            <!-- Menú de selección de ataques -->
+            <div class="battle-actions" id="battle-moves-menu" style="display: none;">
+                <button id="move-1" class="battle-button move-button">
+                    <span class="move-name">-</span>
+                    <span class="move-pp">PP: 0/0</span>
+                </button>
+                <button id="move-2" class="battle-button move-button">
+                    <span class="move-name">-</span>
+                    <span class="move-pp">PP: 0/0</span>
+                </button>
+                <button id="move-3" class="battle-button move-button">
+                    <span class="move-name">-</span>
+                    <span class="move-pp">PP: 0/0</span>
+                </button>
+                <button id="move-4" class="battle-button move-button">
+                    <span class="move-name">-</span>
+                    <span class="move-pp">PP: 0/0</span>
+                </button>
+                <button id="back-to-main" class="battle-button">← VOLVER</button>
+            </div>
+            
+            <!-- Menú de objetos en batalla -->
+            <div class="battle-actions" id="battle-items-menu" style="display: none;">
+                <button id="use-potion-battle" class="battle-button item-button">
+                    <span class="item-name">Poción</span>
+                    <span class="item-count">x<span id="potion-count-battle">0</span></span>
+                </button>
+                <button id="use-pokeball-battle" class="battle-button item-button">
+                    <span class="item-name">Pokéball</span>
+                    <span class="item-count">x<span id="pokeball-count-battle">0</span></span>
+                </button>
+                <button id="back-to-main-3" class="battle-button">← VOLVER</button>
+            </div>
+            
+            <!-- Menú de selección de Pokémon -->
+            <div class="battle-actions" id="battle-pokemon-menu" style="display: none;">
+                <div id="team-selection" class="team-grid"></div>
+                <button id="back-to-main-2" class="battle-button">← VOLVER</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Evolución -->
+    <div id="evolution-modal" class="modal">
+        <div class="modal-content evolution-animation">
+            <h2>¡¿Qué?!</h2>
+            <p><span id="evolving-pokemon-name">-</span> está evolucionando!</p>
+            <div class="evolution-sprites">
+                <img id="before-evolution" src="" alt="Antes">
+                <span class="evolution-arrow">→</span>
+                <img id="after-evolution" src="" alt="Después">
+            </div>
+            <p class="evolution-text">¡<span id="old-pokemon-name">-</span> evolucionó a <span id="new-pokemon-name">-</span>!</p>
+            <button id="evolution-continue" class="main-button">Continuar</button>
+        </div>
+    </div>
+
+    <script src="pokemon-data.js"></script>
+    <script src="zones-data.js"></script>
+    <script src="moves-data.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

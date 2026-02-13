@@ -1,0 +1,24 @@
+{
+    "id": 48,
+    "name": "mega-dimension",
+    "names": [
+        {
+            "language": {
+                "name": "fr",
+                "url": "/api/v2/language/5/"
+            },
+            "name": "M\u00e9ga-Dimension"
+        },
+        {
+            "language": {
+                "name": "en",
+                "url": "/api/v2/language/9/"
+            },
+            "name": "Mega Dimension"
+        }
+    ],
+    "version_group": {
+        "name": "mega-dimension",
+        "url": "/api/v2/version-group/31/"
+    }
+}

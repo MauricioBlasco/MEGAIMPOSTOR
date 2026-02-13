@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <h1>Test Pokemon Selection</h1>
+    <button id="test-pikachu">Click Pikachu</button>
+    <button id="test-charmander">Click Charmander</button>
+    <div id="result"></div>
+
+    <script src="pokemon-data.js"></script>
+    <script src="zones-data.js"></script>
+    <script>
+        console.log('POKEMON_DATABASE:', POKEMON_DATABASE);
+        console.log('ADDITIONAL_POKEMON:', typeof ADDITIONAL_POKEMON !== 'undefined' ? ADDITIONAL_POKEMON : 'undefined');
+        console.log('ZONES_DATA:', ZONES_DATA);
+        
+        document.getElementById('test-pikachu').addEventListener('click', () => {
+            console.log('Pikachu clicked');
+            const pokemon = POKEMON_DATABASE['pikachu'];
+            console.log('Pikachu data:', pokemon);
+            document.getElementById('result').innerHTML = pokemon ? `Found: ${pokemon.name}` : 'Not found';
+        });
+        
+        document.getElementById('test-charmander').addEventListener('click', () => {
+            console.log('Charmander clicked');
+            const pokemon = POKEMON_DATABASE['charmander'];
+            console.log('Charmander data:', pokemon);
+            document.getElementById('result').innerHTML = pokemon ? `Found: ${pokemon.name}` : 'Not found';
+        });
+    </script>
+</body>
+</html>
