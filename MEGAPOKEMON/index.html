@@ -50,11 +50,37 @@
         <div class="credits">Edición Primera Generación</div>
     </div>
 
+    <!-- Intro Profesor Oak -->
+    <div id="intro-screen" class="screen">
+        <div class="intro-container">
+            <h2 class="intro-title">Introducción</h2>
+            <div class="oak-panel">
+                <img id="oak-sprite" class="oak-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-i/red-blue/151.png" alt="Profesor Oak" onerror="this.style.display='none';document.getElementById('oak-fallback').style.display='flex';">
+                <div id="oak-fallback" class="oak-fallback" style="display:none;">👨‍🔬 OAK</div>
+                <div class="oak-text-bubble" id="oak-text-bubble">
+                    <p id="intro-text">¡Hola! ¡Bienvenido al mundo de Pokémon!</p>
+                </div>
+            </div>
+            <div id="intro-name-section" class="intro-name-section" style="display:none;">
+                <label for="intro-player-name">¿Cómo te llamas, entrenador?</label>
+                <input id="intro-player-name" type="text" maxlength="10" autocomplete="off" placeholder="Tu nombre">
+
+                <label for="intro-rival-name">¿Y cómo se llama tu rival?</label>
+                <input id="intro-rival-name" type="text" maxlength="10" autocomplete="off" placeholder="Nombre del rival">
+                <p id="intro-name-error" class="intro-error"></p>
+            </div>
+            <div class="intro-actions">
+                <button id="intro-next-btn" class="main-button">Siguiente</button>
+                <button id="intro-skip-btn" class="top-button intro-skip-btn">Saltar charla</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Pantalla de Selección de Inicial -->
     <div id="selection-screen" class="screen">
         <div class="selection-header">
             <h2>COMIENZA LA AVENTURA EN EL MUNDO POKEMON</h2>
-            <p class="professor-text">¡Bienvenido entrenador! El Profesor Oak te ofrece estos Pokémon:</p>
+            <p class="professor-text" id="selection-welcome">¡Bienvenido entrenador! El Profesor Oak te ofrece estos Pokémon:</p>
         </div>
         
         <div class="pokemon-selection">
@@ -129,7 +155,7 @@
         <!-- Barra superior con controles -->
         <div class="top-bar">
             <button id="map-btn" class="top-button">🗺️ Mapa</button>
-            <button id="bag-btn" class="top-button">🎒 Mochila</button>
+            <button id="bag-btn" class="top-button">🎒 Objetos</button>
             <button id="pc-btn" class="top-button">💻 PC</button>
             <button id="audio-btn" class="top-button" title="Alternar sonido">🔊 Audio</button>
             <div class="zone-display">📍 <span id="zone-name">Pueblo Paleta</span></div>
@@ -180,6 +206,8 @@
             <div class="bag-tabs">
                 <button class="bag-tab active" data-tab="items">Objetos</button>
                 <button class="bag-tab" data-tab="pokeballs">Pokéballs</button>
+                <button class="bag-tab" data-tab="tm">MT</button>
+                <button class="bag-tab" data-tab="keyitems">Objetos Clave</button>
             </div>
             <div class="bag-inventory" id="bag-inventory">
                 <!-- Inventario dinámico -->
@@ -245,6 +273,7 @@
                             <div id="enemy-hp-fill" class="hp-fill"></div>
                         </div>
                     </div>
+                    <div id="enemy-effects" class="battle-effects-row"></div>
                 </div>
                 <div class="vs-text">VS</div>
                 <div class="player-pokemon-battle">
@@ -258,6 +287,7 @@
                             <div id="player-battle-hp-fill" class="hp-fill"></div>
                         </div>
                     </div>
+                    <div id="player-effects" class="battle-effects-row"></div>
                 </div>
             </div>
             <div class="battle-message" id="battle-message">¡Comienza la batalla!</div>
@@ -324,6 +354,33 @@
             </div>
             <p class="evolution-text">¡<span id="old-pokemon-name">-</span> evolucionó a <span id="new-pokemon-name">-</span>!</p>
             <button id="evolution-continue" class="main-button">Continuar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Decisión -->
+    <div id="choice-modal" class="modal">
+        <div class="modal-content dialog-content">
+            <h2 id="choice-title">Decisión</h2>
+            <p id="choice-message" class="dialog-message">Texto</p>
+            <div class="dialog-actions">
+                <button id="choice-cancel" class="battle-button">Cancelar</button>
+                <button id="choice-confirm" class="battle-button">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Entrada de Texto -->
+    <div id="input-modal" class="modal">
+        <div class="modal-content dialog-content">
+            <h2 id="input-title">Nombre</h2>
+            <p id="input-message" class="dialog-message">Ingresa un texto.</p>
+            <input id="input-field" class="dialog-input" type="text" maxlength="10" autocomplete="off">
+            <p id="input-error" class="intro-error"></p>
+            <div class="dialog-actions">
+                <button id="input-cancel" class="battle-button">Cancelar</button>
+                <button id="input-skip" class="battle-button">Omitir</button>
+                <button id="input-confirm" class="battle-button">Aceptar</button>
+            </div>
         </div>
     </div>
 

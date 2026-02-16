@@ -118,6 +118,137 @@ body {
     opacity: 0.8;
 }
 
+/* Intro Profesor Oak */
+#intro-screen {
+    width: 100%;
+}
+
+.intro-container {
+    width: 100%;
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 4px solid #3B4CCA;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
+}
+
+.intro-title {
+    text-align: center;
+    color: #3B4CCA;
+    margin-bottom: 20px;
+}
+
+.oak-panel {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 16px;
+    align-items: center;
+}
+
+.oak-sprite {
+    width: 160px;
+    height: 160px;
+    image-rendering: pixelated;
+    animation: floatOak 2s ease-in-out infinite;
+}
+
+.oak-fallback {
+    width: 160px;
+    height: 160px;
+    border-radius: 12px;
+    border: 3px solid #3B4CCA;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1a237e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1rem;
+    padding: 8px;
+    animation: floatOak 2s ease-in-out infinite;
+}
+
+@keyframes floatOak {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+}
+
+.oak-text-bubble {
+    background: #ffffff;
+    border: 3px solid #3B4CCA;
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 130px;
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    line-height: 1.7;
+}
+
+.intro-name-section {
+    margin: 18px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.intro-name-section input {
+    border: 3px solid #3B4CCA;
+    border-radius: 8px;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.intro-error {
+    color: #c1121f;
+    font-size: 0.65rem;
+    min-height: 12px;
+}
+
+.intro-actions {
+    margin-top: 16px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.intro-skip-btn {
+    font-size: 0.8rem;
+    padding: 12px 18px;
+}
+
+/* Dialogos reutilizables */
+.dialog-content {
+    max-width: 520px;
+    width: 90%;
+}
+
+.dialog-message {
+    margin: 10px 0 14px;
+    line-height: 1.6;
+}
+
+.dialog-input {
+    width: 100%;
+    border: 3px solid #3B4CCA;
+    border-radius: 8px;
+    padding: 12px;
+    font-family: inherit;
+    margin-bottom: 8px;
+}
+
+.dialog-actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
 /* Pantalla de Selección */
 #selection-screen {
     gap: 30px;
@@ -379,10 +510,11 @@ body {
     display: flex;
     gap: 10px;
     margin: 20px 0;
+    flex-wrap: wrap;
 }
 
 .bag-tab {
-    flex: 1;
+    flex: 1 1 calc(50% - 10px);
     padding: 12px;
     background: #f0f0f0;
     border: 2px solid #3B4CCA;
@@ -400,7 +532,7 @@ body {
 
 .bag-inventory {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 10px;
     margin: 20px 0;
     min-height: 200px;
@@ -415,6 +547,33 @@ body {
     justify-content: space-between;
     align-items: center;
     font-size: 0.7rem;
+}
+
+.inventory-item button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #3B4CCA;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.65rem;
+}
+
+.inventory-item button:disabled {
+    background: #888;
+    cursor: not-allowed;
+}
+
+.inventory-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    background: #f8f8f8;
+    border: 2px dashed #bbb;
+    border-radius: 8px;
+    padding: 20px;
+    color: #555;
+    font-size: 0.75rem;
 }
 
 .item-quantity {
@@ -929,6 +1088,13 @@ body:has(.modal.active) .message-box::-webkit-scrollbar-thumb:hover {
     align-items: center;
     padding: 0;
     overflow: hidden;
+    z-index: 1100;
+}
+
+#bag-modal,
+#choice-modal,
+#input-modal {
+    z-index: 1300;
 }
 
 .modal.active {
@@ -1181,6 +1347,29 @@ body:has(.modal.active) .message-box::-webkit-scrollbar-thumb:hover {
     overflow-y: auto;
 }
 
+.battle-effects-row {
+    margin-top: 8px;
+    min-height: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.battle-effect-badge {
+    background: rgba(255, 203, 5, 0.95);
+    color: #1a1a2e;
+    border: 1px solid #3B4CCA;
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-size: 0.6rem;
+    font-weight: bold;
+}
+
+.battle-effect-empty {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.55rem;
+}
+
 .pokemon-card {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     border: 2px solid #FFCB05;
@@ -1248,6 +1437,12 @@ body:has(.modal.active) .message-box::-webkit-scrollbar-thumb:hover {
     background: #666;
     cursor: not-allowed;
     opacity: 0.5;
+}
+
+.pc-actions-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
 /* === PC MODAL === */

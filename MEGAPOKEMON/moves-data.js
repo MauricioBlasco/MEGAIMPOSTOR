@@ -292,3 +292,176 @@ const POKEMON_MOVESETS = {
         { level: 1, move: 'bite' }
     ]
 };
+
+Object.assign(MOVES_DATABASE, {
+    'peck': {
+        name: 'Picotazo',
+        type: 'flying',
+        power: 35,
+        accuracy: 100,
+        pp: 35,
+        maxPP: 35,
+        description: 'Ataca con el pico'
+    },
+    'poison-sting': {
+        name: 'Picotazo Veneno',
+        type: 'poison',
+        power: 15,
+        accuracy: 100,
+        pp: 35,
+        maxPP: 35,
+        description: 'Aguijón venenoso'
+    },
+    'rock-throw': {
+        name: 'Lanzarrocas',
+        type: 'rock',
+        power: 50,
+        accuracy: 90,
+        pp: 15,
+        maxPP: 15,
+        description: 'Lanza rocas al rival'
+    },
+    'harden': {
+        name: 'Fortaleza',
+        type: 'normal',
+        power: 0,
+        accuracy: 100,
+        pp: 30,
+        maxPP: 30,
+        description: 'Endurece el cuerpo y aumenta defensa'
+    },
+    'confusion': {
+        name: 'Confusión',
+        type: 'psychic',
+        power: 50,
+        accuracy: 100,
+        pp: 25,
+        maxPP: 25,
+        description: 'Ataque psíquico básico'
+    },
+    'absorb': {
+        name: 'Absorber',
+        type: 'grass',
+        power: 20,
+        accuracy: 100,
+        pp: 25,
+        maxPP: 25,
+        description: 'Drena energía del rival'
+    }
+});
+
+Object.assign(POKEMON_MOVESETS, {
+    'pidgeot': [
+        { level: 1, move: 'tackle' },
+        { level: 1, move: 'quick-attack' },
+        { level: 1, move: 'peck' }
+    ],
+    'spearow': [
+        { level: 1, move: 'peck' },
+        { level: 1, move: 'growl' },
+        { level: 9, move: 'quick-attack' }
+    ],
+    'fearow': [
+        { level: 1, move: 'peck' },
+        { level: 1, move: 'quick-attack' },
+        { level: 20, move: 'slash' }
+    ],
+    'butterfree': [
+        { level: 1, move: 'tackle' },
+        { level: 10, move: 'confusion' }
+    ],
+    'beedrill': [
+        { level: 1, move: 'poison-sting' },
+        { level: 10, move: 'quick-attack' }
+    ],
+    'nidoran-m': [
+        { level: 1, move: 'tackle' },
+        { level: 1, move: 'poison-sting' },
+        { level: 8, move: 'bite' }
+    ],
+    'nidorino': [
+        { level: 1, move: 'tackle' },
+        { level: 1, move: 'poison-sting' },
+        { level: 16, move: 'bite' }
+    ],
+    'nidoran-f': [
+        { level: 1, move: 'tackle' },
+        { level: 1, move: 'poison-sting' },
+        { level: 8, move: 'tail-whip' }
+    ],
+    'nidorina': [
+        { level: 1, move: 'tackle' },
+        { level: 1, move: 'poison-sting' },
+        { level: 16, move: 'bite' }
+    ],
+    'arbok': [
+        { level: 1, move: 'tackle' },
+        { level: 1, move: 'bite' },
+        { level: 22, move: 'poison-sting' }
+    ],
+    'zubat': [
+        { level: 1, move: 'quick-attack' },
+        { level: 1, move: 'bite' }
+    ],
+    'golbat': [
+        { level: 1, move: 'quick-attack' },
+        { level: 1, move: 'bite' },
+        { level: 20, move: 'peck' }
+    ],
+    'graveler': [
+        { level: 1, move: 'tackle' },
+        { level: 1, move: 'rock-throw' }
+    ],
+    'sandshrew': [
+        { level: 1, move: 'scratch' },
+        { level: 7, move: 'tackle' }
+    ],
+    'paras': [
+        { level: 1, move: 'scratch' },
+        { level: 6, move: 'absorb' }
+    ],
+    'clefairy': [
+        { level: 1, move: 'tackle' },
+        { level: 1, move: 'growl' }
+    ],
+    'mankey': [
+        { level: 1, move: 'scratch' },
+        { level: 7, move: 'quick-attack' }
+    ],
+    'oddish': [
+        { level: 1, move: 'absorb' },
+        { level: 7, move: 'vine-whip' }
+    ],
+    'bellsprout': [
+        { level: 1, move: 'vine-whip' },
+        { level: 7, move: 'absorb' }
+    ],
+    'abra': [
+        { level: 1, move: 'confusion' }
+    ],
+    'poliwag': [
+        { level: 1, move: 'bubble' },
+        { level: 7, move: 'water-gun' }
+    ],
+    'staryu': [
+        { level: 1, move: 'tackle' },
+        { level: 7, move: 'water-gun' }
+    ],
+    'starmie': [
+        { level: 1, move: 'water-gun' },
+        { level: 1, move: 'confusion' },
+        { level: 20, move: 'hydro-pump' }
+    ],
+    'grimer': [
+        { level: 1, move: 'tackle' },
+        { level: 7, move: 'poison-sting' }
+    ],
+    'voltorb': [
+        { level: 1, move: 'tackle' },
+        { level: 9, move: 'thunder-shock' }
+    ],
+    'koffing': [
+        { level: 1, move: 'tackle' },
+        { level: 7, move: 'poison-sting' }
+    ]
+});
