@@ -11,10 +11,27 @@
     <div id="start-screen" class="screen active">
         <div class="title-container">
             <h1 class="game-title">MEGAPOKEMON</h1>
-            <div class="pokeball-decoration"></div>
+            <div id="start-pokeball-button" class="pokeball-decoration pokeball-secret-trigger" title="Código secreto"></div>
         </div>
         <button id="start-button" class="main-button">INICIAR</button>
         <div class="credits">Edición Primera Generación</div>
+    </div>
+
+    <!-- Pantalla de Código Secreto -->
+    <div id="secret-screen" class="screen">
+        <div class="title-container">
+            <h1 class="game-title">CÓDIGO</h1>
+            <div class="pokeball-decoration"></div>
+        </div>
+        <div class="secret-panel">
+            <h2>Inserta el código secreto</h2>
+            <input id="secret-code-input" type="text" maxlength="20" autocomplete="off" placeholder="Ingresa el código">
+            <p id="secret-code-message" class="secret-code-message"></p>
+            <div class="secret-actions">
+                <button id="secret-submit-btn" class="main-button">Validar</button>
+                <button id="secret-back-btn" class="top-button">Volver</button>
+            </div>
+        </div>
     </div>
     
     <!-- Pantalla de Selección de Partida -->
@@ -180,6 +197,7 @@
                 Paso: <span id="wild-count">0</span> | <span id="trainer-count">Inicio</span>
             </div>
             <div class="money-display">💰 <span id="money-display">$3000</span></div>
+            <div id="badges-display" class="badges-display"></div>
         </div>
 
         <div class="game-content">
@@ -207,6 +225,8 @@
             <!-- Panel de acciones -->
             <div class="action-panel">
                 <button id="advance-btn" class="action-button main-advance-btn">➡️ AVANZAR</button>
+                <button id="super-advance-btn" class="action-button secret-mode-btn" style="display:none;">⚡ SUPER AVANZAR</button>
+                <button id="disable-secret-mode-btn" class="action-button secret-mode-btn" style="display:none;">🛑 DESACTIVAR MODO</button>
             </div>
 
             <!-- Caja de mensajes -->
@@ -331,6 +351,7 @@
                 <button id="items-btn" class="battle-button">🎒 OBJETOS</button>
                 <button id="pokemon-btn" class="battle-button">🐾 POKEMONES</button>
                 <button id="run-btn" class="battle-button">🏃 HUIR</button>
+                <button id="exterminate-btn" class="battle-button" style="display: none;">💀 EXTERMINAR</button>
             </div>
             
             <!-- Menú de selección de ataques -->
@@ -378,15 +399,27 @@
     <!-- Modal de Evolución -->
     <div id="evolution-modal" class="modal">
         <div class="modal-content evolution-animation">
+            <div class="evolution-flash" aria-hidden="true"></div>
             <h2>¡¿Qué?!</h2>
-            <p><span id="evolving-pokemon-name">-</span> está evolucionando!</p>
+            <p id="evolution-status"><span id="evolving-pokemon-name">-</span> está evolucionando!</p>
             <div class="evolution-sprites">
-                <img id="before-evolution" src="" alt="Antes">
-                <span class="evolution-arrow">→</span>
-                <img id="after-evolution" src="" alt="Después">
+                <img id="before-evolution" class="evolution-sprite evolution-sprite-before" src="" alt="Antes">
+                <img id="after-evolution" class="evolution-sprite evolution-sprite-after" src="" alt="Después">
             </div>
             <p class="evolution-text">¡<span id="old-pokemon-name">-</span> evolucionó a <span id="new-pokemon-name">-</span>!</p>
             <button id="evolution-continue" class="main-button">Continuar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Medalla Obtenida -->
+    <div id="badge-reward-modal" class="modal">
+        <div class="modal-content badge-reward-content">
+            <h2>🏅 HAS OBTENIDO LA MEDALLA</h2>
+            <div class="badge-reward-sprite-wrap">
+                <img id="badge-reward-sprite" src="" alt="Medalla obtenida">
+            </div>
+            <p class="badge-reward-text" id="badge-reward-text">Medalla</p>
+            <button id="badge-reward-continue" class="main-button">Continuar</button>
         </div>
     </div>
 

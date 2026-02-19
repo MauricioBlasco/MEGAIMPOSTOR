@@ -1,5 +1,11 @@
 // Estado del juego
 let currentSaveSlot = null; // Slot de partida actual (1, 2 o 3)
+const SECRET_CODE_VALUE = 'MEW67';
+const SECRET_UNLOCK_STORAGE_KEY = 'megapokemon_secret_unlocked';
+
+function isSecretUnlockedGlobally() {
+    return localStorage.getItem(SECRET_UNLOCK_STORAGE_KEY) === 'true';
+}
 
 const gameState = {
     currentZone: 'pallet-town',
@@ -27,9 +33,14 @@ const gameState = {
         fossils: []
     },
     inBattle: false,
+    battleEnding: false,
     currentEnemy: null,
     currentTrainerBattle: null,
     bagContext: 'field',
+    secrets: {
+        exterminarEnabled: isSecretUnlockedGlobally(),
+        starterLevel67: isSecretUnlockedGlobally()
+    },
     audio: {
         music: null,
         soundEnabled: true,
@@ -40,100 +51,298 @@ const gameState = {
 
 // Sistema de Audio
 const AudioSystem = {
-    // Música de fondo
-    backgroundMusic: null,
-    battleMusic: null,
-    trainerBattleMusic: null,
-    gymBattleMusic: null,
+    tracks: {},
+    currentMusicKey: null,
+    healBlockingOverworld: false,
+    evolutionSequenceTimeoutId: null,
+    interruptedMusicState: null,
+    shortTrackTimeoutId: null,
+    shortTrackMetadataHandler: null,
+
+    createTrack(fileName, { loop = false } = {}) {
+        const src = encodeURI(`MUSICA/${fileName}`);
+        const audio = new Audio(src);
+        audio.loop = loop;
+        audio.preload = 'auto';
+        audio.volume = gameState.audio.musicVolume;
+        return audio;
+    },
+
+    isShortTrackKey(key) {
+        return key === 'healing' || key === 'evolution' || key === 'evolved';
+    },
+
+    clearShortTrackTimers() {
+        if (this.shortTrackTimeoutId !== null) {
+            clearTimeout(this.shortTrackTimeoutId);
+            this.shortTrackTimeoutId = null;
+        }
+
+        if (this.shortTrackMetadataHandler && this.currentMusicKey && this.tracks[this.currentMusicKey]) {
+            this.tracks[this.currentMusicKey].removeEventListener('loadedmetadata', this.shortTrackMetadataHandler);
+            this.shortTrackMetadataHandler = null;
+        }
+    },
+
+    isTownZone() {
+        const zone = ZONES_DATA[gameState.currentZone];
+        if (!zone) return false;
+
+        const key = String(gameState.currentZone || '').toLowerCase();
+        const name = String(zone.name || '').toLowerCase();
+
+        return key.includes('town') || key.includes('city') || name.includes('pueblo') || name.includes('ciudad');
+    },
+
+    determineOverworldTrackKey() {
+        const zoneKey = String(gameState.currentZone || '').toLowerCase();
+        return OVERWORLD_MUSIC_BY_ZONE[zoneKey] || 'main-theme';
+    },
+
+    stopTrack(key) {
+        const track = this.tracks[key];
+        if (!track) return;
+        track.pause();
+        track.currentTime = 0;
+    },
+
+    stopAllMusic() {
+        this.clearShortTrackTimers();
+        Object.keys(this.tracks).forEach(key => this.stopTrack(key));
+        this.currentMusicKey = null;
+        this.interruptedMusicState = null;
+    },
+
+    playTrack(key, { restart = true } = {}) {
+        if (!gameState.audio.soundEnabled) return;
+
+        const track = this.tracks[key];
+        if (!track) {
+            console.warn(`Pista no encontrada: ${key}`);
+            return;
+        }
+
+        if (!this.isShortTrackKey(key)) {
+            this.interruptedMusicState = null;
+        }
+
+        if (this.currentMusicKey === key) {
+            if (restart) {
+                track.currentTime = 0;
+            }
+            this.currentMusicKey = key;
+            track.play().catch(() => console.log('Autoplay bloqueado, interactúa para activar música'));
+            return;
+        }
+
+        if (this.currentMusicKey && this.currentMusicKey !== key) {
+            const current = this.tracks[this.currentMusicKey];
+            if (current) current.pause();
+        }
+
+        if (restart) {
+            track.currentTime = 0;
+        }
+
+        this.currentMusicKey = key;
+        track.play().catch(() => console.log('Autoplay bloqueado, interactúa para activar música'));
+    },
+
+    resumeInterruptedLongTrack() {
+        if (!gameState.audio.soundEnabled) return;
+
+        const state = this.interruptedMusicState;
+        this.interruptedMusicState = null;
+
+        const desiredOverworldKey = this.determineOverworldTrackKey();
+        const shouldUseCurrentZoneTrack = !gameState.inBattle && !gameState.battleEnding;
+
+        if (state && this.tracks[state.key]) {
+            if (shouldUseCurrentZoneTrack && state.key !== desiredOverworldKey) {
+                this.playTrack(desiredOverworldKey, { restart: false });
+                return;
+            }
+
+            const track = this.tracks[state.key];
+            if (typeof state.time === 'number' && Number.isFinite(state.time)) {
+                track.currentTime = state.time;
+            }
+            this.currentMusicKey = state.key;
+            track.play().catch(() => console.log('Autoplay bloqueado, interactúa para activar música'));
+            return;
+        }
+
+        this.playOverworldMusicForCurrentZone();
+    },
+
+    playShortInterrupt(trackKey, { cutBeforeEndMs = 0, onFinish = null } = {}) {
+        if (!gameState.audio.soundEnabled) return;
+
+        const shortTrack = this.tracks[trackKey];
+        if (!shortTrack) return;
+
+        this.clearShortTrackTimers();
+
+        if (this.currentMusicKey && !this.isShortTrackKey(this.currentMusicKey) && this.tracks[this.currentMusicKey]) {
+            this.interruptedMusicState = {
+                key: this.currentMusicKey,
+                time: this.tracks[this.currentMusicKey].currentTime || 0
+            };
+        }
+
+        if (this.currentMusicKey && this.tracks[this.currentMusicKey]) {
+            this.tracks[this.currentMusicKey].pause();
+        }
+
+        const finalize = () => {
+            this.clearShortTrackTimers();
+            shortTrack.onended = null;
+            if (onFinish) {
+                onFinish();
+            } else {
+                this.resumeInterruptedLongTrack();
+            }
+        };
+
+        shortTrack.onended = () => finalize();
+
+        if (cutBeforeEndMs > 0) {
+            const scheduleCut = () => {
+                const durationMs = Math.max(0, (shortTrack.duration || 0) * 1000 - cutBeforeEndMs);
+                this.shortTrackTimeoutId = setTimeout(() => {
+                    shortTrack.pause();
+                    finalize();
+                }, durationMs);
+            };
+
+            if (Number.isFinite(shortTrack.duration) && shortTrack.duration > 0) {
+                scheduleCut();
+            } else {
+                this.shortTrackMetadataHandler = () => {
+                    shortTrack.removeEventListener('loadedmetadata', this.shortTrackMetadataHandler);
+                    this.shortTrackMetadataHandler = null;
+                    scheduleCut();
+                };
+                shortTrack.addEventListener('loadedmetadata', this.shortTrackMetadataHandler);
+            }
+        }
+
+        shortTrack.currentTime = 0;
+        this.currentMusicKey = trackKey;
+        shortTrack.play().catch(() => console.log('Autoplay bloqueado, interactúa para activar música'));
+    },
     
     // Inicializar sistema de audio
     init() {
-        this.backgroundMusic = new Audio('https://vgmsite.com/soundtracks/pokemon-game-boy-pokemon-sound-complete-set/ndwjuydm/1-01%20Opening.mp3');
-        this.backgroundMusic.loop = true;
-        this.backgroundMusic.volume = gameState.audio.musicVolume;
-        
-        // Asegurar que la música de fondo se repita constantemente
-        this.backgroundMusic.addEventListener('ended', () => {
-            if (gameState.audio.soundEnabled && !gameState.inBattle) {
-                this.backgroundMusic.currentTime = 0;
-                this.backgroundMusic.play().catch(e => console.log('Error reiniciando música de fondo'));
-            }
-        });
-        
-        this.battleMusic = new Audio('https://vgmsite.com/soundtracks/pokemon-red-blue-yellow-super-music-collection/nziuzuha/1-25%20Battle%20%28VS%20Wild%20Pokemon%29.mp3');
-        this.battleMusic.loop = true;
-        this.battleMusic.volume = gameState.audio.musicVolume;
+        this.tracks = {
+            opening: this.createTrack('Pokmon Rojo Fuego_Verde Hoja OST - 01 - Opening.mp3', { loop: true }),
+            'main-theme': this.createTrack('Pokmon Rojo Fuego_Verde Hoja OST - 02 - Tema Principal.mp3', { loop: true }),
+            'rival-battle': this.createTrack('Pokmon Rojo Fuego_Verde Hoja OST - 08 - Rival Azul.mp3', { loop: true }),
+            'battle-normal': this.createTrack('Pokmon Rojo Fuego_Verde Hoja OST - 09 - Combate_ Batalla Normal.mp3', { loop: true }),
+            'city-theme': this.createTrack('Pokmon Rojo Fuego_Verde Hoja OST - 13 - Ciudad Verde_Plateada_Azafrn __ Isla Prima_Secunda_Tera.mp3', { loop: true }),
+            healing: this.createTrack('Pokmon Rojo Fuego_Verde Hoja OST - 21 - Curacin de Pokmon.mp3', { loop: false }),
+            'gym-battle': this.createTrack('Pokmon Rojo Fuego_Verde Hoja OST - 25 - Combate_ Vs Lder de Gimnasio_Alto Mando.mp3', { loop: true }),
+            evolution: this.createTrack('Pokmon Rojo Fuego_Verde Hoja OST - 28 - Evolucin Pokmon_Zona Safari.mp3', { loop: true }),
+            evolved: this.createTrack('Pokmon Rojo Fuego_Verde Hoja OST - 29 - Pokmon Evolucionado.mp3', { loop: false })
+        };
 
-        this.trainerBattleMusic = new Audio('https://vgmsite.com/soundtracks/pokemon-red-blue-yellow-super-music-collection/svflhzfshr/1-26%20Battle%20%28VS%20Trainer%29.mp3');
-        this.trainerBattleMusic.loop = true;
-        this.trainerBattleMusic.volume = gameState.audio.musicVolume;
-
-        this.gymBattleMusic = new Audio('https://vgmsite.com/soundtracks/pokemon-red-blue-yellow-super-music-collection/xwcaqocutl/1-30%20Battle%20%28VS%20Gym%20Leader%29.mp3');
-        this.gymBattleMusic.loop = true;
-        this.gymBattleMusic.volume = gameState.audio.musicVolume;
-        
-        // Asegurar que la música de batalla se repita constantemente
-        this.battleMusic.addEventListener('ended', () => {
-            if (gameState.audio.soundEnabled && gameState.inBattle) {
-                this.battleMusic.currentTime = 0;
-                this.battleMusic.play().catch(e => console.log('Error reiniciando música de batalla'));
+        Object.values(this.tracks).forEach(track => {
+            try {
+                track.load();
+            } catch (e) {
+                console.log('No se pudo precargar pista:', e);
             }
         });
     },
-    
-    // Reproducir música de fondo
-    playBackgroundMusic() {
+
+    playOpeningMusic({ restart = true } = {}) {
+        this.playTrack('opening', { restart });
+    },
+
+    playMainThemeMusic({ restart = true } = {}) {
+        this.playTrack('main-theme', { restart });
+    },
+
+    playOverworldMusicForCurrentZone() {
         if (!gameState.audio.soundEnabled) return;
-        
-        try {
-            if (this.battleMusic) this.battleMusic.pause();
-            if (this.backgroundMusic) {
-                this.backgroundMusic.currentTime = 0;
-                this.backgroundMusic.play().catch(e => console.log('Autoplay bloqueado, interactúa para activar música'));
-            }
-        } catch (e) {
-            console.log('Error reproduciendo música:', e);
-        }
+        if (gameState.inBattle || gameState.battleEnding || this.healBlockingOverworld) return;
+
+        this.playTrack(this.determineOverworldTrackKey(), { restart: false });
     },
-    
+
+    playBackgroundMusic() {
+        this.playOverworldMusicForCurrentZone();
+    },
+
     // Reproducir música de batalla
     playBattleMusic() {
-        if (!gameState.audio.soundEnabled) return;
-        
-        try {
-            if (this.backgroundMusic) this.backgroundMusic.pause();
-            if (this.battleMusic) {
-                this.battleMusic.currentTime = 0;
-                this.battleMusic.play().catch(e => console.log('Error reproduciendo música de batalla'));
-            }
-        } catch (e) {
-            console.log('Error reproduciendo música de batalla:', e);
-        }
+        this.playTrack('battle-normal');
     },
 
-    playTrainerBattleMusic(isGym = false) {
+    playTrainerBattleMusic({ isGym = false, isRival = false } = {}) {
+        if (isGym) {
+            this.playTrack('gym-battle');
+            return;
+        }
+
+        if (isRival) {
+            this.playTrack('rival-battle');
+            return;
+        }
+
+        this.playTrack('battle-normal');
+    },
+
+    playHealingMusicThenResume() {
         if (!gameState.audio.soundEnabled) return;
 
-        try {
-            if (this.backgroundMusic) this.backgroundMusic.pause();
-            if (this.battleMusic) this.battleMusic.pause();
-
-            const selected = isGym ? this.gymBattleMusic : this.trainerBattleMusic;
-            if (selected) {
-                selected.currentTime = 0;
-                selected.play().catch(e => console.log('Error reproduciendo música de entrenador'));
+        this.healBlockingOverworld = true;
+        this.playShortInterrupt('healing', {
+            cutBeforeEndMs: 1500,
+            onFinish: () => {
+            this.healBlockingOverworld = false;
+                this.resumeInterruptedLongTrack();
             }
-        } catch (e) {
-            console.log('Error reproduciendo música de entrenador:', e);
-        }
+        });
     },
-    
-    // Detener todas las músicas
-    stopAllMusic() {
-        if (this.backgroundMusic) this.backgroundMusic.pause();
-        if (this.battleMusic) this.battleMusic.pause();
-        if (this.trainerBattleMusic) this.trainerBattleMusic.pause();
-        if (this.gymBattleMusic) this.gymBattleMusic.pause();
+
+    playEvolutionMusic() {
+        if (!gameState.audio.soundEnabled) return;
+        if (this.evolutionSequenceTimeoutId !== null) {
+            clearTimeout(this.evolutionSequenceTimeoutId);
+            this.evolutionSequenceTimeoutId = null;
+        }
+
+        this.playShortInterrupt('evolution', { onFinish: () => {} });
+
+        this.evolutionSequenceTimeoutId = setTimeout(() => {
+            if (this.currentMusicKey === 'evolution' && this.tracks.evolution) {
+                this.tracks.evolution.pause();
+            }
+            this.playShortInterrupt('evolved');
+            this.evolutionSequenceTimeoutId = null;
+        }, EVOLUTION_ANIMATION_DURATION_MS);
+    },
+
+    playEvolvedMusic() {
+        if (!gameState.audio.soundEnabled) return;
+        if (this.evolutionSequenceTimeoutId !== null) {
+            clearTimeout(this.evolutionSequenceTimeoutId);
+            this.evolutionSequenceTimeoutId = null;
+        }
+        this.playShortInterrupt('evolved');
+    },
+
+    stopEvolutionSequenceAndResume() {
+        if (this.evolutionSequenceTimeoutId !== null) {
+            clearTimeout(this.evolutionSequenceTimeoutId);
+            this.evolutionSequenceTimeoutId = null;
+        }
+        this.clearShortTrackTimers();
+        if (this.currentMusicKey && this.tracks[this.currentMusicKey] && this.isShortTrackKey(this.currentMusicKey)) {
+            this.tracks[this.currentMusicKey].pause();
+        }
+        this.resumeInterruptedLongTrack();
     },
     
     // Reproducir sonido de Pokémon
@@ -175,17 +384,23 @@ const AudioSystem = {
     // Alternar sonido
     toggleSound() {
         gameState.audio.soundEnabled = !gameState.audio.soundEnabled;
-        
+
         if (!gameState.audio.soundEnabled) {
             this.stopAllMusic();
         } else {
-            if (gameState.inBattle) {
-                this.playBattleMusic();
+            if (modals.evolution && modals.evolution.classList.contains('active')) {
+                this.playEvolutionMusic();
+            } else if (gameState.inBattle && gameState.currentEnemy) {
+                const isGymBattle = gameState.currentEnemy.battleType === 'gym';
+                const isRivalBattle = isTrainerRivalBattle(gameState.currentEnemy);
+                this.playTrainerBattleMusic({ isGym: isGymBattle, isRival: isRivalBattle });
+            } else if (!currentSaveSlot) {
+                this.playOpeningMusic();
             } else {
-                this.playBackgroundMusic();
+                this.playOverworldMusicForCurrentZone();
             }
         }
-        
+
         return gameState.audio.soundEnabled;
     }
 };
@@ -196,16 +411,168 @@ let modals = {};
 let currentInputResolver = null;
 let currentChoiceResolver = null;
 let introStep = 0;
+let evolutionAnimationTimeoutId = null;
+const EVOLUTION_ANIMATION_DURATION_MS = 13000;
+let pendingEvolution = null;
+let pendingBadgeReward = null;
+
+const battleTurnState = {
+    actionLocked: false,
+    pendingEnemyTurnTimeoutId: null,
+    forcedSwitch: false
+};
+
+const pokedexDescriptionCache = new Map();
 
 const NICKNAME_REGEX = /^[\p{L}\p{N}]{1,10}$/u;
+
+const BADGE_DEFINITIONS = [
+    { key: 'Boulder', name: 'Roca', sprite: 'assets/badges/boulder.svg' },
+    { key: 'Cascade', name: 'Cascada', sprite: 'assets/badges/cascade.svg' },
+    { key: 'Thunder', name: 'Trueno', sprite: 'assets/badges/thunder.svg' },
+    { key: 'Rainbow', name: 'Arcoíris', sprite: 'assets/badges/rainbow.svg' },
+    { key: 'Soul', name: 'Alma', sprite: 'assets/badges/soul.svg' },
+    { key: 'Marsh', name: 'Pantano', sprite: 'assets/badges/marsh.svg' },
+    { key: 'Volcano', name: 'Volcán', sprite: 'assets/badges/volcano.svg' },
+    { key: 'Earth', name: 'Tierra', sprite: 'assets/badges/earth.svg' }
+];
+
+const TRAINER_BADGE_REWARDS = {
+    'brock-gym': 'Boulder',
+    'misty-gym': 'Cascade'
+};
+
+const OVERWORLD_MUSIC_BY_ZONE = {
+    'pallet-town': 'city-theme',
+    'viridian-city': 'city-theme',
+    'pewter-city': 'city-theme',
+    'cerulean-city': 'city-theme',
+
+    'route-1': 'main-theme',
+    'route-2': 'main-theme',
+    'route-3': 'main-theme',
+    'route-4': 'main-theme',
+    'route-24': 'main-theme',
+    'route-25': 'main-theme',
+    'viridian-forest': 'main-theme',
+    'mt-moon': 'main-theme',
+    'cerulean-gym': 'main-theme'
+};
 
 function isValidNickname(name) {
     return NICKNAME_REGEX.test(name || '');
 }
 
+function resetEvolutionAnimationState() {
+    const evolutionPanel = document.querySelector('#evolution-modal .evolution-animation');
+    if (!evolutionPanel) return;
+
+    if (evolutionAnimationTimeoutId !== null) {
+        clearTimeout(evolutionAnimationTimeoutId);
+        evolutionAnimationTimeoutId = null;
+    }
+
+    evolutionPanel.classList.remove('animating', 'revealed');
+}
+
+function startEvolutionAnimation() {
+    const evolutionPanel = document.querySelector('#evolution-modal .evolution-animation');
+    if (!evolutionPanel) return;
+
+    resetEvolutionAnimationState();
+
+    void evolutionPanel.offsetWidth;
+    evolutionPanel.classList.add('animating');
+
+    evolutionAnimationTimeoutId = setTimeout(() => {
+        evolutionPanel.classList.add('revealed');
+        evolutionAnimationTimeoutId = null;
+    }, EVOLUTION_ANIMATION_DURATION_MS);
+}
+
+function queuePendingEvolution(currentPokemonKey, targetPokemonKey) {
+    pendingEvolution = { currentPokemonKey, targetPokemonKey };
+}
+
+function consumePendingEvolution() {
+    if (!pendingEvolution) return;
+
+    const activePokemon = getActivePokemon();
+    const queuedEvolution = pendingEvolution;
+    pendingEvolution = null;
+
+    if (!activePokemon) return;
+    if (activePokemon.key !== queuedEvolution.currentPokemonKey) return;
+
+    evolvePokemon(queuedEvolution.targetPokemonKey);
+}
+
+function getBadgeDefinition(badgeKey) {
+    return BADGE_DEFINITIONS.find(badge => badge.key === badgeKey) || null;
+}
+
+function queueBadgeReward(badgeKey) {
+    const badge = getBadgeDefinition(badgeKey);
+    if (!badge) return;
+    pendingBadgeReward = badge;
+}
+
+function showBadgeRewardModal(badge) {
+    if (!badge || !modals.badgeReward) return;
+
+    const spriteEl = document.getElementById('badge-reward-sprite');
+    const textEl = document.getElementById('badge-reward-text');
+
+    if (spriteEl) spriteEl.src = badge.sprite;
+    if (textEl) textEl.textContent = `HAS OBTENIDO LA MEDALLA ${badge.name.toUpperCase()}`;
+
+    modals.badgeReward.classList.add('active');
+}
+
+function consumePendingBadgeReward() {
+    if (!pendingBadgeReward) return;
+    const badge = pendingBadgeReward;
+    pendingBadgeReward = null;
+    showBadgeRewardModal(badge);
+}
+
 function getPokemonDisplayName(pokemon) {
     if (!pokemon) return 'Pokémon';
     return pokemon.nickname || (pokemon.data ? pokemon.data.name : 'Pokémon');
+}
+
+function isTrainerRivalBattle(enemy = null) {
+    if (!enemy || enemy.isWild) return false;
+
+    const trainerId = String(enemy.trainerId || '').toLowerCase();
+    const trainerName = String(enemy.trainerName || '').toLowerCase();
+    const rivalName = String(gameState.rivalName || '').toLowerCase();
+
+    return trainerId.includes('rival') || trainerName.includes('rival') || (rivalName && trainerName === rivalName);
+}
+
+function updateBadgesDisplay() {
+    const badgesEl = document.getElementById('badges-display');
+    if (!badgesEl) return;
+
+    const ownedBadges = new Set(gameState.progress.badges || []);
+    const totalBadges = BADGE_DEFINITIONS.length;
+
+    const slotsHtml = BADGE_DEFINITIONS.map(badge => {
+        const unlocked = ownedBadges.has(badge.key);
+        return `
+            <div class="badge-slot ${unlocked ? 'unlocked' : 'locked'}" title="${badge.name}">
+                ${unlocked
+                    ? `<img src="${badge.sprite}" alt="Insignia ${badge.name}">`
+                    : '<span class="badge-lock">•</span>'}
+            </div>
+        `;
+    }).join('');
+
+    badgesEl.innerHTML = `
+        <div class="badges-count">🏅 ${ownedBadges.size}/${totalBadges}</div>
+        <div class="badges-grid">${slotsHtml}</div>
+    `;
 }
 
 function openChoiceDialog({ title, message, confirmText = 'Aceptar', cancelText = 'Cancelar' }) {
@@ -417,6 +784,17 @@ function init() {
     
     // Inicializar sistema de audio
     AudioSystem.init();
+    AudioSystem.playOpeningMusic();
+
+    const unlockAudioOnce = () => {
+        if (!gameState.audio.soundEnabled) return;
+        if (!currentSaveSlot) {
+            AudioSystem.playOpeningMusic({ restart: false });
+        } else {
+            AudioSystem.playOverworldMusicForCurrentZone();
+        }
+    };
+    document.addEventListener('pointerdown', unlockAudioOnce, { once: true });
     
     // Cargar información de partidas guardadas
     loadSaveSlots();
@@ -425,6 +803,7 @@ function init() {
     screens = {
         saveSelect: document.getElementById('save-select-screen'),
         start: document.getElementById('start-screen'),
+        secret: document.getElementById('secret-screen'),
         intro: document.getElementById('intro-screen'),
         selection: document.getElementById('selection-screen'),
         game: document.getElementById('game-screen')
@@ -432,6 +811,7 @@ function init() {
     
     modals = {
         evolution: document.getElementById('evolution-modal'),
+        badgeReward: document.getElementById('badge-reward-modal'),
         capture: document.getElementById('capture-modal'),
         bag: document.getElementById('bag-modal'),
         map: document.getElementById('map-modal'),
@@ -444,7 +824,7 @@ function init() {
     };
     
     // Verificar que los elementos existen
-    if (!screens.start || !screens.saveSelect || !screens.intro || !screens.selection || !screens.game) {
+    if (!screens.start || !screens.secret || !screens.saveSelect || !screens.intro || !screens.selection || !screens.game) {
         console.error('Error: No se encontraron las pantallas principales');
         return;
     }
@@ -454,9 +834,32 @@ function init() {
         startButton.addEventListener('click', () => {
             console.log('Start button clicked');
             switchScreen(screens.start, screens.saveSelect);
+            AudioSystem.playOpeningMusic({ restart: false });
         });
     } else {
         console.error('Start button not found');
+    }
+
+    const startPokeballButton = document.getElementById('start-pokeball-button');
+    const secretSubmitBtn = document.getElementById('secret-submit-btn');
+    const secretBackBtn = document.getElementById('secret-back-btn');
+    const secretCodeInput = document.getElementById('secret-code-input');
+
+    if (startPokeballButton) {
+        startPokeballButton.addEventListener('click', openSecretScreen);
+    }
+    if (secretSubmitBtn) {
+        secretSubmitBtn.addEventListener('click', handleSecretCodeSubmit);
+    }
+    if (secretBackBtn) {
+        secretBackBtn.addEventListener('click', () => switchScreen(screens.secret, screens.start));
+    }
+    if (secretCodeInput) {
+        secretCodeInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                handleSecretCodeSubmit();
+            }
+        });
     }
 
     // Tarjetas de pokémon
@@ -485,6 +888,12 @@ function init() {
         AudioSystem.playSFX('select');
         advanceSequence();
     });
+
+    const superAdvanceBtn = document.getElementById('super-advance-btn');
+    const disableSecretModeBtn = document.getElementById('disable-secret-mode-btn');
+    if (superAdvanceBtn) superAdvanceBtn.addEventListener('click', superAdvanceZone);
+    if (disableSecretModeBtn) disableSecretModeBtn.addEventListener('click', disableSecretFeatures);
+    updateSecretModeButtons();
     
     // Botones superiores
     const mapBtn = document.getElementById('map-btn');
@@ -514,6 +923,7 @@ function init() {
     const closePC = document.getElementById('close-pc');
     const closePokedex = document.getElementById('close-pokedex');
     const evolutionContinue = document.getElementById('evolution-continue');
+    const badgeRewardContinue = document.getElementById('badge-reward-continue');
     const choiceConfirm = document.getElementById('choice-confirm');
     const choiceCancel = document.getElementById('choice-cancel');
     
@@ -526,8 +936,15 @@ function init() {
     if (choiceCancel) choiceCancel.addEventListener('click', () => closeChoiceDialog(false));
     if (evolutionContinue) {
         evolutionContinue.addEventListener('click', () => {
+            resetEvolutionAnimationState();
             modals.evolution.classList.remove('active');
+            AudioSystem.stopEvolutionSequenceAndResume();
             updatePokemonDisplay();
+        });
+    }
+    if (badgeRewardContinue) {
+        badgeRewardContinue.addEventListener('click', () => {
+            modals.badgeReward.classList.remove('active');
         });
     }
     
@@ -545,11 +962,13 @@ function init() {
     const itemsBtn = document.getElementById('items-btn');
     const pokemonBtn = document.getElementById('pokemon-btn');
     const runBtn = document.getElementById('run-btn');
+    const exterminateBtn = document.getElementById('exterminate-btn');
     
     if (fightBtn) fightBtn.addEventListener('click', showMovesMenu);
     if (itemsBtn) itemsBtn.addEventListener('click', showItemsMenu);
     if (pokemonBtn) pokemonBtn.addEventListener('click', showPokemonMenu);
     if (runBtn) runBtn.addEventListener('click', runFromBattle);
+    if (exterminateBtn) exterminateBtn.addEventListener('click', useExterminate);
     
     // Botones de movimientos
     for (let i = 1; i <= 4; i++) {
@@ -585,6 +1004,96 @@ function init() {
 function switchScreen(fromScreen, toScreen) {
     fromScreen.classList.remove('active');
     toScreen.classList.add('active');
+}
+
+function openSecretScreen() {
+    const input = document.getElementById('secret-code-input');
+    if (input) {
+        input.value = '';
+    }
+    updateSecretCodeMessage(gameState.secrets.exterminarEnabled
+        ? 'Código activo. EXTERMINAR, SUPER AVANZAR y nivel inicial 67 habilitados.'
+        : 'Ingresa el código secreto.');
+    switchScreen(screens.start, screens.secret);
+    setTimeout(() => {
+        if (input) input.focus();
+    }, 20);
+}
+
+function updateSecretCodeMessage(message, isError = false) {
+    const messageEl = document.getElementById('secret-code-message');
+    if (!messageEl) return;
+    messageEl.textContent = message;
+    messageEl.style.color = isError ? '#c1121f' : '#3B4CCA';
+}
+
+function enableSecretFeatures() {
+    gameState.secrets.exterminarEnabled = true;
+    gameState.secrets.starterLevel67 = true;
+    localStorage.setItem(SECRET_UNLOCK_STORAGE_KEY, 'true');
+    updateSecretModeButtons();
+}
+
+function disableSecretFeatures() {
+    gameState.secrets.exterminarEnabled = false;
+    gameState.secrets.starterLevel67 = false;
+    localStorage.removeItem(SECRET_UNLOCK_STORAGE_KEY);
+    updateSecretModeButtons();
+    autoSave();
+    showMessage('Modo secreto desactivado.');
+}
+
+function updateSecretModeButtons() {
+    const superAdvanceBtn = document.getElementById('super-advance-btn');
+    const disableSecretModeBtn = document.getElementById('disable-secret-mode-btn');
+    const exterminateBtn = document.getElementById('exterminate-btn');
+    const visible = gameState.secrets.exterminarEnabled;
+
+    if (superAdvanceBtn) {
+        superAdvanceBtn.style.display = visible ? 'inline-block' : 'none';
+    }
+    if (disableSecretModeBtn) {
+        disableSecretModeBtn.style.display = visible ? 'inline-block' : 'none';
+    }
+    if (exterminateBtn) {
+        exterminateBtn.style.display = visible ? 'block' : 'none';
+    }
+}
+
+function superAdvanceZone() {
+    if (!gameState.secrets.exterminarEnabled) {
+        showMessage('Activa el código secreto para usar SUPER AVANZAR.');
+        return;
+    }
+
+    if (gameState.inBattle || gameState.battleEnding) {
+        showMessage('No puedes usar SUPER AVANZAR durante una batalla.');
+        return;
+    }
+
+    const currentZone = ZONES_DATA[gameState.currentZone];
+    if (!currentZone || !currentZone.nextZone) {
+        showMessage('No hay más zonas para avanzar.');
+        return;
+    }
+
+    moveToNextZone();
+    autoSave();
+}
+
+function handleSecretCodeSubmit() {
+    const input = document.getElementById('secret-code-input');
+    if (!input) return;
+
+    const code = input.value.trim().toUpperCase();
+    if (code === SECRET_CODE_VALUE) {
+        enableSecretFeatures();
+        updateSecretCodeMessage('Código correcto. ¡Se desbloqueó EXTERMINAR, SUPER AVANZAR y nivel inicial 67!');
+        autoSave();
+        return;
+    }
+
+    updateSecretCodeMessage('Código incorrecto.', true);
 }
 
 function startIntroSequence() {
@@ -658,7 +1167,7 @@ function handleIntroNext() {
     gameState.rivalName = rivalName;
     updateSelectionWelcome();
     switchScreen(screens.intro, screens.selection);
-    AudioSystem.playBackgroundMusic();
+    AudioSystem.playMainThemeMusic({ restart: false });
 }
 
 function skipIntroToNames() {
@@ -700,7 +1209,8 @@ async function selectStarterPokemon(pokemonKey) {
     console.log('Pokemon data found:', pokemonData);
 
     // Crear el Pokémon inicial y añadirlo al equipo
-    const starterPokemon = createPokemon(pokemonKey, 5);
+    const starterLevel = gameState.secrets.starterLevel67 ? 67 : 5;
+    const starterPokemon = createPokemon(pokemonKey, starterLevel);
     const nickname = await requestPokemonNickname(pokemonData.name);
     starterPokemon.nickname = nickname;
     registerPokemonCaught(starterPokemon.key);
@@ -709,7 +1219,7 @@ async function selectStarterPokemon(pokemonKey) {
 
     // Reproducir grito del Pokémon y música de fondo
     AudioSystem.playPokemonCry(pokemonData.id);
-    setTimeout(() => AudioSystem.playBackgroundMusic(), 1000);
+    setTimeout(() => AudioSystem.playOverworldMusicForCurrentZone(), 1000);
 
     switchScreen(screens.selection, screens.game);
     updatePokemonDisplay();
@@ -901,6 +1411,84 @@ function hidePokedexPopup() {
     popupEl.style.display = 'none';
 }
 
+function cleanPokedexFlavorText(text) {
+    return (text || '')
+        .replace(/\n|\f|\r/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function pickLocalizedDescriptionFromSpecies(speciesData) {
+    const entries = speciesData && Array.isArray(speciesData.flavor_text_entries)
+        ? speciesData.flavor_text_entries
+        : [];
+
+    const preferredVersions = ['scarlet', 'violet', 'x', 'y', 'omega-ruby', 'alpha-sapphire', 'sun', 'moon'];
+
+    for (const version of preferredVersions) {
+        const esEntry = entries.find(entry => (
+            entry &&
+            entry.language &&
+            entry.language.name === 'es' &&
+            entry.version &&
+            entry.version.name === version &&
+            entry.flavor_text
+        ));
+        if (esEntry) {
+            return cleanPokedexFlavorText(esEntry.flavor_text);
+        }
+    }
+
+    const anySpanish = entries.find(entry => (
+        entry &&
+        entry.language &&
+        entry.language.name === 'es' &&
+        entry.flavor_text
+    ));
+    if (anySpanish) {
+        return cleanPokedexFlavorText(anySpanish.flavor_text);
+    }
+
+    const anyEnglish = entries.find(entry => (
+        entry &&
+        entry.language &&
+        entry.language.name === 'en' &&
+        entry.flavor_text
+    ));
+    if (anyEnglish) {
+        return cleanPokedexFlavorText(anyEnglish.flavor_text);
+    }
+
+    return '';
+}
+
+async function getPokedexDescriptionText(pokemonKey, pokemonData) {
+    const cacheKey = normalizePokemonKey(pokemonKey);
+    if (pokedexDescriptionCache.has(cacheKey)) {
+        return pokedexDescriptionCache.get(cacheKey);
+    }
+
+    let description = cleanPokedexFlavorText(pokemonData.pokedexDescription || '');
+
+    if (pokemonData && pokemonData.id) {
+        try {
+            const response = await fetch(`api-data-master/data/api/v2/pokemon-species/${pokemonData.id}/index.json`);
+            if (response.ok) {
+                const speciesData = await response.json();
+                const localized = pickLocalizedDescriptionFromSpecies(speciesData);
+                if (localized) {
+                    description = localized;
+                }
+            }
+        } catch (error) {
+            // Fallback silencioso a la descripción disponible en caché local
+        }
+    }
+
+    pokedexDescriptionCache.set(cacheKey, description);
+    return description;
+}
+
 function showPokedexPopup(pokemonKey) {
     const popupEl = document.getElementById('pokedex-popup');
     const contentEl = document.getElementById('pokedex-popup-content');
@@ -1023,10 +1611,12 @@ function getEvolutionLines(pokemonKey) {
     return lines;
 }
 
-function renderPokedexDetail(pokemonKey) {
+async function renderPokedexDetail(pokemonKey) {
     const detailEl = document.getElementById('pokedex-popup-content');
     const pokemonData = POKEMON_DATABASE[pokemonKey];
     if (!detailEl || !pokemonData) return;
+
+    detailEl.innerHTML = '<div class="pokedex-popup-content"><p>Cargando descripción...</p></div>';
 
     const evolutionLines = getEvolutionLines(pokemonKey);
     const hasEvolutionInfo = evolutionLines.length > 0;
@@ -1034,8 +1624,9 @@ function renderPokedexDetail(pokemonKey) {
         ? evolutionLines.map(line => `<div class="pokedex-evo-line">${line}</div>`).join('')
         : '<div class="pokedex-evo-line">No evoluciona.</div>';
 
-    const description = pokemonData.pokedexDescription
-        ? `<p>${pokemonData.pokedexDescription}</p>`
+    const descriptionText = await getPokedexDescriptionText(pokemonKey, pokemonData);
+    const description = descriptionText
+        ? `<p>${descriptionText}</p>`
         : '';
 
     const pokemonTypes = (Array.isArray(pokemonData.types) && pokemonData.types.length > 0)
@@ -1237,6 +1828,7 @@ function updateZoneDisplay() {
     const zone = ZONES_DATA[gameState.currentZone];
     document.getElementById('zone-name').textContent = zone.name;
     document.getElementById('money-display').textContent = `$${gameState.money}`;
+    updateBadgesDisplay();
 }
 
 // Actualizar progreso
@@ -1376,6 +1968,7 @@ function moveToNextZone() {
     updateProgress();
     updatePokemonDisplay();
     showMessage(`¡Has llegado a ${newZone.name}! Tu equipo ha sido curado.`);
+    AudioSystem.playHealingMusicThenResume();
     
     // Guardar progreso
     autoSave();
@@ -1389,6 +1982,59 @@ function moveToNextZone() {
 }
 
 // ===== SISTEMA DE BATALLA =====
+
+function cancelPendingEnemyTurn() {
+    if (battleTurnState.pendingEnemyTurnTimeoutId !== null) {
+        clearTimeout(battleTurnState.pendingEnemyTurnTimeoutId);
+        battleTurnState.pendingEnemyTurnTimeoutId = null;
+    }
+}
+
+function lockBattleActions() {
+    battleTurnState.actionLocked = true;
+    disableBattleButtons();
+}
+
+function unlockBattleActions() {
+    const enemyDefeated = !gameState.currentEnemy || (gameState.currentEnemy.currentHP || 0) <= 0;
+    if (gameState.battleEnding || enemyDefeated || !gameState.inBattle) {
+        battleTurnState.actionLocked = true;
+        disableBattleButtons();
+        return;
+    }
+
+    battleTurnState.actionLocked = false;
+    enableBattleButtons();
+}
+
+function resetBattleTurnState() {
+    cancelPendingEnemyTurn();
+    battleTurnState.actionLocked = false;
+    battleTurnState.forcedSwitch = false;
+}
+
+function canPlayerBattleAct(options = {}) {
+    const { allowForcedSwitch = false } = options;
+
+    if (!gameState.inBattle || !gameState.currentEnemy) return false;
+    if (gameState.battleEnding) return false;
+    if ((gameState.currentEnemy.currentHP || 0) <= 0) return false;
+    if (battleTurnState.pendingEnemyTurnTimeoutId !== null) return false;
+
+    if (battleTurnState.actionLocked && !(allowForcedSwitch && battleTurnState.forcedSwitch)) {
+        return false;
+    }
+
+    return true;
+}
+
+function queueEnemyTurn(delay = 1200) {
+    cancelPendingEnemyTurn();
+    battleTurnState.pendingEnemyTurnTimeoutId = setTimeout(() => {
+        battleTurnState.pendingEnemyTurnTimeoutId = null;
+        executeEnemyTurn();
+    }, delay);
+}
 
 function startWildBattle(eventData = null) {
     const zone = ZONES_DATA[gameState.currentZone];
@@ -1433,6 +2079,8 @@ function startWildBattle(eventData = null) {
     };
     
     gameState.inBattle = true;
+    gameState.battleEnding = false;
+    resetBattleTurnState();
     showMessage(`¡Un ${enemyPokemon.data.name} salvaje apareció!`);
     showBattle();
 }
@@ -1525,6 +2173,8 @@ function startTrainerBattle(trainerId = null) {
     }
     
     gameState.inBattle = true;
+    gameState.battleEnding = false;
+    resetBattleTurnState();
     
     // Mostrar diálogo del entrenador si existe
     const trainerForDialogue = (zone.trainers || []).find(t => t.id === (gameState.currentEnemy ? gameState.currentEnemy.trainerId : null));
@@ -1538,11 +2188,13 @@ function startTrainerBattle(trainerId = null) {
 
 function showBattle() {
     modals.battle.classList.add('active');
+    resetBattleTurnState();
     
     // Reproducir música de batalla y gritos de Pokémon
     if (gameState.currentEnemy && !gameState.currentEnemy.isWild) {
         const isGymBattle = gameState.currentEnemy.battleType === 'gym';
-        AudioSystem.playTrainerBattleMusic(isGymBattle);
+        const isRivalBattle = isTrainerRivalBattle(gameState.currentEnemy);
+        AudioSystem.playTrainerBattleMusic({ isGym: isGymBattle, isRival: isRivalBattle });
     } else {
         AudioSystem.playBattleMusic();
     }
@@ -1556,7 +2208,7 @@ function showBattle() {
     
     updateBattleDisplay();
     showBattleMainMenu();
-    enableBattleButtons();
+    unlockBattleActions();
 }
 
 function updateBattleDisplay() {
@@ -1588,12 +2240,24 @@ function showBattleMainMenu() {
     document.getElementById('battle-moves-menu').style.display = 'none';
     document.getElementById('battle-items-menu').style.display = 'none';
     document.getElementById('battle-pokemon-menu').style.display = 'none';
+
+    const exterminateBtn = document.getElementById('exterminate-btn');
+    if (exterminateBtn) {
+        exterminateBtn.style.display = gameState.secrets.exterminarEnabled ? 'block' : 'none';
+    }
+
+    const enemyDefeated = !gameState.currentEnemy || gameState.currentEnemy.currentHP <= 0 || gameState.battleEnding;
+    document.getElementById('fight-btn').disabled = enemyDefeated;
+    document.getElementById('items-btn').disabled = enemyDefeated;
+    document.getElementById('pokemon-btn').disabled = enemyDefeated;
     
     // Deshabilitar huir si es batalla de entrenador
-    document.getElementById('run-btn').disabled = !gameState.currentEnemy.isWild;
+    document.getElementById('run-btn').disabled = enemyDefeated || !gameState.currentEnemy.isWild;
 }
 
 function showMovesMenu() {
+    if (!canPlayerBattleAct()) return;
+
     const player = getActivePokemon();
     if (!player || !player.moves) {
         console.error('No hay Pokémon activo o no tiene movimientos');
@@ -1624,10 +2288,13 @@ function showMovesMenu() {
 }
 
 function showItemsMenu() {
+    if (!canPlayerBattleAct()) return;
     openBag('battle');
 }
 
 function showPokemonMenu() {
+    if (!canPlayerBattleAct({ allowForcedSwitch: true })) return;
+
     document.getElementById('battle-main-menu').style.display = 'none';
     document.getElementById('battle-pokemon-menu').style.display = 'flex';
     
@@ -1663,6 +2330,14 @@ function showPokemonMenu() {
 }
 
 function switchPokemon(newIndex) {
+    if (!canPlayerBattleAct({ allowForcedSwitch: true })) return;
+
+    const consumeTurn = !battleTurnState.forcedSwitch;
+    battleTurnState.forcedSwitch = false;
+
+    lockBattleActions();
+    cancelPendingEnemyTurn();
+
     const oldPokemon = getActivePokemon();
     clearPokemonBattleEffects(oldPokemon);
     clearPokemonBattleEffects(gameState.currentEnemy);
@@ -1676,11 +2351,17 @@ function switchPokemon(newIndex) {
     showMessage(`¡Adelante, ${getPokemonDisplayName(newPokemon)}!`);
     updateBattleDisplay();
     showBattleMainMenu();
-    // El enemigo ataca después de cambiar
-    setTimeout(() => executeEnemyTurn(), 1500);
+
+    if (consumeTurn) {
+        queueEnemyTurn(1500);
+    } else {
+        unlockBattleActions();
+    }
 }
 
 function useMove(moveIndex) {
+    if (!canPlayerBattleAct()) return;
+
     const player = getActivePokemon();
     if (!player || !player.moves || moveIndex >= player.moves.length) return;
     
@@ -1696,6 +2377,28 @@ function useMove(moveIndex) {
     
     // Ejecutar turno de batalla con el movimiento elegido
     executeBattleTurn(move);
+}
+
+function useExterminate() {
+    if (!gameState.secrets.exterminarEnabled) return;
+    if (!canPlayerBattleAct()) return;
+
+    const enemy = gameState.currentEnemy;
+    if (!enemy) return;
+
+    lockBattleActions();
+    cancelPendingEnemyTurn();
+
+    enemy.currentHP = 0;
+    showMessage(`💀 ¡${getPokemonDisplayName(enemy)} fue exterminado al instante!`);
+    updateBattleDisplay();
+
+    setTimeout(() => {
+        checkBattleEnd();
+        if (!battleTurnState.forcedSwitch) {
+            unlockBattleActions();
+        }
+    }, 350);
 }
 
 function playerAttack() {
@@ -1720,14 +2423,20 @@ function playerAttack() {
 
 // Ejecutar turno del enemigo (cuando el jugador usa item o cambia Pokémon)
 function executeEnemyTurn() {
+    lockBattleActions();
+
     const enemy = gameState.currentEnemy;
     const player = getActivePokemon();
     
-    if (!enemy || !player || player.currentHP === 0) return;
+    if (!enemy || !player || player.currentHP === 0) {
+        unlockBattleActions();
+        return;
+    }
     
     const enemyMoves = enemy.moves.filter(m => m.currentPP > 0);
     if (enemyMoves.length === 0) {
         showMessage(`¡${enemy.data.name} no tiene movimientos!`);
+        unlockBattleActions();
         return;
     }
     
@@ -1750,6 +2459,9 @@ function executeEnemyTurn() {
     applyLeechSeedEndTurnEffects();
 
     if (checkBattleEnd()) {
+        if (!battleTurnState.forcedSwitch) {
+            unlockBattleActions();
+        }
         return;
     }
     
@@ -1757,12 +2469,16 @@ function executeEnemyTurn() {
         const availablePokemon = gameState.team.findIndex((p, i) => i !== gameState.activePokemonIndex && p.currentHP > 0);
         
         if (availablePokemon !== -1) {
+            battleTurnState.forcedSwitch = true;
             showMessage(`¡${getPokemonDisplayName(player)} se debilitó! ¡Elige otro Pokémon!`);
             setTimeout(() => showPokemonMenu(), 1500);
         } else {
             setTimeout(battleLost, 1000);
         }
+        return;
     }
+
+    unlockBattleActions();
 }
 
 // Sistema de turnos basado en velocidad
@@ -1777,19 +2493,21 @@ function enableBattleButtons() {
 }
 
 function executeBattleTurn(playerMove) {
+    if (!canPlayerBattleAct()) return;
+
     const player = getActivePokemon();
     const enemy = gameState.currentEnemy;
     
     if (!player || !enemy) return;
     
-    // Deshabilitar todos los botones durante el turno
-    disableBattleButtons();
+    lockBattleActions();
+    cancelPendingEnemyTurn();
     
     // Seleccionar movimiento del enemigo
     const enemyMoves = enemy.moves.filter(m => m.currentPP > 0);
     if (enemyMoves.length === 0) {
         console.error('El enemigo no tiene movimientos disponibles');
-        enableBattleButtons();
+        unlockBattleActions();
         return;
     }
     const enemyMove = enemyMoves[Math.floor(Math.random() * enemyMoves.length)];
@@ -1822,7 +2540,9 @@ function executeBattleTurn(playerMove) {
     setTimeout(() => {
         // Verificar si el combate terminó después del primer ataque
         if (checkBattleEnd()) {
-            enableBattleButtons();
+            if (!battleTurnState.forcedSwitch) {
+                unlockBattleActions();
+            }
             return;
         }
         
@@ -1832,11 +2552,15 @@ function executeBattleTurn(playerMove) {
         setTimeout(() => {
             applyLeechSeedEndTurnEffects();
             if (checkBattleEnd()) {
-                enableBattleButtons();
+                if (!battleTurnState.forcedSwitch) {
+                    unlockBattleActions();
+                }
                 return;
             }
             checkBattleEnd();
-            enableBattleButtons();
+            if (!battleTurnState.forcedSwitch) {
+                unlockBattleActions();
+            }
         }, 1000);
     }, 2000);
 }
@@ -1940,10 +2664,16 @@ function checkBattleEnd() {
                 AudioSystem.playPokemonCry(nextPokemon.data.id);
                 updateBattleDisplay();
             }, 500);
+            battleTurnState.forcedSwitch = false;
+            gameState.battleEnding = false;
             return true;
         }
 
-        setTimeout(() => battleWon(), 1000);
+        if (!gameState.battleEnding) {
+            gameState.battleEnding = true;
+            lockBattleActions();
+            setTimeout(() => battleWon(), 1000);
+        }
         return true;
     }
     
@@ -1951,9 +2681,11 @@ function checkBattleEnd() {
         const availablePokemon = gameState.team.findIndex((p, i) => i !== gameState.activePokemonIndex && p.currentHP > 0);
         
         if (availablePokemon !== -1) {
+            battleTurnState.forcedSwitch = true;
             showMessage(`¡${getPokemonDisplayName(player)} se debilitó! ¡Elige otro Pokémon!`);
             setTimeout(() => showPokemonMenu(), 1500);
         } else {
+            battleTurnState.forcedSwitch = false;
             setTimeout(battleLost, 1000);
         }
         return true;
@@ -1963,6 +2695,8 @@ function checkBattleEnd() {
 }
 
 function battleWon() {
+    resetBattleTurnState();
+
     const expGained = Math.floor(gameState.currentEnemy.data.baseExp * gameState.currentEnemy.level * 1.5);
     
     const player = getActivePokemon();
@@ -1991,11 +2725,12 @@ function battleWon() {
     setTimeout(() => {
         modals.battle.classList.remove('active');
         gameState.inBattle = false;
+        gameState.battleEnding = false;
         gameState.currentEnemy = null;
         gameState.currentTrainerBattle = null;
         
         // Volver a música de fondo
-        AudioSystem.playBackgroundMusic();
+        AudioSystem.playOverworldMusicForCurrentZone();
         
         updateProgress();
         updatePokemonDisplay();
@@ -2003,6 +2738,9 @@ function battleWon() {
         
         // Guardar progreso
         autoSave();
+
+        consumePendingEvolution();
+        consumePendingBadgeReward();
         
         // Mensaje según el paso en que quedamos
         const step = gameState.progress.sequenceStep;
@@ -2024,14 +2762,11 @@ function handleTrainerDefeatEvents(trainerId) {
         gameState.progress.badges = [];
     }
 
-    if (trainerId === 'brock-gym' && !gameState.progress.badges.includes('Boulder')) {
-        gameState.progress.badges.push('Boulder');
-        showMessage('¡Recibiste la Insignia Roca!');
-    }
-
-    if (trainerId === 'misty-gym' && !gameState.progress.badges.includes('Cascade')) {
-        gameState.progress.badges.push('Cascade');
-        showMessage('¡Recibiste la Insignia Cascada!');
+    const rewardedBadgeKey = TRAINER_BADGE_REWARDS[trainerId];
+    if (rewardedBadgeKey && !gameState.progress.badges.includes(rewardedBadgeKey)) {
+        gameState.progress.badges.push(rewardedBadgeKey);
+        queueBadgeReward(rewardedBadgeKey);
+        updateBadgesDisplay();
     }
 }
 
@@ -2051,11 +2786,14 @@ async function chooseMtMoonFossil() {
 }
 
 function battleLost() {
+    resetBattleTurnState();
+
     showMessage('¡Tu pokemon ha sido derrotado! Volviendo al centro pokemon...');
     
     setTimeout(() => {
         modals.battle.classList.remove('active');
         gameState.inBattle = false;
+        gameState.battleEnding = false;
         gameState.currentEnemy = null;
         
         // Resetear progreso de la secuencia actual
@@ -2083,11 +2821,14 @@ function battleLost() {
         
         updateProgress();
         updatePokemonDisplay();
+        AudioSystem.playOverworldMusicForCurrentZone();
         showMessage('Todos tus Pokémon han sido curados. ¡Intenta de nuevo desde el inicio de la zona!');
     }, 2000);
 }
 
 function usePotionInBattle() {
+    if (!canPlayerBattleAct()) return;
+
     const player = getActivePokemon();
     if (!player) return;
     
@@ -2096,7 +2837,7 @@ function usePotionInBattle() {
         return;
     }
     
-    disableBattleButtons();
+    lockBattleActions();
     
     // Reproducir sonido de curación
     AudioSystem.playSFX('heal');
@@ -2112,10 +2853,7 @@ function usePotionInBattle() {
     updatePokemonDisplay();
     showBattleMainMenu();
     
-    setTimeout(() => {
-        executeEnemyTurn();
-        enableBattleButtons();
-    }, 1500);
+    queueEnemyTurn(1500);
 }
 
 const CAPTURE_BALL_SPRITES = {
@@ -2234,6 +2972,11 @@ async function playCaptureAnimation(ballType, catchChance) {
 }
 
 async function throwPokeball(ballType = 'pokeball') {
+    if (!canPlayerBattleAct()) {
+        showMessage('Espera a que termine el turno actual.');
+        return;
+    }
+
     if (!gameState.currentEnemy.isWild) {
         showMessage('¡No puedes capturar pokemon de otros entrenadores!');
         return;
@@ -2250,7 +2993,7 @@ async function throwPokeball(ballType = 'pokeball') {
     }
     
     // Deshabilitar botones durante el lanzamiento
-    disableBattleButtons();
+    lockBattleActions();
     
     if (ballType === 'great-ball') {
         gameState.inventory['great-ball']--;
@@ -2292,10 +3035,12 @@ async function throwPokeball(ballType = 'pokeball') {
         setTimeout(() => {
             modals.battle.classList.remove('active');
             gameState.inBattle = false;
+            gameState.battleEnding = false;
             gameState.currentEnemy = null;
+            resetBattleTurnState();
             
             // Volver a música de fondo
-            AudioSystem.playBackgroundMusic();
+            AudioSystem.playOverworldMusicForCurrentZone();
             
             updateProgress();
             updatePokemonDisplay();
@@ -2316,14 +3061,13 @@ async function throwPokeball(ballType = 'pokeball') {
     } else {
         const stageText = captureResult.failStage ? ` en ${captureResult.failStage}` : '';
         showMessage(`${getPokemonDisplayName(gameState.currentEnemy)} se liberó${stageText}!`);
-        setTimeout(() => {
-            executeEnemyTurn();
-            enableBattleButtons();
-        }, 1500);
+        queueEnemyTurn(1500);
     }
 }
 
 function runFromBattle() {
+    if (!canPlayerBattleAct()) return;
+
     if (!gameState.currentEnemy.isWild) {
         showMessage('¡No puedes huir de un entrenador!');
         return;
@@ -2333,7 +3077,10 @@ function runFromBattle() {
     setTimeout(() => {
         modals.battle.classList.remove('active');
         gameState.inBattle = false;
+        gameState.battleEnding = false;
         gameState.currentEnemy = null;
+        resetBattleTurnState();
+        AudioSystem.playOverworldMusicForCurrentZone();
     }, 1000);
 }
 // ===== SISTEMA DE EXPERIENCIA Y EVOLUCIÓN =====
@@ -2412,6 +3159,10 @@ function checkEvolution() {
     }
     
     if (pokemon.level >= evolution.level) {
+        if (gameState.inBattle || gameState.battleEnding || (modals.battle && modals.battle.classList.contains('active'))) {
+            queuePendingEvolution(pokemon.key, evolution.evolvesTo);
+            return;
+        }
         evolvePokemon(evolution.evolvesTo);
     }
 }
@@ -2435,13 +3186,10 @@ function evolvePokemon(newPokemonKey) {
     document.getElementById('new-pokemon-name').textContent = newPokemon.name;
     document.getElementById('before-evolution').src = oldPokemon.sprite;
     document.getElementById('after-evolution').src = newPokemon.sprite;
-    
+    resetEvolutionAnimationState();
     modals.evolution.classList.add('active');
-    
-    // Reproducir grito del nuevo Pokémon
-    setTimeout(() => {
-        AudioSystem.playPokemonCry(newPokemon.id);
-    }, 1000);
+    startEvolutionAnimation();
+    AudioSystem.playEvolutionMusic();
     
     // Actualizar datos del Pokémon
     pokemon.key = newPokemonKey;
@@ -2594,6 +3342,11 @@ function useItemInBattle(itemKey) {
         return;
     }
 
+    if (!canPlayerBattleAct()) {
+        showMessage('Espera a que termine el turno actual.');
+        return;
+    }
+
     if (itemKey === 'pokeball' || itemKey === 'great-ball') {
         if (!gameState.currentEnemy.isWild) {
             showMessage('¡No puedes capturar Pokémon de entrenador!');
@@ -2617,7 +3370,7 @@ function useItemInBattle(itemKey) {
     const player = getActivePokemon();
     if (!player) return;
 
-    disableBattleButtons();
+    lockBattleActions();
 
     if (itemKey === 'potion') {
         gameState.inventory.potion--;
@@ -2633,10 +3386,7 @@ function useItemInBattle(itemKey) {
     updateBattleDisplay();
     updatePokemonDisplay();
 
-    setTimeout(() => {
-        executeEnemyTurn();
-        enableBattleButtons();
-    }, 1200);
+    queueEnemyTurn(1200);
 }
 
 // ===== SISTEMA DE MAPA =====
@@ -2942,13 +3692,13 @@ function selectSaveSlot(slot) {
         // Cargar partida existente
         loadGame(slot);
         switchScreen(screens.saveSelect, screens.game);
-        AudioSystem.playBackgroundMusic();
+        AudioSystem.playOverworldMusicForCurrentZone();
     } else {
         // Nueva partida
         resetGameState();
         switchScreen(screens.saveSelect, screens.intro);
         startIntroSequence();
-        AudioSystem.playBackgroundMusic();
+        AudioSystem.playMainThemeMusic();
     }
 }
 
@@ -2969,7 +3719,8 @@ function saveGame() {
         activePokemonIndex: gameState.activePokemonIndex,
         inventory: gameState.inventory,
         money: gameState.money,
-        progress: gameState.progress
+        progress: gameState.progress,
+        secrets: gameState.secrets
     };
     
     localStorage.setItem(`megapokemon_save_${currentSaveSlot}`, JSON.stringify(saveData));
@@ -2997,12 +3748,19 @@ function loadGame(slot) {
     gameState.inventory = data.inventory;
     gameState.money = data.money;
     gameState.progress = data.progress;
+    gameState.secrets = {
+        exterminarEnabled: Boolean(data.secrets && data.secrets.exterminarEnabled) || isSecretUnlockedGlobally(),
+        starterLevel67: Boolean(data.secrets && data.secrets.starterLevel67) || isSecretUnlockedGlobally()
+    };
     if (!gameState.progress.storyFlags) gameState.progress.storyFlags = {};
     if (!gameState.progress.fossils) gameState.progress.fossils = [];
     if (!gameState.progress.badges) gameState.progress.badges = [];
     rebuildCaughtFromOwnedPokemon();
     gameState.bagContext = 'field';
+    gameState.battleEnding = false;
     gameState.currentTrainerBattle = null;
+    pendingEvolution = null;
+    pendingBadgeReward = null;
     updateSelectionWelcome();
     
     updatePokemonDisplay();
@@ -3055,8 +3813,15 @@ function resetGameState() {
         fossils: [],
         badges: []
     };
+    gameState.secrets = {
+        exterminarEnabled: isSecretUnlockedGlobally(),
+        starterLevel67: isSecretUnlockedGlobally()
+    };
     gameState.bagContext = 'field';
+    gameState.battleEnding = false;
     gameState.currentTrainerBattle = null;
+    pendingEvolution = null;
+    pendingBadgeReward = null;
 }
 
 // Auto-guardar cada vez que cambia algo importante

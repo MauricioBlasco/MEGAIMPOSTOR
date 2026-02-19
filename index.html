@@ -59,7 +59,11 @@
             cursor: pointer;
             text-decoration: none;
             color: white;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: center;
+            text-align: center;
             animation: fadeIn 1s ease;
             border: 2px solid #262626;
         }
@@ -143,6 +147,9 @@
             font-size: 1.1em;
             font-weight: bold;
             margin-top: 10px;
+            text-align: center;
+            width: 100%;
+            overflow-wrap: anywhere;
         }
 
         .demon-text .de {
@@ -162,10 +169,16 @@
         }
 
         .game-title {
-            font-size: 2em;
+            font-size: clamp(1.35rem, 3.2vw, 1.75rem);
             font-weight: bold;
             margin-bottom: 15px;
             text-align: center;
+            width: 100%;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.1;
+            white-space: nowrap;
         }
 
         .game-description {
@@ -254,7 +267,7 @@
             }
 
             .game-title {
-                font-size: 1.8em;
+                font-size: 1.45rem;
             }
         }
 
