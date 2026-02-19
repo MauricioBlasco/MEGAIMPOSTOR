@@ -252,9 +252,10 @@ const ZONES_DATA = {
         wildPokemon: [
             { pokemon: 'oddish', minLevel: 12, maxLevel: 16, chance: 30 },
             { pokemon: 'bellsprout', minLevel: 12, maxLevel: 16, chance: 30 },
-            { pokemon: 'pidgey', minLevel: 12, maxLevel: 16, chance: 18 },
+            { pokemon: 'pidgey', minLevel: 12, maxLevel: 16, chance: 16 },
             { pokemon: 'abra', minLevel: 13, maxLevel: 16, chance: 7 },
-            { pokemon: 'caterpie', minLevel: 12, maxLevel: 15, chance: 15 }
+            { pokemon: 'caterpie', minLevel: 12, maxLevel: 15, chance: 15 },
+            { pokemon: 'electabuzz', minLevel: 14, maxLevel: 16, chance: 2 }
         ],
         trainers: [
             { id: 'route25-hiker', name: 'Montañero Gabi', team: [{ pokemon: 'geodude', level: 15 }, { pokemon: 'sandshrew', level: 15 }], reward: 320, dialogue: '¡El cabo es un gran lugar para entrenar!', battleType: 'trainer' },
@@ -557,9 +558,22 @@ const ADDITIONAL_POKEMON = {
         sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/42.png',
         spriteBack: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/back/42.png',
         spriteModern: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png',
-        evolution: null,
+        evolution: { evolvesTo: 'crobat', level: 38, method: 'level' },
         baseExp: 159,
         expToNextLevel: 150
+    },
+
+    crobat: {
+        id: 169,
+        name: 'Crobat',
+        type: 'poison',
+        stats: { hp: 85, attack: 90, defense: 80, specialAttack: 70, specialDefense: 80, speed: 130 },
+        sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/emerald/169.png',
+        spriteBack: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/emerald/back/169.png',
+        spriteModern: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png',
+        evolution: null,
+        baseExp: 268,
+        expToNextLevel: 200
     },
 
     geodude: {
@@ -596,9 +610,22 @@ const ADDITIONAL_POKEMON = {
         sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/95.png',
         spriteBack: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/back/95.png',
         spriteModern: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png',
-        evolution: null,
+        evolution: { evolvesTo: 'steelix', level: 40, method: 'level' },
         baseExp: 77,
         expToNextLevel: 150
+    },
+
+    steelix: {
+        id: 208,
+        name: 'Steelix',
+        type: 'steel',
+        stats: { hp: 75, attack: 85, defense: 200, specialAttack: 55, specialDefense: 65, speed: 30 },
+        sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/emerald/208.png',
+        spriteBack: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/emerald/back/208.png',
+        spriteModern: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/208.png',
+        evolution: null,
+        baseExp: 179,
+        expToNextLevel: 200
     },
 
     sandshrew: {
@@ -630,7 +657,7 @@ const ADDITIONAL_POKEMON = {
     clefairy: {
         id: 35,
         name: 'Clefairy',
-        type: 'normal',
+        type: 'fairy',
         stats: { hp: 70, attack: 45, defense: 48, specialAttack: 60, specialDefense: 65, speed: 35 },
         sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/35.png',
         spriteBack: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/back/35.png',
@@ -638,6 +665,32 @@ const ADDITIONAL_POKEMON = {
         evolution: null,
         baseExp: 113,
         expToNextLevel: 120
+    },
+
+    electabuzz: {
+        id: 125,
+        name: 'Electabuzz',
+        type: 'electric',
+        stats: { hp: 65, attack: 83, defense: 57, specialAttack: 95, specialDefense: 85, speed: 105 },
+        sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/emerald/125.png',
+        spriteBack: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/emerald/back/125.png',
+        spriteModern: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png',
+        evolution: { evolvesTo: 'electivire', level: 40, method: 'level' },
+        baseExp: 172,
+        expToNextLevel: 180
+    },
+
+    electivire: {
+        id: 466,
+        name: 'Electivire',
+        type: 'electric',
+        stats: { hp: 75, attack: 123, defense: 67, specialAttack: 95, specialDefense: 85, speed: 95 },
+        sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/466.png',
+        spriteBack: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/466.png',
+        spriteModern: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/466.png',
+        evolution: null,
+        baseExp: 243,
+        expToNextLevel: 220
     },
 
     mankey: {

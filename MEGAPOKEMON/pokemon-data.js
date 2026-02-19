@@ -23,6 +23,50 @@ const POKEMON_DATABASE = {
         baseExp: 112,
         expToNextLevel: 100
     },
+
+    eevee: {
+        id: 133,
+        name: 'Eevee',
+        type: 'normal',
+        stats: {
+            hp: 55,
+            attack: 55,
+            defense: 50,
+            specialAttack: 45,
+            specialDefense: 65,
+            speed: 55
+        },
+        sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/133.png',
+        spriteBack: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/back/133.png',
+        spriteModern: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png',
+        evolution: {
+            evolvesTo: 'vaporeon',
+            level: 20,
+            method: 'level'
+        },
+        baseExp: 65,
+        expToNextLevel: 100
+    },
+
+    vaporeon: {
+        id: 134,
+        name: 'Vaporeon',
+        type: 'water',
+        stats: {
+            hp: 130,
+            attack: 65,
+            defense: 60,
+            specialAttack: 110,
+            specialDefense: 95,
+            speed: 65
+        },
+        sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/134.png',
+        spriteBack: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/back/134.png',
+        spriteModern: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png',
+        evolution: null,
+        baseExp: 184,
+        expToNextLevel: 150
+    },
     
     raichu: {
         id: 26,
@@ -265,7 +309,10 @@ const POKEMON_TYPES = {
     bug: { color: '#A8B820', name: 'Bicho' },
     rock: { color: '#B8A038', name: 'Roca' },
     ghost: { color: '#705898', name: 'Fantasma' },
-    dragon: { color: '#7038F8', name: 'Dragón' }
+    dragon: { color: '#7038F8', name: 'Dragón' },
+    dark: { color: '#705848', name: 'Siniestro' },
+    steel: { color: '#B8B8D0', name: 'Acero' },
+    fairy: { color: '#EE99AC', name: 'Hada' }
 };
 
 // Cálculo de experiencia para nivel siguiente

@@ -8,6 +8,7 @@ const gameState = {
     unlockedZones: ['pallet-town'],
     team: [], // Array de hasta 6 Pokémon
     pcStorage: [], // Almacenamiento ilimitado
+    caughtPokemon: [], // Registro de Pokémon capturados para Pokédex
     activePokemonIndex: 0, // Índice del Pokémon activo en batalla
     inventory: {
         pokeball: 5,
@@ -376,10 +377,39 @@ function normalizePokemonInstance(pokemon) {
     return pokemon;
 }
 
-// Combinar bases de datos de Pokémon una sola vez
+// Integración de datos de Pokémon
+if (typeof GEN1_POKEMON_API_DATA !== 'undefined') {
+    Object.assign(POKEMON_DATABASE, GEN1_POKEMON_API_DATA);
+}
+
 if (typeof ADDITIONAL_POKEMON !== 'undefined') {
     Object.assign(POKEMON_DATABASE, ADDITIONAL_POKEMON);
 }
+
+// Mantener los 151 de Kanto exactamente desde api-data-master
+if (typeof GEN1_POKEMON_API_DATA !== 'undefined') {
+    Object.assign(POKEMON_DATABASE, GEN1_POKEMON_API_DATA);
+}
+
+if (typeof GEN1_API_MOVESETS !== 'undefined') {
+    Object.entries(GEN1_API_MOVESETS).forEach(([pokemonKey, moves]) => {
+        if (!Array.isArray(moves) || moves.length === 0) return;
+        const compatibleMoves = moves.filter(move => move && move.move && MOVES_DATABASE[move.move]);
+        if (compatibleMoves.length > 0) {
+            POKEMON_MOVESETS[pokemonKey] = compatibleMoves;
+        }
+    });
+}
+
+Object.values(POKEMON_DATABASE).forEach(pokemonData => {
+    if (!pokemonData) return;
+    if (!pokemonData.types || pokemonData.types.length === 0) {
+        pokemonData.types = pokemonData.type ? [pokemonData.type] : ['normal'];
+    }
+    if (!pokemonData.type && pokemonData.types.length > 0) {
+        pokemonData.type = pokemonData.types[0];
+    }
+});
 
 // Inicializar juego
 function init() {
@@ -402,11 +432,13 @@ function init() {
     
     modals = {
         evolution: document.getElementById('evolution-modal'),
+        capture: document.getElementById('capture-modal'),
         bag: document.getElementById('bag-modal'),
         map: document.getElementById('map-modal'),
         shop: document.getElementById('shop-modal'),
         battle: document.getElementById('battle-modal'),
         pc: document.getElementById('pc-modal'),
+        pokedex: document.getElementById('pokedex-modal'),
         choice: document.getElementById('choice-modal'),
         input: document.getElementById('input-modal')
     };
@@ -458,11 +490,13 @@ function init() {
     const mapBtn = document.getElementById('map-btn');
     const bagBtn = document.getElementById('bag-btn');
     const pcBtn = document.getElementById('pc-btn');
+    const pokedexBtn = document.getElementById('pokedex-btn');
     const audioBtn = document.getElementById('audio-btn');
     
     if (mapBtn) mapBtn.addEventListener('click', openMap);
     if (bagBtn) bagBtn.addEventListener('click', openBag);
     if (pcBtn) pcBtn.addEventListener('click', openPC);
+    if (pokedexBtn) pokedexBtn.addEventListener('click', openPokedex);
     
     // Botón de audio
     if (audioBtn) {
@@ -478,6 +512,7 @@ function init() {
     const closeMap = document.getElementById('close-map');
     const closeShop = document.getElementById('close-shop');
     const closePC = document.getElementById('close-pc');
+    const closePokedex = document.getElementById('close-pokedex');
     const evolutionContinue = document.getElementById('evolution-continue');
     const choiceConfirm = document.getElementById('choice-confirm');
     const choiceCancel = document.getElementById('choice-cancel');
@@ -486,6 +521,7 @@ function init() {
     if (closeMap) closeMap.addEventListener('click', () => modals.map.classList.remove('active'));
     if (closeShop) closeShop.addEventListener('click', () => modals.shop.classList.remove('active'));
     if (closePC) closePC.addEventListener('click', () => modals.pc.classList.remove('active'));
+    if (closePokedex) closePokedex.addEventListener('click', () => modals.pokedex.classList.remove('active'));
     if (choiceConfirm) choiceConfirm.addEventListener('click', () => closeChoiceDialog(true));
     if (choiceCancel) choiceCancel.addEventListener('click', () => closeChoiceDialog(false));
     if (evolutionContinue) {
@@ -568,10 +604,10 @@ function startIntroSequence() {
     if (skipBtn) skipBtn.style.display = 'inline-block';
 
     const introLines = [
-        '¡Hola! ¡Bienvenido al mundo de Pokémon!',
-        'Mi nombre es OAK, pero todos me llaman Profesor Pokémon.',
-        'Este mundo está habitado por criaturas llamadas Pokémon. Algunos luchan, otros son compañeros de aventura.',
-        'Un gran viaje siempre empieza con dos nombres: el tuyo y el de tu rival.'
+        'Mew... ¡Mew! Bienvenido al mundo de Pokémon.',
+        'Soy Mew, un Pokémon ancestral. Hoy seré tu guía en esta aventura.',
+        'Este mundo está lleno de Pokémon: algunos combaten, otros viajan contigo y todos tienen su propia historia.',
+        'Tu viaje comienza con dos nombres: el tuyo y el de tu rival.'
     ];
 
     document.getElementById('intro-text').textContent = introLines[introStep];
@@ -579,10 +615,10 @@ function startIntroSequence() {
 
 function handleIntroNext() {
     const introLines = [
-        '¡Hola! ¡Bienvenido al mundo de Pokémon!',
-        'Mi nombre es OAK, pero todos me llaman Profesor Pokémon.',
-        'Este mundo está habitado por criaturas llamadas Pokémon. Algunos luchan, otros son compañeros de aventura.',
-        'Un gran viaje siempre empieza con dos nombres: el tuyo y el de tu rival.'
+        'Mew... ¡Mew! Bienvenido al mundo de Pokémon.',
+        'Soy Mew, un Pokémon ancestral. Hoy seré tu guía en esta aventura.',
+        'Este mundo está lleno de Pokémon: algunos combaten, otros viajan contigo y todos tienen su propia historia.',
+        'Tu viaje comienza con dos nombres: el tuyo y el de tu rival.'
     ];
 
     const introText = document.getElementById('intro-text');
@@ -644,7 +680,7 @@ function skipIntroToNames() {
 function updateSelectionWelcome() {
     const welcome = document.getElementById('selection-welcome');
     if (!welcome) return;
-    welcome.textContent = `¡Bienvenido ${gameState.playerName}! Tu rival ${gameState.rivalName} también está listo para comenzar.`;
+    welcome.textContent = `¡Bienvenido ${gameState.playerName}! Mew te acompaña mientras tu rival ${gameState.rivalName} se prepara para empezar.`;
 }
 
 // Seleccionar Pokémon inicial
@@ -667,6 +703,7 @@ async function selectStarterPokemon(pokemonKey) {
     const starterPokemon = createPokemon(pokemonKey, 5);
     const nickname = await requestPokemonNickname(pokemonData.name);
     starterPokemon.nickname = nickname;
+    registerPokemonCaught(starterPokemon.key);
     gameState.team.push(starterPokemon);
     gameState.activePokemonIndex = 0;
 
@@ -728,6 +765,10 @@ function createPokemon(pokemonKey, level) {
             };
         })
         .filter(m => m !== null);
+
+    if (learnedMoves.length === 0 && MOVES_DATABASE.tackle) {
+        learnedMoves.push({ ...MOVES_DATABASE.tackle, moveKey: 'tackle', currentPP: MOVES_DATABASE.tackle.maxPP });
+    }
     
     console.log(`${pokemonKey} aprendió ${learnedMoves.length} movimientos:`, learnedMoves.map(m => m.name));
     
@@ -751,6 +792,7 @@ function createPokemon(pokemonKey, level) {
 // Añadir Pokémon al equipo o PC
 function addPokemon(pokemon) {
     normalizePokemonInstance(pokemon);
+    registerPokemonCaught(pokemon.key);
     if (gameState.team.length < 6) {
         gameState.team.push(pokemon);
         showMessage(`¡${getPokemonDisplayName(pokemon)} se unió a tu equipo!`);
@@ -758,6 +800,288 @@ function addPokemon(pokemon) {
         gameState.pcStorage.push(pokemon);
         showMessage(`¡${getPokemonDisplayName(pokemon)} fue enviado al PC de Bill!`);
     }
+}
+
+function normalizePokemonKey(pokemonKey) {
+    return (pokemonKey || '').toLowerCase();
+}
+
+function registerPokemonCaught(pokemonKey) {
+    const key = normalizePokemonKey(pokemonKey);
+    if (!key) return;
+
+    if (!Array.isArray(gameState.caughtPokemon)) {
+        gameState.caughtPokemon = [];
+    }
+
+    if (!gameState.caughtPokemon.includes(key)) {
+        gameState.caughtPokemon.push(key);
+    }
+}
+
+function rebuildCaughtFromOwnedPokemon() {
+    if (!Array.isArray(gameState.caughtPokemon)) {
+        gameState.caughtPokemon = [];
+    }
+
+    const allOwned = [...(gameState.team || []), ...(gameState.pcStorage || [])];
+    allOwned.forEach(pokemon => {
+        if (pokemon && pokemon.key) {
+            registerPokemonCaught(pokemon.key);
+        }
+    });
+}
+
+function isPokemonCaught(pokemonKey) {
+    const key = normalizePokemonKey(pokemonKey);
+    return Array.isArray(gameState.caughtPokemon) && gameState.caughtPokemon.includes(key);
+}
+
+function getPokedexCatalog() {
+    if (typeof GEN1_POKEDEX_INDEX !== 'undefined' && Array.isArray(GEN1_POKEDEX_INDEX) && GEN1_POKEDEX_INDEX.length > 0) {
+        return GEN1_POKEDEX_INDEX
+            .map(entry => ({
+                id: entry.id,
+                key: normalizePokemonKey(entry.key),
+                name: entry.name || (POKEMON_DATABASE[entry.key]?.name || entry.key)
+            }))
+            .filter(entry => !!POKEMON_DATABASE[entry.key]);
+    }
+
+    return Object.entries(POKEMON_DATABASE)
+        .map(([key, data]) => ({ id: data.id || 9999, key, name: data.name || key }))
+        .sort((a, b) => a.id - b.id);
+}
+
+function openPokedex() {
+    if (!modals.pokedex) return;
+    modals.pokedex.classList.add('active');
+    hidePokedexPopup();
+    renderPokedexList();
+}
+
+function renderPokedexList() {
+    const listEl = document.getElementById('pokedex-list');
+    if (!listEl) return;
+
+    const catalog = getPokedexCatalog();
+    listEl.innerHTML = '';
+
+    catalog.forEach(entry => {
+        const pokemonData = POKEMON_DATABASE[entry.key];
+        if (!pokemonData) return;
+
+        const caught = isPokemonCaught(entry.key);
+        const button = document.createElement('button');
+        button.className = `pokedex-entry ${caught ? 'unlocked' : 'locked'}`;
+        button.disabled = !caught;
+        button.innerHTML = `
+            <div class="pokedex-entry-id">#${String(entry.id).padStart(3, '0')}</div>
+            <img src="${pokemonData.sprite || pokemonData.spriteModern || ''}" alt="${caught ? pokemonData.name : '???'}">
+            <div class="pokedex-entry-name">${caught ? pokemonData.name : '???'}</div>
+        `;
+
+        if (caught) {
+            button.addEventListener('click', () => showPokedexPopup(entry.key));
+        }
+
+        listEl.appendChild(button);
+    });
+}
+
+function getPokemonTypeBadge(type) {
+    const label = (POKEMON_TYPES[type] && POKEMON_TYPES[type].name) ? POKEMON_TYPES[type].name : type;
+    const color = (POKEMON_TYPES[type] && POKEMON_TYPES[type].color) ? POKEMON_TYPES[type].color : '#777';
+    return `<span class="pokedex-popup-type" style="background:${color};">${label}</span>`;
+}
+
+function hidePokedexPopup() {
+    const popupEl = document.getElementById('pokedex-popup');
+    if (!popupEl) return;
+    popupEl.style.display = 'none';
+}
+
+function showPokedexPopup(pokemonKey) {
+    const popupEl = document.getElementById('pokedex-popup');
+    const contentEl = document.getElementById('pokedex-popup-content');
+    const closeBtn = document.getElementById('pokedex-popup-close');
+    if (!popupEl || !contentEl) return;
+
+    renderPokedexDetail(pokemonKey);
+    popupEl.style.display = 'flex';
+
+    if (closeBtn && !closeBtn.dataset.bound) {
+        closeBtn.addEventListener('click', hidePokedexPopup);
+        closeBtn.dataset.bound = 'true';
+    }
+}
+
+function formatEvolutionMethodLabel(method) {
+    if (method === 'level') return 'Nivel';
+    if (method === 'stone') return 'Piedra';
+    if (method === 'trade') return 'Intercambio';
+    return method || 'Método especial';
+}
+
+function getEvolutionOptionsForPokemon(pokemonKey) {
+    const pokemonData = POKEMON_DATABASE[pokemonKey];
+    if (!pokemonData || !Array.isArray(pokemonData.evolutionOptions)) return [];
+    return pokemonData.evolutionOptions.filter(option => option && option.evolvesTo);
+}
+
+function getEvolutionParents(pokemonKey) {
+    const parents = [];
+
+    Object.entries(POKEMON_DATABASE).forEach(([candidateKey]) => {
+        const options = getEvolutionOptionsForPokemon(candidateKey);
+        if (options.some(option => option.evolvesTo === pokemonKey)) {
+            parents.push(candidateKey);
+        }
+    });
+
+    return parents;
+}
+
+function getDisplayNameByKey(pokemonKey) {
+    if (POKEMON_DATABASE[pokemonKey] && POKEMON_DATABASE[pokemonKey].name) {
+        return POKEMON_DATABASE[pokemonKey].name;
+    }
+    return (pokemonKey || '').split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+}
+
+function getEvolutionLines(pokemonKey) {
+    const targetKey = normalizePokemonKey(pokemonKey);
+    if (!targetKey || !POKEMON_DATABASE[targetKey]) return [];
+
+    const component = new Set();
+    const queue = [targetKey];
+
+    while (queue.length > 0) {
+        const current = queue.shift();
+        if (!current || component.has(current) || !POKEMON_DATABASE[current]) continue;
+
+        component.add(current);
+
+        const children = getEvolutionOptionsForPokemon(current)
+            .map(option => option.evolvesTo)
+            .filter(child => POKEMON_DATABASE[child]);
+        const parents = getEvolutionParents(current).filter(parent => POKEMON_DATABASE[parent]);
+
+        [...children, ...parents].forEach(neighbor => {
+            if (!component.has(neighbor)) queue.push(neighbor);
+        });
+    }
+
+    const roots = [...component].filter(candidate => {
+        const parents = getEvolutionParents(candidate).filter(parent => component.has(parent));
+        return parents.length === 0;
+    });
+
+    const starts = roots.length > 0 ? roots : [targetKey];
+    const paths = [];
+
+    const walk = (current, path) => {
+        const evolutions = getEvolutionOptionsForPokemon(current);
+        if (evolutions.length === 0) {
+            paths.push(path);
+            return;
+        }
+
+        let pushed = false;
+        evolutions.forEach(option => {
+            const nextKey = option.evolvesTo;
+            if (!nextKey || path.includes(nextKey)) return;
+
+            pushed = true;
+            if (POKEMON_DATABASE[nextKey] && component.has(nextKey)) {
+                walk(nextKey, [...path, nextKey]);
+            } else {
+                paths.push([...path, nextKey]);
+            }
+        });
+
+        if (!pushed) {
+            paths.push(path);
+        }
+    };
+
+    starts.forEach(startKey => walk(startKey, [startKey]));
+
+    const serialized = new Set();
+    const lines = [];
+
+    paths.forEach(path => {
+        if (!path.includes(targetKey)) return;
+        const names = path.map(getDisplayNameByKey);
+        const line = names.join(' → ');
+        if (!serialized.has(line)) {
+            serialized.add(line);
+            lines.push(line);
+        }
+    });
+
+    return lines;
+}
+
+function renderPokedexDetail(pokemonKey) {
+    const detailEl = document.getElementById('pokedex-popup-content');
+    const pokemonData = POKEMON_DATABASE[pokemonKey];
+    if (!detailEl || !pokemonData) return;
+
+    const evolutionLines = getEvolutionLines(pokemonKey);
+    const hasEvolutionInfo = evolutionLines.length > 0;
+    const evolutionItems = hasEvolutionInfo
+        ? evolutionLines.map(line => `<div class="pokedex-evo-line">${line}</div>`).join('')
+        : '<div class="pokedex-evo-line">No evoluciona.</div>';
+
+    const description = pokemonData.pokedexDescription
+        ? `<p>${pokemonData.pokedexDescription}</p>`
+        : '';
+
+    const pokemonTypes = (Array.isArray(pokemonData.types) && pokemonData.types.length > 0)
+        ? pokemonData.types
+        : [pokemonData.type || 'normal'];
+    const typesHtml = pokemonTypes.map(getPokemonTypeBadge).join('');
+
+    const formatStat = (label, value) => `
+        <div class="pokedex-stat-card">
+            <span class="pokedex-stat-label">${label}</span>
+            <strong class="pokedex-stat-value">${value}</strong>
+        </div>
+    `;
+
+    const statsHtml = `
+        ${formatStat('HP', pokemonData.stats.hp)}
+        ${formatStat('Ataque', pokemonData.stats.attack)}
+        ${formatStat('Defensa', pokemonData.stats.defense)}
+        ${formatStat('Atq. Esp.', pokemonData.stats.specialAttack)}
+        ${formatStat('Def. Esp.', pokemonData.stats.specialDefense)}
+        ${formatStat('Velocidad', pokemonData.stats.speed)}
+    `;
+
+    detailEl.innerHTML = `
+        <div class="pokedex-popup-content">
+            <div class="pokedex-popup-header">
+                <img class="pokedex-popup-sprite" src="${pokemonData.sprite || pokemonData.spriteModern || ''}" alt="${pokemonData.name}">
+                <div class="pokedex-popup-header-info">
+                    <h3>#${String(pokemonData.id).padStart(3, '0')} ${pokemonData.name}</h3>
+                    <div class="pokedex-popup-types">${typesHtml}</div>
+                </div>
+            </div>
+
+            <div class="pokedex-section">
+                <h4>Stats base</h4>
+                <div class="pokedex-stats-grid">${statsHtml}</div>
+            </div>
+
+            <div class="pokedex-section">
+                <h4>Evoluciones</h4>
+                <div class="pokedex-evo-list">${evolutionItems}</div>
+            </div>
+
+            ${description ? `<div class="pokedex-section pokedex-description-box"><h4>Descripción</h4>${description}</div>` : ''}
+        </div>
+    `;
 }
 
 // Calcular daño de ataque
@@ -798,14 +1122,24 @@ function getBattleEffectLabels(pokemon) {
     const labels = [];
 
     if (pokemon.statStages.attack < 0) {
-        labels.push('ATQ↓');
+        labels.push(`ATQ↓ x${Math.abs(pokemon.statStages.attack)}`);
+    } else if (pokemon.statStages.attack > 0) {
+        labels.push(`ATQ↑ x${Math.abs(pokemon.statStages.attack)}`);
     }
 
     if (pokemon.statusEffects.leechSeed) {
-        labels.push('Drenadoras');
+        labels.push('Drenadoras x1');
     }
 
     return labels;
+}
+
+function applyAttackStageChange(pokemon, delta) {
+    ensurePokemonBattleState(pokemon);
+    const before = pokemon.statStages.attack;
+    const after = Math.max(-6, Math.min(6, before + delta));
+    pokemon.statStages.attack = after;
+    return { before, after, changed: before !== after };
 }
 
 function renderBattleEffects() {
@@ -1433,12 +1767,12 @@ function executeEnemyTurn() {
 
 // Sistema de turnos basado en velocidad
 function disableBattleButtons() {
-    const buttons = document.querySelectorAll('.battle-button');
+    const buttons = document.querySelectorAll('#battle-modal .battle-button');
     buttons.forEach(btn => btn.disabled = true);
 }
 
 function enableBattleButtons() {
-    const buttons = document.querySelectorAll('.battle-button');
+    const buttons = document.querySelectorAll('#battle-modal .battle-button');
     buttons.forEach(btn => btn.disabled = false);
 }
 
@@ -1541,11 +1875,24 @@ function executeAttack(attacker, move, isPlayerAttacking) {
         defenderPokemon.currentHP = Math.max(0, defenderPokemon.currentHP - damage);
     } else {
         if (move.moveKey === 'growl') {
-            if (defenderPokemon.statStages.attack > -6) {
-                defenderPokemon.statStages.attack--;
-                showMessage(`¡${getPokemonDisplayName(defenderPokemon)} bajó su Ataque!`);
+            const result = applyAttackStageChange(defenderPokemon, -1);
+            if (result.changed) {
+                showMessage(`¡${getPokemonDisplayName(defenderPokemon)} bajó su Ataque! (x${Math.abs(result.after)})`);
             } else {
                 showMessage(`¡El Ataque de ${getPokemonDisplayName(defenderPokemon)} no puede bajar más!`);
+            }
+            updateBattleDisplay();
+            updatePokemonDisplay();
+            return;
+        }
+
+        if (move.moveKey === 'growth' || move.moveKey === 'swords-dance') {
+            const stageGain = move.moveKey === 'swords-dance' ? 2 : 1;
+            const result = applyAttackStageChange(attackerPokemon, stageGain);
+            if (result.changed) {
+                showMessage(`¡El Ataque de ${getPokemonDisplayName(attackerPokemon)} aumentó! (x${Math.abs(result.after)})`);
+            } else {
+                showMessage(`¡El Ataque de ${getPokemonDisplayName(attackerPokemon)} no puede subir más!`);
             }
             updateBattleDisplay();
             updatePokemonDisplay();
@@ -1771,6 +2118,121 @@ function usePotionInBattle() {
     }, 1500);
 }
 
+const CAPTURE_BALL_SPRITES = {
+    pokeball: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png',
+    'great-ball': 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/great-ball.png'
+};
+
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function triggerCaptureVibration(pattern) {
+    if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+        navigator.vibrate(pattern);
+    }
+}
+
+function playCaptureShakeFeedback(stage) {
+    if (stage === 1) {
+        AudioSystem.playSFX('select');
+        triggerCaptureVibration(35);
+        return;
+    }
+
+    if (stage === 2) {
+        AudioSystem.playSFX('click');
+        triggerCaptureVibration([35, 25, 35]);
+        return;
+    }
+
+    AudioSystem.playSFX('select');
+    triggerCaptureVibration([45, 30, 45]);
+}
+
+function playCaptureFailFeedback(stage) {
+    AudioSystem.playSFX('click');
+
+    if (stage === 1) {
+        triggerCaptureVibration([90, 60, 90]);
+        return;
+    }
+
+    if (stage === 2) {
+        triggerCaptureVibration([120, 70, 120]);
+        return;
+    }
+
+    triggerCaptureVibration([150, 80, 150]);
+}
+
+function calculateCatchChance(ballType, enemyPokemon) {
+    const hpPercent = enemyPokemon.currentHP / enemyPokemon.maxHP;
+    const level = enemyPokemon.level || 5;
+
+    const baseChance = 0.45;
+    const hpBonus = (1 - hpPercent) * 0.4;
+    const levelPenalty = Math.min(0.3, level * 0.006);
+    const ballBonus = ballType === 'great-ball' ? 0.18 : 0;
+
+    const catchChance = baseChance + hpBonus + ballBonus - levelPenalty;
+    return Math.max(0.05, Math.min(0.95, catchChance));
+}
+
+function determineFailStage(catchChance, roll) {
+    const miss = (roll - catchChance) / Math.max(0.0001, 1 - catchChance);
+    if (miss < 0.2) return 3;
+    if (miss < 0.55) return 2;
+    return 1;
+}
+
+async function playCaptureAnimation(ballType, catchChance) {
+    const captureModal = modals.capture;
+    const ballEl = document.getElementById('capture-ball');
+    const textEl = document.getElementById('capture-text');
+    if (!captureModal || !ballEl || !textEl) {
+        return { captured: Math.random() < catchChance, failStage: 1 };
+    }
+
+    const roll = Math.random();
+    const captured = roll < catchChance;
+    const failStage = captured ? null : determineFailStage(catchChance, roll);
+
+    ballEl.src = CAPTURE_BALL_SPRITES[ballType] || CAPTURE_BALL_SPRITES.pokeball;
+    textEl.textContent = '...';
+    captureModal.classList.add('active');
+    await wait(350);
+
+    for (let shake = 1; shake <= 3; shake++) {
+        textEl.textContent = `${shake}`;
+        ballEl.classList.remove('capture-shake');
+        ballEl.classList.remove('capture-breakfree');
+        void ballEl.offsetWidth;
+        ballEl.classList.add('capture-shake');
+        playCaptureShakeFeedback(shake);
+        await wait(700);
+
+        if (!captured && failStage === shake) {
+            textEl.textContent = `Falló en ${shake}`;
+            ballEl.classList.remove('capture-shake');
+            void ballEl.offsetWidth;
+            ballEl.classList.add('capture-breakfree');
+            playCaptureFailFeedback(shake);
+            await wait(500);
+            captureModal.classList.remove('active');
+            ballEl.classList.remove('capture-breakfree');
+            return { captured: false, failStage };
+        }
+    }
+
+    textEl.textContent = '¡¡¡capturado!!!';
+    AudioSystem.playSFX('capture');
+    triggerCaptureVibration([80, 40, 80, 40, 160]);
+    await wait(900);
+    captureModal.classList.remove('active');
+    return { captured: true, failStage: null };
+}
+
 async function throwPokeball(ballType = 'pokeball') {
     if (!gameState.currentEnemy.isWild) {
         showMessage('¡No puedes capturar pokemon de otros entrenadores!');
@@ -1797,13 +2259,10 @@ async function throwPokeball(ballType = 'pokeball') {
     }
     modals.bag.classList.remove('active');
     
-    const hpPercent = gameState.currentEnemy.currentHP / gameState.currentEnemy.maxHP;
-    const baseChance = (1 - hpPercent) * 0.6 + 0.2; // 20-80% según HP
-    const catchChance = ballType === 'great-ball' ? Math.min(0.95, baseChance + 0.15) : baseChance;
+    const catchChance = calculateCatchChance(ballType, gameState.currentEnemy);
+    const captureResult = await playCaptureAnimation(ballType, catchChance);
     
-    if (Math.random() < catchChance) {
-        // Reproducir sonido de captura
-        AudioSystem.playSFX('capture');
+    if (captureResult.captured) {
         
         // Crear copia del Pokémon capturado (sin duplicar la referencia)
         const caughtPokemon = {
@@ -1855,7 +2314,8 @@ async function throwPokeball(ballType = 'pokeball') {
             }
         }, 2000);
     } else {
-        showMessage(`${getPokemonDisplayName(gameState.currentEnemy)} se liberó!`);
+        const stageText = captureResult.failStage ? ` en ${captureResult.failStage}` : '';
+        showMessage(`${getPokemonDisplayName(gameState.currentEnemy)} se liberó${stageText}!`);
         setTimeout(() => {
             executeEnemyTurn();
             enableBattleButtons();
@@ -2041,6 +2501,15 @@ function updateBagDisplay() {
 
     const selectedItems = categories[tabType] || [];
 
+    const bagItemSprites = {
+        potion: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/potion.png',
+        'super-potion': 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/super-potion.png',
+        antidote: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/antidote.png',
+        'paralyz-heal': 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/paralyze-heal.png',
+        pokeball: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png',
+        'great-ball': 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/great-ball.png'
+    };
+
     if (selectedItems.length === 0 || selectedItems.every(item => item.count <= 0)) {
         const emptyDiv = document.createElement('div');
         emptyDiv.className = 'inventory-empty';
@@ -2063,9 +2532,12 @@ function updateBagDisplay() {
             (tabType === 'items' && isBattle && item.key !== 'potion' && item.key !== 'super-potion');
 
         itemDiv.innerHTML = `
-            <div>
-                <div class="item-name">${item.name} x${item.count}</div>
-                <div class="item-description">${item.description}</div>
+            <div class="inventory-item-main">
+                <img class="inventory-item-sprite" src="${bagItemSprites[item.key] || 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png'}" alt="${item.name}">
+                <div>
+                    <div class="item-name">${item.name} x${item.count}</div>
+                    <div class="item-description">${item.description}</div>
+                </div>
             </div>
             ${canUse ? `<button onclick="useBagItem('${item.key}')" ${useDisabled ? 'disabled' : ''}>${tabType === 'pokeballs' ? 'Lanzar' : 'Usar'}</button>` : ''}
         `;
@@ -2493,6 +2965,7 @@ function saveGame() {
         unlockedZones: gameState.unlockedZones,
         team: gameState.team,
         pcStorage: gameState.pcStorage,
+        caughtPokemon: gameState.caughtPokemon,
         activePokemonIndex: gameState.activePokemonIndex,
         inventory: gameState.inventory,
         money: gameState.money,
@@ -2519,6 +2992,7 @@ function loadGame(slot) {
     gameState.unlockedZones = data.unlockedZones;
     gameState.team = (data.team || []).map(normalizePokemonInstance);
     gameState.pcStorage = (data.pcStorage || []).map(normalizePokemonInstance);
+    gameState.caughtPokemon = Array.isArray(data.caughtPokemon) ? data.caughtPokemon.map(normalizePokemonKey) : [];
     gameState.activePokemonIndex = Math.max(0, Math.min(data.activePokemonIndex || 0, Math.max(0, gameState.team.length - 1)));
     gameState.inventory = data.inventory;
     gameState.money = data.money;
@@ -2526,6 +3000,7 @@ function loadGame(slot) {
     if (!gameState.progress.storyFlags) gameState.progress.storyFlags = {};
     if (!gameState.progress.fossils) gameState.progress.fossils = [];
     if (!gameState.progress.badges) gameState.progress.badges = [];
+    rebuildCaughtFromOwnedPokemon();
     gameState.bagContext = 'field';
     gameState.currentTrainerBattle = null;
     updateSelectionWelcome();
@@ -2561,6 +3036,7 @@ function resetGameState() {
     gameState.unlockedZones = ['pallet-town'];
     gameState.team = [];
     gameState.pcStorage = [];
+    gameState.caughtPokemon = [];
     gameState.activePokemonIndex = 0;
     gameState.inventory = {
         pokeball: 5,

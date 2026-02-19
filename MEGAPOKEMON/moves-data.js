@@ -188,6 +188,18 @@ const POKEMON_MOVESETS = {
         { level: 1, move: 'thunderbolt' },
         { level: 1, move: 'tail-whip' }
     ],
+    'eevee': [
+        { level: 1, move: 'tackle' },
+        { level: 1, move: 'tail-whip' },
+        { level: 9, move: 'quick-attack' },
+        { level: 17, move: 'bite' }
+    ],
+    'vaporeon': [
+        { level: 1, move: 'tackle' },
+        { level: 1, move: 'water-gun' },
+        { level: 1, move: 'quick-attack' },
+        { level: 25, move: 'hydro-pump' }
+    ],
     'charmander': [
         { level: 1, move: 'scratch' },
         { level: 1, move: 'growl' },
@@ -408,9 +420,20 @@ Object.assign(POKEMON_MOVESETS, {
         { level: 1, move: 'bite' },
         { level: 20, move: 'peck' }
     ],
+    'crobat': [
+        { level: 1, move: 'quick-attack' },
+        { level: 1, move: 'bite' },
+        { level: 1, move: 'peck' },
+        { level: 40, move: 'slash' }
+    ],
     'graveler': [
         { level: 1, move: 'tackle' },
         { level: 1, move: 'rock-throw' }
+    ],
+    'steelix': [
+        { level: 1, move: 'tackle' },
+        { level: 1, move: 'rock-throw' },
+        { level: 40, move: 'bite' }
     ],
     'sandshrew': [
         { level: 1, move: 'scratch' },
@@ -459,6 +482,17 @@ Object.assign(POKEMON_MOVESETS, {
     'voltorb': [
         { level: 1, move: 'tackle' },
         { level: 9, move: 'thunder-shock' }
+    ],
+    'electabuzz': [
+        { level: 1, move: 'quick-attack' },
+        { level: 1, move: 'thunder-shock' },
+        { level: 24, move: 'thunderbolt' }
+    ],
+    'electivire': [
+        { level: 1, move: 'quick-attack' },
+        { level: 1, move: 'thunder-shock' },
+        { level: 1, move: 'thunderbolt' },
+        { level: 40, move: 'slash' }
     ],
     'koffing': [
         { level: 1, move: 'tackle' },

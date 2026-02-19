@@ -50,13 +50,13 @@
         <div class="credits">Edición Primera Generación</div>
     </div>
 
-    <!-- Intro Profesor Oak -->
+    <!-- Intro de Mew -->
     <div id="intro-screen" class="screen">
         <div class="intro-container">
             <h2 class="intro-title">Introducción</h2>
             <div class="oak-panel">
-                <img id="oak-sprite" class="oak-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-i/red-blue/151.png" alt="Profesor Oak" onerror="this.style.display='none';document.getElementById('oak-fallback').style.display='flex';">
-                <div id="oak-fallback" class="oak-fallback" style="display:none;">👨‍🔬 OAK</div>
+                <img id="oak-sprite" class="oak-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-i/red-blue/151.png" alt="Mew" onerror="this.style.display='none';document.getElementById('oak-fallback').style.display='flex';">
+                <div id="oak-fallback" class="oak-fallback" style="display:none;">✨ MEW</div>
                 <div class="oak-text-bubble" id="oak-text-bubble">
                     <p id="intro-text">¡Hola! ¡Bienvenido al mundo de Pokémon!</p>
                 </div>
@@ -80,7 +80,7 @@
     <div id="selection-screen" class="screen">
         <div class="selection-header">
             <h2>COMIENZA LA AVENTURA EN EL MUNDO POKEMON</h2>
-            <p class="professor-text" id="selection-welcome">¡Bienvenido entrenador! El Profesor Oak te ofrece estos Pokémon:</p>
+            <p class="professor-text" id="selection-welcome">¡Bienvenido entrenador! Mew te acompaña en el inicio de tu aventura:</p>
         </div>
         
         <div class="pokemon-selection">
@@ -96,6 +96,22 @@
                         <div class="stat">ATK: 55</div>
                         <div class="stat">DEF: 40</div>
                         <div class="stat">SPD: 90</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pokemon-card" data-pokemon="eevee">
+                <div class="pokemon-image">
+                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/133.png" alt="Eevee">
+                </div>
+                <div class="pokemon-info">
+                    <h3>Eevee</h3>
+                    <span class="pokemon-type normal">⭐ Normal</span>
+                    <div class="pokemon-stats">
+                        <div class="stat">HP: 55</div>
+                        <div class="stat">ATK: 55</div>
+                        <div class="stat">DEF: 50</div>
+                        <div class="stat">SPD: 55</div>
                     </div>
                 </div>
             </div>
@@ -157,6 +173,7 @@
             <button id="map-btn" class="top-button">🗺️ Mapa</button>
             <button id="bag-btn" class="top-button">🎒 Objetos</button>
             <button id="pc-btn" class="top-button">💻 PC</button>
+            <button id="pokedex-btn" class="top-button">📖 Pokédex</button>
             <button id="audio-btn" class="top-button" title="Alternar sonido">🔊 Audio</button>
             <div class="zone-display">📍 <span id="zone-name">Pueblo Paleta</span></div>
             <div class="progress-display">
@@ -242,6 +259,22 @@
                 </div>
             </div>
             <button id="close-pc" class="main-button">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Pokédex -->
+    <div id="pokedex-modal" class="modal">
+        <div class="modal-content pokedex-content">
+            <h2 class="pokedex-title">POKEDEX</h2>
+            <div id="pokedex-list" class="pokedex-list"></div>
+
+            <div id="pokedex-popup" class="pokedex-popup" style="display:none;">
+                <div class="pokedex-popup-card">
+                    <button id="pokedex-popup-close" class="pokedex-popup-close">✖</button>
+                    <div id="pokedex-popup-content"></div>
+                </div>
+            </div>
+            <button id="close-pokedex" class="main-button">Cerrar</button>
         </div>
     </div>
 
@@ -357,6 +390,18 @@
         </div>
     </div>
 
+    <!-- Modal de Captura -->
+    <div id="capture-modal" class="modal">
+        <div class="modal-content capture-content">
+            <div class="capture-arena">
+                <div class="capture-grass capture-grass-left"></div>
+                <div class="capture-grass capture-grass-right"></div>
+                <img id="capture-ball" class="capture-ball" src="" alt="Poké Ball">
+            </div>
+            <p id="capture-text" class="capture-text">...</p>
+        </div>
+    </div>
+
     <!-- Modal de Decisión -->
     <div id="choice-modal" class="modal">
         <div class="modal-content dialog-content">
@@ -385,6 +430,7 @@
     </div>
 
     <script src="pokemon-data.js"></script>
+    <script src="gen1-pokemon-api-data.js"></script>
     <script src="zones-data.js"></script>
     <script src="moves-data.js"></script>
     <script src="game.js"></script>
