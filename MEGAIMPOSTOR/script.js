@@ -463,9 +463,10 @@ function toggleRandomizador() {
         document.getElementById('input-max-impostores').value = Math.max(1, jugadores - 2);
         actualizarEstadoBotones('input-max-impostores');
     } else {
-        // Ocultar ambos controles cuando el randomizador está desactivado
+        // Sin randomizador, permitir elegir impostores manualmente
         controlMaxImpostores.style.display = 'none';
-        controlImpostores.style.display = 'none';
+        controlImpostores.style.display = 'flex';
+        actualizarEstadoBotones('input-impostores');
     }
 }
 
@@ -718,6 +719,27 @@ function siguienteJugador() {
 }
 
 function continuarDespuesDeRevelacion() {
+    const randomizadorActivado = document.getElementById('switch-randomizador').checked;
+    const panelInfoImpostores = document.getElementById('panel-info-impostores');
+    const cantidadImpostores = document.getElementById('cantidad-impostores');
+    const btnRevelarImpostores = document.getElementById('btn-revelar-impostores');
+    const textoEmpezarPistas = document.getElementById('texto-empezar-pistas');
+    const btnContinuarInfo = document.getElementById('btn-continuar-info');
+
+    cantidadImpostores.innerText = '? ? ?';
+
+    if (randomizadorActivado) {
+        panelInfoImpostores.style.display = 'block';
+        btnRevelarImpostores.style.display = 'block';
+        textoEmpezarPistas.style.display = 'none';
+        btnContinuarInfo.style.display = 'none';
+    } else {
+        panelInfoImpostores.style.display = 'none';
+        btnRevelarImpostores.style.display = 'none';
+        textoEmpezarPistas.style.display = 'block';
+        btnContinuarInfo.style.display = 'block';
+    }
+
     mostrarPantalla('pantalla-info-impostores');
 }
 
@@ -747,7 +769,7 @@ function verificarLogrosFinPartida() {
 
 
 function revelarCantidadImpostores() {
-    const textoImpostores = numImpostores === 1 ? '1 IMPOSTOR' : `${numImpostores} IMPOSTORES`;
+    const textoImpostores = numImpostores === 1 ? 'HAY 1 IMPOSTOR' : `HAY ${numImpostores} IMPOSTORES`;
     document.getElementById('cantidad-impostores').innerText = textoImpostores;
     
     document.getElementById('btn-revelar-impostores').style.display = 'none';
@@ -2255,4 +2277,5 @@ window.addEventListener('DOMContentLoaded', () => {
     actualizarEstadoBotones('input-jugadores');
     actualizarEstadoBotones('input-impostores');
     actualizarEstadoBotones('input-max-impostores');
+    toggleRandomizador();
 });
