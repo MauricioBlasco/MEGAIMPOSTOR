@@ -1,8 +1,32 @@
+# En el <style> agregar:
+@media screen and (orientation:portrait) {
+  #game-container, #mobile-controls {
+    display: none !important;
+  }
+  #rotate-warning {
+    display: flex !important;
+  }
+}
+
+#rotate-warning {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: #0a0a0f;
+  color: #f0d060;
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="screen-orientation" content="landscape">
 <title>Isla Meridian - RPG Demo</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
@@ -17,7 +41,93 @@
     min-height: 100vh;
     font-family: 'Crimson Text', serif;
     overflow: hidden;
+    touch-action: none;
   }
+#mobile-controls {
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#left-controls {
+  position: absolute;
+  bottom: 40px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.arrow-btn {
+  width: 56px;
+  height: 56px;
+  background: rgba(0,0,0,0.7);
+  border: 2px solid #c9a227;
+  border-radius: 50%;
+  color: #f0d060;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+#right-controls {
+  position: absolute;
+  bottom: 40px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+  pointer-events: auto;
+}
+
+.action-btn {
+  width: 56px;
+  height: 56px;
+  background: rgba(0,0,0,0.7);
+  border: 2px solid #c9a227;
+  border-radius: 50%;
+  color: #f0d060;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 0 12px;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.dash-btn {
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  margin-top: 6px;
+  margin-right: 8px;
+  background: rgba(0,0,0,0.6);
+  border: 2px solid #c9a227;
+  color: #f0d060;
+}
+
+.interact-btn {
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  margin-top: 6px;
+  margin-right: 8px;
+  background: rgba(0,0,0,0.6);
+  border: 2px solid #27ae60;
+  color: #27ae60;
+  display: none;
+}
 
   #game-container {
     position: relative;
@@ -648,7 +758,78 @@
 </style>
 </head>
 <body>
+<div id="rotate-warning">Gira tu dispositivo para jugar en horizontal</div>
 <div id="game-container">
+  # Opcional: forzar orientación con JS
+  window.addEventListener('orientationchange', function() {
+    if (window.innerHeight > window.innerWidth) {
+      document.getElementById('rotate-warning').style.display = 'flex';
+      document.getElementById('game-container').style.display = 'none';
+    } else {
+      document.getElementById('rotate-warning').style.display = 'none';
+      document.getElementById('game-container').style.display = 'block';
+    }
+  });
+  if (window.innerHeight > window.innerWidth) {
+    document.getElementById('rotate-warning').style.display = 'flex';
+    document.getElementById('game-container').style.display = 'none';
+  }
+  <div id="mobile-controls">
+    <div id="left-controls">
+      <button class="arrow-btn" id="btn-left">◀</button>
+      <button class="arrow-btn" id="btn-right">▶</button>
+    </div>
+    <div id="right-controls">
+      <button class="action-btn" id="btn-attack">⚔️</button>
+      <button class="dash-btn" id="btn-dash">⤺</button>
+      <button class="interact-btn" id="btn-interact">E</button>
+    </div>
+  </div>
+  // ---- MOBILE CONTROLS ----
+  function isMobile() {
+    return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent);
+  }
+
+  function setupMobileControls() {
+    if (!isMobile()) return;
+    document.getElementById('mobile-controls').style.display = 'block';
+    // Left
+    let leftInterval = null;
+    document.getElementById('btn-left').addEventListener('touchstart', ()=>{
+      G.keys['ArrowLeft']=true;
+      leftInterval = setInterval(()=>{ G.keys['ArrowLeft']=true; }, 50);
+    });
+    document.getElementById('btn-left').addEventListener('touchend', ()=>{
+      G.keys['ArrowLeft']=false;
+      clearInterval(leftInterval);
+    });
+    // Right
+    let rightInterval = null;
+    document.getElementById('btn-right').addEventListener('touchstart', ()=>{
+      G.keys['ArrowRight']=true;
+      rightInterval = setInterval(()=>{ G.keys['ArrowRight']=true; }, 50);
+    });
+    document.getElementById('btn-right').addEventListener('touchend', ()=>{
+      G.keys['ArrowRight']=false;
+      clearInterval(rightInterval);
+    });
+    // Attack
+    document.getElementById('btn-attack').addEventListener('touchstart', ()=>{ G.keysPressed['KeyZ']=true; });
+    document.getElementById('btn-attack').addEventListener('touchend', ()=>{ G.keysPressed['KeyZ']=false; });
+    // Dash
+    document.getElementById('btn-dash').addEventListener('touchstart', ()=>{ G.keysPressed['KeyX']=true; });
+    document.getElementById('btn-dash').addEventListener('touchend', ()=>{ G.keysPressed['KeyX']=false; });
+    // Interact
+    document.getElementById('btn-interact').addEventListener('touchstart', ()=>{ G.keysPressed['KeyE']=true; });
+    document.getElementById('btn-interact').addEventListener('touchend', ()=>{ G.keysPressed['KeyE']=false; });
+  }
+
+  function showMobileInteract(show) {
+    const btn = document.getElementById('btn-interact');
+    btn.style.display = show ? 'inline-flex' : 'none';
+  }
+
+  setupMobileControls();
   <canvas id="gameCanvas" width="800" height="600"></canvas>
 
   <!-- HUD -->
@@ -1981,6 +2162,7 @@ function drawEnemies() {
 }
 
 function drawNPCs() {
+  let canInteract = false;
   for (const npc of G.npcs) {
     const sx = npc.x - G.camera.x;
     const sy = npc.y - G.camera.y;
@@ -1990,8 +2172,21 @@ function drawNPCs() {
     if (canInteractWith(npc)) {
       ctx.fillStyle='#f0d060'; ctx.font='11px Cinzel';
       ctx.fillText('[E]', sx+2, sy-6);
+      canInteract = true;
     }
   }
+  // También checar objetos interactivos
+  if (!canInteract && currentZoneData && G.player) {
+    for (const obj of (currentZoneData.objects||[])) {
+      if (['bed','player_house','mine_entrance','door','chest'].includes(obj.type)) {
+        if (rectDist(G.player, {x:obj.x,y:obj.y,w:obj.w||30,h:obj.h||30}) < 60) {
+          canInteract = true;
+          break;
+        }
+      }
+    }
+  }
+  if (isMobile()) showMobileInteract(canInteract);
 }
 
 function drawNPCSprite(npc, sx, sy) {
