@@ -1,0 +1,3221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isla Meridian - RPG Demo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Crimson Text', serif;
+    overflow: hidden;
+  }
+
+  #game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    overflow: hidden;
+    border: 3px solid #8b6914;
+    box-shadow: 0 0 40px rgba(139,105,20,0.5), inset 0 0 20px rgba(0,0,0,0.8);
+  }
+
+  canvas {
+    display: block;
+    image-rendering: pixelated;
+  }
+
+  /* UI Overlay */
+  #ui-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  #hud {
+    position: absolute;
+    top: 8px; left: 8px;
+    pointer-events: none;
+  }
+
+  .stat-bar-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    gap: 6px;
+  }
+
+  .stat-label {
+    color: #f0d060;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    width: 30px;
+    text-shadow: 1px 1px 2px #000;
+  }
+
+  .stat-bar-bg {
+    width: 120px;
+    height: 12px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid #555;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .stat-bar-fill {
+    height: 100%;
+    transition: width 0.3s;
+    border-radius: 2px;
+  }
+
+  #hp-bar { background: linear-gradient(90deg, #c0392b, #e74c3c); }
+  #mp-bar { background: linear-gradient(90deg, #1a5276, #2980b9); }
+
+  #weapon-icon {
+    position: absolute;
+    bottom: 50px; right: 10px;
+    background: rgba(0,0,0,0.8);
+    border: 2px solid #8b6914;
+    border-radius: 4px;
+    width: 50px; height: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #fff;
+  }
+
+  #weapon-icon span {
+    font-size: 8px;
+    color: #aaa;
+    font-family: 'Cinzel', serif;
+    margin-top: 2px;
+  }
+
+  #gold-display {
+    position: absolute;
+    top: 8px; right: 10px;
+    background: rgba(0,0,0,0.8);
+    border: 1px solid #8b6914;
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: #f0d060;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+  }
+
+  #zone-name {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    border: 1px solid #8b6914;
+    border-radius: 4px;
+    padding: 4px 12px;
+    color: #f0d060;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  #mini-map {
+    position: absolute;
+    bottom: 10px; left: 10px;
+    width: 80px; height: 60px;
+    background: rgba(0,0,0,0.8);
+    border: 1px solid #555;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  #mini-map canvas { width: 80px; height: 60px; }
+
+  /* Screens */
+  .screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.92);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .screen h1 {
+    font-family: 'Cinzel', serif;
+    color: #f0d060;
+    font-size: 28px;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(240,208,96,0.8);
+    margin-bottom: 8px;
+  }
+
+  .screen h2 {
+    font-family: 'Cinzel', serif;
+    color: #c9a227;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .screen p {
+    color: #ccc;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-bottom: 16px;
+  }
+
+  .choice-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+    max-width: 640px;
+    margin-bottom: 16px;
+  }
+
+  .choice-card {
+    background: rgba(20,15,5,0.9);
+    border: 2px solid #444;
+    border-radius: 6px;
+    padding: 14px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    pointer-events: all;
+  }
+
+  .choice-card:hover { border-color: #c9a227; background: rgba(40,30,10,0.9); transform: translateY(-2px); }
+  .choice-card.selected { border-color: #f0d060; background: rgba(60,45,10,0.9); box-shadow: 0 0 12px rgba(240,208,96,0.4); }
+
+  .choice-icon { font-size: 28px; margin-bottom: 6px; }
+
+  .choice-name {
+    font-family: 'Cinzel', serif;
+    color: #f0d060;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .choice-desc {
+    color: #aaa;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .choice-stats {
+    margin-top: 6px;
+    font-size: 10px;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    color: #888;
+    font-size: 10px;
+    margin-top: 2px;
+  }
+
+  .stat-val { color: #c9a227; }
+
+  .btn {
+    background: linear-gradient(180deg, #8b6914, #5a4409);
+    border: 2px solid #c9a227;
+    color: #f0d060;
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    padding: 10px 28px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    pointer-events: all;
+    letter-spacing: 1px;
+  }
+
+  .btn:hover { background: linear-gradient(180deg, #c9a227, #8b6914); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(240,208,96,0.4); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* Dialogue */
+  #dialogue-box {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(5,3,0,0.95);
+    border-top: 2px solid #8b6914;
+    padding: 14px 60px 14px 14px;
+    pointer-events: all;
+    z-index: 20;
+    min-height: 90px;
+  }
+
+  #dialogue-name {
+    font-family: 'Cinzel', serif;
+    color: #f0d060;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  #dialogue-text {
+    color: #ddd;
+    font-size: 13px;
+    line-height: 1.6;
+    font-family: 'Crimson Text', serif;
+  }
+
+  #dialogue-continue {
+    position: absolute;
+    right: 14px; bottom: 14px;
+    color: #8b6914;
+    font-size: 20px;
+    animation: blink 0.8s infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  #dialogue-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .dialogue-opt {
+    background: rgba(139,105,20,0.3);
+    border: 1px solid #8b6914;
+    color: #f0d060;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.2s;
+  }
+
+  .dialogue-opt:hover { background: rgba(139,105,20,0.7); }
+
+  /* Shop */
+  #shop-screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.93);
+    z-index: 90;
+    padding: 20px;
+    overflow-y: auto;
+    display: none;
+    pointer-events: all;
+  }
+
+  #shop-screen h2 {
+    font-family: 'Cinzel', serif;
+    color: #f0d060;
+    text-align: center;
+    margin-bottom: 16px;
+    font-size: 20px;
+  }
+
+  .shop-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 600px;
+    margin: 0 auto 16px;
+  }
+
+  .shop-item {
+    background: rgba(20,15,5,0.9);
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .shop-item-icon { font-size: 22px; }
+
+  .shop-item-info { flex: 1; }
+
+  .shop-item-name {
+    font-family: 'Cinzel', serif;
+    color: #f0d060;
+    font-size: 12px;
+  }
+
+  .shop-item-desc { color: #888; font-size: 11px; }
+
+  .shop-item-price { color: #f0d060; font-size: 11px; margin-top: 3px; }
+
+  .shop-btn {
+    background: rgba(139,105,20,0.4);
+    border: 1px solid #8b6914;
+    color: #f0d060;
+    font-size: 11px;
+    padding: 4px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-family: 'Cinzel', serif;
+  }
+
+  .shop-btn:hover { background: rgba(139,105,20,0.8); }
+
+  /* Inventory */
+  #inventory-panel {
+    position: absolute;
+    top: 30px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(5,3,0,0.97);
+    border: 2px solid #8b6914;
+    border-radius: 6px;
+    padding: 16px;
+    z-index: 80;
+    width: 300px;
+    display: none;
+    pointer-events: all;
+  }
+
+  #inventory-panel h3 {
+    font-family: 'Cinzel', serif;
+    color: #f0d060;
+    text-align: center;
+    margin-bottom: 12px;
+    font-size: 15px;
+  }
+
+  .inv-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px;
+    border-bottom: 1px solid #333;
+    color: #ccc;
+    font-size: 12px;
+  }
+
+  .inv-item:last-child { border-bottom: none; }
+
+  .use-btn {
+    margin-left: auto;
+    background: rgba(139,105,20,0.4);
+    border: 1px solid #8b6914;
+    color: #f0d060;
+    font-size: 10px;
+    padding: 2px 8px;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+
+  /* Controls hint */
+  #controls-hint {
+    position: absolute;
+    bottom: 50px; right: 68px;
+    color: rgba(150,130,90,0.7);
+    font-size: 9px;
+    font-family: 'Cinzel', serif;
+    text-align: right;
+    line-height: 1.8;
+    pointer-events: none;
+  }
+
+  /* Notifications */
+  #notification {
+    position: absolute;
+    top: 50px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.85);
+    border: 1px solid #8b6914;
+    color: #f0d060;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    padding: 6px 16px;
+    border-radius: 4px;
+    transition: opacity 0.5s;
+    pointer-events: none;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Death / Win screens */
+  #death-screen, #win-screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 200;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: all;
+  }
+
+  #death-screen h1 { color: #c0392b; font-family: 'Cinzel', serif; font-size: 36px; margin-bottom: 16px; text-shadow: 0 0 20px #c0392b; }
+  #win-screen h1 { color: #f0d060; font-family: 'Cinzel', serif; font-size: 32px; margin-bottom: 16px; text-shadow: 0 0 20px #f0d060; }
+  #death-screen p, #win-screen p { color: #ccc; font-size: 14px; margin-bottom: 20px; text-align: center; max-width: 500px; }
+
+  /* Title screen special */
+  #title-screen {
+    background: radial-gradient(ellipse at center, #1a1205 0%, #000 100%);
+  }
+
+  .title-subtitle {
+    color: #888;
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: 15px;
+    margin-bottom: 30px;
+  }
+
+  .title-lore {
+    max-width: 540px;
+    color: #aaa;
+    font-size: 13px;
+    line-height: 1.7;
+    text-align: center;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  /* Chest animation */
+  #chest-modal {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    background: rgba(5,3,0,0.97);
+    border: 2px solid #8b6914;
+    border-radius: 6px;
+    padding: 24px;
+    text-align: center;
+    z-index: 150;
+    display: none;
+    pointer-events: all;
+  }
+
+  #chest-modal h3 { font-family: 'Cinzel', serif; color: #f0d060; margin-bottom: 12px; }
+  #chest-modal p { color: #ccc; font-size: 13px; margin-bottom: 12px; }
+  .chest-icon { font-size: 48px; margin-bottom: 8px; animation: chest-open 0.5s ease; }
+  @keyframes chest-open { from { transform: scale(0.5) rotate(-10deg); } to { transform: scale(1) rotate(0); } }
+
+  /* Tutorial popup */
+  #tutorial-popup {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    background: rgba(5,3,0,0.97);
+    border: 2px solid #c9a227;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    z-index: 150;
+    width: 340px;
+    display: none;
+    pointer-events: all;
+  }
+
+  #tutorial-popup h3 { font-family: 'Cinzel', serif; color: #f0d060; margin-bottom: 10px; font-size: 15px; }
+  #tutorial-popup p { color: #ccc; font-size: 12px; line-height: 1.7; margin-bottom: 12px; }
+  #tutorial-popup .key { background: rgba(139,105,20,0.3); border: 1px solid #8b6914; border-radius: 3px; padding: 1px 5px; font-family: monospace; color: #f0d060; }
+
+  /* HP Numbers popup */
+  .damage-number {
+    position: absolute;
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: bold;
+    pointer-events: none;
+    animation: float-up 1s ease forwards;
+    z-index: 50;
+    text-shadow: 1px 1px 2px #000;
+  }
+  @keyframes float-up { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(-40px); } }
+
+  #controls-info {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    color: rgba(120,100,60,0.6);
+    font-size: 9px;
+    font-family: 'Cinzel', serif;
+    text-align: right;
+    line-height: 2;
+    pointer-events: none;
+  }
+
+  .quest-tracker {
+    position: absolute;
+    top: 55px; right: 10px;
+    background: rgba(0,0,0,0.75);
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 6px 10px;
+    max-width: 160px;
+    pointer-events: none;
+  }
+
+  .quest-title {
+    font-family: 'Cinzel', serif;
+    color: #c9a227;
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .quest-obj {
+    color: #aaa;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .quest-obj.done { color: #27ae60; text-decoration: line-through; }
+
+  /* Island Map */
+  #map-btn {
+    position: absolute;
+    bottom: 10px; right: 68px;
+    background: rgba(0,0,0,0.8);
+    border: 2px solid #8b6914;
+    color: #f0d060;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    pointer-events: all;
+    z-index: 15;
+  }
+  #map-btn:hover { background: rgba(139,105,20,0.6); }
+
+  #map-modal {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(5,3,0,0.97);
+    border: 2px solid #8b6914;
+    border-radius: 8px;
+    padding: 16px;
+    z-index: 120;
+    display: none;
+    pointer-events: all;
+    width: 480px;
+  }
+  #map-modal h3 {
+    font-family: 'Cinzel', serif;
+    color: #f0d060;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  #map-canvas-el {
+    display: block;
+    margin: 0 auto;
+    border: 1px solid #444;
+    border-radius: 4px;
+  }
+  #map-legend {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    color: #aaa;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+<div id="game-container">
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+  <!-- HUD -->
+  <div id="ui-overlay">
+    <div id="hud">
+      <div class="stat-bar-container">
+        <span class="stat-label">HP</span>
+        <div class="stat-bar-bg"><div class="stat-bar-fill" id="hp-bar" style="width:100%"></div></div>
+        <span id="hp-text" style="color:#e74c3c;font-size:10px;font-family:'Cinzel',serif;">100/100</span>
+      </div>
+    </div>
+    <div id="gold-display">💰 0 oro</div>
+    <div id="zone-name" style="display:none">Aldea Pedregal</div>
+    <div id="weapon-icon" style="display:none"><span id="weapon-emoji">⚔️</span><span id="weapon-name-hud">Espada</span></div>
+
+    <div id="quest-tracker" class="quest-tracker" style="display:none">
+      <div class="quest-title">📋 MISIÓN ACTIVA</div>
+      <div id="quest-objectives" class="quest-obj"></div>
+    </div>
+
+    <div id="controls-info">
+      WASD/Flechas: Mover<br>
+      Z/J: Atacar &nbsp;&nbsp;X/K: Dash<br>
+      E: Interactuar<br>
+      I: Inventario &nbsp;M: Mapa
+    </div>
+  </div>
+
+  <!-- Screens -->
+  <div id="title-screen" class="screen">
+    <h1>⚔️ ISLA PEDREGAL ⚔️</h1>
+    <div class="title-subtitle">Una demo del mundo de las Cinco Islas</div>
+    <div class="title-lore">
+      En las costas del mar de Velmor se alzan cinco islas. La tuya, Pedregal, es la más humilde.<br>
+      Sus gentes trabajan las minas y los campos para abastecer a los ricos señores de la Isla del Centro.<br>
+      Pero hoy, todo está a punto de cambiar...
+    </div>
+    <button class="btn" onclick="startGame()">COMENZAR AVENTURA</button>
+  </div>
+
+  <div id="char-screen" class="screen" style="display:none">
+    <h1>ELIGE TU EQUIPAMIENTO</h1>
+    <h2>Arma</h2>
+    <div class="choice-grid" id="weapon-choices">
+      <div class="choice-card" onclick="selectWeapon('staff')" data-weapon="staff">
+        <div class="choice-icon">🔮</div>
+        <div class="choice-name">Báculo de Llamas</div>
+        <div class="choice-desc">Aplica fuego a los enemigos.<br>Rango medio, poco daño.</div>
+        <div class="choice-stats">
+          <div class="stat-row"><span>Daño:</span><span class="stat-val">★★☆☆☆</span></div>
+          <div class="stat-row"><span>Rango:</span><span class="stat-val">★★★☆☆</span></div>
+          <div class="stat-row"><span>Efecto:</span><span class="stat-val">🔥 Fuego</span></div>
+        </div>
+      </div>
+      <div class="choice-card" onclick="selectWeapon('sword')" data-weapon="sword">
+        <div class="choice-icon">⚔️</div>
+        <div class="choice-name">Espada de Hierro</div>
+        <div class="choice-desc">Mayor daño posible.<br>Pero corto alcance.</div>
+        <div class="choice-stats">
+          <div class="stat-row"><span>Daño:</span><span class="stat-val">★★★★★</span></div>
+          <div class="stat-row"><span>Rango:</span><span class="stat-val">★☆☆☆☆</span></div>
+          <div class="stat-row"><span>Efecto:</span><span class="stat-val">— Ninguno</span></div>
+        </div>
+      </div>
+      <div class="choice-card" onclick="selectWeapon('bow')" data-weapon="bow">
+        <div class="choice-icon">🏹</div>
+        <div class="choice-name">Arco del Cazador</div>
+        <div class="choice-desc">Mayor rango del juego.<br>Daño medio.</div>
+        <div class="choice-stats">
+          <div class="stat-row"><span>Daño:</span><span class="stat-val">★★★☆☆</span></div>
+          <div class="stat-row"><span>Rango:</span><span class="stat-val">★★★★★</span></div>
+          <div class="stat-row"><span>Efecto:</span><span class="stat-val">— Ninguno</span></div>
+        </div>
+      </div>
+    </div>
+    <h2>Armadura</h2>
+    <div class="choice-grid" id="armor-choices">
+      <div class="choice-card" onclick="selectArmor('heavy')" data-armor="heavy">
+        <div class="choice-icon">🛡️</div>
+        <div class="choice-name">Armadura Pesada</div>
+        <div class="choice-desc">Defensa muy alta.<br>Te ralentiza bastante.</div>
+        <div class="choice-stats">
+          <div class="stat-row"><span>Defensa:</span><span class="stat-val">★★★★★</span></div>
+          <div class="stat-row"><span>Velocidad:</span><span class="stat-val">★★☆☆☆</span></div>
+        </div>
+      </div>
+      <div class="choice-card" onclick="selectArmor('normal')" data-armor="normal">
+        <div class="choice-icon">🧥</div>
+        <div class="choice-name">Armadura Normal</div>
+        <div class="choice-desc">Defensa media.<br>Velocidad normal.</div>
+        <div class="choice-stats">
+          <div class="stat-row"><span>Defensa:</span><span class="stat-val">★★★☆☆</span></div>
+          <div class="stat-row"><span>Velocidad:</span><span class="stat-val">★★★☆☆</span></div>
+        </div>
+      </div>
+      <div class="choice-card" onclick="selectArmor('light')" data-armor="light">
+        <div class="choice-icon">🥋</div>
+        <div class="choice-name">Armadura Ligera</div>
+        <div class="choice-desc">Poca defensa.<br>Velocidad muy alta.</div>
+        <div class="choice-stats">
+          <div class="stat-row"><span>Defensa:</span><span class="stat-val">★☆☆☆☆</span></div>
+          <div class="stat-row"><span>Velocidad:</span><span class="stat-val">★★★★★</span></div>
+        </div>
+      </div>
+    </div>
+    <button class="btn" id="start-btn" onclick="beginAdventure()" disabled>COMENZAR</button>
+  </div>
+
+  <!-- Dialogue box -->
+  <div id="dialogue-box" style="display:none">
+    <div id="dialogue-name"></div>
+    <div id="dialogue-text"></div>
+    <div id="dialogue-options"></div>
+    <div id="dialogue-continue">▼</div>
+  </div>
+
+  <!-- Shop -->
+  <div id="shop-screen">
+    <h2>🏪 MERCADER ROGEL</h2>
+    <p style="color:#888;text-align:center;font-size:12px;margin-bottom:12px;font-family:'Crimson Text',serif">Oro disponible: <span id="shop-gold" style="color:#f0d060"></span></p>
+    <div class="shop-grid" id="shop-items"></div>
+    <div style="text-align:center"><button class="btn" onclick="closeShop()">CERRAR TIENDA</button></div>
+  </div>
+
+  <!-- Inventory -->
+  <div id="inventory-panel">
+    <h3>🎒 INVENTARIO</h3>
+    <div id="inventory-list"></div>
+    <div style="text-align:center;margin-top:10px"><button class="btn" onclick="closeInventory()" style="padding:6px 20px;font-size:12px">CERRAR</button></div>
+  </div>
+
+  <!-- Chest modal -->
+  <div id="chest-modal">
+    <div class="chest-icon">📦</div>
+    <h3>¡COFRE ENCONTRADO!</h3>
+    <p id="chest-contents"></p>
+    <button class="btn" onclick="closeChest()" style="padding:6px 20px;font-size:12px">TOMAR TODO</button>
+  </div>
+
+  <!-- Tutorial popup -->
+  <div id="tutorial-popup">
+    <h3 id="tutorial-title">📜 VIEJO ALDERMAN</h3>
+    <p id="tutorial-text"></p>
+    <button class="btn" onclick="closeTutorial()" style="padding:6px 20px;font-size:12px">ENTENDIDO</button>
+  </div>
+
+  <!-- Death Screen -->
+  <div id="death-screen">
+    <h1>💀 HAS CAÍDO</h1>
+    <p>El peso de la derrota cae sobre ti...<br>Volviendo al último punto de guardado.</p>
+    <button class="btn" onclick="loadSave()" style="margin-top:10px">CONTINUAR DESDE GUARDADO</button>
+  </div>
+
+  <!-- Win Screen -->
+  <div id="win-screen">
+    <h1>🏆 ¡VICTORIA!</h1>
+    <p>Has entregado la Reliquia al comerciante del puerto.<br>El camino a la Gran Isla está ahora abierto...<br><br>
+    Gracias por jugar esta demo de <strong style="color:#f0d060">Isla Pedregal</strong>.<br>
+    La historia continúa pronto en las otras 4 islas.</p>
+    <button class="btn" onclick="location.reload()" style="margin-top:10px">JUGAR DE NUEVO</button>
+  </div>
+
+  <!-- Damage numbers container -->
+  <div id="damage-numbers"></div>
+
+  <!-- Map button -->
+  <button id="map-btn" onclick="toggleMap()" style="display:none">🗺 MAPA [M]</button>
+
+  <!-- Island Map Modal -->
+  <div id="map-modal">
+    <h3>🗺 MAPA DE ISLA PEDREGAL</h3>
+    <canvas id="map-canvas-el" width="440" height="300"></canvas>
+    <div id="map-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#4a8a2f"></div>Llanura</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#c2b280"></div>Costa/Arena</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#1a6eb0"></div>Mar</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#8b7355"></div>Camino</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#555"></div>Edificios</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#1a1a1a"></div>Minas</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2c1a0a"></div>Camp. Bandido</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f0d060;border-radius:50%"></div>Tú</div>
+    </div>
+    <div style="text-align:center;margin-top:10px">
+      <button class="btn" onclick="toggleMap()" style="padding:5px 18px;font-size:11px">CERRAR [M]</button>
+    </div>
+  </div>
+
+  <!-- Notification -->
+  <div id="notification" style="opacity:0"></div>
+</div>
+
+<script>
+// ============================================================
+// GAME ENGINE - ISLA PEDREGAL RPG DEMO
+// ============================================================
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// ---- GAME STATE ----
+let G = {
+  screen: 'title', // title, char, playing
+  player: null,
+  enemies: [],
+  npcs: [],
+  projectiles: [],
+  particles: [],
+  currentZone: 'house_start',
+  zones: {},
+  camera: { x: 0, y: 0 },
+  keys: {},
+  keysPressed: {},
+  frame: 0,
+  paused: false,
+  dialogueActive: false,
+  currentDialogue: null,
+  dialoguePage: 0,
+  shopOpen: false,
+  inventoryOpen: false,
+  tutorialOpen: false,
+  save: null,
+  tutorialStep: 0,
+  tutorialShown: [],
+  questFlags: {
+    metMerchant: false,
+    hasRelicQuest: false,
+    relicFound: false,
+    winDelivered: false
+  },
+  chestOpen: false,
+  fadeAlpha: 0,
+  fadingIn: false,
+  fadingOut: false,
+  fadeCallback: null,
+  spawnCooldowns: {}
+};
+
+// ---- PLAYER CONFIG ----
+const WEAPON_CONFIGS = {
+  staff:  { name:'Báculo de Llamas', emoji:'🔮', damage:8,  range:110, speed:0.25, cooldown:45, color:'#e67e22', upgraded: false, upgradeName:'Báculo Élfico' },
+  sword:  { name:'Espada de Hierro',  emoji:'⚔️', damage:22, range:50,  speed:0.15, cooldown:20, color:'#95a5a6', upgraded: false, upgradeName:'Espada de Acero' },
+  bow:    { name:'Arco del Cazador',  emoji:'🏹', damage:14, range:200, speed:0.35, cooldown:35, color:'#8b4513', upgraded: false, upgradeName:'Arco Compuesto' }
+};
+
+const ARMOR_CONFIGS = {
+  heavy:  { name:'Armadura Pesada',  defense:20, speed:1.3,  hp:130, color:'#555' },
+  normal: { name:'Armadura Normal',  defense:12, speed:1.8,  hp:100, color:'#888' },
+  light:  { name:'Armadura Ligera',  defense:5,  speed:2.5,  hp:80,  color:'#a8a' }
+};
+
+// ---- ZONES ----
+// Each zone: {name, width, height, tiles, objects, exits, spawnRules}
+// Tile types: 0=floor, 1=wall, 2=water, 3=sand, 4=grass, 5=dark_grass, 6=mine_floor, 7=road
+
+function buildZones() {
+  G.zones = {};
+
+  // Helper to create standard border walls with exit gaps
+  function borderWalls(w, h, exits) {
+    const walls = [];
+    // We'll add exits as open gaps; for now just return 4 full-border walls
+    // (resolveCollisions skips walls overlapping exits)
+    walls.push({type:'wall', x:0,   y:0,   w:w,  h:16});
+    walls.push({type:'wall', x:0,   y:h-16,w:w,  h:16});
+    walls.push({type:'wall', x:0,   y:0,   w:16, h:h});
+    walls.push({type:'wall', x:w-16,y:0,   w:16, h:h});
+    return walls;
+  }
+
+  const W = 800, H = 600; // small zone size
+
+  // ===================== HOUSE START =====================
+  G.zones['house_start'] = {
+    name: 'Casa de tu Madre',
+    width: 640, height: 480,
+    bgColor: '#3d2b1f', tileColor: '#5a3e28',
+    objects: [
+      {type:'wall', x:0,y:0,w:640,h:16},
+      {type:'wall', x:0,y:464,w:640,h:16},
+      {type:'wall', x:0,y:0,w:16,h:480},
+      {type:'wall', x:624,y:0,w:16,h:480},
+      {type:'bed',    x:50,  y:60,  w:70, h:40},
+      {type:'table',  x:260, y:60,  w:80, h:40},
+      {type:'barrel', x:560, y:60,  w:30, h:30},
+      {type:'rug',    x:100, y:200, w:200, h:120},
+      {type:'door',   x:290, y:450, w:60,  h:14, target:'village_center', tx:400, ty:490, label:'Salir'},
+    ],
+    exits: [{x:285, y:450, w:70, h:16, target:'village_center', tx:400, ty:490}],
+    npcs: [
+      {id:'mother', x:80,  y:80,  name:'Tu Madre',  sprite:'person_sick',   dialogue:'mother'},
+      {id:'doctor', x:260, y:100, name:'Dr. Hagen', sprite:'person_doctor', dialogue:'doctor'},
+    ],
+    spawnRules: null
+  };
+
+  // ===================== VILLAGE CENTER =====================
+  G.zones['village_center'] = {
+    name: 'Aldea Pedregal',
+    width: 1600, height: 1200,
+    bgColor: '#3a6e23', tileColor: '#4a8a2f',
+    objects: [
+      {type:'wall', x:0,y:0,w:1600,h:20},
+      {type:'wall', x:0,y:1180,w:1600,h:20},
+      {type:'wall', x:0,y:0,w:20,h:1200},
+      {type:'wall', x:1580,y:0,w:20,h:1200},
+      {type:'road', x:720,y:0,   w:80,h:600},
+      {type:'road', x:720,y:600, w:80,h:600},
+      {type:'road', x:0,  y:560, w:1600,h:80},
+      {type:'house', x:80,  y:80,  w:90,h:70},
+      {type:'house', x:230, y:80,  w:90,h:70},
+      {type:'house', x:380, y:80,  w:90,h:70},
+      {type:'house', x:80,  y:230, w:90,h:70},
+      {type:'house', x:1130,y:80,  w:90,h:70},
+      {type:'house', x:1280,y:80,  w:90,h:70},
+      {type:'house', x:1130,y:230, w:90,h:70},
+      {type:'house', x:1280,y:230, w:90,h:70},
+      {type:'player_house', x:690,y:60,w:110,h:80, target:'house_start', tx:320, ty:430, label:'Tu Casa'},
+      {type:'well',   x:745,y:380, w:40,h:40},
+      {type:'market', x:280,y:610, w:120,h:80},
+      {type:'tree',   x:500,y:150, w:30,h:30},
+      {type:'tree',   x:540,y:210, w:30,h:30},
+      {type:'tree',   x:1000,y:150,w:30,h:30},
+      {type:'tree',   x:960,y:210, w:30,h:30},
+      {type:'sign',   x:760,y:680, w:20,h:20, label:'→ Llanura'},
+    ],
+    exits: [
+      {x:720,  y:0,    w:80, h:20, target:'north_a',        tx:400, ty:560},
+      {x:720,  y:1180, w:80, h:20, target:'south_a',        tx:400, ty:30},
+      {x:0,    y:560,  w:20, h:80, target:'west_coast_a',   tx:760, ty:300},
+      {x:1580, y:560,  w:20, h:80, target:'east_a',         tx:30,  ty:300},
+    ],
+    npcs: [
+      {id:'alderman', x:820,y:490, name:'Viejo Alderman', sprite:'old_man',   dialogue:'tutorial_man', isTutorial:true},
+      {id:'merchant', x:310,y:650, name:'Mercader Rogel', sprite:'merchant',  dialogue:'merchant', isShop:true},
+      {id:'villager1',x:180,y:560, name:'Mera',           sprite:'person',    dialogue:'villager1'},
+      {id:'villager2',x:1250,y:560,name:'Borrus',         sprite:'person2',   dialogue:'villager2'},
+      {id:'villager3',x:430,y:350, name:'Helga',          sprite:'person3',   dialogue:'villager3'},
+    ],
+    spawnRules: null
+  };
+
+  // ===================== NORTH ZONES (2x2 grid) =====================
+  // north_a = NW quad (connects to village top, north_b right, west_coast_a bottom-left implied via village)
+  G.zones['north_a'] = {
+    name: 'Llanura Norte - Poniente',
+    width: W, height: H,
+    bgColor: '#4a8a2f', tileColor: '#5aa535',
+    objects: [
+      ...borderWalls(W,H,[]),
+      {type:'farm',  x:60,  y:60,  w:220,h:160, label:'Granja Stelnar'},
+      {type:'tree',  x:400, y:100, w:30, h:30},
+      {type:'tree',  x:450, y:150, w:30, h:30},
+      {type:'rock',  x:600, y:300, w:40, h:30},
+      {type:'tree',  x:300, y:400, w:30, h:30},
+    ],
+    exits: [
+      {x:720,y:H-16,w:80,h:16, target:'village_center', tx:760,ty:30},
+      {x:W-16,y:250,w:16,h:80, target:'north_b',        tx:30, ty:250},
+    ],
+    spawnRules: { boar:{chance:0.6,max:3}, bull:{chance:0.25,max:2} }
+  };
+
+  G.zones['north_b'] = {
+    name: 'Llanura Norte - Levante',
+    width: W, height: H,
+    bgColor: '#4a8a2f', tileColor: '#5aa535',
+    objects: [
+      ...borderWalls(W,H,[]),
+      {type:'farm',  x:520, y:60,  w:220,h:160, label:'Granja Humus'},
+      {type:'tree',  x:100, y:200, w:30, h:30},
+      {type:'tree',  x:200, y:150, w:30, h:30},
+      {type:'rock',  x:350, y:350, w:40, h:30},
+      {type:'tree',  x:600, y:400, w:30, h:30},
+    ],
+    exits: [
+      {x:0,  y:250, w:16, h:80, target:'north_a',       tx:W-30,ty:250},
+      {x:W-16,y:250,w:16, h:80, target:'east_a',        tx:30,  ty:250},
+    ],
+    spawnRules: { boar:{chance:0.6,max:3}, bull:{chance:0.25,max:2} }
+  };
+
+  // ===================== SOUTH ZONES (2x2 grid) =====================
+  G.zones['south_a'] = {
+    name: 'Llanura Sur - Poniente',
+    width: W, height: H,
+    bgColor: '#4a6e23', tileColor: '#3d6e1f',
+    objects: [
+      ...borderWalls(W,H,[]),
+      {type:'mine_entrance', x:120,y:380,w:80,h:60, target:'mine_special', tx:100,ty:200, label:'Mina Negra'},
+      {type:'tree',  x:350, y:100, w:30,h:30},
+      {type:'tree',  x:400, y:150, w:30,h:30},
+      {type:'rock',  x:550, y:250, w:40,h:30},
+      {type:'rock',  x:200, y:250, w:40,h:30},
+      {type:'tree',  x:600, y:400, w:30,h:30},
+    ],
+    exits: [
+      {x:360,y:0,    w:80, h:16, target:'village_center', tx:760,ty:1160},
+      {x:W-16,y:250, w:16, h:80, target:'south_b',        tx:30, ty:250},
+    ],
+    spawnRules: { boar:{chance:0.5,max:3}, bull:{chance:0.2,max:2} }
+  };
+
+  G.zones['south_b'] = {
+    name: 'Llanura Sur - Levante',
+    width: W, height: H,
+    bgColor: '#4a6e23', tileColor: '#3d6e1f',
+    objects: [
+      ...borderWalls(W,H,[]),
+      {type:'mine_entrance', x:550,y:120,w:80,h:60, target:'mine_empty', tx:100,ty:200, label:'Mina Norte'},
+      {type:'bandit_camp',   x:450,y:350,w:220,h:160, label:'Campamento Bandido'},
+      {type:'tree',  x:100, y:200, w:30,h:30},
+      {type:'tree',  x:200, y:150, w:30,h:30},
+      {type:'rock',  x:300, y:300, w:40,h:30},
+    ],
+    exits: [
+      {x:0,   y:250, w:16, h:80, target:'south_a',  tx:W-30,ty:250},
+      {x:W-16,y:250, w:16, h:80, target:'east_a',   tx:30,  ty:450},
+    ],
+    spawnRules: { boar:{chance:0.4,max:2}, bandit:{chance:0.5,max:3} }
+  };
+
+  // ===================== EAST ZONES (2x2 grid) =====================
+  G.zones['east_a'] = {
+    name: 'Planicie Este - Norte',
+    width: W, height: H,
+    bgColor: '#4a8a2f', tileColor: '#5aa535',
+    objects: [
+      ...borderWalls(W,H,[]),
+      {type:'tree',  x:150,y:150,w:30,h:30},
+      {type:'tree',  x:250,y:200,w:30,h:30},
+      {type:'tree',  x:550,y:100,w:30,h:30},
+      {type:'rock',  x:400,y:300,w:40,h:30},
+      {type:'rock',  x:600,y:400,w:40,h:30},
+    ],
+    exits: [
+      {x:0,   y:250, w:16, h:80, target:'village_center', tx:1560,ty:600},
+      {x:0,   y:420, w:16, h:80, target:'south_b',        tx:W-30,ty:250},
+      {x:W-16,y:250, w:16, h:80, target:'east_b',         tx:30,  ty:250},
+      {x:360, y:H-16,w:80, h:16, target:'east_c',         tx:400, ty:30},
+    ],
+    spawnRules: { boar:{chance:0.55,max:3}, bull:{chance:0.25,max:2} }
+  };
+
+  G.zones['east_b'] = {
+    name: 'Planicie Este - Sur',
+    width: W, height: H,
+    bgColor: '#4a8a2f', tileColor: '#5aa535',
+    objects: [
+      ...borderWalls(W,H,[]),
+      {type:'tree',  x:100,y:100,w:30,h:30},
+      {type:'tree',  x:600,y:200,w:30,h:30},
+      {type:'rock',  x:300,y:300,w:40,h:30},
+      {type:'rock',  x:500,y:450,w:40,h:30},
+    ],
+    exits: [
+      {x:0,   y:250, w:16, h:80, target:'east_a',   tx:W-30,ty:250},
+      {x:360, y:H-16,w:80, h:16, target:'port_zone',tx:400, ty:30},
+    ],
+    spawnRules: { boar:{chance:0.5,max:3}, bull:{chance:0.2,max:2} }
+  };
+
+  G.zones['east_c'] = {
+    name: 'Camino al Puerto - Norte',
+    width: W, height: H,
+    bgColor: '#5aa020', tileColor: '#4a9020',
+    objects: [
+      ...borderWalls(W,H,[]),
+      {type:'road',  x:360,y:0,  w:80,h:H},
+      {type:'tree',  x:150,y:150,w:30,h:30},
+      {type:'tree',  x:600,y:200,w:30,h:30},
+      {type:'rock',  x:250,y:350,w:40,h:30},
+    ],
+    exits: [
+      {x:360,y:0,   w:80,h:16, target:'east_a',   tx:400,ty:H-30},
+      {x:360,y:H-16,w:80,h:16, target:'port_zone',tx:400,ty:30},
+    ],
+    spawnRules: { boar:{chance:0.3,max:2} }
+  };
+
+  // ===================== WEST COAST ZONES (2 zones) =====================
+  // West coast: LEFT side = water, RIGHT side = sand/land
+  // Water wall prevents walking into sea
+  G.zones['west_coast_a'] = {
+    name: 'Costa Occidental - Norte',
+    width: W, height: H,
+    bgColor: '#c2b280', tileColor: '#d4c48a',
+    objects: [
+      ...borderWalls(W,H,[]),
+      // Water fills left half (visually and as collision)
+      {type:'water_zone', x:0,   y:0,   w:W/2, h:H},
+      {type:'water_wall', x:0,   y:0,   w:W/2, h:H},
+      // Rocks on beach
+      {type:'rock', x:W/2+40, y:100, w:40,h:30},
+      {type:'rock', x:W/2+80, y:300, w:40,h:30},
+      {type:'rock', x:W/2+120,y:450, w:40,h:30},
+    ],
+    exits: [
+      {x:W-16,y:250,w:16,h:80, target:'village_center', tx:30,ty:600},
+      {x:360, y:H-16,w:80,h:16,target:'west_coast_b',   tx:400,ty:30},
+    ],
+    spawnRules: { crab:{chance:0.8,max:4} }
+  };
+
+  G.zones['west_coast_b'] = {
+    name: 'Costa Occidental - Sur',
+    width: W, height: H,
+    bgColor: '#c2b280', tileColor: '#d4c48a',
+    objects: [
+      ...borderWalls(W,H,[]),
+      {type:'water_zone', x:0,   y:0,   w:W/2, h:H},
+      {type:'water_wall', x:0,   y:0,   w:W/2, h:H},
+      {type:'rock', x:W/2+50, y:150, w:40,h:30},
+      {type:'rock', x:W/2+100,y:350, w:40,h:30},
+    ],
+    exits: [
+      {x:W-16, y:250, w:16, h:80, target:'south_a', tx:30, ty:300},
+      {x:360,  y:0,   w:80, h:16, target:'west_coast_a', tx:400,ty:H-30},
+    ],
+    spawnRules: { crab:{chance:0.8,max:4} }
+  };
+
+  // ===================== MINE SPECIAL =====================
+  G.zones['mine_special'] = {
+    name: 'Mina Negra - Interior',
+    width: 800, height: 600,
+    bgColor: '#1a1a1a', tileColor: '#2a2a2a',
+    objects: [
+      {type:'wall', x:0,y:0,w:800,h:20},
+      {type:'wall', x:0,y:580,w:800,h:20},
+      {type:'wall', x:0,y:0,w:20,h:600},
+      {type:'wall', x:780,y:0,w:20,h:600},
+      {type:'rock', x:100,y:100,w:40,h:30},
+      {type:'rock', x:600,y:400,w:40,h:30},
+      {type:'rock', x:300,y:300,w:40,h:30},
+      {type:'rock', x:500,y:150,w:40,h:30},
+      {type:'chest',x:700,y:80, w:30,h:25, id:'mine_chest', opened:false},
+    ],
+    exits: [{x:30,y:270,w:20,h:60, target:'south_a', tx:165,ty:370}],
+    npcs: [
+      {id:'miner_npc', x:120,y:250, name:'Minero Bart', sprite:'person', dialogue:'miner_help'},
+    ],
+    enemies_fixed: [{type:'andreon', x:580,y:280}],
+    spawnRules: null
+  };
+
+  // ===================== MINE EMPTY =====================
+  G.zones['mine_empty'] = {
+    name: 'Mina Norte - Interior',
+    width: 800, height: 600,
+    bgColor: '#1a1a1a', tileColor:'#2a2a2a',
+    objects: [
+      {type:'wall', x:0,y:0,w:800,h:20},
+      {type:'wall', x:0,y:580,w:800,h:20},
+      {type:'wall', x:0,y:0,w:20,h:600},
+      {type:'wall', x:780,y:0,w:20,h:600},
+      {type:'rock', x:200,y:100,w:40,h:30},
+      {type:'rock', x:500,y:300,w:40,h:30},
+      {type:'rock', x:350,y:200,w:40,h:30},
+    ],
+    exits: [{x:30,y:270,w:20,h:60, target:'south_b', tx:595,ty:110}],
+    npcs: [],
+    spawnRules: null
+  };
+
+  // ===================== PORT ZONE =====================
+  // Port: left 55% = land/sand, right 45% = water + docks
+  // Water wall at x=880 (55% of 1600) prevents walking into sea
+  // NPCs (golden guard etc.) placed on land/dock area only
+  G.zones['port_zone'] = {
+    name: 'Puerto Pedregal',
+    width: 1600, height: 1200,
+    bgColor: '#4a8a2f', tileColor: '#c2b280',
+    objects: [
+      {type:'wall', x:0,y:0,w:1600,h:20},
+      {type:'wall', x:0,y:1180,w:1600,h:20},
+      {type:'wall', x:0,y:0,w:20,h:1200},
+      {type:'wall', x:1580,y:0,w:20,h:1200},
+      // Background: sand left, water right
+      {type:'port_bg', x:0,y:0,w:1600,h:1200},
+      // Water wall - invisible collision barrier at water edge
+      {type:'water_wall', x:920,y:0,w:680,h:1200},
+      // Pier extends into water (walkable dock)
+      {type:'pier', x:880,  y:360, w:400,h:100, label:'Muelle Mayor'},
+      {type:'pier', x:880,  y:560, w:300,h:80,  label:'Muelle Menor'},
+      // Giant ship of the center island - docked at main pier
+      {type:'big_ship', x:1100,y:280,w:340,h:180},
+      // Small local boat
+      {type:'boat', x:920, y:560, w:80, h:50},
+      // Buildings on land
+      {type:'building', x:100, y:100, w:150,h:120, label:'Taberna del Puerto'},
+      {type:'building', x:360, y:100, w:120,h:100, label:'Almacén'},
+      {type:'building', x:600, y:100, w:130,h:100, label:'Oficina Aduanera'},
+      // Rocks on beach
+      {type:'rock', x:200,y:600,w:40,h:30},
+      {type:'rock', x:500,y:700,w:40,h:30},
+      // Fence near water edge
+      {type:'fence', x:880,y:200,w:16,h:160},
+      {type:'fence', x:880,y:460,w:16,h:100},
+      {type:'fence', x:880,y:640,w:16,h:540},
+    ],
+    exits: [
+      {x:0,y:560,w:20,h:80, target:'east_b', tx:W-30,ty:H/2},
+    ],
+    npcs: [
+      // All on land (x < 880) or on pier (x 880-1280)
+      {id:'port_merchant',    x:420, y:600,  name:'Mercader Dunbar',  sprite:'merchant2',   dialogue:'port_merchant'},
+      // Golden guard on the pier, not in water
+      {id:'golden_guard_main',x:980, y:400,  name:'???',              sprite:'golden_guard',dialogue:'golden_guard'},
+      {id:'guard_left',       x:940, y:440,  name:'Guardia',          sprite:'guard_npc',   dialogue:'guard_silent'},
+      {id:'guard_right',      x:1020,y:440,  name:'Guardia',          sprite:'guard_npc',   dialogue:'guard_silent'},
+      {id:'fisherman1',       x:200, y:400,  name:'Pescador Ugo',     sprite:'person',      dialogue:'fisherman1'},
+      {id:'fisherman2',       x:260, y:450,  name:'Pescadora Mira',   sprite:'person3',     dialogue:'fisherman2'},
+    ],
+    spawnRules: { crab:{chance:0.5,max:3} }
+  };
+}
+
+// ---- DIALOGUE DATA ----
+const DIALOGUES = {
+  mother: [
+    {name:'Tu Madre', text:'(Tosiendo) ...m-mi pequeño... no te preocupes por mí. Descansa...'},
+  ],
+  doctor: [
+    {name:'Dr. Hagen', text:'¡Ah, llegas en buen momento! Tu madre está muy enferma. Necesita la Esencia de Luz, una cura rarísima.'},
+    {name:'Dr. Hagen', text:'Solo la podrás encontrar en la Gran Isla del Centro. Son los únicos que la producen.'},
+    {name:'Dr. Hagen', text:'Las corrientes oceánicas son traidoras. La única manera de llegar es por el Puerto Pedregal, al este de la isla.'},
+    {name:'Dr. Hagen', text:'¡Date prisa, muchacho! No tenemos mucho tiempo. Sal de la aldea y busca el camino al puerto.'},
+  ],
+  tutorial_man: [
+    {name:'Viejo Alderman', text:'¡Eh, joven! Espera un momento. Permíteme enseñarte lo básico de la vida en Pedregal.'},
+    {name:'Viejo Alderman', text:'Usa WASD o las flechas para moverte. Al llegar al borde de una zona, pasarás a la siguiente.'},
+    {name:'Viejo Alderman', text:'Presiona Z (o J) para ATACAR con tu arma. Presiona X (o K) para hacer un DASH rápido hacia atrás.'},
+    {name:'Viejo Alderman', text:'Acércate a personas o cosas y presiona E para INTERACTUAR. Con I abres tu inventario.'},
+    {name:'Viejo Alderman', text:'¡Cuidado con los jabalíes de la llanura! Si mueres, volverás a tu última siesta en casa.'},
+    {name:'Viejo Alderman', text:'Para GUARDAR la partida, duerme en tu cama. ¡Buena suerte, muchacho!'},
+  ],
+  merchant: [
+    {name:'Mercader Rogel', text:'¡Buenos días! ¿Qué puedo hacer por ti?',
+     options:[
+       {text:'Ver tienda', action:'open_shop'},
+       {text:'Vender objetos', action:'sell_mode'},
+       {text:'Nada, gracias', action:'close_dialogue'}
+     ]
+    }
+  ],
+  villager1: [{name:'Mera', text:'¡Que los cielos te guarden! Hoy la niebla llegó temprano al sur... Malos presagios.'}],
+  villager2: [{name:'Borrus', text:'La mina negra al sur no produce bien últimamente... Dicen que hay algo adentro que asusta a los mineros.'}],
+  villager3: [{name:'Helga', text:'¿Viste ese extraño con armadura dorada en el puerto? No es de aquí, eso seguro.'}],
+  miner_help: [
+    {name:'Minero Bart', text:'¡Por los dioses, ayúdame! Hay una bestia enorme en el fondo de la mina. ¡Un Andreon!'},
+    {name:'Minero Bart', text:'Es como un jabalí pero cuadrado y gigantesco. ¡Si lo matas, te juro que hay un cofre con tesoros al fondo!'},
+  ],
+  golden_guard: [
+    {name:'???', text:'...Sal de aquí.'}
+  ],
+  guard_silent: [{name:'Guardia', text:'...'}],
+  fisherman1: [{name:'Ugo', text:'Los barcos del sur atracan aquí. ¿Necesitas pasaje? Habla con el mercader Dunbar.'}],
+  fisherman2: [{name:'Mira', text:'El mar está raro hoy. Los peces no pican y las gaviotas vuelan en círculos...'}],
+  port_merchant: [
+    {name:'Mercader Dunbar', text:'¡Bienvenido al Puerto Pedregal, viajero! Comercio con todo el mundo... menos con la Isla del Centro. ¡Ja!'},
+    {name:'Mercader Dunbar', text:'Mira, te voy a hacer una propuesta. Necesito recuperar algo: la Reliquia del Clan Dunbar.'},
+    {name:'Mercader Dunbar', text:'Esos malditos bandidos del sur me la robaron. ¡Está en su campamento, junto a la mina negra!'},
+    {name:'Mercader Dunbar', text:'Si me la traes, te consigo pasaje en el siguiente barco. ¿Trato hecho?',
+     options:[
+       {text:'Trato hecho', action:'accept_quest'},
+       {text:'Aún no', action:'close_dialogue'}
+     ]
+    }
+  ],
+  port_merchant_quest_done: [
+    {name:'Mercader Dunbar', text:'¡La Reliquia de mi familia! ¡No puedo creerlo! Gracias, amigo.'},
+    {name:'Mercader Dunbar', text:'Como prometí... el próximo barco zarpa al amanecer. ¡La Gran Isla te espera!'},
+  ],
+  port_merchant_quest_active: [
+    {name:'Mercader Dunbar', text:'El campamento bandido está al sur, cerca de la Mina Negra. ¡Ten cuidado con el jefe!'},
+  ]
+};
+
+// ---- SHOP DATA ----
+const SHOP_ITEMS = [
+  {id:'health_potion', name:'Poción de Salud', emoji:'🧪', desc:'Restaura 40 HP', price:15, type:'consumable'},
+  {id:'sword_upgrade',  name:'Espada de Acero',  emoji:'⚔️', desc:'+8 daño, mayor rango', price:60, type:'weapon_upgrade', weapon:'sword'},
+  {id:'staff_upgrade',  name:'Báculo Élfico',    emoji:'🔮', desc:'+6 daño, área de fuego', price:55, type:'weapon_upgrade', weapon:'staff'},
+  {id:'bow_upgrade',    name:'Arco Compuesto',   emoji:'🏹', desc:'+5 daño, flecha más rápida', price:50, type:'weapon_upgrade', weapon:'bow'},
+];
+
+// ---- PLAYER ----
+function createPlayer(weapon, armor) {
+  const wconf = WEAPON_CONFIGS[weapon];
+  const aconf = ARMOR_CONFIGS[armor];
+  return {
+    x: 320, y: 380,
+    w: 24, h: 24,
+    weapon, armor,
+    hp: aconf.hp,
+    maxHp: aconf.hp,
+    speed: aconf.speed,
+    defense: aconf.defense,
+    attackCooldown: 0,
+    facing: 'down',
+    attacking: false,
+    attackFrame: 0,
+    dashing: false,
+    dashTimer: 0,
+    dashVx: 0, dashVy: 0,
+    invincible: 0,
+    inventory: [],
+    gold: 0,
+    weaponUpgraded: false
+  };
+}
+
+// ---- ENEMY TYPES ----
+const ENEMY_TYPES = {
+  boar: {
+    name:'Jabalí', emoji:'🐗', w:22, h:18,
+    hp:30, maxHp:30, damage:6, speed:1.2, xp:5, gold:2,
+    color:'#8b4513', aggroRange:140, attackRange:28, attackCooldown:80,
+    difficulty:'easy'
+  },
+  bull: {
+    name:'Toro', emoji:'🐂', w:28, h:22,
+    hp:70, maxHp:70, damage:14, speed:1.5, xp:12, gold:5,
+    color:'#555', aggroRange:160, attackRange:32, attackCooldown:100,
+    difficulty:'medium'
+  },
+  crab: {
+    name:'Cangrejo', emoji:'🦀', w:20, h:16,
+    hp:15, maxHp:15, damage:3, speed:0.8, xp:3, gold:1,
+    color:'#c0392b', aggroRange:100, attackRange:22, attackCooldown:70,
+    difficulty:'very_easy'
+  },
+  bandit: {
+    name:'Bandido', emoji:'🗡️', w:22, h:26,
+    hp:50, maxHp:50, damage:12, speed:1.4, xp:10, gold:8,
+    color:'#2c3e50', aggroRange:170, attackRange:30, attackCooldown:90,
+    difficulty:'medium'
+  },
+  andreon: {
+    name:'Andreon', emoji:'🐾', w:40, h:34,
+    hp:120, maxHp:120, damage:20, speed:1.1, xp:30, gold:15,
+    color:'#4a1a00', aggroRange:200, attackRange:40, attackCooldown:120,
+    difficulty:'medium_hard', isBoss:true
+  },
+  bandit_boss: {
+    name:'Jefe Bandido', emoji:'💀', w:28, h:28,
+    hp:150, maxHp:150, damage:18, speed:1.3, xp:50, gold:25,
+    color:'#1a0a2a', aggroRange:220, attackRange:200, attackCooldown:75,
+    difficulty:'medium_hard', isBoss:true, isRanged:true
+  }
+};
+
+function createEnemy(type, x, y) {
+  const conf = ENEMY_TYPES[type];
+  return {
+    ...JSON.parse(JSON.stringify(conf)),
+    type, x, y,
+    vx:0, vy:0,
+    attackTimer:0,
+    stateTimer:0,
+    state:'idle', // idle, chase, attack, hurt
+    alive:true
+  };
+}
+
+// ---- ZONE LOADING ----
+let currentZoneData = null;
+let currentNPCs = [];
+let currentEnemies = [];
+
+// loadZone is defined below (full version with tutorial/quest triggers)
+
+function _doLoadZone(zoneId, tx, ty) {
+  G.currentZone = zoneId;
+  currentZoneData = G.zones[zoneId];
+  document.getElementById('zone-name').textContent = currentZoneData.name;
+
+  // Reset enemies
+  currentEnemies = [];
+
+  // Spawn fixed enemies
+  if (currentZoneData.enemies_fixed) {
+    for (const e of currentZoneData.enemies_fixed) {
+      // Check if andreon was already defeated
+      if (e.type === 'andreon' && G.questFlags.andreonDefeated) continue;
+      currentEnemies.push(createEnemy(e.type, e.x, e.y));
+    }
+  }
+
+  // Spawn bandits in camp if in south_plains
+  if (zoneId === 'south_b') {
+    if (!G.questFlags.banditCampCleared) {
+      currentEnemies.push(createEnemy('bandit', 1350, 850));
+      currentEnemies.push(createEnemy('bandit', 1420, 870));
+      currentEnemies.push(createEnemy('bandit', 1380, 920));
+      currentEnemies.push(createEnemy('bandit_boss', 1450, 950));
+    }
+  }
+
+  // Random spawns
+  if (currentZoneData.spawnRules) {
+    const rules = currentZoneData.spawnRules;
+    for (const [type, rule] of Object.entries(rules)) {
+      if (Math.random() < rule.chance) {
+        const count = Math.floor(Math.random() * rule.max) + 1;
+        for (let i = 0; i < count; i++) {
+          const ex = 100 + Math.random() * (currentZoneData.width - 200);
+          const ey = 100 + Math.random() * (currentZoneData.height - 200);
+          // Don't spawn too close to player
+          if (Math.hypot(ex - tx, ey - ty) > 150) {
+            currentEnemies.push(createEnemy(type, ex, ey));
+          }
+        }
+      }
+    }
+  }
+
+  // Load NPCs
+  currentNPCs = [];
+  if (currentZoneData.npcs) {
+    for (const nd of currentZoneData.npcs) {
+      currentNPCs.push({...nd, w:20, h:26});
+    }
+  }
+
+  // Place player
+  if (G.player) {
+    G.player.x = tx;
+    G.player.y = ty;
+  }
+
+  G.camera.x = 0;
+  G.camera.y = 0;
+  G.enemies = currentEnemies;
+  G.npcs = currentNPCs;
+}
+
+// ---- CAMERA ----
+function updateCamera() {
+  if (!G.player || !currentZoneData) return;
+  const tw = currentZoneData.width;
+  const th = currentZoneData.height;
+  const cx = G.player.x + G.player.w/2 - 400;
+  const cy = G.player.y + G.player.h/2 - 300;
+  G.camera.x = Math.max(0, Math.min(cx, tw - 800));
+  G.camera.y = Math.max(0, Math.min(cy, th - 600));
+}
+
+// ---- RENDERING ----
+function drawZone() {
+  if (!currentZoneData) return;
+  const z = currentZoneData;
+  const cx = G.camera.x, cy = G.camera.y;
+
+  // BG fill
+  ctx.fillStyle = z.bgColor;
+  ctx.fillRect(0, 0, 800, 600);
+
+  // Grid texture - only for grass/floor zones, not coast/sand zones
+  const isCoast = (z.bgColor === '#c2b280' || z.tileColor === '#c2b280' || z.tileColor === '#d4c48a');
+  if (!isCoast) {
+    ctx.fillStyle = z.tileColor;
+    const ts = 40;
+    for (let tx = Math.floor(cx/ts)*ts; tx < cx+800; tx+=ts) {
+      for (let ty = Math.floor(cy/ts)*ts; ty < cy+600; ty+=ts) {
+        if ((Math.floor(tx/ts)+Math.floor(ty/ts)) % 2 === 0) {
+          ctx.fillRect(tx-cx, ty-cy, ts, ts);
+        }
+      }
+    }
+  }
+
+  // Draw objects
+  for (const obj of z.objects) {
+    drawObject(obj, cx, cy);
+  }
+}
+
+function drawObject(obj, cx, cy) {
+  const sx = obj.x - cx, sy = obj.y - cy;
+  if (sx+obj.w < 0 || sx > 800 || sy+obj.h < 0 || sy > 600) return;
+
+  switch(obj.type) {
+    case 'wall':
+      ctx.fillStyle = '#2a1a0a';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      break;
+    case 'road':
+      ctx.fillStyle = '#8b7355';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      break;
+    case 'bed':
+      ctx.fillStyle = '#8b0000';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(sx+4, sy+4, obj.w-8, 16);
+      ctx.fillStyle = '#f0c090';
+      ctx.fillRect(sx+10, sy+2, 20, 16);
+      break;
+    case 'table':
+      ctx.fillStyle = '#8b5e3c';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.fillStyle = '#a0724a';
+      ctx.fillRect(sx+4, sy+4, obj.w-8, obj.h-8);
+      break;
+    case 'barrel':
+      ctx.fillStyle = '#7a4a1a';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.fillStyle = '#5a3a0a';
+      ctx.fillRect(sx, sy+10, obj.w, 3);
+      ctx.fillRect(sx, sy+obj.h-13, obj.w, 3);
+      break;
+    case 'rug':
+      ctx.fillStyle = '#8b1a1a';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.fillStyle = '#c0392b';
+      ctx.fillRect(sx+6, sy+6, obj.w-12, obj.h-12);
+      ctx.fillStyle = '#e74c3c';
+      ctx.fillRect(sx+12, sy+12, obj.w-24, obj.h-24);
+      break;
+    case 'door':
+    case 'player_house':
+      drawHouse(sx, sy, obj, '#8b6914', '#a07820', true, obj.label);
+      break;
+    case 'house':
+      drawHouse(sx, sy, obj, '#5a3e28', '#7a5a38', false);
+      break;
+    case 'market':
+      ctx.fillStyle = '#8b5e3c';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.fillStyle = '#c00';
+      ctx.fillRect(sx-10, sy-15, obj.w+20, 18);
+      ctx.fillStyle = '#fff';
+      ctx.font = '10px Cinzel';
+      ctx.fillText('MERCADO', sx+10, sy-3);
+      break;
+    case 'well':
+      ctx.fillStyle = '#555';
+      ctx.beginPath();
+      ctx.arc(sx+obj.w/2, sy+obj.h/2, obj.w/2, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = '#2980b9';
+      ctx.beginPath();
+      ctx.arc(sx+obj.w/2, sy+obj.h/2, obj.w/2-6, 0, Math.PI*2);
+      ctx.fill();
+      break;
+    case 'tree':
+      ctx.fillStyle = '#4a3000';
+      ctx.fillRect(sx+11, sy+14, 8, 16);
+      ctx.fillStyle = '#1a6e1a';
+      ctx.beginPath();
+      ctx.arc(sx+15, sy+12, 16, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = '#2a8a2a';
+      ctx.beginPath();
+      ctx.arc(sx+13, sy+8, 10, 0, Math.PI*2);
+      ctx.fill();
+      break;
+    case 'rock':
+      ctx.fillStyle = '#666';
+      ctx.beginPath();
+      ctx.ellipse(sx+obj.w/2, sy+obj.h/2, obj.w/2, obj.h/2, 0, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = '#888';
+      ctx.beginPath();
+      ctx.ellipse(sx+obj.w/2-4, sy+obj.h/2-4, obj.w/4, obj.h/4, 0, 0, Math.PI*2);
+      ctx.fill();
+      break;
+    case 'farm':
+      ctx.fillStyle = '#8b7355';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.strokeStyle = '#5a4a2a';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(sx, sy, obj.w, obj.h);
+      // crops
+      ctx.fillStyle = '#5a9e1a';
+      for(let i=0;i<5;i++) for(let j=0;j<4;j++) {
+        ctx.fillRect(sx+10+i*45, sy+10+j*45, 35, 35);
+      }
+      ctx.fillStyle = '#fff'; ctx.font = '9px Cinzel';
+      ctx.fillText(obj.label||'Granja', sx+4, sy+14);
+      break;
+    case 'mine_entrance':
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.fillStyle = '#333';
+      ctx.fillRect(sx+10, sy+10, obj.w-20, obj.h-10);
+      ctx.fillStyle = '#c9a227';
+      ctx.font = '9px Cinzel';
+      ctx.fillText(obj.label||'Mina', sx+4, sy+12);
+      break;
+    case 'bandit_camp':
+      ctx.fillStyle = '#2c1a0a';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.strokeStyle = '#4a2a0a'; ctx.lineWidth=2; ctx.strokeRect(sx,sy,obj.w,obj.h);
+      // tents
+      ctx.fillStyle = '#8b4513';
+      ctx.beginPath(); ctx.moveTo(sx+30,sy+10); ctx.lineTo(sx+80,sy+70); ctx.lineTo(sx-20,sy+70); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(sx+150,sy+20); ctx.lineTo(sx+190,sy+80); ctx.lineTo(sx+110,sy+80); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#f00'; ctx.font='10px Cinzel'; ctx.fillText('⚠ PELIGRO',sx+30,sy+14);
+      break;
+    case 'water_zone':
+      // Draws water fill (uses screen space)
+      ctx.fillStyle = '#1a6eb0';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      // Animated waves
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.lineWidth = 1.5;
+      for (let wy = sy; wy < sy + obj.h; wy += 30) {
+        const woff = (G.frame * 0.4 + wy * 0.3) % 30;
+        ctx.beginPath();
+        ctx.moveTo(sx, wy + woff);
+        for (let wx = 0; wx <= obj.w; wx += 15)
+          ctx.lineTo(sx + wx, wy + woff + Math.sin((wx + G.frame) * 0.15) * 3);
+        ctx.stroke();
+      }
+      break;
+    case 'water_wall':
+      // Invisible collision - no visual
+      break;
+    case 'fence':
+      ctx.fillStyle = '#7a5a30';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      break;
+    case 'big_ship':
+      // Large ship from the center island - imposing and futuristic
+      // Hull
+      ctx.fillStyle = '#1a2a3a';
+      ctx.fillRect(sx, sy + 40, obj.w, obj.h - 40);
+      // Hull bottom curve
+      ctx.fillStyle = '#0a1a2a';
+      ctx.fillRect(sx + 10, sy + obj.h - 30, obj.w - 20, 30);
+      // Deck
+      ctx.fillStyle = '#2a3a4a';
+      ctx.fillRect(sx + 10, sy + 30, obj.w - 20, obj.h - 60);
+      // Superstructure
+      ctx.fillStyle = '#1a2a3a';
+      ctx.fillRect(sx + obj.w*0.3, sy, obj.w*0.45, 60);
+      // Bridge windows
+      ctx.fillStyle = '#87ceeb';
+      for (let wi = 0; wi < 5; wi++) {
+        ctx.fillRect(sx + obj.w*0.32 + wi * 28, sy + 8, 18, 12);
+      }
+      // Mast
+      ctx.fillStyle = '#0a0a14';
+      ctx.fillRect(sx + obj.w*0.5, sy - 40, 4, 50);
+      // Flag - center island flag (blue/gold)
+      ctx.fillStyle = '#1a4a8a';
+      ctx.fillRect(sx + obj.w*0.5 + 4, sy - 38, 22, 14);
+      ctx.fillStyle = '#f0d060';
+      ctx.fillRect(sx + obj.w*0.5 + 7, sy - 35, 8, 8);
+      // Cannon ports
+      ctx.fillStyle = '#0a0a0a';
+      for (let ci = 0; ci < 4; ci++) {
+        ctx.beginPath();
+        ctx.arc(sx + 20 + ci * (obj.w - 40) / 3, sy + obj.h - 20, 6, 0, Math.PI*2);
+        ctx.fill();
+      }
+      // Name on hull
+      ctx.fillStyle = '#f0d060';
+      ctx.font = 'bold 11px Cinzel';
+      ctx.fillText('I.S. LEVIATÁN', sx + 10, sy + obj.h - 8);
+      // Glow
+      ctx.shadowColor = '#1a4a8a';
+      ctx.shadowBlur = 12;
+      ctx.strokeStyle = '#2a5aaa';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(sx, sy + 40, obj.w, obj.h - 40);
+      ctx.shadowBlur = 0;
+      break;
+    case 'port_bg': {
+      // Sand covers full zone background
+      ctx.fillStyle = '#c2b280';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      // Water on right 45% of zone (from world x=920 onward)
+      const waterWorldX = 920;
+      const waterSx = waterWorldX - cx;
+      if (waterSx < 800) {
+        ctx.fillStyle = '#1a6eb0';
+        ctx.fillRect(Math.max(0, waterSx), sy, obj.w - Math.max(0, waterWorldX - cx), obj.h);
+        // Waves
+        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+        ctx.lineWidth = 1.5;
+        const wStartX = Math.max(waterSx, 0);
+        for (let wy2 = sy; wy2 < sy + obj.h; wy2 += 35) {
+          const woff = (G.frame * 0.4 + wy2 * 0.2) % 35;
+          ctx.beginPath();
+          ctx.moveTo(wStartX, wy2 + woff);
+          for (let wx2 = 0; wx2 <= 800 - wStartX; wx2 += 15) {
+            ctx.lineTo(wStartX + wx2, wy2 + woff + Math.sin((wx2 + G.frame) * 0.12) * 4);
+          }
+          ctx.stroke();
+        }
+        // Water edge line
+        ctx.strokeStyle = '#2a8acc';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(waterSx, sy); ctx.lineTo(waterSx, sy + obj.h); ctx.stroke();
+      }
+      break;
+    }
+    case 'pier':
+      ctx.fillStyle = '#8b6914';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.strokeStyle='#5a4409'; ctx.lineWidth=3; ctx.strokeRect(sx,sy,obj.w,obj.h);
+      for(let px=sx;px<sx+obj.w;px+=20) { ctx.strokeStyle='#5a4409'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(px,sy+obj.h); ctx.lineTo(px,sy+obj.h+30); ctx.stroke(); }
+      ctx.fillStyle='#fff'; ctx.font='9px Cinzel'; ctx.fillText(obj.label||'Muelle',sx+4,sy+14);
+      break;
+    case 'boat':
+      ctx.fillStyle = '#8b4513';
+      ctx.fillRect(sx, sy+10, obj.w, obj.h-10);
+      ctx.fillStyle = '#a0522d';
+      ctx.fillRect(sx+10, sy+5, 10, obj.h);
+      ctx.fillStyle='#fff';
+      ctx.fillRect(sx+12,sy+5,20,15);
+      break;
+    case 'building':
+      drawHouse(sx, sy, obj, '#7a5a38', '#9a7a58', false, obj.label);
+      break;
+    case 'chest':
+      if (!obj.opened) {
+        ctx.fillStyle = '#8b6914';
+        ctx.fillRect(sx, sy, obj.w, obj.h);
+        ctx.fillStyle = '#c9a227';
+        ctx.fillRect(sx+2, sy+2, obj.w-4, 10);
+        ctx.fillStyle = '#f0d060';
+        ctx.fillRect(sx+obj.w/2-4, sy+2, 8, 8);
+        // Glow
+        ctx.shadowColor = '#f0d060'; ctx.shadowBlur = 10;
+        ctx.fillRect(sx+obj.w/2-2, sy+4, 4, 4);
+        ctx.shadowBlur = 0;
+      } else {
+        ctx.fillStyle = '#5a3a0a';
+        ctx.fillRect(sx, sy+8, obj.w, obj.h-8);
+      }
+      break;
+    case 'sign':
+      ctx.fillStyle = '#8b6914';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      if (obj.label) { ctx.fillStyle='#f0d060'; ctx.font='8px Cinzel'; ctx.fillText(obj.label,sx-20,sy+13); }
+      break;
+  }
+}
+
+function drawHouse(sx, sy, obj, wallCol, roofCol, enterable, label) {
+  ctx.fillStyle = wallCol;
+  ctx.fillRect(sx, sy, obj.w, obj.h);
+  // roof
+  ctx.fillStyle = roofCol;
+  ctx.beginPath();
+  ctx.moveTo(sx-5, sy);
+  ctx.lineTo(sx+obj.w/2, sy-20);
+  ctx.lineTo(sx+obj.w+5, sy);
+  ctx.closePath();
+  ctx.fill();
+  // door
+  ctx.fillStyle = '#2a1a0a';
+  ctx.fillRect(sx+obj.w/2-8, sy+obj.h-22, 16, 22);
+  // windows
+  ctx.fillStyle = '#87ceeb';
+  ctx.fillRect(sx+8, sy+10, 14, 14);
+  if (obj.w > 60) ctx.fillRect(sx+obj.w-22, sy+10, 14, 14);
+  if (enterable) {
+    ctx.strokeStyle = '#f0d060'; ctx.lineWidth=2;
+    ctx.strokeRect(sx, sy, obj.w, obj.h);
+    ctx.shadowColor='#f0d060'; ctx.shadowBlur=8;
+    ctx.strokeRect(sx, sy, obj.w, obj.h);
+    ctx.shadowBlur=0;
+  }
+  if (label) {
+    ctx.fillStyle = '#f0d060';
+    ctx.font = '9px Cinzel';
+    ctx.fillText(label, sx, sy-4);
+  }
+}
+
+function drawPlayer() {
+  if (!G.player) return;
+  const p = G.player;
+  const sx = p.x - G.camera.x;
+  const sy = p.y - G.camera.y;
+
+  // Dash trail
+  if (p.dashing) {
+    ctx.globalAlpha = 0.3;
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(sx+3, sy+3, p.w-6, p.h-6);
+    ctx.globalAlpha = 1;
+  }
+
+  // Invincibility flash
+  if (p.invincible > 0 && Math.floor(p.invincible / 4) % 2 === 0) {
+    ctx.globalAlpha = 0.4;
+  }
+
+  // Body
+  const bodyColor = ARMOR_CONFIGS[p.armor].color;
+  ctx.fillStyle = bodyColor;
+  ctx.fillRect(sx+4, sy+8, p.w-8, p.h-8);
+  // Head
+  ctx.fillStyle = '#f0c090';
+  ctx.fillRect(sx+6, sy, p.w-12, 12);
+  // Eyes
+  ctx.fillStyle = '#000';
+  if (p.facing === 'left')      { ctx.fillRect(sx+6, sy+3, 2, 2); }
+  else if (p.facing === 'right'){ ctx.fillRect(sx+14, sy+3, 2, 2); }
+  else                           { ctx.fillRect(sx+8, sy+4, 2, 2); ctx.fillRect(sx+12, sy+4, 2, 2); }
+
+  // Weapon visual
+  if (p.attacking) {
+    drawAttackAnimation(p, sx, sy);
+  } else {
+    drawWeaponIdle(p, sx, sy);
+  }
+
+  ctx.globalAlpha = 1;
+}
+
+function drawWeaponIdle(p, sx, sy) {
+  const wtype = p.weapon;
+  ctx.fillStyle = WEAPON_CONFIGS[wtype].color;
+  if (wtype === 'sword') {
+    ctx.fillRect(sx+p.w, sy+10, 3, 14);
+    ctx.fillStyle = '#c9a227'; ctx.fillRect(sx+p.w-2, sy+8, 7, 3);
+  } else if (wtype === 'staff') {
+    ctx.fillRect(sx+p.w, sy+6, 3, 18);
+    ctx.fillStyle = '#e67e22';
+    ctx.beginPath(); ctx.arc(sx+p.w+1, sy+4, 5, 0, Math.PI*2); ctx.fill();
+  } else {
+    ctx.strokeStyle = '#8b4513'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(sx+p.w+4, sy+12, 10, -Math.PI/2, Math.PI/2); ctx.stroke();
+    ctx.strokeStyle='#888'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(sx+p.w+4,sy+2); ctx.lineTo(sx+p.w+4,sy+22); ctx.stroke();
+  }
+}
+
+function drawAttackAnimation(p, sx, sy) {
+  const t = p.attackFrame / 15;
+  const wtype = p.weapon;
+  if (wtype === 'sword') {
+    const angle = -Math.PI/4 + t * Math.PI/1.2;
+    ctx.save();
+    ctx.translate(sx+p.w/2, sy+p.h/2);
+    ctx.rotate(angle);
+    ctx.fillStyle = '#95a5a6';
+    ctx.fillRect(-2, -30, 4, 32);
+    ctx.fillStyle = '#c9a227'; ctx.fillRect(-6, -2, 12, 4);
+    ctx.restore();
+  } else if (wtype === 'staff') {
+    const angle = t * Math.PI;
+    ctx.save();
+    ctx.translate(sx+p.w/2, sy+p.h/2);
+    ctx.rotate(angle - Math.PI/2);
+    ctx.fillStyle = '#8b6914'; ctx.fillRect(-2,-25,4,28);
+    ctx.fillStyle = '#e67e22';
+    ctx.shadowColor='#e67e22'; ctx.shadowBlur=12;
+    ctx.beginPath(); ctx.arc(0,-26,8,0,Math.PI*2); ctx.fill();
+    ctx.shadowBlur=0;
+    ctx.restore();
+  } else { // bow
+    ctx.strokeStyle='#8b4513'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(sx+p.w/2, sy+p.h/2, 14, -Math.PI/2, Math.PI/2); ctx.stroke();
+  }
+}
+
+function drawEnemies() {
+  for (const e of G.enemies) {
+    if (!e.alive) continue;
+    const sx = e.x - G.camera.x;
+    const sy = e.y - G.camera.y;
+    if (sx+e.w < -20 || sx > 820 || sy+e.h < -20 || sy > 620) continue;
+
+    // Body
+    ctx.fillStyle = e.color;
+    if (e.type === 'boar') {
+      ctx.fillRect(sx, sy+4, e.w, e.h-4);
+      ctx.fillStyle = '#6b3a0a'; ctx.fillRect(sx+e.w-6, sy, 6, 10);
+    } else if (e.type === 'bull') {
+      ctx.fillRect(sx, sy+4, e.w, e.h-4);
+      ctx.fillStyle = '#333';
+      ctx.fillRect(sx+4, sy, 8, 8); // horn left
+      ctx.fillRect(sx+e.w-12, sy, 8, 8); // horn right
+    } else if (e.type === 'crab') {
+      ctx.fillRect(sx+4, sy+4, e.w-8, e.h-4);
+      ctx.fillRect(sx, sy+6, 6, 6); // claw
+      ctx.fillRect(sx+e.w-6, sy+6, 6, 6); // claw
+      ctx.fillStyle='#fff'; ctx.fillRect(sx+6,sy+5,3,3); ctx.fillRect(sx+e.w-9,sy+5,3,3); // eyes
+    } else if (e.type === 'bandit') {
+      ctx.fillRect(sx+3, sy+8, e.w-6, e.h-8);
+      ctx.fillStyle='#f0c090'; ctx.fillRect(sx+5,sy,e.w-10,10); // head
+      ctx.fillStyle='#1a0a2a'; ctx.fillRect(sx+3,sy-4,e.w-6,8); // hat
+      ctx.fillStyle='#888'; ctx.fillRect(sx+e.w-2,sy+10,4,16); // sword
+    } else if (e.type === 'andreon') {
+      // Big square boar
+      ctx.fillStyle='#4a1a00';
+      ctx.fillRect(sx, sy, e.w, e.h);
+      ctx.fillStyle='#6a2a00';
+      ctx.fillRect(sx+4, sy+4, e.w-8, e.h-8);
+      ctx.fillStyle='#2a0a00'; // tusks
+      ctx.fillRect(sx+e.w-8,sy+4,6,12);
+      ctx.fillRect(sx+2,sy+4,6,12);
+      // eyes glow
+      ctx.fillStyle='#f00'; ctx.shadowColor='#f00'; ctx.shadowBlur=6;
+      ctx.fillRect(sx+8,sy+8,5,5); ctx.fillRect(sx+e.w-13,sy+8,5,5);
+      ctx.shadowBlur=0;
+    } else if (e.type === 'bandit_boss') {
+      ctx.fillStyle='#1a0a2a';
+      ctx.fillRect(sx, sy+8, e.w, e.h-8);
+      ctx.fillStyle='#f0c090'; ctx.fillRect(sx+4,sy,e.w-8,12);
+      ctx.fillStyle='#2c1a4a'; ctx.fillRect(sx,sy-6,e.w,10); // crown
+      ctx.fillStyle='#c9a227';
+      ctx.fillRect(sx+6,sy-10,4,6); ctx.fillRect(sx+e.w/2-2,sy-12,4,8); ctx.fillRect(sx+e.w-10,sy-10,4,6);
+      ctx.fillStyle='#888'; // bow
+      ctx.strokeStyle='#8b4513'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(sx+e.w+6,sy+14,10,-Math.PI/2,Math.PI/2); ctx.stroke();
+    }
+
+    // HP bar
+    const barW = e.w + 10;
+    ctx.fillStyle='rgba(0,0,0,0.6)'; ctx.fillRect(sx-5, sy-12, barW, 6);
+    const hpPct = e.hp / e.maxHp;
+    ctx.fillStyle = hpPct > 0.5 ? '#2ecc71' : hpPct > 0.25 ? '#f39c12' : '#e74c3c';
+    ctx.fillRect(sx-5, sy-12, barW*hpPct, 6);
+
+    // Boss label
+    if (e.isBoss) {
+      ctx.fillStyle='#f0d060'; ctx.font='bold 9px Cinzel';
+      ctx.fillText('⭐ '+e.name, sx-5, sy-16);
+    }
+  }
+}
+
+function drawNPCs() {
+  for (const npc of G.npcs) {
+    const sx = npc.x - G.camera.x;
+    const sy = npc.y - G.camera.y;
+    if (sx < -30 || sx > 830 || sy < -30 || sy > 630) continue;
+    drawNPCSprite(npc, sx, sy);
+    // Interaction hint
+    if (canInteractWith(npc)) {
+      ctx.fillStyle='#f0d060'; ctx.font='11px Cinzel';
+      ctx.fillText('[E]', sx+2, sy-6);
+    }
+  }
+}
+
+function drawNPCSprite(npc, sx, sy) {
+  const sprite = npc.sprite || 'person';
+  let bodyCol = '#888', headCol = '#f0c090', clothCol = '#888';
+  let special = null;
+  switch(sprite) {
+    case 'person_sick':    bodyCol='#8b8b8b'; headCol='#e0b080'; break;
+    case 'person_doctor':  bodyCol='#fff'; headCol='#f0c090'; special='doctor'; break;
+    case 'old_man':        bodyCol='#888'; headCol='#d0a880'; special='old'; break;
+    case 'merchant':       bodyCol='#c8602a'; headCol='#f0c090'; special='merchant'; break;
+    case 'merchant2':      bodyCol='#2a60c8'; headCol='#f0c090'; special='merchant'; break;
+    case 'person2':        bodyCol='#4a8a2f'; headCol='#d8a060'; break;
+    case 'person3':        bodyCol='#8a2f4a'; headCol='#f4c090'; break;
+    case 'golden_guard':   bodyCol='#c9a227'; headCol='#c9a227'; special='golden'; break;
+    case 'guard_npc':      bodyCol='#666'; headCol='#c0c0c0'; special='guard'; break;
+    default:               bodyCol='#888'; headCol='#f0c090'; break;
+  }
+  // Body
+  ctx.fillStyle=bodyCol;
+  ctx.fillRect(sx+3, sy+10, 14, 16);
+  // Head
+  ctx.fillStyle=headCol;
+  ctx.fillRect(sx+5, sy+2, 10, 10);
+
+  if (special === 'doctor') {
+    ctx.fillStyle='#c00'; ctx.fillRect(sx+9,sy+3,2,2); ctx.fillRect(sx+8,sy+4,4,1);
+    ctx.fillStyle='#fff'; ctx.fillRect(sx+2,sy+8,4,2);
+  } else if (special === 'old') {
+    ctx.fillStyle='#fff'; ctx.fillRect(sx+4,sy+2,12,2);
+    ctx.strokeStyle='#888'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(sx+8,sy+22); ctx.lineTo(sx+5,sy+32); ctx.stroke();
+  } else if (special === 'merchant') {
+    ctx.fillStyle='#c9a227'; ctx.fillRect(sx+1,sy+0,18,4);
+  } else if (special === 'golden') {
+    ctx.fillStyle='#f0d060';
+    ctx.fillRect(sx,sy,20,26);
+    ctx.fillStyle='#c9a227'; ctx.fillRect(sx-1,sy-4,22,5);
+  } else if (special === 'guard') {
+    ctx.fillStyle='#888'; ctx.fillRect(sx,sy-2,20,12);
+  }
+
+  // Name
+  ctx.fillStyle='#ddd'; ctx.font='9px Cinzel';
+  ctx.fillText(npc.name, sx-10, sy-2);
+}
+
+function drawProjectiles() {
+  for (const proj of G.projectiles) {
+    const sx = proj.x - G.camera.x;
+    const sy = proj.y - G.camera.y;
+    ctx.fillStyle = proj.color || '#f0d060';
+    if (proj.type === 'arrow') {
+      ctx.save();
+      ctx.translate(sx, sy);
+      ctx.rotate(Math.atan2(proj.vy, proj.vx));
+      ctx.fillStyle='#8b4513'; ctx.fillRect(-8,-1,16,2);
+      ctx.fillStyle='#888'; ctx.fillRect(6,-1,4,2);
+      ctx.restore();
+    } else if (proj.type === 'fire') {
+      ctx.fillStyle='#e67e22';
+      ctx.shadowColor='#e67e22'; ctx.shadowBlur=8;
+      ctx.beginPath(); ctx.arc(sx,sy,5,0,Math.PI*2); ctx.fill();
+      ctx.shadowBlur=0;
+    } else if (proj.type === 'enemy_arrow') {
+      ctx.save();
+      ctx.translate(sx, sy);
+      ctx.rotate(Math.atan2(proj.vy, proj.vx));
+      ctx.fillStyle='#c00'; ctx.fillRect(-6,-1,12,2);
+      ctx.restore();
+    } else {
+      ctx.beginPath(); ctx.arc(sx,sy,4,0,Math.PI*2); ctx.fill();
+    }
+  }
+}
+
+function drawParticles() {
+  for (const p of G.particles) {
+    const sx = p.x - G.camera.x;
+    const sy = p.y - G.camera.y;
+    ctx.globalAlpha = p.life / p.maxLife;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(sx-p.size/2, sy-p.size/2, p.size, p.size);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawExitIndicators() {
+  if (!currentZoneData) return;
+  const exits = currentZoneData.exits || [];
+  for (const e of exits) {
+    const sx = e.x - G.camera.x, sy = e.y - G.camera.y;
+    ctx.fillStyle='rgba(240,208,96,0.3)';
+    ctx.fillRect(sx, sy, e.w, e.h);
+    ctx.strokeStyle='rgba(240,208,96,0.6)'; ctx.lineWidth=1;
+    ctx.strokeRect(sx, sy, e.w, e.h);
+  }
+}
+
+// ---- GAME LOOP ----
+function gameLoop() {
+  requestAnimationFrame(gameLoop);
+  if (G.screen !== 'playing') return;
+  if (G.paused || G.dialogueActive || G.shopOpen || G.inventoryOpen || G.tutorialOpen || G.chestOpen || mapOpen) {
+    // Still draw
+    drawFrame();
+    G.keysPressed = {};
+    return;
+  }
+
+  G.frame++;
+  update();
+  drawFrame();
+  G.keysPressed = {};
+}
+
+function drawFrame() {
+  ctx.clearRect(0, 0, 800, 600);
+  drawZone();
+  drawExitIndicators();
+  drawParticles();
+  drawNPCs();
+  drawEnemies();
+  if (G.player) drawPlayer();
+  drawProjectiles();
+
+  // Fade
+  if (G.fadeAlpha > 0) {
+    ctx.fillStyle = `rgba(0,0,0,${G.fadeAlpha})`;
+    ctx.fillRect(0,0,800,600);
+  }
+}
+
+function update() {
+  if (dialogueCooldown > 0) dialogueCooldown--;
+  updateFade();
+  if (G.fadingOut || G.fadingIn) return;
+  if (!currentZoneData || !G.player) return; // crash guard
+  updatePlayer();
+  updateEnemies();
+  updateProjectiles();
+  updateParticles();
+  updateCamera();
+  updateHUD();
+  checkZoneTransitions();
+}
+
+function updateFade() {
+  if (G.fadingOut) {
+    G.fadeAlpha = Math.min(1, G.fadeAlpha + 0.05);
+    if (G.fadeAlpha >= 1 && G.fadeCallback) {
+      G.fadeCallback();
+      G.fadeCallback = null;
+    }
+  }
+  if (G.fadingIn) {
+    G.fadeAlpha = Math.max(0, G.fadeAlpha - 0.05);
+    if (G.fadeAlpha <= 0) G.fadingIn = false;
+  }
+}
+
+function updatePlayer() {
+  const p = G.player;
+  if (!p) return;
+  if (p.invincible > 0) p.invincible--;
+
+  // Dash
+  if (p.dashing) {
+    p.dashTimer--;
+    p.x += p.dashVx;
+    p.y += p.dashVy;
+    if (p.dashTimer <= 0) { p.dashing = false; }
+    clampPlayer();
+    return;
+  }
+
+  // Movement
+  let vx=0, vy=0;
+  if (G.keys['ArrowLeft']||G.keys['KeyA'])  { vx=-1; p.facing='left'; }
+  if (G.keys['ArrowRight']||G.keys['KeyD']) { vx=1;  p.facing='right'; }
+  if (G.keys['ArrowUp']||G.keys['KeyW'])    { vy=-1; p.facing='up'; }
+  if (G.keys['ArrowDown']||G.keys['KeyS'])  { vy=1;  p.facing='down'; }
+  if (vx && vy) { vx*=0.707; vy*=0.707; }
+  p.x += vx * p.speed;
+  p.y += vy * p.speed;
+  resolveCollisions(p);
+  clampPlayer();
+
+  // Dash trigger
+  if ((G.keysPressed['KeyX']||G.keysPressed['KeyK']) && !p.dashing) {
+    p.dashing = true;
+    p.dashTimer = 14;
+    p.dashVx = -vx * 4.5 || (p.facing==='left'?4.5:p.facing==='right'?-4.5:0);
+    p.dashVy = -vy * 4.5 || (p.facing==='up'?4.5:p.facing==='down'?-4.5:0);
+    spawnParticles(p.x+p.w/2, p.y+p.h/2, '#ffffff', 6, 4);
+  }
+
+  // Attack
+  if (p.attackCooldown > 0) p.attackCooldown--;
+  if (p.attacking) {
+    p.attackFrame++;
+    if (p.attackFrame >= 15) { p.attacking = false; p.attackFrame = 0; }
+  }
+  if ((G.keysPressed['KeyZ']||G.keysPressed['KeyJ']) && p.attackCooldown <= 0) {
+    doAttack(p);
+  }
+
+  // Interact
+  if (G.keysPressed['KeyE'] && !G.dialogueActive) {
+    tryInteract();
+  }
+
+  // Inventory
+  if (G.keysPressed['KeyI']) {
+    openInventory();
+  }
+}
+
+function doAttack(p) {
+  const wconf = WEAPON_CONFIGS[p.weapon];
+  const baseDmg = wconf.damage + (p.weaponUpgraded ? 8 : 0);
+  p.attacking = true;
+  p.attackFrame = 0;
+  p.attackCooldown = wconf.cooldown;
+
+  if (p.weapon === 'bow') {
+    // Shoot projectile
+    const dir = facingToDir(p.facing);
+    G.projectiles.push({
+      x: p.x+p.w/2, y: p.y+p.h/2,
+      vx: dir.x * 5, vy: dir.y * 5,
+      damage: baseDmg,
+      type: 'arrow',
+      color: '#8b4513',
+      owner: 'player',
+      life: 80
+    });
+    spawnParticles(p.x+p.w/2, p.y+p.h/2, '#8b4513', 3, 2);
+  } else if (p.weapon === 'staff') {
+    // Fire projectile
+    const dir = facingToDir(p.facing);
+    G.projectiles.push({
+      x: p.x+p.w/2, y: p.y+p.h/2,
+      vx: dir.x * 3.5, vy: dir.y * 3.5,
+      damage: baseDmg,
+      type: 'fire',
+      color: '#e67e22',
+      owner: 'player',
+      life: 50,
+      burn: true
+    });
+    spawnParticles(p.x+p.w/2, p.y+p.h/2, '#e67e22', 6, 3);
+  } else {
+    // Melee sword
+    const range = wconf.range + (p.weaponUpgraded ? 15 : 0);
+    for (const e of G.enemies) {
+      if (!e.alive) continue;
+      if (rectDist(p, e) < range) {
+        hitEnemy(e, baseDmg, p);
+      }
+    }
+    const dir = facingToDir(p.facing);
+    spawnParticles(p.x+p.w/2+dir.x*25, p.y+p.h/2+dir.y*25, '#95a5a6', 5, 3);
+  }
+}
+
+function facingToDir(facing) {
+  switch(facing) {
+    case 'left':  return {x:-1,y:0};
+    case 'right': return {x:1, y:0};
+    case 'up':    return {x:0, y:-1};
+    default:      return {x:0, y:1};
+  }
+}
+
+function hitEnemy(e, dmg, attacker) {
+  const reduced = Math.max(1, dmg - Math.floor(Math.random()*3));
+  e.hp -= reduced;
+  showDamageNumber(e.x + e.w/2, e.y, reduced, '#e74c3c');
+  spawnParticles(e.x+e.w/2, e.y+e.h/2, '#e74c3c', 4, 3);
+  if (attacker && attacker.weapon === 'staff') {
+    // Burn effect
+    spawnParticles(e.x+e.w/2, e.y+e.h/2, '#e67e22', 8, 4);
+    if (!e.burning) {
+      e.burning = true;
+      e.burnTimer = 60;
+      e.burnDmg = 2;
+    }
+  }
+  if (e.hp <= 0) {
+    e.alive = false;
+    spawnParticles(e.x+e.w/2, e.y+e.h/2, '#e74c3c', 12, 5);
+    G.player.gold += e.gold || 0;
+    notify(`+${e.gold} oro`);
+    onEnemyDeath(e);
+  }
+}
+
+function onEnemyDeath(e) {
+  if (e.type === 'andreon') {
+    G.questFlags.andreonDefeated = true;
+    // Open chest
+    const chest = currentZoneData?.objects?.find(o=>o.type==='chest'&&o.id==='mine_chest');
+    if (chest && !chest.opened) {
+      setTimeout(()=>openChest(chest), 500);
+    }
+  }
+  if (e.type === 'bandit_boss') {
+    G.questFlags.banditBossDefeated = true;
+    // All bandits in zone die
+    for (const en of G.enemies) { if(en.type==='bandit') en.alive=false; }
+    G.questFlags.banditCampCleared = true;
+    G.questFlags.relicFound = true;
+    // Add relic to inventory
+    G.player.inventory.push({id:'relic', name:'Reliquia de Clan', emoji:'💎', desc:'Una joya familiar', qty:1});
+    notify('💎 Reliquia Familiar obtenida!');
+    updateQuestTracker();
+  }
+}
+
+function updateEnemies() {
+  const p = G.player;
+  for (const e of G.enemies) {
+    if (!e.alive) continue;
+
+    // Burn
+    if (e.burning) {
+      e.burnTimer--;
+      if (G.frame % 20 === 0) {
+        e.hp -= e.burnDmg;
+        showDamageNumber(e.x+e.w/2, e.y, e.burnDmg, '#e67e22');
+        spawnParticles(e.x+e.w/2, e.y+e.h/2, '#e67e22', 2, 2);
+        if (e.hp <= 0) { e.alive=false; onEnemyDeath(e); continue; }
+      }
+      if (e.burnTimer <= 0) e.burning = false;
+    }
+
+    const dist = rectDist(p, e);
+
+    if (dist < e.aggroRange) {
+      // Chase
+      const dx = (p.x+p.w/2) - (e.x+e.w/2);
+      const dy = (p.y+p.h/2) - (e.y+e.h/2);
+      const len = Math.hypot(dx,dy) || 1;
+      e.vx = (dx/len) * e.speed;
+      e.vy = (dy/len) * e.speed;
+      e.x += e.vx;
+      e.y += e.vy;
+
+      // Attack player
+      if (e.attackTimer > 0) e.attackTimer--;
+      if (dist < e.attackRange && e.attackTimer <= 0) {
+        e.attackTimer = e.attackCooldown;
+        if (e.isRanged) {
+          // Shoot
+          G.projectiles.push({
+            x:e.x+e.w/2, y:e.y+e.h/2,
+            vx:(dx/len)*3, vy:(dy/len)*3,
+            damage:e.damage, type:'enemy_arrow', color:'#c00',
+            owner:'enemy', life:100
+          });
+        } else {
+          // Melee hit
+          hitPlayer(e.damage);
+        }
+      }
+    } else {
+      // Idle wander
+      e.stateTimer--;
+      if (e.stateTimer <= 0) {
+        e.stateTimer = 60+Math.random()*120;
+        e.vx = (Math.random()-0.5)*e.speed;
+        e.vy = (Math.random()-0.5)*e.speed;
+      }
+      e.x += e.vx * 0.3;
+      e.y += e.vy * 0.3;
+    }
+    // Clamp to zone
+    if (currentZoneData) {
+      e.x = Math.max(20, Math.min(currentZoneData.width-e.w-20, e.x));
+      e.y = Math.max(20, Math.min(currentZoneData.height-e.h-20, e.y));
+    }
+  }
+}
+
+function hitPlayer(dmg) {
+  if (!G.player || G.player.invincible > 0) return;
+  const reduced = Math.max(1, dmg - Math.floor(G.player.defense / 5));
+  G.player.hp -= reduced;
+  G.player.invincible = 60;
+  showDamageNumber(G.player.x+G.player.w/2, G.player.y-10, reduced, '#f00');
+  spawnParticles(G.player.x+G.player.w/2, G.player.y+G.player.h/2, '#c00', 5, 3);
+  if (G.player.hp <= 0) {
+    G.player.hp = 0;
+    playerDied();
+  }
+}
+
+function playerDied() {
+  G.screen = 'dead';
+  document.getElementById('death-screen').style.display = 'flex';
+}
+
+function updateProjectiles() {
+  for (let i = G.projectiles.length-1; i >= 0; i--) {
+    const proj = G.projectiles[i];
+    proj.x += proj.vx;
+    proj.y += proj.vy;
+    proj.life--;
+    if (proj.life <= 0) { G.projectiles.splice(i,1); continue; }
+
+    if (proj.owner === 'player') {
+      // Hit enemies
+      for (const e of G.enemies) {
+        if (!e.alive) continue;
+        if (pointInRect(proj.x, proj.y, e)) {
+          hitEnemy(e, proj.damage, G.player);
+          G.projectiles.splice(i,1);
+          break;
+        }
+      }
+    } else {
+      // Hit player
+      if (pointInRect(proj.x, proj.y, G.player)) {
+        hitPlayer(proj.damage);
+        G.projectiles.splice(i,1);
+      }
+    }
+  }
+}
+
+function updateParticles() {
+  for (let i=G.particles.length-1;i>=0;i--) {
+    const p=G.particles[i];
+    p.x+=p.vx; p.y+=p.vy; p.vy+=0.1; p.life--;
+    if(p.life<=0) G.particles.splice(i,1);
+  }
+}
+
+function spawnParticles(x, y, color, count, size) {
+  for (let i=0;i<count;i++) {
+    G.particles.push({
+      x, y,
+      vx:(Math.random()-0.5)*3,
+      vy:(Math.random()-0.5)*3-1,
+      color, size: size+Math.random()*2,
+      life:20+Math.random()*20, maxLife:40
+    });
+  }
+}
+
+function resolveCollisions(p) {
+  if (!currentZoneData) return;
+  const exits = currentZoneData.exits || [];
+  for (const obj of currentZoneData.objects) {
+    if (!isCollidable(obj.type)) continue;
+    // Skip border walls that are covered by exits (let player walk through)
+    if (obj.type === 'wall') {
+      const overlapsExit = exits.some(exit =>
+        obj.x < exit.x + exit.w && obj.x + obj.w > exit.x &&
+        obj.y < exit.y + exit.h && obj.y + obj.h > exit.y
+      );
+      if (overlapsExit) continue;
+    }
+    if (rectsOverlap(p, obj)) {
+      const overlapX = Math.min(p.x + p.w - obj.x, obj.x + obj.w - p.x);
+      const overlapY = Math.min(p.y + p.h - obj.y, obj.y + obj.h - p.y);
+      if (overlapX < overlapY) {
+        if (p.x < obj.x) p.x -= overlapX; else p.x += overlapX;
+      } else {
+        if (p.y < obj.y) p.y -= overlapY; else p.y += overlapY;
+      }
+    }
+  }
+}
+
+function isCollidable(type) {
+  return ['wall','tree','rock','house','player_house','well','barrel','table','building','pier','boat','water_wall','fence'].includes(type);
+}
+
+function clampPlayer() {
+  if (!G.player || !currentZoneData) return;
+  const p = G.player;
+  const zw = currentZoneData.width;
+  const zh = currentZoneData.height;
+  // Allow player to reach exactly the border (exits sit at x:0 / x:zw-20 / y:0 / y:zh-20)
+  p.x = Math.max(0, Math.min(zw - p.w, p.x));
+  p.y = Math.max(0, Math.min(zh - p.h, p.y));
+}
+
+function checkZoneTransitions() {
+  if (!G.player || !currentZoneData) return;
+  if (G.fadingOut || G.fadingIn) return;
+  const p = G.player;
+  const zw = currentZoneData.width;
+  const zh = currentZoneData.height;
+
+  // Check exit rectangles: player center inside the exit rect triggers transition
+  for (const exit of (currentZoneData.exits || [])) {
+    const cx = p.x + p.w / 2;
+    const cy = p.y + p.h / 2;
+    // Expand exit detection a bit so it's not pixel-perfect
+    if (cx >= exit.x - 4 && cx <= exit.x + exit.w + 4 &&
+        cy >= exit.y - 4 && cy <= exit.y + exit.h + 4) {
+      loadZone(exit.target, exit.tx, exit.ty);
+      return;
+    }
+  }
+
+  // Also check clickable building/mine entrances
+  for (const obj of (currentZoneData.objects || [])) {
+    if ((obj.type === 'player_house' || obj.type === 'door' || obj.type === 'mine_entrance') && obj.target) {
+      const doorRect = { x: obj.x, y: obj.y + obj.h - 12, w: obj.w, h: 12 };
+      if (rectsOverlap(p, doorRect)) {
+        if (G.keysPressed['KeyE']) {
+          loadZone(obj.target, obj.tx, obj.ty);
+          return;
+        }
+        // Show interact hint
+      }
+    }
+  }
+}
+
+function tryInteract() {
+  const p = G.player;
+  // Check NPCs
+  for (const npc of G.npcs) {
+    if (rectDist(p, npc) < 50) {
+      startNPCDialogue(npc);
+      return;
+    }
+  }
+  // Check objects (chests, beds, doors, mine entrances)
+  for (const obj of (currentZoneData?.objects||[])) {
+    if (rectDist(p, {x:obj.x,y:obj.y,w:obj.w||30,h:obj.h||30}) < 60) {
+      if (obj.type==='bed' && G.currentZone==='house_start') {
+        doSleep();
+        return;
+      }
+      if ((obj.type==='player_house'||obj.type==='mine_entrance'||obj.type==='door') && obj.target) {
+        loadZone(obj.target, obj.tx, obj.ty);
+        return;
+      }
+      if (obj.type==='chest' && !obj.opened) {
+        openChest(obj);
+        return;
+      }
+    }
+  }
+}
+
+function canInteractWith(npc) {
+  if (!G.player) return false;
+  return rectDist(G.player, npc) < 50;
+}
+
+let dialogueCooldown = 0; // frames before E can reopen dialogue
+
+function startNPCDialogue(npc) {
+  if (dialogueCooldown > 0) return;
+  if (npc.isTutorial && !G.tutorialShown.includes('alderman')) {
+    G.tutorialShown.push('alderman');
+  }
+
+  let dlgKey = npc.dialogue;
+  if (npc.id === 'port_merchant') {
+    if (G.questFlags.relicFound && !G.questFlags.winDelivered) { dlgKey = 'port_merchant_quest_done'; }
+    else if (G.questFlags.hasRelicQuest && !G.questFlags.relicFound) { dlgKey = 'port_merchant_quest_active'; }
+  }
+
+  const dlg = DIALOGUES[dlgKey];
+  if (!dlg) return;
+  G.dialogueActive = true;
+  G.currentDialogue = dlg;
+  G.dialoguePage = 0;
+  showDialoguePage();
+}
+
+function showDialoguePage() {
+  const dlg = G.currentDialogue;
+  if (!dlg || G.dialoguePage >= dlg.length) {
+    closeDialogue();
+    return;
+  }
+  const page = dlg[G.dialoguePage];
+  document.getElementById('dialogue-name').textContent = page.name;
+  document.getElementById('dialogue-text').textContent = page.text;
+  document.getElementById('dialogue-box').style.display = 'block';
+  document.getElementById('dialogue-continue').style.display = 'block';
+
+  // Options
+  const optDiv = document.getElementById('dialogue-options');
+  optDiv.innerHTML = '';
+  if (page.options) {
+    document.getElementById('dialogue-continue').style.display = 'none';
+    for (const opt of page.options) {
+      const btn = document.createElement('button');
+      btn.className = 'dialogue-opt';
+      btn.textContent = opt.text;
+      btn.onclick = () => handleDialogueOption(opt.action);
+      optDiv.appendChild(btn);
+    }
+  }
+}
+
+function handleDialogueOption(action) {
+  if (action === 'close_dialogue') { closeDialogue(); return; }
+  if (action === 'open_shop') { closeDialogue(); openShop(); return; }
+  if (action === 'sell_mode') { closeDialogue(); openSellMode(); return; }
+  if (action === 'accept_quest') {
+    G.questFlags.hasRelicQuest = true;
+    closeDialogue();
+    notify('📋 Nueva misión: Recuperar la Reliquia del Clan Dunbar');
+    updateQuestTracker();
+    return;
+  }
+}
+
+function closeDialogue() {
+  if (!G.dialogueActive) return;
+  const dlg = G.currentDialogue;
+  if (dlg) {
+    if (G.questFlags.relicFound && !G.questFlags.winDelivered && dlg === DIALOGUES['port_merchant_quest_done']) {
+      G.questFlags.winDelivered = true;
+      setTimeout(()=>triggerWin(), 800);
+    }
+  }
+  G.dialogueActive = false;
+  G.currentDialogue = null;
+  document.getElementById('dialogue-box').style.display = 'none';
+  document.getElementById('dialogue-options').innerHTML = '';
+  dialogueCooldown = 20; // ~0.33s at 60fps before E can open dialogue again
+}
+
+function advanceDialogue() {
+  if (!G.dialogueActive) return;
+  const page = G.currentDialogue[G.dialoguePage];
+  if (page?.options) return; // Wait for option click
+  G.dialoguePage++;
+  if (G.dialoguePage >= G.currentDialogue.length) {
+    closeDialogue();
+  } else {
+    showDialoguePage();
+  }
+}
+
+// Called when E is pressed - only starts dialogue if not already in one
+function tryStartDialogueFromKey() {
+  if (G.dialogueActive) {
+    advanceDialogue();
+    return;
+  }
+  tryInteract();
+}
+
+function openShop() {
+  G.shopOpen = true;
+  const screen = document.getElementById('shop-screen');
+  screen.style.display = 'block';
+  document.getElementById('shop-gold').textContent = G.player.gold + ' oro';
+  const grid = document.getElementById('shop-items');
+  grid.innerHTML = '';
+  for (const item of SHOP_ITEMS) {
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+    div.innerHTML = `
+      <div class="shop-item-icon">${item.emoji}</div>
+      <div class="shop-item-info">
+        <div class="shop-item-name">${item.name}</div>
+        <div class="shop-item-desc">${item.desc}</div>
+        <div class="shop-item-price">💰 ${item.price} oro</div>
+      </div>
+      <button class="shop-btn" onclick="buyItem('${item.id}')">Comprar</button>
+    `;
+    grid.appendChild(div);
+  }
+}
+
+function buyItem(id) {
+  const item = SHOP_ITEMS.find(i=>i.id===id);
+  if (!item) return;
+  if (G.player.gold < item.price) { notify('No tienes suficiente oro'); return; }
+  if (item.type==='weapon_upgrade') {
+    if (G.player.weapon !== item.weapon) { notify('No tienes esa arma equipada'); return; }
+    if (G.player.weaponUpgraded) { notify('Arma ya mejorada'); return; }
+    G.player.gold -= item.price;
+    G.player.weaponUpgraded = true;
+    WEAPON_CONFIGS[G.player.weapon].upgraded = true;
+    notify(`✨ ¡${item.name} equipado!`);
+  } else if (item.type==='consumable') {
+    G.player.gold -= item.price;
+    const existing = G.player.inventory.find(i=>i.id===id);
+    if (existing) existing.qty++;
+    else G.player.inventory.push({...item, qty:1});
+    notify(`🧪 Poción comprada`);
+  }
+  document.getElementById('shop-gold').textContent = G.player.gold + ' oro';
+  updateHUD();
+}
+
+function closeShop() {
+  G.shopOpen = false;
+  document.getElementById('shop-screen').style.display = 'none';
+}
+
+function openSellMode() {
+  G.shopOpen = true;
+  const screen = document.getElementById('shop-screen');
+  screen.style.display = 'block';
+  const grid = document.getElementById('shop-items');
+  grid.innerHTML = '<p style="color:#888;grid-column:1/-1;text-align:center;font-size:12px">Esta función estará disponible próximamente.</p>';
+}
+
+function openInventory() {
+  G.inventoryOpen = true;
+  const panel = document.getElementById('inventory-panel');
+  panel.style.display = 'block';
+  const list = document.getElementById('inventory-list');
+  list.innerHTML = '';
+  if (!G.player.inventory.length) {
+    list.innerHTML = '<div style="color:#888;font-size:12px;padding:8px">Inventario vacío</div>';
+    return;
+  }
+  for (const item of G.player.inventory) {
+    const div = document.createElement('div');
+    div.className = 'inv-item';
+    div.innerHTML = `<span>${item.emoji}</span><span>${item.name} x${item.qty}</span>`;
+    if (item.id==='health_potion') {
+      const btn = document.createElement('button');
+      btn.className='use-btn'; btn.textContent='Usar';
+      btn.onclick = ()=>usePotion(item);
+      div.appendChild(btn);
+    }
+    list.appendChild(div);
+  }
+}
+
+function usePotion(item) {
+  if (!G.player) return;
+  G.player.hp = Math.min(G.player.maxHp, G.player.hp + 40);
+  item.qty--;
+  if (item.qty <= 0) G.player.inventory.splice(G.player.inventory.indexOf(item),1);
+  notify('🧪 +40 HP');
+  openInventory(); // refresh
+  updateHUD();
+}
+
+function closeInventory() {
+  G.inventoryOpen = false;
+  document.getElementById('inventory-panel').style.display = 'none';
+}
+
+function openChest(chestObj) {
+  chestObj.opened = true;
+  G.chestOpen = true;
+  // Give items
+  G.player.gold += 30;
+  G.player.inventory.push({id:'gem', name:'Gema Pura', emoji:'💎', desc:'Una gema brillante', qty:2});
+  if (!G.player.weaponUpgraded) {
+    G.player.weaponUpgraded = true;
+    document.getElementById('chest-contents').textContent = '¡Encontraste 2 Gemas Puras, 30 oro, y la mejora de tu arma!';
+    notify('✨ ¡Arma mejorada!');
+  } else {
+    document.getElementById('chest-contents').textContent = '¡Encontraste 2 Gemas Puras y 30 oro!';
+  }
+  document.getElementById('chest-modal').style.display = 'block';
+  updateHUD();
+}
+
+function closeChest() {
+  G.chestOpen = false;
+  document.getElementById('chest-modal').style.display = 'none';
+}
+
+function doSleep() {
+  G.player.hp = G.player.maxHp;
+  saveGame();
+  notify('💤 Dormiste y te curaste. Partida guardada.');
+  updateHUD();
+}
+
+function saveGame() {
+  G.save = {
+    zone: G.currentZone,
+    px: G.player.x, py: G.player.y,
+    hp: G.player.maxHp,
+    gold: G.player.gold,
+    inventory: JSON.parse(JSON.stringify(G.player.inventory)),
+    weaponUpgraded: G.player.weaponUpgraded,
+    questFlags: JSON.parse(JSON.stringify(G.questFlags))
+  };
+}
+
+function loadSave() {
+  if (!G.save) { location.reload(); return; }
+  document.getElementById('death-screen').style.display = 'none';
+  G.screen = 'playing';
+  G.player.hp = G.save.hp;
+  G.player.gold = G.save.gold;
+  G.player.inventory = JSON.parse(JSON.stringify(G.save.inventory));
+  G.player.weaponUpgraded = G.save.weaponUpgraded;
+  G.questFlags = JSON.parse(JSON.stringify(G.save.questFlags));
+  loadZone(G.save.zone, G.save.px, G.save.py);
+  updateHUD();
+  updateQuestTracker();
+}
+
+function triggerWin() {
+  document.getElementById('win-screen').style.display = 'flex';
+}
+
+function updateHUD() {
+  if (!G.player) return;
+  const p = G.player;
+  const hpPct = (p.hp / p.maxHp) * 100;
+  document.getElementById('hp-bar').style.width = hpPct+'%';
+  document.getElementById('hp-text').textContent = Math.ceil(p.hp)+'/'+p.maxHp;
+  document.getElementById('gold-display').textContent = '💰 '+p.gold+' oro';
+  document.getElementById('weapon-emoji').textContent = WEAPON_CONFIGS[p.weapon].emoji;
+  document.getElementById('weapon-name-hud').textContent = p.weaponUpgraded ? WEAPON_CONFIGS[p.weapon].upgradeName : WEAPON_CONFIGS[p.weapon].name;
+}
+
+function updateQuestTracker() {
+  const qt = document.getElementById('quest-tracker');
+  const qo = document.getElementById('quest-objectives');
+  if (!G.questFlags.hasRelicQuest) { qt.style.display='none'; return; }
+  qt.style.display='block';
+  let html = '';
+  html += `<div class="quest-obj ${G.questFlags.relicFound?'done':''}">→ Recuperar la Reliquia del Campamento Bandido</div>`;
+  html += `<div class="quest-obj ${G.questFlags.winDelivered?'done':''}">→ Entregar la Reliquia a Dunbar (Puerto)</div>`;
+  qo.innerHTML = html;
+}
+
+// ---- HELPERS ----
+function rectDist(a, b) {
+  const ax = a.x + (a.w||0)/2, ay = a.y + (a.h||0)/2;
+  const bx = b.x + (b.w||0)/2, by = b.y + (b.h||0)/2;
+  return Math.hypot(ax-bx, ay-by);
+}
+
+function rectsOverlap(a, b) {
+  return a.x < b.x+b.w && a.x+a.w > b.x &&
+         a.y < b.y+b.h && a.y+a.h > b.y;
+}
+
+function pointInRect(px, py, rect) {
+  return px > rect.x && px < rect.x+rect.w && py > rect.y && py < rect.y+rect.h;
+}
+
+let notifTimer = null;
+function notify(msg) {
+  const el = document.getElementById('notification');
+  el.textContent = msg;
+  el.style.opacity = '1';
+  if (notifTimer) clearTimeout(notifTimer);
+  notifTimer = setTimeout(()=>{ el.style.opacity='0'; }, 2500);
+}
+
+function showDamageNumber(x, y, dmg, color) {
+  const container = document.getElementById('damage-numbers');
+  const el = document.createElement('div');
+  el.className = 'damage-number';
+  el.textContent = '-'+dmg;
+  el.style.color = color;
+  el.style.left = (x - G.camera.x) + 'px';
+  el.style.top  = (y - G.camera.y) + 'px';
+  container.appendChild(el);
+  setTimeout(()=>el.remove(), 900);
+}
+
+function closeTutorial() {
+  G.tutorialOpen = false;
+  document.getElementById('tutorial-popup').style.display = 'none';
+}
+
+// ---- SELECTION SCREENS ----
+let selectedWeapon = null, selectedArmor = null;
+
+function selectWeapon(w) {
+  selectedWeapon = w;
+  document.querySelectorAll('#weapon-choices .choice-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelector(`[data-weapon="${w}"]`).classList.add('selected');
+  checkStartBtn();
+}
+
+function selectArmor(a) {
+  selectedArmor = a;
+  document.querySelectorAll('#armor-choices .choice-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelector(`[data-armor="${a}"]`).classList.add('selected');
+  checkStartBtn();
+}
+
+function checkStartBtn() {
+  document.getElementById('start-btn').disabled = !(selectedWeapon && selectedArmor);
+}
+
+function startGame() {
+  document.getElementById('title-screen').style.display = 'none';
+  document.getElementById('char-screen').style.display = 'flex';
+}
+
+function beginAdventure() {
+  if (!selectedWeapon || !selectedArmor) return;
+  document.getElementById('char-screen').style.display = 'none';
+  G.screen = 'playing';
+  document.getElementById('zone-name').style.display = 'block';
+  document.getElementById('weapon-icon').style.display = 'flex';
+  document.getElementById('map-btn').style.display = 'block';
+
+  buildZones();
+  G.player = createPlayer(selectedWeapon, selectedArmor);
+  _doLoadZone('house_start', 320, 380);
+  saveGame(); // Initial save
+  updateHUD();
+
+  // Show dialogue after short delay
+  setTimeout(()=>{
+    startNPCDialogue(currentNPCs.find(n=>n.id==='doctor'));
+  }, 600);
+}
+
+// ---- INPUT ----
+window.addEventListener('keydown', e => {
+  G.keys[e.code] = true;
+  G.keysPressed[e.code] = true;
+  // Dialogue advance OR start
+  if (e.code === 'Space' || e.code === 'Enter') {
+    if (G.dialogueActive) advanceDialogue();
+  }
+  if (e.code === 'KeyE') {
+    if (G.dialogueActive) advanceDialogue();
+  }
+  // Map toggle
+  if (e.code === 'KeyM') {
+    toggleMap();
+  }
+  e.preventDefault();
+});
+
+window.addEventListener('keyup', e => {
+  G.keys[e.code] = false;
+});
+
+// ---- ZONE LOADER (single definition) ----
+function loadZone(zoneId, tx, ty) {
+  if (G.fadingOut || G.fadingIn) return; // prevent double-trigger
+  G.fadingOut = true;
+  G.fadeAlpha = 0;
+  G.fadeCallback = () => {
+    _doLoadZone(zoneId, tx, ty);
+    G.fadingIn = true;
+    G.fadingOut = false;
+    G.fadeAlpha = 1;
+    // Tutorial trigger on first visit to village
+    if (zoneId === 'village_center' && !G.tutorialShown.includes('zone_exit')) {
+      G.tutorialShown.push('zone_exit');
+      setTimeout(() => {
+        const alderman = G.npcs.find(n => n.id === 'alderman');
+        if (alderman) {
+          G.dialogueActive = true;
+          G.currentDialogue = DIALOGUES['tutorial_man'];
+          G.dialoguePage = 0;
+          showDialoguePage();
+        }
+      }, 400);
+    }
+    if (zoneId === 'port_zone' && G.questFlags.relicFound && !G.questFlags.winDelivered) {
+      setTimeout(()=>notify('💡 Habla con Mercader Dunbar para entregar la reliquia'), 600);
+    }
+  };
+}
+
+// ---- MAP ----
+let mapOpen = false;
+
+function toggleMap() {
+  if (G.screen !== 'playing') return;
+  mapOpen = !mapOpen;
+  const modal = document.getElementById('map-modal');
+  modal.style.display = mapOpen ? 'block' : 'none';
+  if (mapOpen) drawIslandMap();
+}
+
+function drawIslandMap() {
+  const mc = document.getElementById('map-canvas-el');
+  const mctx = mc.getContext('2d');
+  const W = 440, H = 300;
+  mctx.clearRect(0, 0, W, H);
+
+  // Ocean background
+  mctx.fillStyle = '#0d3a6b';
+  mctx.fillRect(0, 0, W, H);
+
+  // Waves subtle
+  mctx.strokeStyle = 'rgba(255,255,255,0.07)';
+  mctx.lineWidth = 1;
+  for (let y = 0; y < H; y += 18) {
+    mctx.beginPath(); mctx.moveTo(0, y);
+    for (let x = 0; x < W; x += 20) mctx.lineTo(x, y + Math.sin(x * 0.1) * 3);
+    mctx.stroke();
+  }
+
+  // --- Island shape (organic polygon) ---
+  // Island occupies roughly the center/left of the map
+  const isl = { x: 60, y: 30, w: 320, h: 240 };
+
+  mctx.fillStyle = '#4a8a2f';
+  mctx.beginPath();
+  mctx.moveTo(isl.x + 20, isl.y + isl.h * 0.5);
+  mctx.bezierCurveTo(
+    isl.x, isl.y + isl.h * 0.2,
+    isl.x + isl.w * 0.1, isl.y,
+    isl.x + isl.w * 0.4, isl.y + 10
+  );
+  mctx.bezierCurveTo(
+    isl.x + isl.w * 0.7, isl.y + 5,
+    isl.x + isl.w, isl.y + 20,
+    isl.x + isl.w - 10, isl.y + isl.h * 0.5
+  );
+  mctx.bezierCurveTo(
+    isl.x + isl.w, isl.y + isl.h * 0.8,
+    isl.x + isl.w * 0.7, isl.y + isl.h,
+    isl.x + isl.w * 0.4, isl.y + isl.h - 10
+  );
+  mctx.bezierCurveTo(
+    isl.x + isl.w * 0.1, isl.y + isl.h,
+    isl.x, isl.y + isl.h * 0.8,
+    isl.x + 20, isl.y + isl.h * 0.5
+  );
+  mctx.closePath();
+  mctx.fill();
+
+  // Sandy coast edges (simulate beach border)
+  mctx.strokeStyle = '#c2b280';
+  mctx.lineWidth = 8;
+  mctx.stroke();
+
+  // ---- ZONE REGIONS ----
+  // Village center (middle of island)
+  const vx = isl.x + isl.w * 0.38, vy = isl.y + isl.h * 0.42;
+  mctx.fillStyle = '#8b7355';
+  mctx.fillRect(vx - 18, vy - 14, 36, 28);
+
+  // North plains (farms)
+  mctx.fillStyle = '#6ab54a';
+  mctx.fillRect(isl.x + isl.w * 0.2, isl.y + 15, 80, 60);
+  // Farm icons
+  mctx.fillStyle = '#5a8a2f';
+  for (let fi = 0; fi < 3; fi++) {
+    mctx.fillRect(isl.x + isl.w * 0.22 + fi * 24, isl.y + 22, 16, 16);
+  }
+
+  // South plains (mines area)
+  mctx.fillStyle = '#3d6020';
+  mctx.fillRect(isl.x + isl.w * 0.2, isl.y + isl.h * 0.62, 90, 65);
+
+  // Mine 1 (special)
+  mctx.fillStyle = '#1a1a1a';
+  mctx.fillRect(isl.x + isl.w * 0.22, isl.y + isl.h * 0.68, 20, 16);
+  mctx.fillStyle = '#888'; mctx.font = 'bold 7px sans-serif';
+  mctx.fillText('M1', isl.x + isl.w * 0.22 + 2, isl.y + isl.h * 0.68 + 12);
+
+  // Mine 2
+  mctx.fillStyle = '#1a1a1a';
+  mctx.fillRect(isl.x + isl.w * 0.36, isl.y + isl.h * 0.63, 20, 16);
+  mctx.fillStyle = '#888'; mctx.font = 'bold 7px sans-serif';
+  mctx.fillText('M2', isl.x + isl.w * 0.36 + 2, isl.y + isl.h * 0.63 + 12);
+
+  // Bandit camp
+  mctx.fillStyle = '#2c1a0a';
+  mctx.fillRect(isl.x + isl.w * 0.54, isl.y + isl.h * 0.68, 36, 28);
+  mctx.fillStyle = '#c00'; mctx.font = 'bold 7px sans-serif';
+  mctx.fillText('⚠', isl.x + isl.w * 0.54 + 4, isl.y + isl.h * 0.68 + 18);
+
+  // East plains
+  mctx.fillStyle = '#5aa535';
+  mctx.fillRect(isl.x + isl.w * 0.62, isl.y + isl.h * 0.3, 70, 80);
+
+  // Port (east side, sandy)
+  const px2 = isl.x + isl.w * 0.72, py2 = isl.y + isl.h * 0.42;
+  mctx.fillStyle = '#c2b280';
+  mctx.fillRect(px2, py2, 50, 40);
+  mctx.fillStyle = '#1a6eb0';
+  mctx.fillRect(px2 + 36, py2 - 5, 18, 50);
+  // Pier
+  mctx.fillStyle = '#8b6914';
+  mctx.fillRect(px2 + 30, py2 + 8, 24, 8);
+
+  // West coast
+  mctx.fillStyle = '#c2b280';
+  mctx.fillRect(isl.x + 4, isl.y + isl.h * 0.3, 30, 80);
+  mctx.fillStyle = '#1a6eb0';
+  mctx.fillRect(isl.x + 4, isl.y + isl.h * 0.3, 12, 80);
+
+  // ---- ROADS ----
+  mctx.strokeStyle = '#8b7355';
+  mctx.lineWidth = 3;
+  mctx.setLineDash([4, 2]);
+  // Vertical road through village
+  mctx.beginPath();
+  mctx.moveTo(vx + 8, isl.y + 15);
+  mctx.lineTo(vx + 8, isl.y + isl.h - 15);
+  mctx.stroke();
+  // Horizontal road
+  mctx.beginPath();
+  mctx.moveTo(isl.x + 30, vy + 5);
+  mctx.lineTo(isl.x + isl.w - 20, vy + 5);
+  mctx.stroke();
+  mctx.setLineDash([]);
+
+  // ---- LABELS ----
+  mctx.font = 'bold 9px Cinzel, serif';
+
+  // Village
+  mctx.fillStyle = '#f0d060';
+  mctx.fillText('Aldea Pedregal', vx - 20, vy - 17);
+
+  // Farms
+  mctx.fillStyle = '#aaffaa';
+  mctx.fillText('Granjas', isl.x + isl.w * 0.2 + 4, isl.y + 12);
+
+  // Mines
+  mctx.fillStyle = '#aaa';
+  mctx.fillText('Minas', isl.x + isl.w * 0.2 + 4, isl.y + isl.h * 0.62 - 4);
+
+  // Bandit camp label
+  mctx.fillStyle = '#ff8888';
+  mctx.fillText('Camp. Bandido', isl.x + isl.w * 0.44, isl.y + isl.h * 0.68 - 4);
+
+  // Port
+  mctx.fillStyle = '#88ccff';
+  mctx.fillText('Puerto', px2, py2 - 4);
+
+  // West coast
+  mctx.fillStyle = '#ddd';
+  mctx.fillText('Costa', isl.x - 4, vy - 10);
+
+  // Island name at top
+  mctx.font = 'bold 11px Cinzel, serif';
+  mctx.fillStyle = '#f0d060';
+  mctx.fillText('ISLA PEDREGAL', isl.x + isl.w / 2 - 52, isl.y - 10);
+
+  // ---- OTHER ISLANDS (distant, in sea) ----
+  // Island of the Center (right side, prominent)
+  const ci = { x: 380, y: 100, w: 55, h: 45 };
+  mctx.fillStyle = '#2a5a7a';
+  mctx.beginPath();
+  mctx.ellipse(ci.x + ci.w/2, ci.y + ci.h/2, ci.w/2, ci.h/2, 0, 0, Math.PI*2);
+  mctx.fill();
+  mctx.strokeStyle = '#3a8aaa'; mctx.lineWidth = 2; mctx.stroke();
+  mctx.font = '7px Cinzel, serif';
+  mctx.fillStyle = '#88ddff';
+  mctx.fillText('Isla del', ci.x + 4, ci.y + ci.h/2 - 2);
+  mctx.fillText('Centro (?)', ci.x, ci.y + ci.h/2 + 8);
+
+  // Other distant islands (3 small)
+  [[420, 250, 28, 20], [390, 260, 18, 14], [410, 30, 22, 16]].forEach(([x,y,rw,rh]) => {
+    mctx.fillStyle = '#1a4a5a';
+    mctx.beginPath();
+    mctx.ellipse(x, y, rw/2, rh/2, 0, 0, Math.PI*2);
+    mctx.fill();
+    mctx.strokeStyle = '#2a6a7a'; mctx.lineWidth = 1; mctx.stroke();
+    mctx.fillStyle = '#66aacc'; mctx.font = '6px Cinzel';
+    mctx.fillText('???', x - 8, y + 3);
+  });
+
+  // ---- PLAYER POSITION INDICATOR ----
+  // Map player pos relative to island
+  const zoneMapPos = getZoneMapPos(G.currentZone);
+  if (zoneMapPos) {
+    const px3 = isl.x + zoneMapPos.x * isl.w;
+    const py3 = isl.y + zoneMapPos.y * isl.h;
+    // Pulsing dot
+    mctx.fillStyle = '#f0d060';
+    mctx.shadowColor = '#f0d060';
+    mctx.shadowBlur = 8;
+    mctx.beginPath();
+    mctx.arc(px3, py3, 5, 0, Math.PI*2);
+    mctx.fill();
+    mctx.shadowBlur = 0;
+    // You are here arrow
+    mctx.fillStyle = '#f0d060';
+    mctx.font = '8px Cinzel';
+    mctx.fillText('◀ Tú', px3 + 7, py3 + 3);
+  }
+
+  // Compass
+  const cx2 = W - 28, cy2 = H - 28;
+  mctx.fillStyle = 'rgba(0,0,0,0.5)';
+  mctx.beginPath(); mctx.arc(cx2, cy2, 16, 0, Math.PI*2); mctx.fill();
+  mctx.strokeStyle = '#8b6914'; mctx.lineWidth = 1; mctx.stroke();
+  mctx.fillStyle = '#e74c3c'; mctx.font = 'bold 10px Cinzel';
+  mctx.fillText('N', cx2 - 4, cy2 - 4);
+  mctx.fillStyle = '#aaa'; mctx.font = '8px Cinzel';
+  mctx.fillText('S', cx2 - 3, cy2 + 13);
+  mctx.fillText('E', cx2 + 6, cy2 + 4);
+  mctx.fillText('O', cx2 - 15, cy2 + 4);
+}
+
+// Start the game loop
+
+function getZoneMapPos(zoneId) {
+  const positions = {
+    'house_start':    { x: 0.42, y: 0.46 },
+    'village_center': { x: 0.40, y: 0.44 },
+    'north_a':        { x: 0.28, y: 0.18 },
+    'north_b':        { x: 0.52, y: 0.18 },
+    'south_a':        { x: 0.28, y: 0.72 },
+    'south_b':        { x: 0.52, y: 0.72 },
+    'east_a':         { x: 0.68, y: 0.38 },
+    'east_b':         { x: 0.68, y: 0.58 },
+    'east_c':         { x: 0.75, y: 0.28 },
+    'west_coast_a':   { x: 0.10, y: 0.35 },
+    'west_coast_b':   { x: 0.10, y: 0.60 },
+    'port_zone':      { x: 0.84, y: 0.50 },
+    'mine_special':   { x: 0.24, y: 0.72 },
+    'mine_empty':     { x: 0.52, y: 0.65 },
+  };
+  return positions[zoneId] || null;
+}
+
+gameLoop();
+
+</script>
+</body>
+</html>
