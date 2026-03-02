@@ -376,7 +376,7 @@
     border-top: 2px solid #8b6914;
     padding: 14px 60px 14px 14px;
     pointer-events: all;
-    z-index: 20;
+    z-index: 200;
     min-height: 90px;
   }
 
@@ -1368,7 +1368,11 @@ let G = {
     winDelivered: false,
     shwingQuestActive: false,
     stableAndreonDefeated: false,
-    verdugaDefeated: false
+    verdugaDefeated: false,
+    // Cazador NPC quests
+    hunterStage: 0,       // 0=none,1=kill boars,2=kill bulls,3=completed
+    hunterBoars: 0,
+    hunterBulls: 0
   },
   chestOpen: false,
   fadeAlpha: 0,
@@ -1395,6 +1399,7 @@ const ARMOR_CONFIGS = {
   heavy:  { name:'Armadura Pesada',  defense:14, speed:1.5,  hp:110, color:'#555', emoji:'🛡' },
   normal: { name:'Armadura Normal',  defense:12, speed:1.8,  hp:100, color:'#888', emoji:'🥋' },
   light:  { name:'Armadura Ligera',  defense:5,  speed:2.5,  hp:80,  color:'#a8a', emoji:'🎽' }
+  ,hunter: { name:'Armadura de Cazador', defense:5, speed:2.5, hp:80, color:'#8b4513', emoji:'🧥', arrowBonus:5 }
 };
 
 // ---- ZONES ----
@@ -1478,7 +1483,7 @@ function buildZones() {
       {type:'tree',   x:960,y:210, w:30,h:30},
     ],
     exits: [
-      {x:720,  y:0,    w:80, h:20, target:'nor_s2',        tx:760, ty:560},
+      {x:720,  y:0,    w:80, h:20, target:'nor_s2',        tx:400, ty:H-30},
       {x:720,  y:1180, w:80, h:20, target:'sur_n2',         tx:400, ty:30},
       {x:0,    y:560,  w:20, h:80, target:'west_coast_mid', tx:760, ty:290},
       {x:1580, y:560,  w:20, h:80, target:'camino_puerto', tx:30,  ty:290},
@@ -1489,6 +1494,7 @@ function buildZones() {
       {id:'villager1',x:180,y:560, name:'Mera',           sprite:'person',    dialogue:'villager1'},
       {id:'villager2',x:1250,y:560,name:'Borrus',         sprite:'person2',   dialogue:'villager2'},
       {id:'villager3',x:430,y:350, name:'Helga',          sprite:'person3',   dialogue:'villager3'},
+      {id:'hunter',   x:680,y:720, name:'Cazador',        sprite:'hunter',    dialogue:'hunter', isQuestGiver:true},
     ],
     spawnRules: { bandit: {chance:0.08, max:1} }  // rare bandit events in the village
   };
@@ -1519,7 +1525,7 @@ function buildZones() {
       {x:W-16,y:250,w:16,h:80, target:'nor_n2', tx:30,  ty:290},
       {x:360, y:H-16,w:80,h:16, target:'nor_m1', tx:400, ty:30},
     ],
-    spawnRules: { boar:{chance:0.4,max:2} }
+    spawnRules: { boar:{chance:0.6,max:2} }
   };
 
   G.zones['nor_n2'] = {
@@ -1540,7 +1546,7 @@ function buildZones() {
       {x:360, y:H-16,w:80,h:16, target:'nor_m2', tx:400, ty:30},
       {x:360, y:0,   w:80,h:16, target:'highland_farm', tx:400, ty:540},
     ],
-    spawnRules: { boar:{chance:0.4,max:2}, bull:{chance:0.15,max:1} }
+    spawnRules: { boar:{chance:0.6,max:2}, bull:{chance:0.35,max:1} }
   };
 
   G.zones['nor_n3'] = {
@@ -1560,7 +1566,7 @@ function buildZones() {
       {x:0,  y:250,w:16,h:80, target:'nor_n2', tx:W-30,ty:290},
       {x:360,y:H-16,w:80,h:16, target:'nor_m3', tx:400, ty:30},
     ],
-    spawnRules: { boar:{chance:0.4,max:2} }
+    spawnRules: { boar:{chance:0.6,max:2} }
   };
 
   // ---- Granja alta (extremo norte) ----
@@ -1689,7 +1695,7 @@ function buildZones() {
       {x:0,   y:250,  w:16, h:80, target:'nor_m1', tx:W-30,ty:290},
       {x:W-16,y:250,  w:16, h:80, target:'nor_m3', tx:30,  ty:290},
     ],
-    spawnRules: { boar:{chance:0.5,max:3}, bull:{chance:0.2,max:2} }
+    spawnRules: { boar:{chance:0.7,max:3}, bull:{chance:0.4,max:2} }
   };
 
   G.zones['nor_m3'] = {
@@ -1742,7 +1748,7 @@ function buildZones() {
       {x:W-16,y:250,  w:16, h:80, target:'nor_s2',        tx:30,   ty:290},
       {x:0,   y:250,  w:16, h:80, target:'west_coast_top',tx:W-30, ty:290},
     ],
-    spawnRules: { boar:{chance:0.5,max:2}, bull:{chance:0.2,max:1} }
+    spawnRules: { boar:{chance:0.7,max:2}, bull:{chance:0.4,max:1} }
   };
 
   G.zones['nor_s2'] = {
@@ -1764,7 +1770,7 @@ function buildZones() {
       {x:0,   y:250,  w:16, h:80, target:'nor_s1',        tx:W-30, ty:290},
       {x:W-16,y:250,  w:16, h:80, target:'nor_s3',        tx:30,   ty:290},
     ],
-    spawnRules: { boar:{chance:0.35,max:2} }
+    spawnRules: { boar:{chance:0.55,max:2} }
   };
 
   G.zones['nor_s3'] = {
@@ -1783,7 +1789,7 @@ function buildZones() {
       {x:0,   y:250,  w:16, h:80, target:'nor_s2', tx:W-30,ty:290},
       {x:W-16,y:250,  w:16, h:80, target:'east_a', tx:30,  ty:250},
     ],
-    spawnRules: { boar:{chance:0.5,max:2}, bull:{chance:0.25,max:2} }
+    spawnRules: { boar:{chance:0.7,max:2}, bull:{chance:0.45,max:2} }
   };
 
   // ---- Sub-zonas valladas ----
@@ -1865,7 +1871,7 @@ function buildZones() {
       {x:W-16, y:260, w:16, h:80, target:'sur_n2',       tx:30,   ty:290},
       {x:360,  y:H-16,w:80, h:16, target:'sur_m1',       tx:400,  ty:30},
     ],
-    spawnRules: { boar:{chance:0.5,max:3} }
+    spawnRules: { boar:{chance:0.7,max:3} }
   };
 
   G.zones['sur_n2'] = {
@@ -1887,7 +1893,7 @@ function buildZones() {
       {x:W-16,y:260,  w:16, h:80, target:'sur_n3',         tx:30,   ty:290},
       {x:360, y:H-16, w:80, h:16, target:'sur_m2',         tx:400,  ty:30},
     ],
-    spawnRules: { boar:{chance:0.3,max:2}, bull:{chance:0.15,max:1} }
+    spawnRules: { boar:{chance:0.5,max:2}, bull:{chance:0.35,max:1} }
   };
 
   G.zones['sur_n3'] = {
@@ -1908,7 +1914,7 @@ function buildZones() {
       {x:0,   y:260, w:16, h:80, target:'sur_n2', tx:W-30, ty:290},
       {x:360, y:H-16,w:80, h:16, target:'sur_m3', tx:400,  ty:30},
     ],
-    spawnRules: { boar:{chance:0.5,max:3}, bull:{chance:0.2,max:2} }
+    spawnRules: { boar:{chance:0.7,max:3}, bull:{chance:0.4,max:2} }
   };
 
   // ---- Fila Media ----
@@ -1930,7 +1936,7 @@ function buildZones() {
       {x:360, y:0,    w:80, h:16, target:'sur_n1', tx:400, ty:H-30},
       {x:360, y:H-16, w:80, h:16, target:'sur_s1', tx:400, ty:30},
     ],
-    spawnRules: { boar:{chance:0.4,max:2}, bull:{chance:0.2,max:2} }
+    spawnRules: { boar:{chance:0.6,max:2}, bull:{chance:0.4,max:2} }
   };
 
   G.zones['sur_m2'] = {
@@ -1986,7 +1992,7 @@ function buildZones() {
       {x:360, y:0,    w:80, h:16, target:'sur_n3', tx:400, ty:H-30},
       {x:360, y:H-16, w:80, h:16, target:'sur_s3', tx:400, ty:30},
     ],
-    spawnRules: { boar:{chance:0.4,max:2} }
+    spawnRules: { boar:{chance:0.6,max:2} }
   };
 
   // ---- Fila Sur (Costa) ----
@@ -2070,7 +2076,7 @@ function buildZones() {
       {x:W-16,y:250, w:16, h:80, target:'east_b',  tx:30,  ty:250},
       {x:360, y:H-16,w:80, h:16, target:'east_c',  tx:400, ty:30},
     ],
-    spawnRules: { boar:{chance:0.55,max:3}, bull:{chance:0.25,max:2} }
+    spawnRules: { boar:{chance:0.75,max:3}, bull:{chance:0.45,max:2} }
   };
 
   G.zones['east_b'] = {
@@ -2088,7 +2094,7 @@ function buildZones() {
       {x:0,   y:250, w:16, h:80, target:'east_a',   tx:W-30,ty:250},
       {x:360, y:H-16,w:80, h:16, target:'port_zone',tx:400, ty:30},
     ],
-    spawnRules: { boar:{chance:0.5,max:3}, bull:{chance:0.2,max:2} }
+    spawnRules: { boar:{chance:0.7,max:3}, bull:{chance:0.4,max:2} }
   };
 
   G.zones['east_c'] = {
@@ -2105,7 +2111,7 @@ function buildZones() {
     exits: [
       {x:0,  y:250, w:16, h:80, target:'east_a', tx:W-30,ty:250},
     ],
-    spawnRules: { boar:{chance:0.3,max:2} }
+    spawnRules: { boar:{chance:0.5,max:2} }
   };
 
   // ===================== CAMINO AL PUERTO =====================
@@ -2512,7 +2518,7 @@ const DIALOGUES = {
   tutorial_man: [
     {name:'Viejo Alderman', text:'¡Eh, joven! Espera un momento. Permíteme enseñarte lo básico de la vida en Pedregal.'},
     {name:'Viejo Alderman', text:'Usa WASD o las flechas para moverte. Al llegar al borde de una zona, pasarás a la siguiente.'},
-    {name:'Viejo Alderman', text:'Presiona Z (o J) para ATACAR con tu arma. Presiona X (o K) para hacer un DASH rápido hacia atrás.'},
+    {name:'Viejo Alderman', text:'Presiona Z (o J) para ATACAR con tu arma. Presiona X (o K) para hacer un DASH rápido hacia adelante.'},
     {name:'Viejo Alderman', text:'Acércate a personas o cosas y presiona E para INTERACTUAR. Con I abres tu inventario.'},
     {name:'Viejo Alderman', text:'¡Cuidado con los jabalíes de la llanura! Si mueres, volverás a tu última siesta en casa.'},
     {name:'Viejo Alderman', text:'Para GUARDAR la partida, duerme en tu cama. ¡Buena suerte, muchacho!'},
@@ -2602,6 +2608,27 @@ const DIALOGUES = {
     {name:'Granjero Wold', text:'\u00a1Un Andreon! En mi propio establo... Esas bestias cuadradas son lo m\u00e1s voraces que existen.'},
     {name:'Granjero Wold', text:'Deben haber entrado por alg\u00fan agujero en la noche y acabado con todos mis Shwings. No puedo creer que hayas sobrevivido.'},
     {name:'Granjero Wold', text:'Gracias, forastero. Le debo la vida. Cuando reconstruya la granja, la gente hablar\u00e1 de tu valor.'},
+  ],
+  hunter: [
+    {name:'Cazador', text:'Hola viajero. Soy el cazador del pueblo. La vida aquí depende del ganado y los cazadores mantienen el equilibrio.'},
+    {name:'Cazador', text:'Tengo una tarea: mata 10 jabalíes y te daré un arco. Si ya tienes uno, lo subiré a nivel 2.',
+     options:[
+       {text:'Acepto: matar 10 jabalíes', action:'accept_hunter_boars'},
+       {text:'Ahora no', action:'close_dialogue'}
+     ]
+    }
+  ],
+  hunter_after_boars: [
+    {name:'Cazador', text:'Excelente trabajo con los jabalíes. Ahora necesito que elimines 10 toros que atacan los corrales.'},
+    {name:'Cazador', text:'Al completar eso recibirás 100 de oro y la Armadura de Cazador (como ligera, +5 daño de arco).',
+     options:[
+       {text:'Acepto: matar 10 toros', action:'accept_hunter_bulls'},
+       {text:'Ahora no', action:'close_dialogue'}
+     ]
+    }
+  ],
+  hunter_thanks: [
+    {name:'Cazador', text:'Gracias. Esta isla es más segura gracias a ti.'}
   ],
 };
 
@@ -2707,20 +2734,20 @@ const ENEMY_TYPES = {
   },
   andreon: {
     name:'Andreon', emoji:'🐾', w:40, h:34,
-    hp:120, maxHp:120, damage:20, speed:1.1, xp:30, gold:15,
-    color:'#4a1a00', aggroRange:200, attackRange:40, attackCooldown:120,
-    difficulty:'medium_hard', isBoss:true
+    hp:220, maxHp:220, damage:32, speed:1.25, xp:60, gold:30,
+    color:'#4a1a00', aggroRange:230, attackRange:44, attackCooldown:100,
+    difficulty:'hard', isBoss:true
   },
   bandit_boss: {
     name:'Jefe Bandido', emoji:'💀', w:28, h:28,
-    hp:150, maxHp:150, damage:18, speed:1.3, xp:50, gold:25,
-    color:'#1a0a2a', aggroRange:220, attackRange:200, attackCooldown:75,
-    difficulty:'medium_hard', isBoss:true, isRanged:true
+    hp:260, maxHp:260, damage:28, speed:1.45, xp:90, gold:40,
+    color:'#1a0a2a', aggroRange:260, attackRange:220, attackCooldown:60,
+    difficulty:'hard', isBoss:true, isRanged:true
   },
   verdugo: {
     name:'Soldado Verdugo', emoji:'⚔️', w:30, h:44,
-    hp:480, maxHp:480, damage:35, speed:1.4, xp:120, gold:60,
-    color:'#546E7A', aggroRange:280, attackRange:42, attackCooldown:85,
+    hp:720, maxHp:720, damage:55, speed:1.55, xp:220, gold:120,
+    color:'#546E7A', aggroRange:320, attackRange:48, attackCooldown:70,
     difficulty:'very_hard', isBoss:true
   }
 };
@@ -4662,8 +4689,8 @@ function updatePlayer() {
       p.energy -= 25;
       p.dashing = true;
       p.dashTimer = 14;
-      p.dashVx = -vx * 4.5 || (p.facing==='left'?4.5:p.facing==='right'?-4.5:0);
-      p.dashVy = -vy * 4.5 || (p.facing==='up'?4.5:p.facing==='down'?-4.5:0);
+      p.dashVx = (vx !== 0) ? vx * 4.5 : (p.facing === 'right' ? 4.5 : (p.facing === 'left' ? -4.5 : 0));
+      p.dashVy = (vy !== 0) ? vy * 4.5 : (p.facing === 'down' ? 4.5 : (p.facing === 'up' ? -4.5 : 0));
       spawnParticles(p.x+p.w/2, p.y+p.h/2, '#ffffff', 6, 4);
     } else {
       showFloatingText(p.x+p.w/2, p.y-16, 'Sin Energía', '#2ecc71');
@@ -4747,7 +4774,7 @@ function doAttack(p) {
   p.attackCooldown = wconf.cooldown;
 
   if (p.weapon === 'bow') {
-    const bowDmg = baseDmg + Math.floor((p.stats?.punteria || 0) / 3);
+    const bowDmg = baseDmg + Math.floor((p.stats?.punteria || 0) / 3) + (p.armor === 'hunter' ? 5 : 0);
     // Shoot projectile
     const dir = facingToDir(p.facing);
     G.projectiles.push({
@@ -4882,6 +4909,51 @@ function onEnemyDeath(e) {
     notify('⚔️ ¡Soldado Verdugo derrotado! Su espada es tuya.');
     const vChest = currentZoneData?.objects?.find(o => o.type==='chest' && o.id==='mine_boss_chest');
     if (vChest && !vChest.opened) { setTimeout(()=>openChest(vChest), 600); }
+  }
+
+  // Hunter quest progression: boars -> bulls
+  if (e.type === 'boar' && G.questFlags.hunterStage === 1) {
+    G.questFlags.hunterBoars = (G.questFlags.hunterBoars || 0) + 1;
+    notify(`🗡️ Jabalíes: ${G.questFlags.hunterBoars}/10`);
+    if (G.questFlags.hunterBoars >= 10) {
+      // Reward: give bow or upgrade if already owned
+      G.questFlags.hunterStage = 2;
+      G.player.weapons = G.player.weapons || [G.player.weapon];
+      if (G.player.weapons.includes('bow')) {
+        WEAPON_CONFIGS['bow'].upgraded = true;
+        if (G.player.weapon === 'bow') G.player.weaponUpgraded = true;
+        notify('🏹 Tu Arco fue mejorado a nivel 2 por el Cazador.');
+      } else {
+        G.player.weapons.push('bow');
+        notify('🏹 Recibiste: Arco del Cazador');
+      }
+      updateQuestTracker();
+    } else {
+      updateQuestTracker();
+    }
+  }
+  if (e.type === 'bull' && G.questFlags.hunterStage === 2) {
+    G.questFlags.hunterBulls = (G.questFlags.hunterBulls || 0) + 1;
+    notify(`🗡️ Toros: ${G.questFlags.hunterBulls}/10`);
+    if (G.questFlags.hunterBulls >= 10) {
+      // Reward: 100 gold + hunter armor
+      G.questFlags.hunterStage = 3;
+      G.player.gold = (G.player.gold || 0) + 100;
+      // Add and equip hunter armor
+      G.player.armors = G.player.armors || [G.player.armor];
+      if (!G.player.armors.includes('hunter')) G.player.armors.push('hunter');
+      // Auto-equip
+      const aconf = ARMOR_CONFIGS['hunter'];
+      G.player.armor = 'hunter';
+      G.player.maxHp = aconf.hp; G.player.baseMaxHp = aconf.hp;
+      G.player.hp = Math.min(G.player.hp, G.player.maxHp);
+      G.player.speed = aconf.speed; G.player.baseSpeed = aconf.speed;
+      G.player.defense = aconf.defense; G.player.baseDefense = aconf.defense;
+      notify('🧥 Recibiste: Armadura de Cazador (+5 dmg arco) y 100 oro');
+      updateQuestTracker();
+    } else {
+      updateQuestTracker();
+    }
   }
 
   // Small random weapon drop for common enemies
@@ -5495,6 +5567,22 @@ function handleDialogueOption(action) {
     G.player.inventory.push({id:'stable_key', name:'Llave del Establo', emoji:'🔑', desc:'Abre el establo de Wold', qty:1});
     closeDialogue();
     notify('🔑 Recibiste la Llave del Establo');
+    updateQuestTracker();
+    return;
+  }
+  if (action === 'accept_hunter_boars') {
+    G.questFlags.hunterStage = 1;
+    G.questFlags.hunterBoars = 0;
+    closeDialogue();
+    notify('📋 Nueva misión: Matar 10 jabalíes');
+    updateQuestTracker();
+    return;
+  }
+  if (action === 'accept_hunter_bulls') {
+    G.questFlags.hunterStage = 2;
+    G.questFlags.hunterBulls = 0;
+    closeDialogue();
+    notify('📋 Nueva misión: Matar 10 toros');
     updateQuestTracker();
     return;
   }
@@ -6440,7 +6528,7 @@ function drawArrowRain() {
 function updateQuestTracker() {
   const qt = document.getElementById('quest-tracker');
   const qo = document.getElementById('quest-objectives');
-  const hasAny = G.questFlags.hasRelicQuest || G.questFlags.shwingQuestActive;
+  const hasAny = G.questFlags.hasRelicQuest || G.questFlags.shwingQuestActive || (G.questFlags.hunterStage && G.questFlags.hunterStage > 0);
   if (!hasAny) { qt.style.display='none'; return; }
   qt.style.display='block';
   let html = '';
@@ -6450,6 +6538,18 @@ function updateQuestTracker() {
   }
   if (G.questFlags.shwingQuestActive) {
     html += `<div class="quest-obj ${G.questFlags.stableAndreonDefeated?'done':''}">→ Revisar el establo de Wold (Granja Alta)</div>`;
+  }
+  // Hunter quest tracker
+  if (G.questFlags.hunterStage === 1) {
+    const done = (G.questFlags.hunterBoars || 0) >= 10 ? 'done' : '';
+    html += `<div class="quest-obj ${done}">→ Cazar 10 jabalíes (${G.questFlags.hunterBoars||0}/10)</div>`;
+  }
+  if (G.questFlags.hunterStage === 2) {
+    const done = (G.questFlags.hunterBulls || 0) >= 10 ? 'done' : '';
+    html += `<div class="quest-obj ${done}">→ Cazar 10 toros (${G.questFlags.hunterBulls||0}/10)</div>`;
+  }
+  if (G.questFlags.hunterStage === 3) {
+    html += `<div class="quest-obj done">→ Recompensa de Cazador obtenida</div>`;
   }
   qo.innerHTML = html;
 }
