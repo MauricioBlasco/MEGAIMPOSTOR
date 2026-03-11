@@ -10,7 +10,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #0a0a0f;
+    background: radial-gradient(ellipse at center, #1a1208 0%, #0a0a0f 70%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,8 +24,8 @@
     width: 800px;
     height: 600px;
     overflow: hidden;
-    border: 3px solid #8b6914;
-    box-shadow: 0 0 40px rgba(139,105,20,0.5), inset 0 0 20px rgba(0,0,0,0.8);
+    border: 3px solid #a07820;
+    box-shadow: 0 0 60px rgba(160,120,20,0.6), 0 0 120px rgba(80,50,0,0.4), inset 0 0 30px rgba(0,0,0,0.9);
   }
 
   canvas {
@@ -66,26 +66,28 @@
   .stat-bar-bg {
     width: 120px;
     height: 12px;
-    background: rgba(0,0,0,0.7);
-    border: 1px solid #555;
+    background: rgba(0,0,0,0.85);
+    border: 1px solid #3a3030;
     border-radius: 2px;
     overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
   }
 
   .stat-bar-fill {
     height: 100%;
     transition: width 0.3s;
     border-radius: 2px;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.2), inset 0 -1px 0 rgba(0,0,0,0.3);
   }
 
-  #hp-bar      { background: linear-gradient(90deg, #c0392b, #e74c3c); }
-  #energy-bar  { background: linear-gradient(90deg, #0e7a4a, #2ecc71); }
-  #mana-bar    { background: linear-gradient(90deg, #1a5276, #2980b9); }
-  #xp-bar      { background: linear-gradient(90deg, #7d4f00, #f0d060); }
+  #hp-bar      { background: linear-gradient(90deg, #7a0808 0%, #c0392b 40%, #e74c3c 80%, #ff6b5b 100%); }
+  #energy-bar  { background: linear-gradient(90deg, #074828 0%, #0e7a4a 40%, #2ecc71 80%, #50e88a 100%); }
+  #mana-bar    { background: linear-gradient(90deg, #0a1e4a 0%, #1a5276 40%, #2980b9 80%, #50a8e0 100%); }
+  #xp-bar      { background: linear-gradient(90deg, #3a2000 0%, #7d4f00 40%, #c9a227 80%, #f0d060 100%); }
 
   #level-badge {
     display: inline-block;
-    background: rgba(0,0,0,0.82);
+    background: rgba(0,0,0,0.9);
     border: 1px solid #c9a227;
     border-radius: 3px;
     padding: 1px 7px;
@@ -93,6 +95,8 @@
     font-family: 'Cinzel', serif;
     font-size: 11px;
     margin-bottom: 3px;
+    text-shadow: 0 0 6px rgba(240,208,96,0.5);
+    box-shadow: 0 0 6px rgba(200,162,39,0.3);
   }
 
   /* Level-up modal */
@@ -166,8 +170,8 @@
   #weapon-icon {
     position: absolute;
     bottom: 50px; right: 10px;
-    background: rgba(0,0,0,0.8);
-    border: 2px solid #8b6914;
+    background: rgba(0,0,0,0.9);
+    border: 2px solid #a07820;
     border-radius: 4px;
     width: 50px; height: 50px;
     display: flex;
@@ -176,6 +180,7 @@
     justify-content: center;
     font-size: 24px;
     color: #fff;
+    box-shadow: 0 0 12px rgba(160,120,20,0.4), inset 0 0 8px rgba(0,0,0,0.7);
   }
 
   #weapon-icon span {
@@ -222,13 +227,15 @@
   #gold-display {
     position: absolute;
     top: 8px; right: 10px;
-    background: rgba(0,0,0,0.8);
-    border: 1px solid #8b6914;
+    background: rgba(0,0,0,0.88);
+    border: 1px solid #a07820;
     border-radius: 4px;
     padding: 4px 8px;
     color: #f0d060;
     font-family: 'Cinzel', serif;
     font-size: 12px;
+    text-shadow: 0 0 6px rgba(240,208,96,0.5);
+    box-shadow: 0 0 8px rgba(0,0,0,0.8);
   }
 
   #zone-name {
@@ -236,24 +243,27 @@
     top: 8px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0,0,0,0.7);
-    border: 1px solid #8b6914;
+    background: rgba(0,0,0,0.85);
+    border: 1px solid #a07820;
     border-radius: 4px;
     padding: 4px 12px;
     color: #f0d060;
     font-family: 'Cinzel', serif;
     font-size: 13px;
     white-space: nowrap;
+    text-shadow: 0 0 8px rgba(240,208,96,0.6);
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
   }
 
   #mini-map {
     position: absolute;
     bottom: 10px; left: 10px;
     width: 80px; height: 60px;
-    background: rgba(0,0,0,0.8);
-    border: 1px solid #555;
+    background: rgba(0,0,0,0.88);
+    border: 1px solid #4a3a20;
     border-radius: 2px;
     overflow: hidden;
+    box-shadow: 0 0 8px rgba(0,0,0,0.8);
   }
 
   #mini-map canvas { width: 80px; height: 60px; }
@@ -372,12 +382,13 @@
   #dialogue-box {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    background: rgba(5,3,0,0.95);
-    border-top: 2px solid #8b6914;
+    background: rgba(5,3,0,0.97);
+    border-top: 2px solid #a07820;
     padding: 14px 60px 14px 14px;
     pointer-events: all;
     z-index: 200;
     min-height: 90px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.8), 0 -1px 0 rgba(160,120,20,0.3);
   }
 
   #dialogue-name {
@@ -385,6 +396,7 @@
     color: #f0d060;
     font-size: 13px;
     margin-bottom: 6px;
+    text-shadow: 0 0 8px rgba(240,208,96,0.5);
   }
 
   #dialogue-text {
@@ -1096,6 +1108,7 @@
         <div class="stat-bar-bg"><div class="stat-bar-fill" id="hp-bar" style="width:100%"></div></div>
         <span id="hp-text" style="color:#e74c3c;font-size:10px;font-family:'Cinzel',serif;">100/100</span>
       </div>
+      <div id="companions-hud" style="display:flex;gap:8px;margin-top:6px"></div>
       <div class="stat-bar-container">
         <span class="stat-label" style="color:#2ecc71">EN</span>
         <div class="stat-bar-bg"><div class="stat-bar-fill" id="energy-bar" style="width:100%"></div></div>
@@ -1248,20 +1261,33 @@
     </div>
   </div>
 
+  <!-- Companion Stats Modal -->
+  <div id="companion-stats-modal" style="display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#111;padding:14px;border:1px solid #3a2800;border-radius:6px;z-index:999;width:380px;color:#ddd">
+    <h3 id="comp-stats-name" style="margin:0 0 6px 0;color:#f0d060">Compañero</h3>
+    <div id="comp-stats-content" style="font-size:13px;line-height:1.6;color:#ccc"></div>
+    <div style="text-align:center;margin-top:10px">
+      <button class="btn" onclick="document.getElementById('companion-stats-modal').style.display='none'">CERRAR</button>
+    </div>
+  </div>
+
   <!-- Inventory -->
   <div id="char-menu">
     <div class="cmenu-tabs">
       <button class="ctab-btn cactive" id="ctab-estadisticas-btn" onclick="charMenuTab('estadisticas')">⚔ ESTADÍSTICAS</button>
       <button class="ctab-btn" id="ctab-inventario-btn" onclick="charMenuTab('inventario')">🎒 INVENTARIO</button>
+      <button class="ctab-btn" id="ctab-companions-btn" onclick="charMenuTab('companions')">🤝 COMPAÑEROS</button>
       <button class="ctab-btn" id="ctab-mapa-btn" onclick="charMenuTab('mapa')">🗺 MAPA</button>
       <button class="ctab-btn" id="ctab-info-btn" onclick="charMenuTab('info')">📋 INFO</button>
+      <button class="ctab-btn" id="ctab-ajustes-btn" onclick="charMenuTab('ajustes')">⚙ AJUSTES</button>
     </div>
     <div id="ctab-estadisticas" class="ctab-content" style="display:block"></div>
     <div id="ctab-inventario"  class="ctab-content"></div>
+    <div id="ctab-companions" class="ctab-content"></div>
     <div id="ctab-mapa"        class="ctab-content">
       <canvas id="char-map-canvas" width="440" height="300" style="display:block;max-width:100%"></canvas>
     </div>
     <div id="ctab-info" class="ctab-content"></div>
+    <div id="ctab-ajustes" class="ctab-content"></div>
     <div style="text-align:center;padding:8px 0;border-top:1px solid #3a2800">
       <button class="btn" onclick="closeCharMenu()" style="padding:5px 18px;font-size:11px">CERRAR [I / ESC]</button>
     </div>
@@ -1344,6 +1370,7 @@ let G = {
   npcs: [],
   projectiles: [],
   particles: [],
+  companions: [],
   currentZone: 'house_start',
   zones: {},
   camera: { x: 0, y: 0 },
@@ -1361,6 +1388,11 @@ let G = {
   save: null,
   tutorialStep: 0,
   tutorialShown: [],
+  bindings: (function(){
+    const def = {attack:'',dash:'',ability:'',interact:''};
+    try { const s=localStorage.getItem('megarpg_bindings'); if(s) return Object.assign(def,JSON.parse(s)); } catch(e){}
+    return def;
+  })(),
   questFlags: {
     metMerchant: false,
     hasRelicQuest: false,
@@ -1372,7 +1404,11 @@ let G = {
     // Cazador NPC quests
     hunterStage: 0,       // 0=none,1=kill boars,2=kill bulls,3=completed
     hunterBoars: 0,
-    hunterBulls: 0
+    hunterBulls: 0,
+    // Mesjor's third quest (Pirate Cabin)
+    mesjorQuestActive: false,
+    piratesCabinCleared: false,
+    mesjorQuestComplete: false
   },
   chestOpen: false,
   fadeAlpha: 0,
@@ -1396,10 +1432,10 @@ const WEAPON_CONFIGS = {
 };
 
 const ARMOR_CONFIGS = {
-  heavy:  { name:'Armadura Pesada',  defense:14, speed:1.5,  hp:110, color:'#555', emoji:'🛡' },
-  normal: { name:'Armadura Normal',  defense:12, speed:1.8,  hp:100, color:'#888', emoji:'🥋' },
-  light:  { name:'Armadura Ligera',  defense:5,  speed:2.5,  hp:80,  color:'#a8a', emoji:'🎽' }
-  ,hunter: { name:'Armadura de Cazador', defense:5, speed:2.5, hp:80, color:'#8b4513', emoji:'🧥', arrowBonus:5 }
+  heavy:  { name:'Armadura Pesada',  defense:14, speed:1.5,  hp:110, color:'#3c4a52', emoji:'🛡' },
+  normal: { name:'Armadura Normal',  defense:12, speed:1.8,  hp:100, color:'#4a5e38', emoji:'🥋' },
+  light:  { name:'Armadura Ligera',  defense:5,  speed:2.5,  hp:80,  color:'#7a4a20', emoji:'🎽' }
+  ,hunter: { name:'Armadura de Cazador', defense:5, speed:2.5, hp:80, color:'#354a1a', emoji:'🧥', arrowBonus:5 }
 };
 
 // ---- ZONES ----
@@ -1426,25 +1462,71 @@ function buildZones() {
   // ===================== HOUSE START =====================
   G.zones['house_start'] = {
     name: 'Casa de tu Madre',
-    width: 640, height: 480,
+    // make the interior full‑screen so camera can pan and walls touch viewport edges
+    width: 800, height: 600,
     bgColor: '#3d2b1f', tileColor: '#5a3e28',
     objects: [
-      {type:'wall', x:0,y:0,w:640,h:16},
-      {type:'wall', x:0,y:464,w:640,h:16},
-      {type:'wall', x:0,y:0,w:16,h:480},
-      {type:'wall', x:624,y:0,w:16,h:480},
-      {type:'bed',    x:50,  y:60,  w:70, h:40},
-      {type:'table',  x:260, y:60,  w:80, h:40},
-      {type:'barrel', x:560, y:60,  w:30, h:30},
-      {type:'rug',    x:100, y:200, w:200, h:120},
-      {type:'door',   x:290, y:450, w:60,  h:14, target:'village_center', tx:400, ty:490, label:'Salir'},
+      // perimeter walls follow new dimensions
+      {type:'wall', x:0,y:0,w:800,h:16},
+      {type:'wall', x:0,y:584,w:800,h:16},
+      {type:'wall', x:0,y:0,w:16,h:600},
+      {type:'wall', x:784,y:0,w:16,h:600},
+      // interior partitioning: lower-left bathroom and upper-right kitchen
+      // horizontal divider with gap between x=360 and x=400 for passage
+      {type:'wall', x:0,   y:200, w:360, h:16},
+      {type:'wall', x:400, y:200, w:400, h:16},
+      {type:'wall', x:400, y:200, w:16,  h:200},  // vertical bathroom wall
+      
+      // bed zones (unchanged coords) – sleeping half and Mom half
+      {type:'bed', id:'bed_sleep', x:50,  y:60,  w:70, h:20},
+      {type:'bed', id:'bed_mom',   x:50,  y:100, w:70, h:20},
+
+      // kitchen furniture
+      {type:'table', x:480, y:60,  w:200, h:100},  // counter area
+      {type:'stove', x:520, y:80,  w:40,  h:40},   // new stove object
+      {type:'sink',  x:620, y:80,  w:40,  h:40},   // new sink object
+
+      // bathroom fixtures
+      {type:'toilet', x:100, y:220, w:30, h:30},   // simple toilet asset
+
+      {type:'rug',    x:100, y:300, w:200, h:120},
+      {type:'door',   x:290, y:550, w:60,  h:14, target:'village_center', tx:745, ty:150, facing:'down', label:'Salir'},
     ],
-    exits: [{x:285, y:450, w:70, h:16, target:'village_center', tx:400, ty:490}],
+    exits: [{x:285, y:450, w:70, h:16, target:'village_center', tx:745, ty:155, facing:'down'}],
     npcs: [
-      {id:'mother', x:80,  y:80,  name:'Tu Madre',  sprite:'person_sick',   dialogue:'mother'},
+      {id:'mother', x:80,  y:110, name:'Tu Madre',  sprite:'person_sick',   dialogue:'mother'},
       {id:'doctor', x:260, y:100, name:'Dr. Hagen', sprite:'person_doctor', dialogue:'doctor'},
     ],
     spawnRules: null
+  };
+
+  // ===================== CAMINO A COSTA =====================
+  G.zones['camino_costa'] = {
+    name: 'Camino a Costa',
+    width: W, height: H,
+    bgColor: '#5aa020', tileColor: '#4a9020',
+    objects: [
+      ...borderWalls(W,H,[]),
+      {type:'road',  x:0,   y:260, w:W,   h:80},
+      {type:'tree',  x:80,  y:100, w:30,  h:30},
+      {type:'tree',  x:160, y:150, w:30,  h:30},
+      {type:'tree',  x:300, y:80,  w:30,  h:30},
+      {type:'tree',  x:550, y:100, w:30,  h:30},
+      {type:'tree',  x:680, y:160, w:30,  h:30},
+      {type:'tree',  x:80,  y:390, w:30,  h:30},
+      {type:'tree',  x:200, y:430, w:30,  h:30},
+      {type:'rock',  x:350, y:110, w:40,  h:30},
+      {type:'rock',  x:400, y:420, w:40,  h:30},
+      {type:'sign',  x:380, y:270, w:20,  h:20, label:'→ Aldea'},
+      {type:'sign',  x:60,  y:270, w:20,  h:20, label:'← Costa'},
+    ],
+    exits: [
+      {x:0,    y:260, w:16, h:80, target:'west_coast_mid', tx:W-30, ty:250},
+      {x:W-16, y:260, w:16, h:80, target:'village_center', tx:30,   ty:600},
+      {x:360,  y:0,   w:80, h:16, target:'nor_s1',         tx:400,  ty:H-30},
+      {x:360,  y:H-16,w:80, h:16, target:'sur_n1',         tx:400,  ty:30},
+    ],
+    spawnRules: { boar:{chance:0.3,max:2} }
   };
 
   // ===================== VILLAGE CENTER =====================
@@ -1460,7 +1542,7 @@ function buildZones() {
       {type:'road', x:720,y:0,   w:80,h:600},
       {type:'road', x:720,y:600, w:80,h:600},
       {type:'road', x:0,  y:560, w:1600,h:80},
-      {type:'player_house', x:690,y:60,w:110,h:80, target:'house_start', tx:320, ty:430, label:'Tu Casa'},
+      {type:'player_house', x:690,y:60,w:110,h:80, target:'house_start', tx:320, ty:430, facing:'up', label:'Tu Casa'},
       {type:'well',   x:745,y:380, w:40,h:40},
       {type:'market', x:280,y:610, w:120,h:80},
       {type:'sign',   x:760,y:680, w:20,h:20, label:'→ Puerto'},
@@ -1485,7 +1567,7 @@ function buildZones() {
     exits: [
       {x:720,  y:0,    w:80, h:20, target:'nor_s2',        tx:400, ty:H-30},
       {x:720,  y:1180, w:80, h:20, target:'sur_n2',         tx:400, ty:30},
-      {x:0,    y:560,  w:20, h:80, target:'west_coast_mid', tx:760, ty:290},
+      {x:0,    y:560,  w:20, h:80, target:'camino_costa',    tx:W-30, ty:260},
       {x:1580, y:560,  w:20, h:80, target:'camino_puerto', tx:30,  ty:290},
     ],
     npcs: [
@@ -1494,7 +1576,7 @@ function buildZones() {
       {id:'villager1',x:180,y:560, name:'Mera',           sprite:'person',    dialogue:'villager1'},
       {id:'villager2',x:1250,y:560,name:'Borrus',         sprite:'person2',   dialogue:'villager2'},
       {id:'villager3',x:430,y:350, name:'Helga',          sprite:'person3',   dialogue:'villager3'},
-      {id:'hunter',   x:680,y:720, name:'Cazador',        sprite:'hunter',    dialogue:'hunter', isQuestGiver:true},
+      {id:'hunter',   x:680,y:720, name:'Mesjor',        sprite:'hunter',    dialogue:'hunter', isQuestGiver:true},
     ],
     spawnRules: { bandit: {chance:0.08, max:1} }  // rare bandit events in the village
   };
@@ -1747,6 +1829,7 @@ function buildZones() {
       {x:360, y:0,    w:80, h:16, target:'nor_m1',        tx:400,  ty:H-30},
       {x:W-16,y:250,  w:16, h:80, target:'nor_s2',        tx:30,   ty:290},
       {x:0,   y:250,  w:16, h:80, target:'west_coast_top',tx:W-30, ty:290},
+      {x:360, y:H-16, w:80, h:16, target:'camino_costa',  tx:400,  ty:30},
     ],
     spawnRules: { boar:{chance:0.7,max:2}, bull:{chance:0.4,max:1} }
   };
@@ -1787,7 +1870,7 @@ function buildZones() {
     exits: [
       {x:360, y:0,    w:80, h:16, target:'nor_m3', tx:400, ty:H-30},
       {x:0,   y:250,  w:16, h:80, target:'nor_s2', tx:W-30,ty:290},
-      {x:W-16,y:250,  w:16, h:80, target:'east_a', tx:30,  ty:250},
+      {x:W-16,y:250,  w:16, h:80, target:'camino_puerto', tx:400, ty:30},
     ],
     spawnRules: { boar:{chance:0.7,max:2}, bull:{chance:0.45,max:2} }
   };
@@ -1867,6 +1950,7 @@ function buildZones() {
       {type:'rock', x:220, y:200, w:40,h:30},
     ],
     exits: [
+      {x:360,  y:0,   w:80, h:16, target:'camino_costa',  tx:400,  ty:H-30},
       {x:0,    y:260, w:16, h:80, target:'west_coast_bot', tx:W-30, ty:250},
       {x:W-16, y:260, w:16, h:80, target:'sur_n2',       tx:30,   ty:290},
       {x:360,  y:H-16,w:80, h:16, target:'sur_m1',       tx:400,  ty:30},
@@ -1911,8 +1995,9 @@ function buildZones() {
       {type:'rock', x:320, y:200, w:40,h:30},
     ],
     exits: [
-      {x:0,   y:260, w:16, h:80, target:'sur_n2', tx:W-30, ty:290},
-      {x:360, y:H-16,w:80, h:16, target:'sur_m3', tx:400,  ty:30},
+      {x:0,   y:260, w:16, h:80, target:'sur_n2',         tx:W-30, ty:290},
+      {x:0,   y:100, w:16, h:80, target:'camino_puerto',  tx:400,  ty:H-30},
+      {x:360, y:H-16,w:80, h:16, target:'sur_m3',         tx:400,  ty:30},
     ],
     spawnRules: { boar:{chance:0.7,max:3}, bull:{chance:0.4,max:2} }
   };
@@ -2059,60 +2144,7 @@ function buildZones() {
   };
 
   // ===================== EAST ZONES (2x2 grid) =====================
-  G.zones['east_a'] = {
-    name: 'Planicie Este - Norte',
-    width: W, height: H,
-    bgColor: '#4a8a2f', tileColor: '#5aa535',
-    objects: [
-      ...borderWalls(W,H,[]),
-      {type:'tree',  x:150,y:150,w:30,h:30},
-      {type:'tree',  x:250,y:200,w:30,h:30},
-      {type:'tree',  x:550,y:100,w:30,h:30},
-      {type:'rock',  x:400,y:300,w:40,h:30},
-      {type:'rock',  x:600,y:400,w:40,h:30},
-    ],
-    exits: [
-      {x:0,   y:250, w:16, h:80, target:'nor_s3',  tx:W-30,ty:250},
-      {x:W-16,y:250, w:16, h:80, target:'east_b',  tx:30,  ty:250},
-      {x:360, y:H-16,w:80, h:16, target:'east_c',  tx:400, ty:30},
-    ],
-    spawnRules: { boar:{chance:0.75,max:3}, bull:{chance:0.45,max:2} }
-  };
 
-  G.zones['east_b'] = {
-    name: 'Planicie Este - Sur',
-    width: W, height: H,
-    bgColor: '#4a8a2f', tileColor: '#5aa535',
-    objects: [
-      ...borderWalls(W,H,[]),
-      {type:'tree',  x:100,y:100,w:30,h:30},
-      {type:'tree',  x:600,y:200,w:30,h:30},
-      {type:'rock',  x:300,y:300,w:40,h:30},
-      {type:'rock',  x:500,y:450,w:40,h:30},
-    ],
-    exits: [
-      {x:0,   y:250, w:16, h:80, target:'east_a',   tx:W-30,ty:250},
-      {x:360, y:H-16,w:80, h:16, target:'port_zone',tx:400, ty:30},
-    ],
-    spawnRules: { boar:{chance:0.7,max:3}, bull:{chance:0.4,max:2} }
-  };
-
-  G.zones['east_c'] = {
-    name: 'Llanura Este - Profunda',
-    width: W, height: H,
-    bgColor: '#5aa020', tileColor: '#4a9020',
-    objects: [
-      ...borderWalls(W,H,[]),
-      {type:'tree',  x:150,y:150,w:30,h:30},
-      {type:'tree',  x:600,y:200,w:30,h:30},
-      {type:'rock',  x:250,y:350,w:40,h:30},
-      {type:'farm',  x:300,y:60, w:200,h:140, label:'Granja del Este'},
-    ],
-    exits: [
-      {x:0,  y:250, w:16, h:80, target:'east_a', tx:W-30,ty:250},
-    ],
-    spawnRules: { boar:{chance:0.5,max:2} }
-  };
 
   // ===================== CAMINO AL PUERTO =====================
   G.zones['camino_puerto'] = {
@@ -2139,6 +2171,8 @@ function buildZones() {
     exits: [
       {x:0,    y:260, w:16, h:80, target:'village_center', tx:1560, ty:580},
       {x:W-16, y:260, w:16, h:80, target:'port_zone',      tx:30,   ty:580},
+      {x:360,  y:0,   w:80, h:16, target:'nor_s3',         tx:W-30, ty:250},
+      {x:360,  y:H-16,w:80, h:16, target:'sur_n3',         tx:30,   ty:100},
     ],
     spawnRules: { boar:{chance:0.3,max:2}, bandit:{chance:0.35,max:2} }
   };
@@ -2189,7 +2223,7 @@ function buildZones() {
     ],
     exits: [
       {x:360,  y:0,    w:80, h:16, target:'west_coast_top',tx:400,  ty:H-30},
-      {x:W-16, y:250,  w:16, h:80, target:'village_center',tx:30,   ty:600},
+      {x:W-16, y:250,  w:16, h:80, target:'camino_costa', tx:30,   ty:260},
       {x:360,  y:H-16, w:80, h:16, target:'west_coast_bot',tx:400,  ty:30},
     ],
     spawnRules: { crab:{chance:0.8,max:4} }
@@ -2486,9 +2520,17 @@ function buildZones() {
       {type:'fence', x:880,y:200,w:16,h:160},
       {type:'fence', x:880,y:460,w:16,h:100},
       {type:'fence', x:880,y:640,w:16,h:540},
+      // Nueva cabaña en la orilla oeste
+      {type:'house', x:180, y:840, w:120, h:90, label:'Cabaña'},
+      // Puerta cerrada de la cabaña (requiere llave de Mesjor)
+      {type:'locked_gate', x:205, y:930, w:80, h:20,
+        keyId:'mesjor_key', target:'cabin_interior', tx:60, ty:60, label:'Cabaña'},
+      {type:'sign', x:210, y:900, w:20, h:20, label:'🔒 Cabaña'},
+      // Barco de madera anclado junto a la cabaña
+      {type:'boat', x:250, y:1020, w:80, h:50},
     ],
     exits: [
-      {x:0,y:560,w:20,h:80, target:'camino_puerto', tx:W-30,ty:290},
+      {x:0,    y:560,w:20,h:80, target:'camino_puerto',  tx:W-30, ty:290},
     ],
     npcs: [
       // All on land (x < 880) or on pier (x 880-1280)
@@ -2502,6 +2544,37 @@ function buildZones() {
     ],
     spawnRules: { crab:{chance:0.5,max:3} }
   };
+
+  // ===================== CABIN INTERIOR =====================
+  G.zones['cabin_interior'] = {
+    name: 'Interior Cabaña Pirata',
+    width: 640, height: 480,
+    bgColor: '#3d2b1f', tileColor: '#5a3e28',
+    objects: [
+      {type:'wall', x:0, y:0, w:640, h:20},
+      {type:'wall', x:0, y:460, w:640, h:20},
+      {type:'wall', x:0, y:0, w:20, h:480},
+      {type:'wall', x:620, y:0, w:20, h:480},
+      {type:'table', x:200, y:200, w:80, h:40},
+      {type:'barrel', x:120, y:120, w:36, h:30},
+      {type:'barrel', x:480, y:120, w:36, h:30},
+      {type:'chest', x:320, y:240, w:40, h:30, id:'pirate_treasure', opened:false},
+      // Salida hacia el puerto
+      {type:'fence', x:20, y:438, w:258, h:12},
+      {type:'fence', x:362, y:438, w:258, h:12},
+      {type:'fence_gate', x:278, y:430, w:84, h:20,
+        target:'port_zone', tx:205, ty:910, label:'Salir'},
+    ],
+    exits: [],
+    npcs: [],
+    enemies_fixed: [
+      {type:'pirate', x:220, y:220},
+      {type:'pirate', x:300, y:240},
+      {type:'pirate', x:260, y:300},
+      {type:'pirate_captain', x:320, y:200},
+    ],
+    spawnRules: null
+  };
 }
 
 // ---- DIALOGUE DATA ----
@@ -2510,14 +2583,16 @@ const DIALOGUES = {
     {name:'Tu Madre', text:'(Tosiendo) ...m-mi pequeño... no te preocupes por mí. Descansa...'},
   ],
   doctor: [
-    {name:'Dr. Hagen', text:'¡Ah, llegas en buen momento! Tu madre está muy enferma. Necesita la Esencia de Luz, una cura rarísima.'},
-    {name:'Dr. Hagen', text:'Solo la podrás encontrar en la Gran Isla del Centro. Son los únicos que la producen.'},
-    {name:'Dr. Hagen', text:'Las corrientes oceánicas son traidoras. La única manera de llegar es por el Puerto Pedregal, al este de la isla.'},
-    {name:'Dr. Hagen', text:'¡Date prisa, muchacho! No tenemos mucho tiempo. Sal de la aldea y busca el camino al puerto.'},
+    {name:'Dr. Hagen', text:'¡JUSTO A TIEMPO! Tu madre… contrajo una enfermedad extremadamente rara'},
+    {name:'Dr. Hagen', text:'Lamentablemente nuestro humilde pueblo no tiene la tecnología como para tener una cura'},
+    {name:'Dr. Hagen', text:'Pero no pierdas esperanzas, esta medicina por suerte existe, pero únicamente en la ciudad de RANELOK'},
+    {name:'Dr. Hagen', text:'Por culpa de la corriente no puedes ir directo de acá, tendrás que hacer un largo recorrido antes, si sales ahora podrías llegar al próximo barco con dirección a MERRA'},
+   {name:'Dr. Hagen', text:'Ve al puerto al este de aquí ¡RAPIDO!'},
   ],
   tutorial_man: [
-    {name:'Viejo Alderman', text:'¡Eh, joven! Espera un momento. Permíteme enseñarte lo básico de la vida en Pedregal.'},
-    {name:'Viejo Alderman', text:'Usa WASD o las flechas para moverte. Al llegar al borde de una zona, pasarás a la siguiente.'},
+    {name:'Viejo Alderman', text:'¡Eh, joven! Espera un momento. Me entere lo de tu madre, lo siento mucho...'},
+    {name:'Viejo Alderman', text:'Pero si quieres llegar vivo a Ranelok, vas a necesitar aprender lo basico'},
+    {name:'Viejo Alderman', text:'Usa WASD o las flechas para moverte'},
     {name:'Viejo Alderman', text:'Presiona Z (o J) para ATACAR con tu arma. Presiona X (o K) para hacer un DASH rápido hacia adelante.'},
     {name:'Viejo Alderman', text:'Acércate a personas o cosas y presiona E para INTERACTUAR. Con I abres tu inventario.'},
     {name:'Viejo Alderman', text:'¡Cuidado con los jabalíes de la llanura! Si mueres, volverás a tu última siesta en casa.'},
@@ -2538,12 +2613,8 @@ const DIALOGUES = {
   miner_help: [
     {name:'Minero Bart', text:'¡Forastero! ¡La mina está tomada por bandidos! Llegaron hace días y masacraron a mis compañeros...'},
     {name:'Minero Bart', text:'Puedo escuchar sus pasos desde aquí. Hay más de ellos en las salas del fondo.'},
-    {name:'Minero Bart', text:'Y lo peor... dicen que el que los lidera es un soldado de las fuerzas del norte. Un tal Verdugo. Armadura de metal, casco con plumas rojas.'},
+    {name:'Minero Bart', text:'Y lo peor... dicen que para matarlos mandaron a un soldado de las fuerzas del norte. Un tal Verdugo. Armadura de metal, casco con plumas rojas.'},
     {name:'Minero Bart', text:'Si puedes con él, hay un cofre con todo su botín en la sala más profunda. ¡Ten cuidado, es brutal!'},
-  ],
-  miner_help_active: [
-    {name:'Minero Bart', text:'El Soldado Verdugo está en la última sala. Avanza por las salas, hay bandidos en cada una.'},
-    {name:'Minero Bart', text:'¡El Verdugo es astuto! Usa su espada como proyectil y embiste como un toro. ¡No bajes la guardia!'},
   ],
   miner_help_done: [
     {name:'Minero Bart', text:'¡Lo derrotaste! ¡Increíble! Ese soldado no era un hombre común...'},
@@ -2557,7 +2628,7 @@ const DIALOGUES = {
   fisherman1: [{name:'Ugo', text:'Los barcos del sur atracan aquí. ¿Necesitas pasaje? Habla con el mercader Dunbar.'}],
   fisherman2: [{name:'Mira', text:'El mar está raro hoy. Los peces no pican y las gaviotas vuelan en círculos...'}],
   port_merchant: [
-    {name:'Mercader Dunbar', text:'¡Bienvenido al Puerto Pedregal, viajero! Comercio con todo el mundo... menos con la Isla del Centro. ¡Ja!'},
+    {name:'Mercader Dunbar', text:'¡Bienvenido al Puerto Pedregal, viajero! Comercio con todo el mundo, pero últimamente no han llegado muchos barcos...'},
     {name:'Mercader Dunbar', text:'Mira, te voy a hacer una propuesta. Necesito recuperar algo: la Reliquia del Clan Dunbar.'},
     {name:'Mercader Dunbar', text:'Esos malditos bandidos del sur me la robaron. ¡Está en su campamento, junto a la mina negra!'},
     {name:'Mercader Dunbar', text:'Si me la traes, te consigo pasaje en el siguiente barco. ¿Trato hecho?',
@@ -2610,8 +2681,8 @@ const DIALOGUES = {
     {name:'Granjero Wold', text:'Gracias, forastero. Le debo la vida. Cuando reconstruya la granja, la gente hablar\u00e1 de tu valor.'},
   ],
   hunter: [
-    {name:'Cazador', text:'Hola viajero. Soy el cazador del pueblo. La vida aquí depende del ganado y los cazadores mantienen el equilibrio.'},
-    {name:'Cazador', text:'Tengo una tarea: mata 10 jabalíes y te daré un arco. Si ya tienes uno, lo subiré a nivel 2.',
+    {name:'Mesjor', text:'Hola viajero. Soy el cazador del pueblo. La vida aquí depende del ganado y los cazadores mantienen el equilibrio.'},
+    {name:'Mesjor', text:'Tengo una tarea: mata 10 jabalíes y te daré un arco. Si ya tienes uno, lo subiré a nivel 2.',
      options:[
        {text:'Acepto: matar 10 jabalíes', action:'accept_hunter_boars'},
        {text:'Ahora no', action:'close_dialogue'}
@@ -2619,8 +2690,8 @@ const DIALOGUES = {
     }
   ],
   hunter_after_boars: [
-    {name:'Cazador', text:'Excelente trabajo con los jabalíes. Ahora necesito que elimines 10 toros que atacan los corrales.'},
-    {name:'Cazador', text:'Al completar eso recibirás 100 de oro y la Armadura de Cazador (como ligera, +5 daño de arco).',
+    {name:'Mesjor', text:'Excelente trabajo con los jabalíes. Ahora necesito que elimines 10 toros que atacan los corrales.'},
+    {name:'Mesjor', text:'Al completar eso recibirás 100 de oro y la Armadura de Cazador (como ligera, +5 daño de arco).',
      options:[
        {text:'Acepto: matar 10 toros', action:'accept_hunter_bulls'},
        {text:'Ahora no', action:'close_dialogue'}
@@ -2628,9 +2699,31 @@ const DIALOGUES = {
     }
   ],
   hunter_thanks: [
-    {name:'Cazador', text:'Gracias. Esta isla es más segura gracias a ti.'}
+    {name:'Mesjor', text:'Gracias. Esta isla es más segura gracias a ti.'},
+    {name:'Mesjor', text:'Tengo una última misión para ti. Los piratas han infestado la cabaña en el puerto oeste.'},
+    {name:'Mesjor', text:'Si los eliminas, desde hoy puedas unirse a tu equipo para ayudarte en tus aventuras.'},
+    {name:'Mesjor', text:'Primero necesito que limpies esa cabaña. Te daré la llave del puerto cuando aceptes.',
+     options:[
+       {text:'Acepto eliminar los piratas', action:'accept_mesjor_quest'},
+       {text:'Aún no', action:'close_dialogue'}
+     ]
+    }
   ],
-};
+  mesjor_quest_active: [
+    {name:'Mesjor', text:'La cabaña pirata está al oeste del puerto. Entra, elimina a los piratas y su capitán, y trae la prueba.'},
+    {name:'Mesjor', text:'Dentro encontrarás un tesoro considerable. Es tuyo si logras completar esta misión.'},
+  ],
+  mesjor_quest_done: [
+    {name:'Mesjor', text:'¡Lo hiciste! Los piratas han sido eliminados. El puerto está mucho más seguro ahora.'},
+    {name:'Mesjor', text:'Como prometí, ahora puedo unírmete en tus viajes. Seré tu apoyo con mi arco y mis flechas.'},
+    {name:'Mesjor', text:'¿Deseas que me una a tu equipo?',
+     options:[
+       {text:'Sí, únete a mi equipo', action:'accept_mesjor_companion'},
+       {text:'Aún tengo que pensarlo', action:'close_dialogue'}
+     ]
+    }
+  ],
+};;
 
 // ---- SHOP DATA ----
 // Sell prices: half market value; gems are expensive since they come from dangerous zones
@@ -2702,7 +2795,8 @@ function createPlayer(weapon, armor) {
     abilityCooldown: 0,
     abilityCooldown2: 0,
     abilityCooldown3: 0,
-    manaShield: false
+    manaShield: false,
+    abilityUnlocked: false
   };
 }
 
@@ -2732,9 +2826,21 @@ const ENEMY_TYPES = {
     color:'#2c3e50', aggroRange:170, attackRange:30, attackCooldown:90,
     difficulty:'medium'
   },
+  pirate: {
+    name:'Pirata', emoji:'🏴‍☠️', w:22, h:26,
+    hp:60, maxHp:60, damage:14, speed:1.5, xp:12, gold:10,
+    color:'#3b2e25', aggroRange:170, attackRange:30, attackCooldown:90,
+    difficulty:'medium'
+  },
+  pirate_captain: {
+    name:'Capitán Pirata', emoji:'☠️', w:26, h:30,
+    hp:300, maxHp:300, damage:32, speed:1.4, xp:110, gold:50,
+    color:'#2e1a1a', aggroRange:220, attackRange:32, attackCooldown:80,
+    difficulty:'hard', isBoss:true
+  },
   andreon: {
     name:'Andreon', emoji:'🐾', w:40, h:34,
-    hp:220, maxHp:220, damage:32, speed:1.25, xp:60, gold:30,
+    hp:55, maxHp:150, damage:20, speed:1.25, xp:60, gold:30,
     color:'#4a1a00', aggroRange:230, attackRange:44, attackCooldown:100,
     difficulty:'hard', isBoss:true
   },
@@ -2746,7 +2852,7 @@ const ENEMY_TYPES = {
   },
   verdugo: {
     name:'Soldado Verdugo', emoji:'⚔️', w:30, h:44,
-    hp:720, maxHp:720, damage:55, speed:1.55, xp:220, gold:120,
+    hp:200, maxHp:400, damage:35, speed:1.55, xp:220, gold:120,
     color:'#546E7A', aggroRange:320, attackRange:48, attackCooldown:70,
     difficulty:'very_hard', isBoss:true
   }
@@ -2765,6 +2871,52 @@ function createEnemy(type, x, y) {
   };
 }
 
+// ---- COMPANION SYSTEM ----
+function createCompanion(name, x, y, weapon, armor) {
+  return {
+    name, x, y, w:24, h:24,
+    weapon, armor,
+    companions: [weapon],
+    hp: ARMOR_CONFIGS[armor].hp,
+    maxHp: ARMOR_CONFIGS[armor].hp,
+    baseMaxHp: ARMOR_CONFIGS[armor].hp,
+    speed: ARMOR_CONFIGS[armor].speed,
+    baseSpeed: ARMOR_CONFIGS[armor].speed,
+    defense: ARMOR_CONFIGS[armor].defense,
+    baseDefense: ARMOR_CONFIGS[armor].defense,
+    level: 1,
+    xp: 0,
+    xpToNext: 25,
+    stats: {
+      meleeDmg: 5, vida: 5, energia: 5,
+      mana: 5, punteria: 5, defensa: 5,
+      velocidad: 5, esquive: 5
+    },
+    // Combat
+    attacking: false,
+    attackTimer: 0,
+    attackFrame: 0,
+    dashing: false,
+    dashTimer: 0,
+    vx: 0, vy: 0,
+    invincible: 0,
+    // AI
+    state: 'follow', // follow, chase, attack, retreat
+    stateTimer: 0,
+    aggroRange: 250,
+    _aggro: false,
+    // Combat-specific
+    attackCooldown: 40,
+    isRanged: weapon === 'bow',
+    _lastPlayerX: 0,
+    _lastPlayerY: 0,
+    // Mesjor-specific
+    minDistance: weapon === 'bow' ? 120 : 80,
+    maxDistance: weapon === 'bow' ? 200 : 120,
+    alive: true
+  };
+}
+
 // ---- ZONE LOADING ----
 let currentZoneData = null;
 let currentNPCs = [];
@@ -2772,7 +2924,7 @@ let currentEnemies = [];
 
 // loadZone is defined below (full version with tutorial/quest triggers)
 
-function _doLoadZone(zoneId, tx, ty) {
+function _doLoadZone(zoneId, tx, ty, facing) {
   G.currentZone = zoneId;
   currentZoneData = G.zones[zoneId];
   document.getElementById('zone-name').textContent = currentZoneData.name;
@@ -2827,6 +2979,15 @@ function _doLoadZone(zoneId, tx, ty) {
   if (G.player) {
     G.player.x = tx;
     G.player.y = ty;
+    if (facing) G.player.facing = facing;
+    // Position companions behind the player
+    if (G.companions && G.companions.length > 0) {
+      for (let i = 0; i < G.companions.length; i++) {
+        const offset = (i + 1) * 40;
+        G.companions[i].x = tx - offset;
+        G.companions[i].y = ty;
+      }
+    }
   }
 
   // Cooldown prevents immediately re-triggering an exit on the spawn frame
@@ -2847,8 +3008,18 @@ function updateCamera() {
   const th = currentZoneData.height;
   const cx = G.player.x + G.player.w/2 - 400;
   const cy = G.player.y + G.player.h/2 - 300;
-  G.camera.x = Math.max(0, Math.min(cx, tw - 800));
-  G.camera.y = Math.max(0, Math.min(cy, th - 600));
+  // if the zone is smaller than the viewport, center the camera so there is
+  // no empty strip (flat zones will just show the whole room at once)
+  if (tw <= 800) {
+    G.camera.x = (tw / 2) - 400;
+  } else {
+    G.camera.x = Math.max(0, Math.min(cx, tw - 800));
+  }
+  if (th <= 600) {
+    G.camera.y = (th / 2) - 300;
+  } else {
+    G.camera.y = Math.max(0, Math.min(cy, th - 600));
+  }
 }
 
 // ---- RENDERING ----
@@ -2887,42 +3058,161 @@ function drawObject(obj, cx, cy) {
 
   switch(obj.type) {
     case 'wall':
-      ctx.fillStyle = '#2a1a0a';
+      ctx.fillStyle = '#24170c';
       ctx.fillRect(sx, sy, obj.w, obj.h);
+      // Brick seam pattern for walls and cave boundaries.
+      ctx.fillStyle = '#3a2716';
+      if (obj.h <= 20 || obj.w <= 20) {
+        for (let i = 4; i < obj.w; i += 16) ctx.fillRect(sx+i, sy+1, 2, obj.h-2);
+      } else {
+        for (let y = 4; y < obj.h; y += 12) ctx.fillRect(sx+1, sy+y, obj.w-2, 1);
+      }
       break;
     case 'road':
       ctx.fillStyle = '#8b7355';
       ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.fillStyle = '#7a644a';
+      for (let r = 6; r < obj.w; r += 20) ctx.fillRect(sx+r, sy+2, 2, obj.h-4);
+      ctx.fillStyle = 'rgba(255,255,255,0.08)';
+      ctx.fillRect(sx+1, sy+1, obj.w-2, 2);
       break;
-    case 'bed':
-      ctx.fillStyle = '#8b0000';
+    case 'bed': {
+      // Dark wooden frame
+      ctx.fillStyle = '#381808';
       ctx.fillRect(sx, sy, obj.w, obj.h);
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(sx+4, sy+4, obj.w-8, 16);
-      ctx.fillStyle = '#f0c090';
-      ctx.fillRect(sx+10, sy+2, 20, 16);
+      ctx.fillStyle = '#5a3018'; // frame body
+      ctx.fillRect(sx+1, sy+1, obj.w-2, obj.h-2);
+      ctx.fillStyle = '#7a4828'; // frame highlight
+      ctx.fillRect(sx+1, sy+1, 4, obj.h-2); // left post
+      ctx.fillRect(sx+obj.w-5, sy+1, 4, obj.h-2); // right post
+      // Headboard detail
+      ctx.fillStyle = '#6a3820';
+      ctx.fillRect(sx, sy, 6, obj.h);
+      ctx.fillStyle = '#8a5030'; // headboard face
+      ctx.fillRect(sx+1, sy+2, 3, obj.h-4);
+      // Mattress
+      ctx.fillStyle = '#6a1010';
+      ctx.fillRect(sx+6, sy+2, obj.w-12, obj.h-4);
+      ctx.fillStyle = '#8b1a1a'; // blanket face
+      ctx.fillRect(sx+7, sy+3, obj.w-14, obj.h-6);
+      // Blanket stripes
+      ctx.fillStyle = '#aa2828';
+      for (let i = 0; i < obj.w-14; i += 7) ctx.fillRect(sx+7+i, sy+4, 3, obj.h-8);
+      ctx.fillStyle = '#c03030'; // blanket top sheen
+      ctx.fillRect(sx+7, sy+3, obj.w-14, 2);
+      // Pillow
+      ctx.fillStyle = '#e0d4be';
+      ctx.fillRect(sx+obj.w-22, sy+3, 16, obj.h-6); // pillow outer
+      ctx.fillStyle = '#f0e8d2'; // pillow face
+      ctx.fillRect(sx+obj.w-21, sy+4, 14, obj.h-8);
+      ctx.fillStyle = '#c8b8a8'; // pillow tuck
+      ctx.fillRect(sx+obj.w-22, sy+3, 2, obj.h-6);
+      ctx.fillRect(sx+obj.w-6, sy+3, 2, obj.h-6);
+      ctx.fillStyle = '#b0a090'; // pillow crease
+      ctx.fillRect(sx+obj.w-15, sy+4, 1, obj.h-8);
       break;
-    case 'table':
-      ctx.fillStyle = '#8b5e3c';
+    }
+    case 'table': {
+      // Leg shadows
+      ctx.fillStyle = '#201008';
+      ctx.fillRect(sx+3, sy+obj.h-5, 5, 6);
+      ctx.fillRect(sx+obj.w-8, sy+obj.h-5, 5, 6);
+      // Table frame
+      ctx.fillStyle = '#4a2e14';
       ctx.fillRect(sx, sy, obj.w, obj.h);
-      ctx.fillStyle = '#a0724a';
+      // Legs
+      ctx.fillStyle = '#3a2210';
+      ctx.fillRect(sx+4, sy+obj.h-8, 5, 8);
+      ctx.fillRect(sx+obj.w-9, sy+obj.h-8, 5, 8);
+      ctx.fillStyle = '#5a3820'; // leg highlight
+      ctx.fillRect(sx+4, sy+obj.h-8, 2, 8);
+      ctx.fillRect(sx+obj.w-9, sy+obj.h-8, 2, 8);
+      // Table top surface
+      ctx.fillStyle = '#6a4220';
+      ctx.fillRect(sx+1, sy+1, obj.w-2, obj.h-9);
+      ctx.fillStyle = '#7a5030'; // wood face
+      ctx.fillRect(sx+2, sy+2, obj.w-4, obj.h-11);
+      ctx.fillStyle = '#8a6040'; // top highlight strip
+      ctx.fillRect(sx+3, sy+3, obj.w-6, 3);
+      // Wood plank lines
+      ctx.fillStyle = '#5a3820';
+      ctx.fillRect(sx+Math.floor(obj.w/3), sy+2, 1, obj.h-11);
+      ctx.fillRect(sx+Math.floor(obj.w*2/3), sy+2, 1, obj.h-11);
+      // Side edge shadows
+      ctx.fillStyle = '#3a2210';
+      ctx.fillRect(sx, sy, 3, obj.h-7);
+      ctx.fillRect(sx+obj.w-3, sy, 3, obj.h-7);
+      break;
+    }
+    case 'barrel': {
+      // Shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.28)';
+      ctx.beginPath(); ctx.ellipse(sx+obj.w/2+2, sy+obj.h+2, obj.w/2-2, 3, 0, 0, Math.PI*2); ctx.fill();
+      // Barrel bottom (darker)
+      ctx.fillStyle = '#5a3510';
+      ctx.fillRect(sx, sy+Math.floor(obj.h/2), obj.w, Math.ceil(obj.h/2));
+      // Barrel body
+      ctx.fillStyle = '#724418';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      // Lid top
+      ctx.fillStyle = '#8a5822';
+      ctx.fillRect(sx+2, sy+2, obj.w-4, 4);
+      ctx.fillStyle = '#9e6a2a'; // lid highlight
+      ctx.fillRect(sx+4, sy+2, obj.w-8, 2);
+      // Stave lines
+      ctx.fillStyle = '#5a3510';
+      for (let si = 1; si < 4; si++) ctx.fillRect(sx+Math.floor(si*obj.w/4), sy+4, 1, obj.h-8);
+      // Iron hoops
+      ctx.fillStyle = '#404040';
+      ctx.fillRect(sx+2, sy+8, obj.w-4, 3);
+      ctx.fillRect(sx+2, sy+obj.h-11, obj.w-4, 3);
+      ctx.fillStyle = '#606060'; // hoop highlight
+      ctx.fillRect(sx+2, sy+8, obj.w-4, 1);
+      ctx.fillRect(sx+2, sy+obj.h-11, obj.w-4, 1);
+      // Top rim highlight
+      ctx.fillStyle = '#aa7030';
+      ctx.fillRect(sx+2, sy, obj.w-4, 3);
+      ctx.fillStyle = '#c49040'; // rim bright
+      ctx.fillRect(sx+3, sy, obj.w-6, 1);
+      break;
+    }
+    case 'rug': {
+      // Outer dark border
+      ctx.fillStyle = '#5a0e0e';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.fillStyle = '#721818';
+      ctx.fillRect(sx+2, sy+2, obj.w-4, obj.h-4);
+      // Fringe on top & bottom
+      ctx.fillStyle = '#c0a060';
+      for (let f = 4; f < obj.w-4; f += 6) {
+        ctx.fillRect(sx+f, sy, 2, 3);
+        ctx.fillRect(sx+f, sy+obj.h-3, 2, 3);
+      }
+      // Inner border
+      ctx.fillStyle = '#a02020';
       ctx.fillRect(sx+4, sy+4, obj.w-8, obj.h-8);
-      break;
-    case 'barrel':
-      ctx.fillStyle = '#7a4a1a';
-      ctx.fillRect(sx, sy, obj.w, obj.h);
-      ctx.fillStyle = '#5a3a0a';
-      ctx.fillRect(sx, sy+10, obj.w, 3);
-      ctx.fillRect(sx, sy+obj.h-13, obj.w, 3);
-      break;
-    case 'rug':
-      ctx.fillStyle = '#8b1a1a';
-      ctx.fillRect(sx, sy, obj.w, obj.h);
-      ctx.fillStyle = '#c0392b';
-      ctx.fillRect(sx+6, sy+6, obj.w-12, obj.h-12);
-      ctx.fillStyle = '#e74c3c';
+      ctx.fillStyle = '#c02828'; // main field
+      ctx.fillRect(sx+8, sy+8, obj.w-16, obj.h-16);
+      ctx.fillStyle = '#d83030'; // inner diamond
       ctx.fillRect(sx+12, sy+12, obj.w-24, obj.h-24);
+      // Gold diamond ornament at center
+      const rcx = sx+Math.floor(obj.w/2), rcy = sy+Math.floor(obj.h/2);
+      ctx.fillStyle = '#c9a227';
+      ctx.fillRect(rcx-4, rcy-1, 8, 2);
+      ctx.fillRect(rcx-1, rcy-4, 2, 8);
+      ctx.fillStyle = '#f0d060'; ctx.fillRect(rcx-2, rcy-2, 4, 4);
+      ctx.fillStyle = '#a07810'; ctx.fillRect(rcx-1, rcy-1, 2, 2); // center shadow
+      // Corner medallions
+      for (const [ox, oy] of [[16,16],[obj.w-16,16],[16,obj.h-16],[obj.w-16,obj.h-16]]) {
+        ctx.fillStyle='#f0d060'; ctx.fillRect(sx+ox-2, sy+oy-2, 4, 4);
+        ctx.fillStyle='#c9a227'; ctx.fillRect(sx+ox-3, sy+oy, 1, 1); ctx.fillRect(sx+ox+2, sy+oy, 1, 1);
+      }
+      // Dot grid
+      ctx.fillStyle = '#e0b840';
+      for (let ry = sy+20; ry < sy+obj.h-16; ry += 12)
+        for (let rx2 = sx+20; rx2 < sx+obj.w-16; rx2 += 12) ctx.fillRect(rx2, ry, 2, 2);
       break;
+    }
     case 'door':
     case 'player_house':
       drawHouse(sx, sy, obj, '#8b6914', '#a07820', true, obj.label);
@@ -2930,57 +3220,227 @@ function drawObject(obj, cx, cy) {
     case 'house':
       drawHouse(sx, sy, obj, '#5a3e28', '#7a5a38', false);
       break;
-    case 'market':
-      ctx.fillStyle = '#8b5e3c';
+    case 'stove': {
+      // Stove body (dark cast iron)
+      ctx.fillStyle = '#181a1e';
       ctx.fillRect(sx, sy, obj.w, obj.h);
-      ctx.fillStyle = '#c00';
-      ctx.fillRect(sx-10, sy-15, obj.w+20, 18);
-      ctx.fillStyle = '#fff';
+      ctx.fillStyle = '#262830'; // body face
+      ctx.fillRect(sx+1, sy+1, obj.w-2, obj.h-2);
+      ctx.fillStyle = '#32343c'; // body highlight
+      ctx.fillRect(sx+2, sy+2, obj.w-4, obj.h-4);
+      // Top burner panel
+      ctx.fillStyle = '#16181c';
+      ctx.fillRect(sx+2, sy+2, obj.w-4, 12);
+      ctx.fillStyle = '#22242a'; // panel face
+      ctx.fillRect(sx+3, sy+3, obj.w-6, 10);
+      // Burners (glowing)
+      ctx.fillStyle = '#880e0e';
+      ctx.beginPath(); ctx.ellipse(sx+8, sy+8, 5, 4, 0, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(sx+obj.w-8, sy+8, 5, 4, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#c42c10';
+      ctx.beginPath(); ctx.ellipse(sx+8, sy+8, 3, 2.5, 0, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(sx+obj.w-8, sy+8, 3, 2.5, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ff6818';
+      ctx.beginPath(); ctx.ellipse(sx+8, sy+8, 1.5, 1.5, 0, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(sx+obj.w-8, sy+8, 1.5, 1.5, 0, 0, Math.PI*2); ctx.fill();
+      // Front door
+      ctx.fillStyle = '#141618';
+      ctx.fillRect(sx+4, sy+16, obj.w-8, obj.h-20);
+      ctx.fillStyle = '#20222a'; // door face
+      ctx.fillRect(sx+5, sy+17, obj.w-10, obj.h-22);
+      // Door handle
+      ctx.fillStyle = '#a0a8b0';
+      ctx.fillRect(sx+Math.floor(obj.w/2)-3, sy+obj.h-10, 6, 3);
+      ctx.fillStyle = '#c0c8d0'; ctx.fillRect(sx+Math.floor(obj.w/2)-1, sy+obj.h-10, 2, 1);
+      // Legs
+      ctx.fillStyle = '#10121a';
+      ctx.fillRect(sx+3, sy+obj.h-4, 4, 4);
+      ctx.fillRect(sx+obj.w-7, sy+obj.h-4, 4, 4);
+      break;
+    }
+    case 'sink': {
+      // Counter
+      ctx.fillStyle = '#505860';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.fillStyle = '#6a7480'; // counter face
+      ctx.fillRect(sx+1, sy+1, obj.w-2, obj.h-2);
+      ctx.fillStyle = '#8090a0'; // top highlight
+      ctx.fillRect(sx+2, sy+2, obj.w-4, 3);
+      // Basin (inset)
+      ctx.fillStyle = '#283840';
+      ctx.fillRect(sx+3, sy+6, obj.w-6, obj.h-9);
+      ctx.fillStyle = '#2a5068';
+      ctx.fillRect(sx+4, sy+7, obj.w-8, obj.h-11);
+      ctx.fillStyle = '#306080'; // basin face
+      ctx.fillRect(sx+5, sy+8, obj.w-10, obj.h-13);
+      // Water surface
+      ctx.fillStyle = '#4880b0';
+      ctx.fillRect(sx+5, sy+8, obj.w-10, 3);
+      ctx.fillStyle = '#68a8d8'; // water highlight
+      ctx.fillRect(sx+6, sy+8, obj.w-12, 1);
+      // Faucet
+      ctx.fillStyle = '#a0a8b8';
+      ctx.fillRect(sx+Math.floor(obj.w/2)-2, sy+2, 4, 7);
+      ctx.fillStyle = '#c0c8d8'; // faucet highlight
+      ctx.fillRect(sx+Math.floor(obj.w/2)-1, sy+2, 2, 5);
+      ctx.fillStyle = '#808898'; // faucet base
+      ctx.fillRect(sx+Math.floor(obj.w/2)-3, sy+6, 6, 2);
+      // Drain
+      ctx.fillStyle = '#1a2028';
+      ctx.beginPath(); ctx.arc(sx+Math.floor(obj.w/2), sy+obj.h-5, 2, 0, Math.PI*2); ctx.fill();
+      break;
+    }
+    case 'toilet': {
+      // Tank
+      ctx.fillStyle = '#a8b0b8';
+      ctx.fillRect(sx+4, sy, obj.w-8, 11);
+      ctx.fillStyle = '#c0c8d0'; // tank face
+      ctx.fillRect(sx+5, sy+1, obj.w-10, 9);
+      ctx.fillStyle = '#d8e0e8'; // tank top highlight
+      ctx.fillRect(sx+5, sy+1, obj.w-10, 2);
+      ctx.fillStyle = '#8898a8'; ctx.fillRect(sx+4, sy+10, obj.w-8, 2); // tank bottom stripe
+      // Tank pipe
+      ctx.fillStyle = '#8098a8';
+      ctx.fillRect(sx+Math.floor(obj.w/2)-2, sy+2, 4, 3);
+      ctx.fillStyle = '#a8c0d0'; ctx.fillRect(sx+Math.floor(obj.w/2)-1, sy+2, 2, 2);
+      // Bowl base
+      ctx.fillStyle = '#b0b8c0';
+      ctx.fillRect(sx+2, sy+9, obj.w-4, obj.h-9);
+      ctx.fillStyle = '#c8d0d8'; // bowl face
+      ctx.fillRect(sx+3, sy+10, obj.w-6, obj.h-11);
+      ctx.fillStyle = '#e0e8f0'; // top highlight
+      ctx.fillRect(sx+3, sy+10, obj.w-6, 3);
+      // Seat
+      ctx.fillStyle = '#9098a0';
+      ctx.fillRect(sx+3, sy+10, obj.w-6, 5);
+      ctx.fillStyle = '#b0b8c8'; ctx.fillRect(sx+4, sy+10, obj.w-8, 1); // seat highlight
+      // Bowl interior (water)
+      ctx.fillStyle = '#2e5870';
+      ctx.beginPath(); ctx.ellipse(sx+Math.floor(obj.w/2), sy+17, Math.floor(obj.w/2)-5, 4, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#3870a0';
+      ctx.beginPath(); ctx.ellipse(sx+Math.floor(obj.w/2)-1, sy+17, Math.floor(obj.w/2)-7, 3, 0, 0, Math.PI*2); ctx.fill();
+      // Base trim
+      ctx.fillStyle = '#909aa0';
+      ctx.fillRect(sx+2, sy+obj.h-4, obj.w-4, 4);
+      break;
+    }
+    case 'market':
+      ctx.fillStyle = '#7a5232';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.fillStyle = '#4c301b';
+      ctx.fillRect(sx+2, sy+obj.h-8, obj.w-4, 6);
+      ctx.fillStyle = '#b22020';
+      ctx.fillRect(sx-10, sy-16, obj.w+20, 9);
+      ctx.fillStyle = '#f2e7d1';
+      for (let aw = -8; aw < obj.w+8; aw += 14) ctx.fillRect(sx+aw, sy-7, 7, 3);
+      ctx.fillStyle = '#ffffff';
       ctx.font = '10px Cinzel';
       ctx.fillText('MERCADO', sx+10, sy-3);
       break;
     case 'well':
-      ctx.fillStyle = '#555';
+      ctx.fillStyle = '#4e4e4e';
       ctx.beginPath();
       ctx.arc(sx+obj.w/2, sy+obj.h/2, obj.w/2, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = '#696969';
+      ctx.beginPath();
+      ctx.arc(sx+obj.w/2, sy+obj.h/2, obj.w/2-3, 0, Math.PI*2);
       ctx.fill();
       ctx.fillStyle = '#2980b9';
       ctx.beginPath();
       ctx.arc(sx+obj.w/2, sy+obj.h/2, obj.w/2-6, 0, Math.PI*2);
       ctx.fill();
+      ctx.fillStyle = '#7ec8f0';
+      ctx.fillRect(sx+obj.w/2-5, sy+obj.h/2-4, 7, 2);
+      ctx.fillStyle = '#5a3a18';
+      ctx.fillRect(sx+2, sy-4, 4, 8);
+      ctx.fillRect(sx+obj.w-6, sy-4, 4, 8);
+      ctx.strokeStyle = '#8b6a3a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(sx+4, sy-2);
+      ctx.lineTo(sx+obj.w-4, sy-2);
+      ctx.stroke();
       break;
-    case 'tree':
-      ctx.fillStyle = '#4a3000';
-      ctx.fillRect(sx+11, sy+14, 8, 16);
-      ctx.fillStyle = '#1a6e1a';
-      ctx.beginPath();
-      ctx.arc(sx+15, sy+12, 16, 0, Math.PI*2);
-      ctx.fill();
-      ctx.fillStyle = '#2a8a2a';
-      ctx.beginPath();
-      ctx.arc(sx+13, sy+8, 10, 0, Math.PI*2);
-      ctx.fill();
+    case 'tree': {
+      // Trunk with bark detail and surface roots
+      ctx.fillStyle = '#241604'; // trunk shadow
+      ctx.fillRect(sx+10, sy+14, 10, 18);
+      ctx.fillStyle = '#3d2808'; // trunk main
+      ctx.fillRect(sx+11, sy+14, 8, 17);
+      ctx.fillStyle = '#5a3c10'; // bark highlight
+      ctx.fillRect(sx+11, sy+14, 3, 16);
+      ctx.fillStyle = '#241604'; // bark knot
+      ctx.fillRect(sx+11, sy+22, 8, 1);
+      ctx.fillRect(sx+13, sy+27, 4, 1);
+      // Roots at base
+      ctx.fillStyle = '#2a1a04';
+      ctx.fillRect(sx+7, sy+29, 5, 3);
+      ctx.fillRect(sx+19, sy+29, 5, 3);
+      // Canopy (4 layers dark→bright)
+      ctx.fillStyle = '#134010'; // base dark
+      ctx.beginPath(); ctx.arc(sx+15, sy+13, 16, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#1c6018'; // mid
+      ctx.beginPath(); ctx.arc(sx+14, sy+10, 13, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#288828'; // upper
+      ctx.beginPath(); ctx.arc(sx+13, sy+7, 10, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#3aaa3a'; // highlight top
+      ctx.beginPath(); ctx.arc(sx+11, sy+5, 6, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(sx+19, sy+8, 5, 0, Math.PI*2); ctx.fill();
+      // Bright tip pixels
+      ctx.fillStyle = '#62c055';
+      ctx.fillRect(sx+8, sy+4, 4, 3);
+      ctx.fillRect(sx+19, sy+7, 3, 3);
+      ctx.fillStyle = '#88d870';
+      ctx.fillRect(sx+9, sy+4, 2, 2);
+      ctx.fillRect(sx+20, sy+7, 2, 2);
       break;
-    case 'rock':
-      ctx.fillStyle = '#666';
-      ctx.beginPath();
-      ctx.ellipse(sx+obj.w/2, sy+obj.h/2, obj.w/2, obj.h/2, 0, 0, Math.PI*2);
-      ctx.fill();
-      ctx.fillStyle = '#888';
-      ctx.beginPath();
-      ctx.ellipse(sx+obj.w/2-4, sy+obj.h/2-4, obj.w/4, obj.h/4, 0, 0, Math.PI*2);
-      ctx.fill();
+    }
+    case 'rock': {
+      // Rock shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.28)';
+      ctx.beginPath(); ctx.ellipse(sx+obj.w/2+3, sy+obj.h-1, obj.w/2, 3, 0, 0, Math.PI*2); ctx.fill();
+      // Rock dark base
+      ctx.fillStyle = '#484848';
+      ctx.beginPath(); ctx.ellipse(sx+obj.w/2, sy+obj.h/2+2, obj.w/2, obj.h/2, 0, 0, Math.PI*2); ctx.fill();
+      // Rock main body
+      ctx.fillStyle = '#606060';
+      ctx.beginPath(); ctx.ellipse(sx+obj.w/2, sy+obj.h/2, obj.w/2, obj.h/2, 0, 0, Math.PI*2); ctx.fill();
+      // Crack lines
+      ctx.fillStyle = '#363636';
+      ctx.fillRect(sx+Math.floor(obj.w/2), sy+2, 1, obj.h-7);
+      ctx.fillRect(sx+Math.floor(obj.w/2)+3, sy+4, 1, Math.floor(obj.h/2));
+      // Top highlight patch
+      ctx.fillStyle = '#848484';
+      ctx.beginPath(); ctx.ellipse(sx+obj.w/2-3, sy+obj.h/2-4, obj.w/4, obj.h/5, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#9e9e9e';
+      ctx.beginPath(); ctx.ellipse(sx+obj.w/2-4, sy+obj.h/2-5, Math.floor(obj.w/8), Math.floor(obj.h/8), 0, 0, Math.PI*2); ctx.fill();
+      // Moss patches
+      ctx.fillStyle = '#3a5028';
+      ctx.fillRect(sx+2, sy+Math.floor(obj.h/2)+2, 5, 3);
+      ctx.fillRect(sx+obj.w-10, sy+Math.floor(obj.h/2)+3, 4, 2);
+      ctx.fillStyle = '#4a6030';
+      ctx.fillRect(sx+3, sy+Math.floor(obj.h/2)+2, 3, 2);
       break;
+    }
     case 'farm':
-      ctx.fillStyle = '#8b7355';
+      ctx.fillStyle = '#7a6242';
       ctx.fillRect(sx, sy, obj.w, obj.h);
       ctx.strokeStyle = '#5a4a2a';
       ctx.lineWidth = 2;
       ctx.strokeRect(sx, sy, obj.w, obj.h);
-      // crops
-      ctx.fillStyle = '#5a9e1a';
-      for(let i=0;i<5;i++) for(let j=0;j<4;j++) {
-        ctx.fillRect(sx+10+i*45, sy+10+j*45, 35, 35);
+      // crop rows with soil gaps
+      for(let j=0;j<4;j++) {
+        ctx.fillStyle = '#4d381f';
+        ctx.fillRect(sx+8, sy+8+j*45, obj.w-16, 37);
+        for(let i=0;i<5;i++) {
+          ctx.fillStyle = '#4f8f16';
+          ctx.fillRect(sx+10+i*45, sy+10+j*45, 32, 14);
+          ctx.fillStyle = '#68b024';
+          ctx.fillRect(sx+12+i*45, sy+12+j*45, 28, 4);
+          ctx.fillStyle = '#3a6f12';
+          ctx.fillRect(sx+10+i*45, sy+27+j*45, 32, 14);
+        }
       }
       ctx.fillStyle = '#fff'; ctx.font = '9px Cinzel';
       ctx.fillText(obj.label||'Granja', sx+4, sy+14);
@@ -2988,8 +3448,15 @@ function drawObject(obj, cx, cy) {
     case 'mine_entrance':
       ctx.fillStyle = '#1a1a1a';
       ctx.fillRect(sx, sy, obj.w, obj.h);
-      ctx.fillStyle = '#333';
+      ctx.fillStyle = '#2a2a2a';
+      ctx.fillRect(sx+2, sy+2, obj.w-4, obj.h-4);
+      ctx.fillStyle = '#050505';
       ctx.fillRect(sx+10, sy+10, obj.w-20, obj.h-10);
+      // wood support frame
+      ctx.fillStyle = '#5a3a18';
+      ctx.fillRect(sx+6, sy+4, 6, obj.h-8);
+      ctx.fillRect(sx+obj.w-12, sy+4, 6, obj.h-8);
+      ctx.fillRect(sx+6, sy+4, obj.w-12, 6);
       ctx.fillStyle = '#c9a227';
       ctx.font = '9px Cinzel';
       ctx.fillText(obj.label||'Mina', sx+4, sy+12);
@@ -3002,6 +3469,16 @@ function drawObject(obj, cx, cy) {
       ctx.fillStyle = '#8b4513';
       ctx.beginPath(); ctx.moveTo(sx+30,sy+10); ctx.lineTo(sx+80,sy+70); ctx.lineTo(sx-20,sy+70); ctx.closePath(); ctx.fill();
       ctx.beginPath(); ctx.moveTo(sx+150,sy+20); ctx.lineTo(sx+190,sy+80); ctx.lineTo(sx+110,sy+80); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#a85d22';
+      ctx.fillRect(sx+24, sy+44, 12, 2);
+      ctx.fillRect(sx+142, sy+52, 12, 2);
+      // bonfire
+      ctx.fillStyle = '#5a3a18';
+      ctx.fillRect(sx+90, sy+72, 24, 6);
+      ctx.fillStyle = '#ff8a00';
+      ctx.fillRect(sx+97, sy+64, 8, 8);
+      ctx.fillStyle = '#ffd166';
+      ctx.fillRect(sx+99, sy+66, 4, 4);
       ctx.fillStyle = '#f00'; ctx.font='10px Cinzel'; ctx.fillText('⚠ PELIGRO',sx+30,sy+14);
       break;
     case 'water_zone':
@@ -3026,6 +3503,8 @@ function drawObject(obj, cx, cy) {
     case 'fence':
       ctx.fillStyle = '#7a5a30';
       ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.fillStyle = '#b89050';
+      for (let f = 3; f < obj.w; f += 18) ctx.fillRect(sx+f, sy+1, 2, obj.h-2);
       break;
     case 'fence_gate': {
       // Postes laterales
@@ -3043,6 +3522,10 @@ function drawObject(obj, cx, cy) {
       ctx.moveTo(sx+10, sy+2);
       ctx.lineTo(sx+obj.w-10, sy+obj.h-2);
       ctx.stroke();
+      // Metal hinge accents
+      ctx.fillStyle = '#b0b8c0';
+      ctx.fillRect(sx+8, sy+4, 3, 3);
+      ctx.fillRect(sx+obj.w-11, sy+4, 3, 3);
       // Hint [E] cuando el jugador está cerca
       if (G.player) {
         const _gpd = rectDist(G.player, {x:obj.x, y:obj.y, w:obj.w, h:obj.h});
@@ -3313,34 +3796,142 @@ function drawObject(obj, cx, cy) {
 }
 
 function drawHouse(sx, sy, obj, wallCol, roofCol, enterable, label) {
+  const roofDark  = darkenHex(roofCol, 38);
+  const roofMid   = lightenHex(roofCol, 8);
+  const roofLight = lightenHex(roofCol, 30);
+  const wallLight = lightenHex(wallCol, 22);
+  const wallMid   = lightenHex(wallCol, 8);
+  const wallDark  = darkenHex(wallCol, 28);
+
+  // Stone foundation
+  ctx.fillStyle = darkenHex(wallCol, 14);
+  ctx.fillRect(sx-2, sy+obj.h-5, obj.w+4, 7);
+  ctx.fillStyle = darkenHex(wallCol, 6);
+  for (let fx = 0; fx < obj.w+4; fx += 18) ctx.fillRect(sx-1+fx, sy+obj.h-4, Math.min(15, obj.w-fx+4), 2);
+  // Foundation shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.fillRect(sx+4, sy+obj.h+2, obj.w-3, 5);
+
+  // Wall base
   ctx.fillStyle = wallCol;
   ctx.fillRect(sx, sy, obj.w, obj.h);
-  // roof
-  ctx.fillStyle = roofCol;
+  // Top wall highlight strip
+  ctx.fillStyle = wallLight;
+  ctx.fillRect(sx+2, sy+2, obj.w-4, 3);
+  // Side highlight / shadow
+  ctx.fillStyle = wallMid;
+  ctx.fillRect(sx+2, sy+5, 3, obj.h-8);
+  ctx.fillStyle = wallDark;
+  ctx.fillRect(sx+obj.w-5, sy+2, 5, obj.h-4);
+  // Staggered brick pattern (alternating row offsets)
+  ctx.fillStyle = wallDark;
+  for (let wy = 0; wy < obj.h-6; wy += 8) {
+    const brickOff = (Math.floor(wy / 8) % 2) * 8;
+    for (let bx = -brickOff; bx < obj.w; bx += 16) {
+      ctx.fillRect(sx + Math.max(2, bx), sy + 7 + wy, Math.min(13, obj.w - 2 - Math.max(0,bx)), 1);
+    }
+  }
+
+  // Roof dark underside
+  ctx.fillStyle = roofDark;
   ctx.beginPath();
-  ctx.moveTo(sx-5, sy);
-  ctx.lineTo(sx+obj.w/2, sy-20);
-  ctx.lineTo(sx+obj.w+5, sy);
+  ctx.moveTo(sx-6, sy+2);
+  ctx.lineTo(sx+obj.w/2, sy-23);
+  ctx.lineTo(sx+obj.w+6, sy+2);
   ctx.closePath();
   ctx.fill();
-  // door
-  ctx.fillStyle = '#2a1a0a';
-  ctx.fillRect(sx+obj.w/2-8, sy+obj.h-22, 16, 22);
-  // windows
-  ctx.fillStyle = '#87ceeb';
-  ctx.fillRect(sx+8, sy+10, 14, 14);
-  if (obj.w > 60) ctx.fillRect(sx+obj.w-22, sy+10, 14, 14);
+  // Roof main face
+  ctx.fillStyle = roofMid;
+  ctx.beginPath();
+  ctx.moveTo(sx-3, sy+2);
+  ctx.lineTo(sx+obj.w/2, sy-19);
+  ctx.lineTo(sx+obj.w+3, sy+2);
+  ctx.closePath();
+  ctx.fill();
+  // Roof tile rows (horizontal bands, lighter toward top)
+  ctx.fillStyle = roofLight;
+  for (let tr = 0; tr < 5; tr++) {
+    const progress = tr / 4;
+    const rowW = Math.round((obj.w + 8) * (1 - progress * 0.9));
+    const rowX = sx - 3 + Math.round(progress * (obj.w / 2 + 2));
+    const rowY = sy + Math.round(2 - progress * 22);
+    ctx.fillRect(rowX, rowY - 2, rowW, 2);
+  }
+  // Roof ridge cap
+  ctx.fillStyle = darkenHex(roofCol, 22);
+  ctx.fillRect(sx+obj.w/2-3, sy-20, 7, 5);
+  ctx.fillStyle = roofLight;
+  ctx.fillRect(sx+obj.w/2-1, sy-20, 3, 4);
+
+  // Door (detailed wooden planks)
+  const doorX = sx+Math.floor(obj.w/2)-8;
+  const doorY = sy+obj.h-22;
+  ctx.fillStyle = '#1a0e06'; // door frame shadow
+  ctx.fillRect(doorX-1, doorY-1, 18, 24);
+  ctx.fillStyle = '#3d250f'; // door body
+  ctx.fillRect(doorX, doorY, 16, 22);
+  ctx.fillStyle = '#2e1c0a'; // plank lines
+  ctx.fillRect(doorX+1, doorY+5, 14, 1);
+  ctx.fillRect(doorX+1, doorY+11, 14, 1);
+  ctx.fillRect(doorX+1, doorY+17, 14, 1);
+  ctx.fillStyle = '#4a3015'; // wood grain
+  ctx.fillRect(doorX+4, doorY+1, 1, 20);
+  ctx.fillRect(doorX+11, doorY+1, 1, 20);
+  ctx.fillStyle = '#1a0e06'; // arch shadow
+  ctx.fillRect(doorX, doorY, 16, 3);
+  ctx.fillStyle = '#c9a227'; // gold handle
+  ctx.fillRect(doorX+12, doorY+10, 3, 3);
+  ctx.fillStyle = '#f0d060'; ctx.fillRect(doorX+12, doorY+10, 1, 1); // handle glint
+  ctx.fillStyle = '#7a5010'; // iron hinges
+  ctx.fillRect(doorX+1, doorY+3, 2, 2);
+  ctx.fillRect(doorX+1, doorY+16, 2, 2);
+
+  // Windows (with sill, frame, glass quads, reflection)
+  const drawWin = (wx, wy) => {
+    ctx.fillStyle = wallDark;         ctx.fillRect(wx-1, wy+14, 16, 3); // sill
+    ctx.fillStyle = wallLight;        ctx.fillRect(wx, wy+14, 14, 1);   // sill highlight
+    ctx.fillStyle = '#2e1a0a';        ctx.fillRect(wx-1, wy-1, 16, 16); // outer frame
+    ctx.fillStyle = '#5a8aaa';        ctx.fillRect(wx, wy, 14, 14);     // glass base
+    ctx.fillStyle = '#3a6a8a';        ctx.fillRect(wx, wy, 6, 6);       // dark quad
+    ctx.fillRect(wx+8, wy+8, 6, 6);
+    ctx.fillStyle = '#90c8e0';        ctx.fillRect(wx+1, wy+1, 4, 4);   // bright quad reflection
+    ctx.fillStyle = '#b8e4f8';        ctx.fillRect(wx+1, wy+1, 2, 2);   // reflection center
+    ctx.fillRect(wx+2, wy+2, 1, 1);  // bright spot
+    ctx.fillStyle = '#3a2810';        ctx.fillRect(wx+6, wy, 2, 14);    // cross frame vertical
+    ctx.fillRect(wx, wy+6, 14, 2);   // cross frame horizontal
+  };
+  drawWin(sx+5, sy+8);
+  if (obj.w > 60) drawWin(sx+obj.w-19, sy+8);
+
+  // Chimney (brick detail + animated smoke)
+  const chiX = sx+obj.w-18;
+  ctx.fillStyle = wallDark;   ctx.fillRect(chiX, sy-16, 10, 17);
+  ctx.fillStyle = wallMid;    ctx.fillRect(chiX+1, sy-15, 4, 14); // chimney highlight face
+  // Chimney bricks
+  ctx.fillStyle = darkenHex(wallCol, 8);
+  ctx.fillRect(chiX+1, sy-12, 8, 1);
+  ctx.fillRect(chiX+1, sy-7, 8, 1);
+  ctx.fillStyle = wallLight;  ctx.fillRect(chiX, sy-16, 11, 2); // chimney cap top
+  ctx.fillStyle = darkenHex(wallCol, 18); ctx.fillRect(chiX, sy-15, 11, 1); // cap underline
+  // Smoke
+  const smk = Math.floor(G.frame * 0.08) % 7;
+  ctx.fillStyle='rgba(190,185,175,0.32)'; ctx.beginPath(); ctx.arc(chiX+4, sy-20-smk, 3, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(190,185,175,0.18)'; ctx.beginPath(); ctx.arc(chiX+7, sy-27-smk, 5, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(190,185,175,0.08)'; ctx.beginPath(); ctx.arc(chiX+3, sy-34-smk, 7, 0, Math.PI*2); ctx.fill();
+
   if (enterable) {
-    ctx.strokeStyle = '#f0d060'; ctx.lineWidth=2;
-    ctx.strokeRect(sx, sy, obj.w, obj.h);
-    ctx.shadowColor='#f0d060'; ctx.shadowBlur=8;
-    ctx.strokeRect(sx, sy, obj.w, obj.h);
+    ctx.strokeStyle = '#d4b030'; ctx.lineWidth=2;
+    ctx.strokeRect(sx-1, sy-1, obj.w+2, obj.h+2);
+    ctx.shadowColor='#f0d060'; ctx.shadowBlur=10;
+    ctx.strokeRect(sx-1, sy-1, obj.w+2, obj.h+2);
     ctx.shadowBlur=0;
   }
   if (label) {
+    const lw = ctx.measureText(label).width;
+    ctx.fillStyle='rgba(0,0,0,0.72)'; ctx.fillRect(sx, sy-17, lw+8, 13);
     ctx.fillStyle = '#f0d060';
     ctx.font = '9px Cinzel';
-    ctx.fillText(label, sx, sy-4);
+    ctx.fillText(label, sx+4, sy-6);
   }
 }
 
@@ -3359,9 +3950,13 @@ function drawPlayer() {
   const facing    = p.facing || 'down';
 
   // ── SHADOW ──────────────────────────────────────────────
-  ctx.fillStyle = 'rgba(0,0,0,0.38)';
+  ctx.fillStyle = 'rgba(0,0,0,0.45)';
   ctx.beginPath();
-  ctx.ellipse(sx+12, sy+27+bodyBob, 11, 4, 0, 0, Math.PI*2);
+  ctx.ellipse(sx+12, sy+27+bodyBob, 13, 5, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,0.18)';
+  ctx.beginPath();
+  ctx.ellipse(sx+12, sy+28+bodyBob, 16, 6, 0, 0, Math.PI*2);
   ctx.fill();
 
   // ── Invincibility flash ──────────────────────────────────
@@ -3467,6 +4062,11 @@ function drawPlayer() {
   ctx.fillRect(sx+9, bodyY+10, 6, 3);
   ctx.fillStyle = hiCol;
   ctx.fillRect(sx+10, bodyY+11, 4, 1);
+  // Tabard / heraldic strip
+  ctx.fillStyle = darkenHex(bodyCol, 18);
+  ctx.fillRect(sx+10, bodyY+11, 3, 8);
+  ctx.fillStyle = '#c9a227';
+  ctx.fillRect(sx+11, bodyY+12, 1, 6);
 
   // ══════════════════════════════════════════════════════════
   // ARMS
@@ -3532,17 +4132,21 @@ function drawPlayer() {
     // Plume mount
     ctx.fillStyle = shCol;
     ctx.fillRect(sx+10, headY-2, 4, 3);
-    // Crimson plume
-    ctx.fillStyle = '#aa0a0a';
-    ctx.fillRect(sx+10, headY-9, 4, 8);
-    ctx.fillStyle = '#dd2222';
+    // Crimson plume (richer, more dramatic)
+    ctx.fillStyle = '#5a0000';
+    ctx.fillRect(sx+10, headY-11, 4, 10);
+    ctx.fillStyle = '#900000';
+    ctx.fillRect(sx+10, headY-10, 4, 9);
+    ctx.fillStyle = '#bb1010';
     ctx.fillRect(sx+11, headY-9, 3, 7);
-    ctx.fillStyle = '#ff6666';
-    ctx.fillRect(sx+12, headY-8, 1, 5);
+    ctx.fillStyle = '#ee4040';
+    ctx.fillRect(sx+12, headY-8, 2, 5);
+    ctx.fillStyle = '#ff8080';
+    ctx.fillRect(sx+12, headY-7, 1, 3);
     // Plume tip wave
     const plumeWave = moving ? Math.sin(t*1.4)*1.5 : 0;
-    ctx.fillStyle = '#ff4444';
-    ctx.fillRect(sx+11+Math.round(plumeWave), headY-10, 2, 2);
+    ctx.fillStyle = '#ff5050';
+    ctx.fillRect(sx+11+Math.round(plumeWave), headY-12, 2, 3);
 
   } else if (p.armor === 'light') {
     // ── Ranger Hood ─────────────────────────────────────────
@@ -3584,12 +4188,16 @@ function drawPlayer() {
       ctx.fillRect(sx+7, headY+5, 1, 1);
       ctx.fillRect(sx+15,headY+5, 1, 1);
     }
-    // Feather plume
-    ctx.fillStyle = '#7fcf7f';
-    ctx.fillRect(sx+19, headY-6, 5, 6);
-    ctx.fillStyle = '#aaffaa';
-    ctx.fillRect(sx+20, headY-6, 3, 4);
-    ctx.fillStyle = '#ccffcc';
+    // Feather plume (natural forest tones)
+    ctx.fillStyle = '#426830';
+    ctx.fillRect(sx+19, headY-8, 5, 8);
+    ctx.fillStyle = '#588040';
+    ctx.fillRect(sx+20, headY-7, 4, 6);
+    ctx.fillStyle = '#6ea055';
+    ctx.fillRect(sx+20, headY-6, 3, 5);
+    ctx.fillStyle = '#90c070';
+    ctx.fillRect(sx+21, headY-6, 2, 4);
+    ctx.fillStyle = '#b0e090';
     ctx.fillRect(sx+21, headY-5, 1, 2);
 
   } else {
@@ -3637,13 +4245,15 @@ function drawPlayer() {
     // Nasal guard
     ctx.fillStyle = shCol;
     ctx.fillRect(sx+11, headY+1, 2, 6);
-    // Crest / mohawk plume
-    ctx.fillStyle = '#806010';
-    ctx.fillRect(sx+10, headY-5, 4, 5);
-    ctx.fillStyle = '#c9a227';
-    ctx.fillRect(sx+11, headY-5, 2, 4);
-    ctx.fillStyle = '#ffe080';
-    ctx.fillRect(sx+11, headY-5, 1, 2);
+    // Crest (dark lacquered horsehair)
+    ctx.fillStyle = '#1a1000';
+    ctx.fillRect(sx+10, headY-7, 4, 7);
+    ctx.fillStyle = '#2e1c04';
+    ctx.fillRect(sx+11, headY-6, 2, 5);
+    ctx.fillStyle = '#3c2808';
+    ctx.fillRect(sx+11, headY-5, 1, 3);
+    ctx.fillStyle = '#5a3e12';
+    ctx.fillRect(sx+12, headY-4, 1, 2);
   }
 
   // ── WEAPON ────────────────────────────────────────────────
@@ -3651,6 +4261,20 @@ function drawPlayer() {
     drawAttackAnimation(p, sx, sy);
   } else {
     drawWeaponIdle(p, sx, sy+bodyBob);
+  }
+
+  // Armor accents (no bounding-box outline).
+  ctx.fillStyle = '#c9a227';
+  ctx.fillRect(sx+10, sy+12+bodyBob, 4, 1);
+  ctx.fillStyle = 'rgba(255,255,255,0.15)';
+  ctx.fillRect(sx+3, sy+3+bodyBob*0.3, 6, 1);
+  ctx.fillRect(sx+16, sy+6+bodyBob*0.2, 3, 1);
+  ctx.fillStyle = 'rgba(0,0,0,0.18)';
+  ctx.fillRect(sx+2, sy+23+bodyBob, p.w-4, 1);
+  if (moving) {
+    const capeSpark = Math.floor((G.frame*0.35) % 8);
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.fillRect(sx+5+capeSpark, sy+24+bodyBob, 2, 1);
   }
 
   ctx.globalAlpha = 1;
@@ -3883,122 +4507,305 @@ function drawEnemies() {
     if (hitFlash) { ctx.globalAlpha = 0.5; ctx.fillStyle='#fff'; ctx.fillRect(sx,sy,e.w,e.h); ctx.globalAlpha=1; }
 
     if (e.type === 'boar') {
-      // Body
-      ctx.fillStyle = hitFlash?'#fff':'#8b4513';
+      // Body - deep chocolate brown
+      ctx.fillStyle = hitFlash?'#fff':'#6b3210';
       ctx.fillRect(sx+2, sy+5+frameOff, e.w-4, e.h-7);
+      // Body highlight top / shadow bottom
+      if (!hitFlash) {
+        ctx.fillStyle = '#8a4018';
+        ctx.fillRect(sx+3, sy+5+frameOff, e.w-6, 2);
+        ctx.fillStyle = '#471e08';
+        ctx.fillRect(sx+3, sy+e.h-8+frameOff, e.w-6, 3);
+      }
       // Head
-      ctx.fillStyle = hitFlash?'#fff':'#6b3a0a';
+      ctx.fillStyle = hitFlash?'#fff':'#4e2506';
       ctx.fillRect(sx+e.w-9, sy+frameOff, 9, 12);
+      // Head highlight
+      if (!hitFlash) { ctx.fillStyle='#6a3410'; ctx.fillRect(sx+e.w-9,sy+1+frameOff,2,10); }
       // Snout
-      ctx.fillStyle = '#5a2a05';
+      ctx.fillStyle = '#3c1902';
       ctx.fillRect(sx+e.w-4, sy+5+frameOff, 5, 5);
-      ctx.fillStyle='#3a0a00'; ctx.fillRect(sx+e.w-3,sy+6+frameOff,2,2); ctx.fillRect(sx+e.w-1,sy+6+frameOff,2,2);
-      // Tusk
-      ctx.fillStyle = '#f0e0b0';
-      ctx.fillRect(sx+e.w-3, sy+10+frameOff, 4, 3);
-      // Eye
-      ctx.fillStyle='#f00';
+      ctx.fillStyle='#2a0e00'; ctx.fillRect(sx+e.w-3,sy+6+frameOff,2,2); ctx.fillRect(sx+e.w-1,sy+6+frameOff,2,2);
+      // Tusk (aged ivory with darker tip)
+      ctx.fillStyle = '#e8d898';
+      ctx.fillRect(sx+e.w-3, sy+10+frameOff, 5, 3);
+      ctx.fillStyle = '#b8a060'; ctx.fillRect(sx+e.w+1, sy+11+frameOff, 2, 2);
+      // Eye (angry red glow)
+      ctx.fillStyle='#cc0000';
+      ctx.shadowColor='#ff2000'; ctx.shadowBlur=6;
       ctx.fillRect(sx+e.w-8, sy+2+frameOff, 3, 3);
+      ctx.shadowBlur=0;
       ctx.fillStyle='#fff'; ctx.fillRect(sx+e.w-8, sy+2+frameOff, 1, 1);
       // Legs (walk)
       const lw = Math.sin(G.frame * 0.25) * 2;
-      ctx.fillStyle='#5a2a05';
+      ctx.fillStyle='#3c1902';
       ctx.fillRect(sx+3, sy+e.h-4+lw, 5, 6);
       ctx.fillRect(sx+9, sy+e.h-4-lw, 5, 6);
       ctx.fillRect(sx+e.w-14, sy+e.h-4-lw, 5, 6);
       ctx.fillRect(sx+e.w-8, sy+e.h-4+lw, 5, 6);
-      // Back bristles
-      ctx.fillStyle='#3a1a00';
-      for(let bi=0;bi<5;bi++) ctx.fillRect(sx+4+bi*5, sy+2+frameOff, 3, 4);
+      // Hooves
+      ctx.fillStyle='#180800';
+      ctx.fillRect(sx+3, sy+e.h+lw, 5, 2);
+      ctx.fillRect(sx+9, sy+e.h-lw, 5, 2);
+      ctx.fillRect(sx+e.w-14, sy+e.h-lw, 5, 2);
+      ctx.fillRect(sx+e.w-8, sy+e.h+lw, 5, 2);
+      // Back bristles (layered)
+      ctx.fillStyle='#1e0c00';
+      for(let bi=0;bi<5;bi++) ctx.fillRect(sx+4+bi*5, sy+1+frameOff, 3, 5);
+      ctx.fillStyle='#0e0400';
+      for(let bi=0;bi<5;bi++) ctx.fillRect(sx+5+bi*5, sy+1+frameOff, 1, 4);
+      // Flank stripe
+      ctx.fillStyle = '#7a3810'; ctx.fillRect(sx+5, sy+8+frameOff, 7, 2);
+      ctx.fillStyle = '#582808'; ctx.fillRect(sx+13, sy+12+frameOff, 8, 2);
 
     } else if (e.type === 'bull') {
-      // Body
-      ctx.fillStyle = hitFlash?'#fff':'#444';
+      // Body - near-black menacing hide
+      ctx.fillStyle = hitFlash?'#fff':'#1e1e1e';
       ctx.fillRect(sx, sy+6+frameOff, e.w, e.h-8);
-      // Muscle shading
-      ctx.fillStyle='#333';
-      ctx.fillRect(sx+e.w-6, sy+8+frameOff, 5, e.h-12);
+      // Muscle ridge highlight
+      if (!hitFlash) {
+        ctx.fillStyle='#2e2e2e';
+        ctx.fillRect(sx+2, sy+6+frameOff, 5, e.h-12);
+        ctx.fillStyle='#0e0e0e';
+        ctx.fillRect(sx+e.w-6, sy+8+frameOff, 5, e.h-12);
+      }
+      // Neck bulk
+      if (!hitFlash) { ctx.fillStyle='#242424'; ctx.fillRect(sx+e.w-8, sy+6+frameOff, 8, 6); }
       // Head
-      ctx.fillStyle = hitFlash?'#fff':'#555';
+      ctx.fillStyle = hitFlash?'#fff':'#282828';
       ctx.fillRect(sx+e.w-10, sy+frameOff, 10, 14);
-      // Horns
-      ctx.fillStyle='#2a1a00';
-      ctx.fillRect(sx+e.w-9, sy-5+frameOff, 4, 8);
-      ctx.fillRect(sx+e.w-3, sy-5+frameOff, 4, 8);
-      ctx.fillStyle='#c9a227'; // horn tip
-      ctx.fillRect(sx+e.w-9, sy-7+frameOff, 3, 3);
-      ctx.fillRect(sx+e.w-2, sy-7+frameOff, 3, 3);
-      // Eye
-      ctx.fillStyle='#c0000a';
+      // Head highlight
+      if (!hitFlash) { ctx.fillStyle='#363636'; ctx.fillRect(sx+e.w-10,sy+1+frameOff,3,12); }
+      // Horns (dark bone with gold tips)
+      ctx.fillStyle='#181008';
+      ctx.fillRect(sx+e.w-9, sy-6+frameOff, 4, 8);
+      ctx.fillRect(sx+e.w-3, sy-6+frameOff, 4, 8);
+      ctx.fillStyle='#d4af37'; // gold horn tip
+      ctx.fillRect(sx+e.w-9, sy-8+frameOff, 3, 3);
+      ctx.fillRect(sx+e.w-2, sy-8+frameOff, 3, 3);
+      ctx.fillStyle='#f0c840'; // horn tip bright
+      ctx.fillRect(sx+e.w-9, sy-9+frameOff, 2, 2);
+      ctx.fillRect(sx+e.w-1, sy-9+frameOff, 2, 2);
+      // Eye (blood-red glowing)
+      ctx.fillStyle='#aa0800';
+      ctx.shadowColor='#ff1000'; ctx.shadowBlur=6;
       ctx.fillRect(sx+e.w-8, sy+4+frameOff, 3, 3);
+      ctx.shadowBlur=0;
       ctx.fillStyle='#fff'; ctx.fillRect(sx+e.w-8,sy+4+frameOff,1,1);
       // Nostrils
-      ctx.fillStyle='#1a0a00';
+      ctx.fillStyle='#080400';
       ctx.fillRect(sx+e.w-7, sy+10+frameOff, 2, 2);
       ctx.fillRect(sx+e.w-3, sy+10+frameOff, 2, 2);
+      // Steam breath
+      if (!hitFlash) {
+        ctx.fillStyle='rgba(220,220,220,0.2)';
+        ctx.beginPath(); ctx.arc(sx+e.w+2, sy+10+frameOff, 2, 0, Math.PI*2); ctx.fill();
+      }
       // Legs
       const lw2=Math.sin(G.frame*0.2)*2;
-      ctx.fillStyle='#333';
+      ctx.fillStyle='#181818';
       ctx.fillRect(sx+2,  sy+e.h-3+lw2, 6, 8);
       ctx.fillRect(sx+10, sy+e.h-3-lw2, 6, 8);
       ctx.fillRect(sx+e.w-16,sy+e.h-3-lw2, 6, 8);
       ctx.fillRect(sx+e.w-8, sy+e.h-3+lw2, 6, 8);
+      // Hooves
+      ctx.fillStyle='#080808';
+      ctx.fillRect(sx+2,sy+e.h+4+lw2,6,2); ctx.fillRect(sx+10,sy+e.h+4-lw2,6,2);
+      ctx.fillRect(sx+e.w-16,sy+e.h+4-lw2,6,2); ctx.fillRect(sx+e.w-8,sy+e.h+4+lw2,6,2);
+      // Belly/flank shading
+      if (!hitFlash) {
+        ctx.fillStyle='#343434';
+        ctx.fillRect(sx+4, sy+11+frameOff, 10, 2);
+        ctx.fillRect(sx+16, sy+15+frameOff, 8, 2);
+      }
 
     } else if (e.type === 'crab') {
-      // Shell
-      ctx.fillStyle = hitFlash?'#fff':'#c0392b';
+      // Shell (deep maroon)
+      ctx.fillStyle = hitFlash?'#fff':'#8b1a10';
       ctx.beginPath(); ctx.ellipse(sx+e.w/2, sy+e.h/2+frameOff, e.w/2-3, e.h/2-2, 0, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle='#e74c3c';
+      // Shell highlight
+      ctx.fillStyle= hitFlash?'#faa':'#b02820';
       ctx.beginPath(); ctx.ellipse(sx+e.w/2-2, sy+e.h/2-2+frameOff, e.w/4, e.h/4, 0, 0, Math.PI*2); ctx.fill();
-      // Claws
+      // Shell specular spot
+      if (!hitFlash) {
+        ctx.fillStyle='#d04030';
+        ctx.beginPath(); ctx.ellipse(sx+e.w/2-3, sy+e.h/2-3+frameOff, 3, 2, 0, 0, Math.PI*2); ctx.fill();
+      }
+      // Claws (darker, more defined)
       const claw = Math.sin(G.frame*0.2)*3;
-      ctx.fillStyle='#a93226';
+      ctx.fillStyle='#6a1510';
       ctx.fillRect(sx-6, sy+4+frameOff-claw, 8, 7);
-      ctx.fillRect(sx-3, sy+8+frameOff-claw, 5, 3); // claw bite
+      ctx.fillRect(sx-3, sy+8+frameOff-claw, 5, 3);
       ctx.fillRect(sx+e.w-2, sy+4+frameOff+claw, 8, 7);
       ctx.fillRect(sx+e.w, sy+8+frameOff+claw, 5, 3);
+      // Claw inner (paler)
+      if (!hitFlash) {
+        ctx.fillStyle='#9a2820';
+        ctx.fillRect(sx-5, sy+5+frameOff-claw, 4, 3);
+        ctx.fillRect(sx+e.w, sy+5+frameOff+claw, 4, 3);
+      }
       // Eyes on stalks
-      ctx.fillStyle='#888';
-      ctx.fillRect(sx+5, sy-2+frameOff, 3, 5);
-      ctx.fillRect(sx+e.w-8, sy-2+frameOff, 3, 5);
-      ctx.fillStyle='#f00'; ctx.fillRect(sx+4, sy-4+frameOff, 4, 4);
-      ctx.fillRect(sx+e.w-8, sy-4+frameOff, 4, 4);
-      ctx.fillStyle='#000'; ctx.fillRect(sx+5, sy-3+frameOff, 2, 2);
-      ctx.fillRect(sx+e.w-7, sy-3+frameOff, 2, 2);
+      ctx.fillStyle='#606060';
+      ctx.fillRect(sx+5, sy-3+frameOff, 3, 6);
+      ctx.fillRect(sx+e.w-8, sy-3+frameOff, 3, 6);
+      ctx.fillStyle='#9a0800';
+      ctx.shadowColor='#ee0000'; ctx.shadowBlur=4;
+      ctx.fillRect(sx+4, sy-5+frameOff, 4, 4);
+      ctx.fillRect(sx+e.w-8, sy-5+frameOff, 4, 4);
+      ctx.shadowBlur=0;
+      ctx.fillStyle='#000'; ctx.fillRect(sx+5, sy-4+frameOff, 2, 2);
+      ctx.fillRect(sx+e.w-7, sy-4+frameOff, 2, 2);
+      // Pupil glint
+      ctx.fillStyle='#fff'; ctx.fillRect(sx+5,sy-4+frameOff,1,1); ctx.fillRect(sx+e.w-7,sy-4+frameOff,1,1);
       // Legs
-      ctx.strokeStyle='#a93226'; ctx.lineWidth=1.5;
+      ctx.strokeStyle='#6a1510'; ctx.lineWidth=1.5;
       for(let li=0;li<3;li++) {
         const loff=Math.sin(G.frame*0.3+li)*3;
         ctx.beginPath(); ctx.moveTo(sx+3+li*3, sy+e.h/2+frameOff); ctx.lineTo(sx-8+li*2, sy+e.h+loff); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(sx+e.w-3-li*3, sy+e.h/2+frameOff); ctx.lineTo(sx+e.w+8-li*2, sy+e.h+loff); ctx.stroke();
       }
+      // Mouth
+      ctx.fillStyle='#aa5040';
+      ctx.fillRect(sx+e.w/2-2, sy+e.h/2-1+frameOff, 4, 2);
+
+    } else if (e.type === 'pirate') {
+      // Body (weathered dark leather)
+      ctx.fillStyle = hitFlash?'#fff':'#261b14';
+      ctx.fillRect(sx+2, sy+9+frameOff, e.w-4, e.h-9);
+      // Chest highlight
+      if (!hitFlash) { ctx.fillStyle='#342418'; ctx.fillRect(sx+3,sy+10+frameOff,4,e.h-12); }
+      // Dark ragged cape
+      ctx.fillStyle='#140e0a';
+      ctx.fillRect(sx, sy+12+frameOff, 4, e.h-14);
+      ctx.fillRect(sx+e.w-4, sy+12+frameOff, 4, e.h-14);
+      // Cape worn edge
+      if (!hitFlash) {
+        ctx.fillStyle='#1c1410';
+        ctx.fillRect(sx, sy+e.h-6+frameOff, 4, 4);
+        ctx.fillRect(sx+e.w-4, sy+e.h-6+frameOff, 4, 4);
+      }
+      // Head (tanned skin)
+      ctx.fillStyle='#d4a870';
+      ctx.fillRect(sx+4, sy+frameOff, e.w-8, 11);
+      // Skull bandana (dark cloth)
+      ctx.fillStyle='#1e1006';
+      ctx.fillRect(sx+3, sy+3+frameOff, e.w-6, 5);
+      // Skull pattern on bandana
+      ctx.fillStyle='#c8c0b0';
+      ctx.fillRect(sx+6, sy+4+frameOff, 2, 2); ctx.fillRect(sx+e.w-8, sy+4+frameOff, 2, 2);
+      ctx.fillStyle='#0a0604'; // eye holes of skull
+      ctx.fillRect(sx+6, sy+4+frameOff, 1, 1); ctx.fillRect(sx+e.w-7, sy+4+frameOff, 1, 1);
+      // Scar on face
+      if (!hitFlash) { ctx.fillStyle='#8a4020'; ctx.fillRect(sx+e.w-6,sy+1+frameOff,1,4); }
+      // Saber (weathered steel)
+      ctx.fillStyle='#7a9090';
+      ctx.fillRect(sx+e.w+1, sy+9+frameOff, 2, 15);
+      ctx.fillStyle='#a0b8b8'; ctx.fillRect(sx+e.w+1,sy+9+frameOff,1,13); // blade edge
+      ctx.fillStyle='#8b2020'; ctx.fillRect(sx+e.w-2, sy+8+frameOff, 5, 2); // guard
+      // Legs
+      const lwP=Math.sin(G.frame*0.25)*2;
+      ctx.fillStyle='#1e1610';
+      ctx.fillRect(sx+4, sy+e.h-3+lwP, 5, 8); ctx.fillRect(sx+e.w-9, sy+e.h-3-lwP, 5, 8);
+      // Boots
+      ctx.fillStyle='#100c08';
+      ctx.fillRect(sx+3,sy+e.h+3+lwP,7,3); ctx.fillRect(sx+e.w-10,sy+e.h+3-lwP,7,3);
+      // Earring
+      ctx.fillStyle='#c9a227'; ctx.fillRect(sx+4,sy+5+frameOff,1,2);
+
+    } else if (e.type === 'pirate_captain') {
+      // Body (very dark, premium fabric)
+      ctx.fillStyle = hitFlash?'#fff':'#1e1010';
+      ctx.fillRect(sx+2, sy+9+frameOff, e.w-4, e.h-9);
+      // Body highlight
+      if (!hitFlash) { ctx.fillStyle='#2a1818'; ctx.fillRect(sx+3,sy+10+frameOff,4,e.h-12); }
+      // Large black cape (dramatic)
+      ctx.fillStyle='#080606';
+      ctx.fillRect(sx, sy+12+frameOff, 5, e.h-14);
+      ctx.fillRect(sx+e.w-5, sy+12+frameOff, 5, e.h-14);
+      // Cape edge detail
+      if (!hitFlash) { ctx.fillStyle='#d4af37'; ctx.fillRect(sx,sy+12+frameOff,5,1); ctx.fillRect(sx+e.w-5,sy+12+frameOff,5,1); }
+      // Gold epaulette
+      if (!hitFlash) { ctx.fillStyle='#b8941e'; ctx.fillRect(sx+1,sy+11+frameOff,5,4); ctx.fillRect(sx+e.w-6,sy+11+frameOff,5,4); }
+      // Head (sun-darkened)
+      ctx.fillStyle='#d4a870';
+      ctx.fillRect(sx+4, sy+frameOff, e.w-8, 12);
+      // Detailed tricorn hat
+      ctx.fillStyle='#1a0a00';
+      ctx.fillRect(sx+2, sy-9+frameOff, e.w-4, 5); // hat brim wide
+      ctx.fillStyle='#0e0604'; ctx.fillRect(sx+4,sy-12+frameOff,e.w-8,8); // hat crown
+      ctx.fillStyle='#b8941e';
+      ctx.fillRect(sx+2, sy-9+frameOff, e.w-4, 1); // gold brim top
+      ctx.fillRect(sx+4, sy-12+frameOff, e.w-8, 1); // gold crown base
+      // Hat skull emblem
+      ctx.fillStyle='#d0c8b0'; ctx.fillRect(sx+9,sy-11+frameOff,4,3);
+      ctx.fillStyle='#0e0604'; ctx.fillRect(sx+10,sy-10+frameOff,1,1); ctx.fillRect(sx+12,sy-10+frameOff,1,1);
+      // Eyes (narrowed)
+      ctx.fillStyle='#1e1008';
+      ctx.fillRect(sx+5, sy+4+frameOff, 3, 2);
+      ctx.fillRect(sx+e.w-8, sy+4+frameOff, 3, 2);
+      // Beard (full dark)
+      ctx.fillStyle='#2a1808';
+      ctx.fillRect(sx+5, sy+9+frameOff, 12, 3);
+      ctx.fillStyle='#1e1008'; ctx.fillRect(sx+6,sy+11+frameOff,10,1);
+      // Gold tooth
+      if (!hitFlash) { ctx.fillStyle='#c9a227'; ctx.fillRect(sx+10,sy+9+frameOff,2,1); }
+      // Large cutlass
+      ctx.fillStyle='#8c8c8c';
+      ctx.fillRect(sx+e.w+2, sy+8+frameOff, 3, 24);
+      ctx.fillStyle='#aaa'; ctx.fillRect(sx+e.w+2,sy+8+frameOff,1,22); // blade edge
+      ctx.fillStyle='#8a0808'; ctx.fillRect(sx+e.w+1, sy+18+frameOff, 5, 2); // guard
+      ctx.fillStyle='#c9a227'; ctx.fillRect(sx+e.w-1, sy+8+frameOff, 6, 3); // gold pommel
+      ctx.fillStyle='#3a2010'; ctx.fillRect(sx+e.w+3, sy+11+frameOff, 1, 10); // grip
+      // Legs (dark leather boots)
+      const lwC=Math.sin(G.frame*0.22)*2;
+      ctx.fillStyle='#181010';
+      ctx.fillRect(sx+4, sy+e.h-3+lwC, 6, 9); ctx.fillRect(sx+e.w-10, sy+e.h-3-lwC, 6, 9);
+      // Boot buckles
+      ctx.fillStyle='#d4af37';
+      ctx.fillRect(sx+7, sy+e.h+3+lwC, 2, 2); ctx.fillRect(sx+e.w-7, sy+e.h+3-lwC, 2, 2);
 
     } else if (e.type === 'bandit') {
-      // Body with cloak
-      ctx.fillStyle = hitFlash?'#fff':'#2c3e50';
+      // Body (midnight cloak, assassin look)
+      ctx.fillStyle = hitFlash?'#fff':'#1a2530';
       ctx.fillRect(sx+2, sy+9+frameOff, e.w-4, e.h-9);
-      ctx.fillStyle='#1a252f';
-      ctx.fillRect(sx, sy+12+frameOff, 4, e.h-14); // cloak left
-      ctx.fillRect(sx+e.w-4, sy+12+frameOff, 4, e.h-14); // cloak right
+      // Chest armor hint
+      if (!hitFlash) {
+        ctx.fillStyle='#22303c'; ctx.fillRect(sx+3,sy+10+frameOff,4,10);
+        ctx.fillStyle='#283848'; ctx.fillRect(sx+4,sy+11+frameOff,2,8);
+      }
+      // Dark side cloaks
+      ctx.fillStyle='#0e141a';
+      ctx.fillRect(sx, sy+12+frameOff, 4, e.h-14);
+      ctx.fillRect(sx+e.w-4, sy+12+frameOff, 4, e.h-14);
       // Head
-      ctx.fillStyle='#f0c090';
+      ctx.fillStyle='#d4a870';
       ctx.fillRect(sx+4, sy+frameOff, e.w-8, 11);
-      // Bandana
-      ctx.fillStyle='#c0392b';
+      // Blood-red bandana (more detailed)
+      ctx.fillStyle='#8b1a1a';
       ctx.fillRect(sx+3, sy+3+frameOff, e.w-6, 5);
-      // Eye slit
-      ctx.fillStyle='#2a1a0a';
+      ctx.fillStyle='#a02020'; ctx.fillRect(sx+3,sy+3+frameOff,e.w-6,1); // bandana fold
+      // Eye slit (menacing)
+      ctx.fillStyle='#160e06';
       ctx.fillRect(sx+5, sy+5+frameOff, 3, 2);
       ctx.fillRect(sx+e.w-8, sy+5+frameOff, 3, 2);
-      // Sword
-      ctx.fillStyle='#95a5a6';
+      // Eye glint
+      ctx.fillStyle='#604020'; ctx.fillRect(sx+5,sy+5+frameOff,1,1); ctx.fillRect(sx+e.w-8,sy+5+frameOff,1,1);
+      // Short sword (rogue blade)
+      ctx.fillStyle='#7a8888';
       ctx.fillRect(sx+e.w+1, sy+9+frameOff, 3, 18);
-      ctx.fillStyle='#c9a227'; ctx.fillRect(sx+e.w-1, sy+8+frameOff, 7, 3);
-      ctx.fillStyle='#3a2010'; ctx.fillRect(sx+e.w+2, sy+10+frameOff, 1, 8);
+      ctx.fillStyle='#9aacac'; ctx.fillRect(sx+e.w+1,sy+9+frameOff,1,16); // blade edge
+      ctx.fillStyle='#9a7818'; ctx.fillRect(sx+e.w-1, sy+8+frameOff, 7, 3); // gold guard
+      ctx.fillStyle='#241406'; ctx.fillRect(sx+e.w+2, sy+11+frameOff, 1, 8); // grip
       // Legs
       const lw3=Math.sin(G.frame*0.25)*2;
-      ctx.fillStyle='#2c3e50';
+      ctx.fillStyle='#1a2530';
       ctx.fillRect(sx+4, sy+e.h-3+lw3, 5, 8); ctx.fillRect(sx+e.w-9, sy+e.h-3-lw3, 5, 8);
+      // Boots (dark)
+      ctx.fillStyle='#0e1218';
+      ctx.fillRect(sx+3,sy+e.h+3+lw3,7,3); ctx.fillRect(sx+e.w-10,sy+e.h+3-lw3,7,3);
+      // Belt and buckle
+      ctx.fillStyle='#364850'; ctx.fillRect(sx+2,sy+e.h-5+frameOff,e.w-4,2);
+      ctx.fillStyle='#7a8888'; ctx.fillRect(sx+e.w/2-2,sy+e.h-5+frameOff,4,2);
       // Boss-buff aura: red glow when near bandit_boss
       if (e._bossBuffed) {
         const bp = 0.3 + 0.3*Math.abs(Math.sin(G.frame * 0.18));
@@ -4009,36 +4816,71 @@ function drawEnemies() {
       }
 
     } else if (e.type === 'andreon') {
-      // Giant square boar boss
-      ctx.fillStyle = hitFlash?'#fff':'#4a1a00';
+      // Giant boar boss — almost-black hide, layered bone armor
+      ctx.fillStyle = hitFlash?'#fff':'#2c0c00';
       ctx.fillRect(sx, sy+frameOff, e.w, e.h);
-      // Armor plates
-      ctx.fillStyle='#2a0a00';
+      // Armor plates (obsidian-dark)
+      ctx.fillStyle='#180400';
       ctx.fillRect(sx+4, sy+4+frameOff, e.w-8, 6); // back plate
       ctx.fillRect(sx+4, sy+e.h-10+frameOff, e.w-8, 6); // belly plate
-      // Hide texture
-      ctx.fillStyle='#6a2a00';
+      // Plate rivets
+      if (!hitFlash) {
+        ctx.fillStyle='#5a2000';
+        for(let rv=0;rv<4;rv++) ctx.fillRect(sx+7+rv*10, sy+5+frameOff, 2, 2);
+        for(let rv=0;rv<4;rv++) ctx.fillRect(sx+7+rv*10, sy+e.h-9+frameOff, 2, 2);
+      }
+      // Hide battle-scar texture
+      ctx.fillStyle='#481800';
       ctx.fillRect(sx+8, sy+8+frameOff, 10, 10);
       ctx.fillRect(sx+e.w-18, sy+8+frameOff, 10, 10);
       ctx.fillRect(sx+8, sy+e.h-20+frameOff, 8, 8);
-      // Tusks
-      ctx.fillStyle='#f0e0b0';
+      // Hide highlight center
+      if (!hitFlash) {
+        ctx.fillStyle='#3a1000'; ctx.fillRect(sx+e.w/2-8,sy+14+frameOff,16,8); }
+      // Tusks (aged bone)
+      ctx.fillStyle='#d8cc80';
       ctx.fillRect(sx+2, sy+8+frameOff, 8, 5);
       ctx.fillRect(sx+e.w-10, sy+8+frameOff, 8, 5);
-      // Eyes glow
-      ctx.fillStyle='#f00'; ctx.shadowColor='#f00'; ctx.shadowBlur=10;
+      // Tusk tips (darker)
+      ctx.fillStyle='#a09040';
+      ctx.fillRect(sx+2, sy+11+frameOff, 3, 2);
+      ctx.fillRect(sx+e.w-5, sy+11+frameOff, 3, 2);
+      // Tusk inner shadow
+      ctx.fillStyle='#1e0a00';
+      ctx.fillRect(sx+5, sy+10+frameOff, 4, 1);
+      ctx.fillRect(sx+e.w-9, sy+10+frameOff, 4, 1);
+      // Eyes glow (angry inferno)
+      ctx.fillStyle='#dd0000'; ctx.shadowColor='#ff2000'; ctx.shadowBlur=14;
       ctx.fillRect(sx+10, sy+10+frameOff, 7, 7);
       ctx.fillRect(sx+e.w-17, sy+10+frameOff, 7, 7);
       ctx.shadowBlur=0;
-      ctx.fillStyle='#300'; ctx.fillRect(sx+12,sy+12+frameOff,3,3); ctx.fillRect(sx+e.w-15,sy+12+frameOff,3,3);
+      ctx.fillStyle='#400'; ctx.fillRect(sx+12,sy+12+frameOff,3,3); ctx.fillRect(sx+e.w-15,sy+12+frameOff,3,3);
+      // Scar marks
+      ctx.fillStyle = '#1a0500';
+      ctx.fillRect(sx+20, sy+18+frameOff, 8, 1);
+      ctx.fillRect(sx+34, sy+26+frameOff, 10, 1);
+      ctx.fillRect(sx+22, sy+19+frameOff, 6, 1);
+      // Nostrils
+      ctx.fillStyle='#0e0200';
+      ctx.fillRect(sx+14, sy+20+frameOff, 3, 3);
+      ctx.fillRect(sx+e.w-17, sy+20+frameOff, 3, 3);
       // Legs massive
       const lw4=Math.sin(G.frame*0.18)*3;
-      ctx.fillStyle='#3a1000';
+      ctx.fillStyle='#1e0800';
       ctx.fillRect(sx+4, sy+e.h-2+lw4,10,10); ctx.fillRect(sx+16, sy+e.h-2-lw4,10,10);
       ctx.fillRect(sx+e.w-26, sy+e.h-2-lw4,10,10); ctx.fillRect(sx+e.w-14, sy+e.h-2+lw4,10,10);
-      // Boss aura
-      ctx.strokeStyle='rgba(180,0,0,0.3)'; ctx.lineWidth=3;
+      // Hoof bottoms
+      ctx.fillStyle='#0a0200';
+      ctx.fillRect(sx+4,sy+e.h+7+lw4,10,2); ctx.fillRect(sx+16,sy+e.h+7-lw4,10,2);
+      ctx.fillRect(sx+e.w-26,sy+e.h+7-lw4,10,2); ctx.fillRect(sx+e.w-14,sy+e.h+7+lw4,10,2);
+      // Boss aura (intense red pulse)
+      const aurA = 0.3 + 0.2*Math.abs(Math.sin(G.frame*0.05));
+      ctx.strokeStyle=`rgba(200,0,0,${aurA})`; ctx.lineWidth=4;
       ctx.strokeRect(sx-3, sy-3+frameOff, e.w+6, e.h+6);
+      if (!hitFlash) {
+        ctx.fillStyle=`rgba(180,0,0,${aurA*0.08})`;
+        ctx.fillRect(sx-3, sy-3+frameOff, e.w+6, e.h+6);
+      }
       // Charge windup: red pulsing glow
       if (e.chargePhase === 'windup') {
         const windupPulse = 0.4 + 0.6*Math.abs(Math.sin(G.frame * 0.25));
@@ -4067,60 +4909,110 @@ function drawEnemies() {
 
     } else if (e.type === 'bandit_boss') {
       const bf = frameOff;
-      // Cape
-      ctx.fillStyle='#4a0a6a';
+      // Royal cape (deep shadow-purple)
+      ctx.fillStyle='#2e0640';
       ctx.fillRect(sx-3, sy+8+bf, e.w+6, e.h);
-      // Body
-      ctx.fillStyle = hitFlash?'#fff':'#1a0a2a';
+      // Cape highlight fold
+      if (!hitFlash) { ctx.fillStyle='#420858'; ctx.fillRect(sx-2,sy+10+bf,4,e.h-4); }
+      // Cape gold edge
+      ctx.fillStyle='#a07810'; ctx.fillRect(sx-3,sy+9+bf,1,e.h-2); ctx.fillRect(sx+e.w+2,sy+9+bf,1,e.h-2);
+      // Body (near-void dark)
+      ctx.fillStyle = hitFlash?'#fff':'#100418';
       ctx.fillRect(sx+2, sy+10+bf, e.w-4, e.h-12);
-      // Chest plate
-      ctx.fillStyle='#2a1a4a';
+      // Chest plate (layered dark cobalt)
+      ctx.fillStyle='#1a1030';
       ctx.fillRect(sx+3, sy+12+bf, e.w-6, 12);
-      ctx.fillStyle='#c9a227'; // gold trim
+      ctx.fillStyle='#241840'; // chest plate face
+      ctx.fillRect(sx+4, sy+13+bf, e.w-8, 10);
+      // Chest gold trim (aged)
+      ctx.fillStyle='#a07810';
       ctx.fillRect(sx+3, sy+12+bf, e.w-6, 2);
       ctx.fillRect(sx+3, sy+22+bf, e.w-6, 2);
-      // Head
-      ctx.fillStyle='#f0c090';
+      // Chest emblem
+      if (!hitFlash) {
+        ctx.fillStyle='#7a5808'; ctx.fillRect(sx+e.w/2-3,sy+15+bf,6,5); // tome/sigil
+        ctx.fillStyle='#c9a020'; ctx.fillRect(sx+e.w/2-2,sy+16+bf,4,3);
+      }
+      // Head (pale noble)
+      ctx.fillStyle='#e8c078';
       ctx.fillRect(sx+4, sy+bf, e.w-8, 12);
-      // Crown
-      ctx.fillStyle='#2c1a4a';
+      if (!hitFlash) { ctx.fillStyle='#c0a060'; ctx.fillRect(sx+e.w-7,sy+2+bf,3,8); } // face shadow
+      // Crown (deep obsidian with gems)
+      ctx.fillStyle='#180c2c';
       ctx.fillRect(sx+1, sy-5+bf, e.w-2, 8);
-      ctx.fillStyle='#c9a227';
-      ctx.fillRect(sx+4, sy-8+bf, 5, 6); ctx.fillRect(sx+e.w/2-3, sy-10+bf, 5, 8); ctx.fillRect(sx+e.w-9, sy-8+bf, 5, 6);
-      // Gems in crown
-      ctx.fillStyle='#e74c3c'; ctx.fillRect(sx+5,sy-7+bf,3,3);
-      ctx.fillStyle='#3498db'; ctx.fillRect(sx+e.w/2-2,sy-9+bf,3,3);
-      ctx.fillStyle='#2ecc71'; ctx.fillRect(sx+e.w-8,sy-7+bf,3,3);
-      // Eyes glowing
-      ctx.fillStyle='#f0d060'; ctx.shadowColor='#f0d060'; ctx.shadowBlur=8;
+      ctx.fillStyle='#241440'; // crown face
+      ctx.fillRect(sx+2, sy-4+bf, e.w-4, 6);
+      // Crown spires
+      ctx.fillStyle='#180c2c';
+      ctx.fillRect(sx+4, sy-8+bf, 5, 6); ctx.fillRect(sx+e.w/2-3, sy-11+bf, 5, 9); ctx.fillRect(sx+e.w-9, sy-8+bf, 5, 6);
+      // Crown gold trim
+      ctx.fillStyle='#a07810';
+      ctx.fillRect(sx+1,sy-5+bf,e.w-2,1);
+      ctx.fillRect(sx+4,sy-8+bf,5,1); ctx.fillRect(sx+e.w/2-3,sy-11+bf,5,1); ctx.fillRect(sx+e.w-9,sy-8+bf,5,1);
+      // Gems in crown (deep cut)
+      ctx.fillStyle='#cc1a1a'; ctx.fillRect(sx+5,sy-7+bf,3,3);  // ruby
+      ctx.fillStyle='#180066'; ctx.fillRect(sx+5,sy-7+bf,1,1);   // ruby pupil
+      ctx.fillStyle='#1a6bbf'; ctx.fillRect(sx+e.w/2-2,sy-9+bf,3,3); // sapphire
+      ctx.fillStyle='#80c0ff'; ctx.fillRect(sx+e.w/2-1,sy-8+bf,1,1); // sapphire light
+      ctx.fillStyle='#149a48'; ctx.fillRect(sx+e.w-8,sy-7+bf,3,3);  // emerald
+      ctx.fillStyle='#80ff80'; ctx.fillRect(sx+e.w-7,sy-6+bf,1,1);  // emerald glint
+      // Eyes glowing (deep amber)
+      ctx.fillStyle='#d4a820'; ctx.shadowColor='#f0c830'; ctx.shadowBlur=10;
       ctx.fillRect(sx+5, sy+4+bf, 3, 3); ctx.fillRect(sx+e.w-8, sy+4+bf, 3, 3);
       ctx.shadowBlur=0;
-      // Bow / weapon
-      ctx.strokeStyle='#8b4513'; ctx.lineWidth=2;
+      ctx.fillStyle='#1a0800'; ctx.fillRect(sx+6,sy+5+bf,1,1); ctx.fillRect(sx+e.w-7,sy+5+bf,1,1);
+      // Bow / weapon (dark ebony wood with taut string)
+      ctx.strokeStyle='#3d1a08'; ctx.lineWidth=2.5;
       ctx.beginPath(); ctx.arc(sx+e.w+8, sy+e.h/2+bf, 12, -Math.PI*0.7, Math.PI*0.7); ctx.stroke();
-      ctx.strokeStyle='#ddd'; ctx.lineWidth=1;
+      ctx.strokeStyle='#8b6440'; ctx.lineWidth=1; // wood grain
+      ctx.beginPath(); ctx.arc(sx+e.w+8, sy+e.h/2+bf, 12, -Math.PI*0.5, Math.PI*0.5); ctx.stroke();
+      ctx.strokeStyle='#d4c8a0'; ctx.lineWidth=1; // taut string
       ctx.beginPath(); ctx.moveTo(sx+e.w+8,sy+e.h/2-12+bf); ctx.lineTo(sx+e.w+8,sy+e.h/2+12+bf); ctx.stroke();
-      // Boss aura
-      ctx.strokeStyle='rgba(180,0,255,0.25)'; ctx.lineWidth=4;
+      // Boss aura (deep arcane purple)
+      ctx.strokeStyle='rgba(120,0,200,0.4)'; ctx.lineWidth=4;
       ctx.strokeRect(sx-4, sy-6+bf, e.w+8, e.h+10);
+      // Arcane rune pixels
+      ctx.fillStyle='rgba(200,100,255,0.6)';
+      const rp = Math.floor((G.frame*0.3)%6);
+      ctx.fillRect(sx-6-rp, sy+8+bf, 2, 2);
+      ctx.fillRect(sx+e.w+4+rp, sy+16+bf, 2, 2);
+      ctx.fillRect(sx+e.w/2-1, sy-12+bf-rp, 2, 2);
+      // Floating dark sparks
+      if (!hitFlash) {
+        ctx.fillStyle='rgba(180,60,255,0.45)';
+        const sp=Math.floor((G.frame*0.4)%8);
+        ctx.fillRect(sx+sp, sy-4+bf, 1, 1);
+        ctx.fillRect(sx+e.w-4-sp, sy-2+bf, 1, 1);
+      }
 
     } else if (e.type === 'verdugo') {
       const vf = frameOff;
-      // ---- Red cape behind ----
-      ctx.fillStyle = hitFlash ? '#faa' : '#6a0000';
+      // ---- Red cape behind (blood-soaked) ----
+      ctx.fillStyle = hitFlash ? '#faa' : '#4e0000';
       ctx.fillRect(sx - 4, sy + 6 + vf, e.w + 8, e.h - 2);
-      // ---- Main body armor (dark steel) ----
-      ctx.fillStyle = hitFlash ? '#fff' : '#455A64';
+      // Cape edge highlight
+      if (!hitFlash) {
+        ctx.fillStyle='#6a0000'; ctx.fillRect(sx-4,sy+8+vf,2,e.h-4);
+        ctx.fillStyle='#360000'; ctx.fillRect(sx+e.w+2,sy+8+vf,2,e.h-4);
+      }
+      // ---- Main body armor (night steel) ----
+      ctx.fillStyle = hitFlash ? '#fff' : '#283640';
       ctx.fillRect(sx + 2, sy + 8 + vf, e.w - 4, e.h - 10);
-      // ---- Chest plate (lighter steel) ----
-      ctx.fillStyle = hitFlash ? '#ddd' : '#607D8B';
+      // Armor highlight face
+      if (!hitFlash) { ctx.fillStyle='#324450'; ctx.fillRect(sx+3,sy+9+vf,5,e.h-12); }
+      // ---- Chest plate (polished inquisitor steel) ----
+      ctx.fillStyle = hitFlash ? '#ddd' : '#3a5060';
       ctx.fillRect(sx + 4, sy + 10 + vf, e.w - 8, 16);
-      // ---- Sun emblem on chest (gold circle + 8 rays) ----
+      ctx.fillStyle = hitFlash ? '#fff' : '#4a6070'; // chest highlight
+      ctx.fillRect(sx + 5, sy + 11 + vf, 5, 14);
+      // ---- Sun emblem on chest ----
       if (!hitFlash) {
         const sunCx = sx + e.w / 2, sunCy = sy + 17 + vf;
-        ctx.fillStyle = '#f0c030';
+        ctx.fillStyle = '#c8a018';
         ctx.beginPath(); ctx.arc(sunCx, sunCy, 5, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#f0c030'; ctx.lineWidth = 1.5;
+        ctx.fillStyle = '#e8c030'; // bright sun center
+        ctx.beginPath(); ctx.arc(sunCx, sunCy, 2, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#c8a018'; ctx.lineWidth = 1.5;
         for (let _r = 0; _r < 8; _r++) {
           const _a = (_r / 8) * Math.PI * 2;
           ctx.beginPath();
@@ -4129,39 +5021,69 @@ function drawEnemies() {
           ctx.stroke();
         }
       }
-      // ---- Red trim ----
-      ctx.fillStyle = hitFlash ? '#faa' : '#c0392b';
-      ctx.fillRect(sx + 2, sy + 8  + vf, e.w - 4, 2); // shoulder trim
-      ctx.fillRect(sx + 2, sy + e.h - 10 + vf, e.w - 4, 2); // waist trim
-      // ---- Shoulder pauldrons ----
-      ctx.fillStyle = hitFlash ? '#fff' : '#37474F';
+      // ---- Red trim (inquisition blood) ----
+      ctx.fillStyle = hitFlash ? '#faa' : '#8a1c10';
+      ctx.fillRect(sx + 2, sy + 8  + vf, e.w - 4, 2);
+      ctx.fillRect(sx + 2, sy + e.h - 10 + vf, e.w - 4, 2);
+      // ---- Shoulder pauldrons (very dark, imposing) ----
+      ctx.fillStyle = hitFlash ? '#fff' : '#222c32';
       ctx.fillRect(sx - 5, sy + 8 + vf, 9, 10);
       ctx.fillRect(sx + e.w - 4, sy + 8 + vf, 9, 10);
-      ctx.fillStyle = '#c0392b';
+      // Pauldron highlight
+      if (!hitFlash) {
+        ctx.fillStyle='#2e3c44'; ctx.fillRect(sx-4,sy+9+vf,3,8);
+        ctx.fillStyle='#2e3c44'; ctx.fillRect(sx+e.w-3,sy+9+vf,3,8);
+      }
+      ctx.fillStyle = '#8a1c10'; // red trim on pauldrons
       ctx.fillRect(sx - 5, sy + 8 + vf, 9, 2);
       ctx.fillRect(sx + e.w - 4, sy + 8 + vf, 9, 2);
-      // ---- Helmet ----
-      ctx.fillStyle = hitFlash ? '#fff' : '#37474F';
+      // ---- Helmet (full face, inquisitor style) ----
+      ctx.fillStyle = hitFlash ? '#fff' : '#222c32';
       ctx.fillRect(sx + 3, sy + vf, e.w - 6, 11);
-      ctx.fillStyle = hitFlash ? '#faa' : '#c0392b'; // visor slit
+      // Helmet highlight side
+      if (!hitFlash) { ctx.fillStyle='#2e3c44'; ctx.fillRect(sx+4,sy+1+vf,4,9); }
+      ctx.fillStyle = hitFlash ? '#faa' : '#8a1c10'; // visor slit (dark blood)
       ctx.fillRect(sx + 5, sy + 3 + vf, e.w - 10, 4);
-      ctx.fillStyle = hitFlash ? '#fff' : '#455A64'; // top ridge
+      ctx.fillStyle='#0e0000'; // visor inner shadow
+      ctx.fillRect(sx+6, sy+4+vf, e.w-12, 2);
+      ctx.fillStyle = hitFlash ? '#fff' : '#2c3840'; // top ridge
       ctx.fillRect(sx + 7, sy - 3 + vf, e.w - 14, 6);
-      // ---- Red plume ----
+      // ---- Red plume (dark crimson with bright flicker tips) ----
       if (!hitFlash) {
-        ctx.fillStyle = '#8b0000';
+        ctx.fillStyle = '#550000';
         for (let _p2 = 0; _p2 < 5; _p2++) {
-          ctx.fillRect(sx + 9 + _p2 * 3, sy - 9 + vf + Math.sin(G.frame * 0.15 + _p2) * 2, 2, 8);
+          ctx.fillRect(sx + 9 + _p2 * 3, sy - 10 + vf + Math.sin(G.frame * 0.15 + _p2) * 2, 2, 9);
+        }
+        ctx.fillStyle = '#880000';
+        for (let _p2 = 0; _p2 < 5; _p2++) {
+          ctx.fillRect(sx + 9 + _p2 * 3, sy - 8 + vf + Math.sin(G.frame * 0.15 + _p2) * 2, 1, 5);
+        }
+        ctx.fillStyle = '#cc2020';
+        for (let _p2 = 0; _p2 < 5; _p2++) {
+          ctx.fillRect(sx + 10 + _p2 * 3, sy - 10 + vf + Math.sin(G.frame * 0.15 + _p2) * 2, 1, 2);
         }
       }
       // ---- Armored legs ----
       const _lv = Math.sin(G.frame * 0.18) * 2;
-      ctx.fillStyle = hitFlash ? '#fff' : '#455A64';
+      ctx.fillStyle = hitFlash ? '#fff' : '#283640';
       ctx.fillRect(sx + 4,        sy + e.h - 7 + _lv + vf, 9, 12);
       ctx.fillRect(sx + e.w - 13, sy + e.h - 7 - _lv + vf, 9, 12);
-      ctx.fillStyle = '#c0392b'; // knee guards
+      // Leg highlight
+      if (!hitFlash) {
+        ctx.fillStyle='#324450';
+        ctx.fillRect(sx+5,sy+e.h-6+_lv+vf,3,10);
+        ctx.fillRect(sx+e.w-12,sy+e.h-6-_lv+vf,3,10);
+      }
+      ctx.fillStyle = '#8a1c10'; // knee guards (dark blood red)
       ctx.fillRect(sx + 4,        sy + e.h - 9 + vf, 9, 3);
       ctx.fillRect(sx + e.w - 13, sy + e.h - 9 + vf, 9, 3);
+      // Chainmail hint (darker)
+      ctx.fillStyle = '#3e4e58';
+      for (let cy = 0; cy < 3; cy++) {
+        ctx.fillRect(sx+7,  sy+15+vf+cy*3, 1, 1);
+        ctx.fillRect(sx+12, sy+16+vf+cy*3, 1, 1);
+        ctx.fillRect(sx+17, sy+15+vf+cy*3, 1, 1);
+      }
       // ---- Sword (right side) ---- (hidden when thrown)
       if (e.hasSword !== false) {
         ctx.fillStyle = hitFlash ? '#fff' : '#bdc3c7';
@@ -4208,6 +5130,25 @@ function drawEnemies() {
         ctx.globalAlpha = 1;
       }
     }
+
+    // Shared readability pass for enemies (no hitbox-like rectangle).
+    ctx.fillStyle = 'rgba(255,255,255,0.12)';
+    ctx.fillRect(sx+2, sy+2+frameOff, Math.max(2, e.w-4), 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.16)';
+    ctx.fillRect(sx+2, sy+e.h-2+frameOff, Math.max(2, e.w-4), 1);
+
+    // Type accents to make enemies feel less flat.
+    if (e.type === 'boar' || e.type === 'bull' || e.type === 'andreon') {
+      ctx.fillStyle = '#2b1200';
+      ctx.fillRect(sx+Math.max(2, e.w-8), sy+Math.floor(e.h*0.45)+frameOff, 3, 1);
+    }
+    if (e.type === 'pirate' || e.type === 'pirate_captain' || e.type === 'bandit' || e.type === 'bandit_boss' || e.type === 'verdugo') {
+      ctx.fillStyle = '#c9a227';
+      ctx.fillRect(sx+Math.floor(e.w/2)-1, sy+Math.max(2, Math.floor(e.h*0.3))+frameOff, 2, 2);
+    }
+    // Subtle dithering line for sprite volume.
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    for (let dx = 3; dx < e.w-2; dx += 4) ctx.fillRect(sx+dx, sy+Math.floor(e.h*0.55)+frameOff, 1, 1);
 
     // HP bar
     const barW = e.w + 12;
@@ -4283,6 +5224,7 @@ function drawNPCs() {
 
 function drawNPCSprite(npc, sx, sy) {
   const sprite = npc.sprite || 'person';
+  const blink = (Math.floor((G.frame + (npc.x||0)*0.3) * 0.08) % 70) === 0;
 
   // ---- COW ----
   if (sprite === 'cow') {
@@ -4290,43 +5232,67 @@ function drawNPCSprite(npc, sx, sy) {
     // Shadow
     ctx.fillStyle='rgba(0,0,0,0.2)';
     ctx.beginPath(); ctx.ellipse(sx+13,sy+29+bob,12,3,0,0,Math.PI*2); ctx.fill();
-    // Body
-    ctx.fillStyle='#8b5e28';
+    // Body - rich hide
+    ctx.fillStyle='#7a5020';
     ctx.fillRect(sx+2, sy+10+bob, 22, 14);
-    // White patches
-    ctx.fillStyle='#e8ddd0';
-    ctx.fillRect(sx+5, sy+11+bob, 6, 5);
-    ctx.fillRect(sx+15, sy+16+bob, 5, 4);
-    // Head
-    ctx.fillStyle='#7a4e20';
+    // Body highlight top
+    ctx.fillStyle='#9a6a30'; ctx.fillRect(sx+3, sy+10+bob, 20, 2);
+    // Body shadow bottom
+    ctx.fillStyle='#5a3810'; ctx.fillRect(sx+3, sy+21+bob, 20, 2);
+    // White patches (irregular)
+    ctx.fillStyle='#e0d4c0';
+    ctx.fillRect(sx+4, sy+11+bob, 7, 5);
+    ctx.fillRect(sx+14, sy+16+bob, 6, 4);
+    ctx.fillRect(sx+10, sy+12+bob, 3, 3);
+    // Head - darker snout
+    ctx.fillStyle='#6a4018';
     ctx.fillRect(sx+20, sy+7+bob, 12, 10);
+    // Head highlight
+    ctx.fillStyle='#7a5020'; ctx.fillRect(sx+21, sy+7+bob, 3, 8);
     // Snout
-    ctx.fillStyle='#c88060';
+    ctx.fillStyle='#b87050';
     ctx.fillRect(sx+28, sy+11+bob, 5, 5);
-    ctx.fillStyle='#6a2a10'; ctx.fillRect(sx+29,sy+12+bob,2,2); ctx.fillRect(sx+31,sy+12+bob,2,2);
-    // Eye
-    ctx.fillStyle='#1a0a00';
+    ctx.fillStyle='#885040'; ctx.fillRect(sx+29,sy+11+bob,5,2); // snout top shade
+    ctx.fillStyle='#5a2a10'; ctx.fillRect(sx+29,sy+12+bob,2,2); ctx.fillRect(sx+31,sy+12+bob,2,2);
+    // Eye with reflection
+    ctx.fillStyle='#100800';
     ctx.fillRect(sx+22, sy+8+bob, 3, 3);
     ctx.fillStyle='#fff'; ctx.fillRect(sx+22,sy+8+bob,1,1);
-    // Ears
-    ctx.fillStyle='#c88060';
+    ctx.fillStyle='#604020'; ctx.fillRect(sx+24,sy+9+bob,1,1); // iris
+    // Ears (inner pink)
+    ctx.fillStyle='#b07050';
     ctx.fillRect(sx+22, sy+5+bob, 4, 5);
     ctx.fillRect(sx+28, sy+5+bob, 4, 5);
-    // Horns
-    ctx.fillStyle='#d4b860';
+    ctx.fillStyle='#e09070'; ctx.fillRect(sx+23,sy+6+bob,2,3); ctx.fillRect(sx+29,sy+6+bob,2,3); // inner ear
+    // Horns (aged)
+    ctx.fillStyle='#c0a840';
     ctx.fillRect(sx+23, sy+3+bob, 2, 5);
     ctx.fillRect(sx+29, sy+3+bob, 2, 5);
+    ctx.fillStyle='#a08830'; ctx.fillRect(sx+24,sy+3+bob,1,4); ctx.fillRect(sx+30,sy+3+bob,1,4);
     // Legs
     const lw=Math.sin(G.frame*0.1+(npc.x||0))*2;
-    ctx.fillStyle='#6a3e18';
+    ctx.fillStyle='#5a3410';
     ctx.fillRect(sx+3,  sy+22+bob+lw, 5, 8);
     ctx.fillRect(sx+10, sy+22+bob-lw, 5, 8);
     ctx.fillRect(sx+17, sy+22+bob-lw, 5, 8);
     ctx.fillRect(sx+24, sy+22+bob+lw, 5, 8);
+    // Hooves
+    ctx.fillStyle='#281808';
+    ctx.fillRect(sx+3,  sy+28+bob+lw, 5, 3);
+    ctx.fillRect(sx+10, sy+28+bob-lw, 5, 3);
+    ctx.fillRect(sx+17, sy+28+bob-lw, 5, 3);
+    ctx.fillRect(sx+24, sy+28+bob+lw, 5, 3);
     // Tail
-    ctx.fillStyle='#8b5e28';
-    ctx.fillRect(sx,sy+10+bob,3,6);
-    ctx.fillStyle='#f0e0c0'; ctx.fillRect(sx-2,sy+15+bob,5,4);
+    ctx.fillStyle='#7a5020';
+    ctx.fillRect(sx,sy+10+bob,3,8);
+    ctx.fillStyle='#c8b080'; ctx.fillRect(sx-3,sy+17+bob,5,5); // tail tuft
+    ctx.fillStyle='#e0c898'; ctx.fillRect(sx-2,sy+17+bob,3,3);
+    // Coat texture details
+    ctx.fillStyle='#604018';
+    ctx.fillRect(sx+8, sy+14+bob, 4, 2);
+    ctx.fillRect(sx+18, sy+12+bob, 3, 2);
+    ctx.fillStyle='rgba(255,255,255,0.12)';
+    ctx.fillRect(sx+5, sy+10+bob, 6, 1); // coat sheen
     return;
   }
 
@@ -4338,16 +5304,17 @@ function drawNPCSprite(npc, sx, sy) {
 
   let bodyCol='#888', headCol='#f0c090', pantCol='#555', special=null;
   switch(sprite) {
-    case 'person_sick':   bodyCol='#8b8b8b'; headCol='#e0b080'; pantCol='#446'; break;
-    case 'person_doctor': bodyCol='#f0f0f0'; headCol='#f0c090'; special='doctor'; pantCol='#336'; break;
-    case 'old_man':       bodyCol='#708090'; headCol='#d0a880'; special='old';   pantCol='#445'; break;
-    case 'merchant':      bodyCol='#c8602a'; headCol='#f0c090'; special='merchant'; pantCol='#333'; break;
-    case 'merchant2':     bodyCol='#2a60c8'; headCol='#f0c090'; special='merchant'; pantCol='#224'; break;
-    case 'person2':       bodyCol='#4a8a2f'; headCol='#d8a060'; pantCol='#355'; break;
-    case 'person3':       bodyCol='#8a2f4a'; headCol='#f4c090'; pantCol='#644'; break;
-    case 'golden_guard':  bodyCol='#c9a227'; headCol='#c9a227'; special='golden'; pantCol='#865'; break;
-    case 'guard_npc':     bodyCol='#5a6070'; headCol='#c0c0c0'; special='guard'; pantCol='#334'; break;
-    default:              bodyCol='#607080'; headCol='#f0c090'; pantCol='#445'; break;
+    case 'person_sick':   bodyCol='#7a6a5a'; headCol='#c89860'; pantCol='#353050'; break;
+    case 'person_doctor': bodyCol='#e8e8e8'; headCol='#e0b880'; special='doctor'; pantCol='#283050'; break;
+    case 'old_man':       bodyCol='#5e6a72'; headCol='#c89870'; special='old';   pantCol='#3a3848'; break;
+    case 'merchant':      bodyCol='#a04a18'; headCol='#e8b070'; special='merchant'; pantCol='#2a1a10'; break;
+    case 'merchant2':     bodyCol='#1a4a9a'; headCol='#e8b070'; special='merchant'; pantCol='#14203a'; break;
+    case 'person2':       bodyCol='#3a7024'; headCol='#c89050'; pantCol='#243820'; break;
+    case 'person3':       bodyCol='#782038'; headCol='#e8b070'; pantCol='#50282a'; break;
+    case 'hunter':        bodyCol='#3e5222'; headCol='#c88858'; special='hunter'; pantCol='#2a3418'; break;
+    case 'golden_guard':  bodyCol='#b88a1a'; headCol='#e8c060'; special='golden'; pantCol='#6a5020'; break;
+    case 'guard_npc':     bodyCol='#485460'; headCol='#a8a8a8'; special='guard'; pantCol='#282c38'; break;
+    default:              bodyCol='#4e5a68'; headCol='#e8b070'; pantCol='#38404e'; break;
   }
   const hiCol2 = lightenHex(bodyCol, 35);
   const shCol2 = darkenHex(bodyCol, 35);
@@ -4381,41 +5348,171 @@ function drawNPCSprite(npc, sx, sy) {
   ctx.fillRect(sx+4, sy+bob2, 12, 10);
   // Eyes
   ctx.fillStyle='#1a0a00';
-  ctx.fillRect(sx+6, sy+4+bob2, 2, 2);
-  ctx.fillRect(sx+12, sy+4+bob2, 2, 2);
-  ctx.fillStyle='#fff'; ctx.fillRect(sx+6,sy+4+bob2,1,1); ctx.fillRect(sx+12,sy+4+bob2,1,1);
+  if (!blink) {
+    ctx.fillRect(sx+6, sy+4+bob2, 2, 2);
+    ctx.fillRect(sx+12, sy+4+bob2, 2, 2);
+    ctx.fillStyle='#fff'; ctx.fillRect(sx+6,sy+4+bob2,1,1); ctx.fillRect(sx+12,sy+4+bob2,1,1);
+  } else {
+    ctx.fillRect(sx+6, sy+5+bob2, 2, 1);
+    ctx.fillRect(sx+12, sy+5+bob2, 2, 1);
+  }
   // Mouth
   ctx.fillStyle='#a06040';
   ctx.fillRect(sx+7, sy+7+bob2, 5, 1);
+  // Hair line
+  ctx.fillStyle = darkenHex(headCol, 28);
+  ctx.fillRect(sx+4, sy+bob2, 12, 2);
+  ctx.fillStyle = lightenHex(headCol, 10);
+  ctx.fillRect(sx+6, sy+2+bob2, 6, 1);
 
   // Special overlays
   if (special === 'doctor') {
-    ctx.fillStyle='#fff'; ctx.fillRect(sx+2,sy+8+bob2,16,12); // white coat re-draw
-    ctx.fillStyle='#ddd'; ctx.fillRect(sx+3,sy+9+bob2,3,10);
-    ctx.fillStyle='#c00'; ctx.fillRect(sx+8,sy+3+bob2,4,1); ctx.fillRect(sx+9,sy+2+bob2,2,3); // cross
-    ctx.fillStyle='#334'; ctx.fillRect(sx+4,sy-2+bob2,12,4); // cap
-    ctx.fillStyle='#fff'; ctx.fillRect(sx+5,sy-1+bob2,10,2);
+    // White lab coat with lapels, pocket and cross emblem
+    ctx.fillStyle='#f4f4f4'; ctx.fillRect(sx+2,sy+8+bob2,16,12);
+    ctx.fillStyle='#e0e0e0'; ctx.fillRect(sx+3,sy+9+bob2,3,10); // left fold
+    ctx.fillStyle='#c8c8c8'; ctx.fillRect(sx+15,sy+9+bob2,2,10); // right shadow
+    ctx.fillStyle='#d4d4d4'; ctx.fillRect(sx+7,sy+8+bob2,2,11); // lapel seam
+    // Chest pocket
+    ctx.fillStyle='#d8d8d8'; ctx.fillRect(sx+4,sy+13+bob2,4,4);
+    ctx.fillStyle='#c0c0c0'; ctx.fillRect(sx+4,sy+13+bob2,4,1);
+    // Red cross
+    ctx.fillStyle='#bb0000'; ctx.fillRect(sx+10,sy+10+bob2,4,1); ctx.fillRect(sx+11,sy+9+bob2,2,3);
+    // Dark navy cap with white band
+    ctx.fillStyle='#1e2230'; ctx.fillRect(sx+4,sy-3+bob2,12,5);
+    ctx.fillStyle='#f0f0f0'; ctx.fillRect(sx+5,sy-1+bob2,10,1);
+    ctx.fillStyle='#2a2e3c'; ctx.fillRect(sx+5,sy-3+bob2,10,3);
+    // Stethoscope hint
+    ctx.fillStyle='#888'; ctx.fillRect(sx+6,sy+8+bob2,2,4);
+    ctx.fillStyle='#aaa'; ctx.fillRect(sx+6,sy+11+bob2,6,1);
   } else if (special === 'old') {
-    ctx.fillStyle='#e0e0e0'; ctx.fillRect(sx+4,sy-2+bob2,12,5); // white hair
-    ctx.strokeStyle='#888'; ctx.lineWidth=1.5;
-    ctx.beginPath(); ctx.moveTo(sx+9,sy+28+bob2); ctx.lineTo(sx+6,sy+40+bob2); ctx.stroke(); // cane
-    ctx.beginPath(); ctx.arc(sx+6,sy+40+bob2,3,0,Math.PI*2); ctx.stroke();
-    ctx.fillStyle='#555'; ctx.fillRect(sx+6,sy+6+bob2,8,2); // beard sketch
+    // Layered white-gray hair
+    ctx.fillStyle='#d4d4d4'; ctx.fillRect(sx+3,sy-3+bob2,15,6);
+    ctx.fillStyle='#b8b8b8'; ctx.fillRect(sx+3,sy-3+bob2,4,9); // side hair left
+    ctx.fillRect(sx+16,sy-3+bob2,3,7); // side hair right
+    ctx.fillStyle='#a0a0a0'; ctx.fillRect(sx+4,sy-3+bob2,2,10);
+    // Beard (full and grey)
+    ctx.fillStyle='#b0b0b0'; ctx.fillRect(sx+5,sy+6+bob2,10,4);
+    ctx.fillStyle='#989898'; ctx.fillRect(sx+6,sy+8+bob2,8,3);
+    ctx.fillStyle='#808080'; ctx.fillRect(sx+7,sy+9+bob2,6,1);
+    // Wrinkle pixels on forehead
+    ctx.fillStyle='#9a7040';
+    ctx.fillRect(sx+5,sy+3+bob2,2,1); ctx.fillRect(sx+13,sy+3+bob2,2,1);
+    ctx.fillRect(sx+6,sy+2+bob2,1,1);
+    // Walking cane (rich dark wood)
+    ctx.fillStyle='#5a3208'; ctx.fillRect(sx+17,sy+20+bob2,3,22); // cane shaft
+    ctx.fillStyle='#7a4a18'; ctx.fillRect(sx+17,sy+21+bob2,1,20);
+    ctx.fillStyle='#3a1c04'; ctx.fillRect(sx+15,sy+40+bob2,7,3); // cane base
+    ctx.fillStyle='#c9a227'; ctx.fillRect(sx+16,sy+19+bob2,4,4); // gold handle
+    ctx.fillStyle='#f0d060'; ctx.fillRect(sx+17,sy+19+bob2,2,2);
   } else if (special === 'merchant') {
-    ctx.fillStyle='#c9a227'; ctx.fillRect(sx+2,sy-3+bob2,16,5); // hat brim
-    ctx.fillStyle='#8b6914'; ctx.fillRect(sx+5,sy-8+bob2,10,7); // hat top
-    ctx.fillStyle='#c9a227'; ctx.fillRect(sx+6,sy-4+bob2,8,1); // hat band
+    // Tall hat with feather
+    ctx.fillStyle='#6a4510'; ctx.fillRect(sx+5,sy-10+bob2,10,9); // hat top
+    ctx.fillStyle='#8a5c18'; ctx.fillRect(sx+6,sy-9+bob2,8,7); // hat face
+    ctx.fillStyle='#b07820'; ctx.fillRect(sx+2,sy-4+bob2,16,4); // wide brim
+    ctx.fillStyle='#c89030'; ctx.fillRect(sx+3,sy-4+bob2,14,2); // brim highlight
+    ctx.fillStyle='#c9a227'; ctx.fillRect(sx+6,sy-5+bob2,8,1); // hat band
+    // Colorful feather plume
+    ctx.fillStyle='#8a1818'; ctx.fillRect(sx+14,sy-16+bob2,3,13);
+    ctx.fillStyle='#b02828'; ctx.fillRect(sx+15,sy-15+bob2,2,10);
+    ctx.fillStyle='#e84040'; ctx.fillRect(sx+15,sy-12+bob2,1,6);
+    // Merchant chest sash
+    ctx.fillStyle='#7a1010'; ctx.fillRect(sx+2,sy+11+bob2,16,2);
+    ctx.fillStyle='#c9a227'; ctx.fillRect(sx+9,sy+10+bob2,2,4);
+    ctx.fillStyle='#f0d060'; ctx.fillRect(sx+9,sy+11+bob2,2,1);
   } else if (special === 'golden') {
-    ctx.fillStyle='#c9a227'; ctx.fillRect(sx,sy-4+bob2,20,28); // full gold armor
-    ctx.fillStyle='#f0d060'; ctx.fillRect(sx+1,sy-3+bob2,4,26); // highlight
-    ctx.fillStyle='#a08010'; ctx.fillRect(sx+15,sy-3+bob2,4,26); // shadow
-    ctx.fillStyle='#f0d060'; ctx.fillRect(sx+1,sy-6+bob2,18,5); // visor
-    ctx.fillStyle='#1a1a2a'; ctx.fillRect(sx+3,sy-5+bob2,14,3); // visor slit
+    // Full plate gold armor - layered and detailed
+    ctx.fillStyle='#9a7010'; ctx.fillRect(sx,sy-4+bob2,20,28); // armor base dark
+    ctx.fillStyle='#b88a14'; ctx.fillRect(sx+1,sy-3+bob2,18,27); // armor main
+    ctx.fillStyle='#c8a020'; ctx.fillRect(sx+2,sy-2+bob2,3,25); // left highlight
+    ctx.fillStyle='#7a5808'; ctx.fillRect(sx+15,sy-2+bob2,3,25); // right shadow
+    // Chest plate with engraved details
+    ctx.fillStyle='#c9a227'; ctx.fillRect(sx+3,sy+2+bob2,14,14);
+    ctx.fillStyle='#d8b840'; ctx.fillRect(sx+4,sy+3+bob2,4,12); // plate shine
+    ctx.fillStyle='#9a7810'; ctx.fillRect(sx+13,sy+3+bob2,3,12); // plate shadow
+    // Gold trim lines
+    ctx.fillStyle='#f0d060'; ctx.fillRect(sx+3,sy+2+bob2,14,1);
+    ctx.fillStyle='#f0d060'; ctx.fillRect(sx+3,sy+14+bob2,14,1);
+    // Shoulder pauldrons
+    ctx.fillStyle='#c9a227'; ctx.fillRect(sx-2,sy-1+bob2,7,8);
+    ctx.fillRect(sx+15,sy-1+bob2,7,8);
+    ctx.fillStyle='#e8c040'; ctx.fillRect(sx-1,sy-1+bob2,2,7);
+    ctx.fillRect(sx+17,sy-1+bob2,2,7);
+    // Full helmet visor
+    ctx.fillStyle='#b08010'; ctx.fillRect(sx+1,sy-8+bob2,18,6);
+    ctx.fillStyle='#c8a020'; ctx.fillRect(sx+2,sy-7+bob2,4,5);
+    ctx.fillStyle='#0a0a14'; ctx.fillRect(sx+3,sy-5+bob2,14,2); // narrow slit
+    ctx.fillStyle='#ffe060'; ctx.fillRect(sx+5,sy-5+bob2,4,1); ctx.fillRect(sx+11,sy-5+bob2,4,1); // glowing eyes
+    // Crown spikes at top
+    ctx.fillStyle='#f0d060'; ctx.fillRect(sx+6,sy-9+bob2,8,2);
+    ctx.fillStyle='#c9a227'; ctx.fillRect(sx+8,sy-10+bob2,4,2);
+    ctx.fillStyle='#f0d060'; ctx.fillRect(sx+9,sy-11+bob2,2,2);
   } else if (special === 'guard') {
-    ctx.fillStyle='#5a6070'; ctx.fillRect(sx,sy-4+bob2,20,14); // helmet
-    ctx.fillStyle='#70808a'; ctx.fillRect(sx+1,sy-3+bob2,4,12);
-    ctx.fillStyle='#1a1a2a'; ctx.fillRect(sx+3,sy+1+bob2,14,3); // visor
-    ctx.fillStyle='#c9a227'; ctx.fillRect(sx+1,sy-4+bob2,18,2); // brim
+    // Sturdy iron helmet with nose guard and rivets
+    ctx.fillStyle='#2e3840'; ctx.fillRect(sx,sy-4+bob2,20,15); // helm body dark
+    ctx.fillStyle='#3e4a52'; ctx.fillRect(sx+1,sy-3+bob2,18,13); // helm main
+    ctx.fillStyle='#505e68'; ctx.fillRect(sx+2,sy-2+bob2,5,11); // left highlight
+    ctx.fillStyle='#252e36'; ctx.fillRect(sx+14,sy-2+bob2,4,11); // right shadow
+    // Helm rivets
+    ctx.fillStyle='#8090a0'; ctx.fillRect(sx+2,sy-3+bob2,2,2); ctx.fillRect(sx+16,sy-3+bob2,2,2);
+    // Visor slot
+    ctx.fillStyle='#10181e'; ctx.fillRect(sx+3,sy+2+bob2,14,4);
+    ctx.fillStyle='#28363e'; ctx.fillRect(sx+3,sy+2+bob2,14,1); // visor top edge
+    // Nose guard
+    ctx.fillStyle='#3a4858'; ctx.fillRect(sx+9,sy-1+bob2,2,7);
+    ctx.fillStyle='#505e6a'; ctx.fillRect(sx+9,sy-1+bob2,1,6);
+    // Gold sergeant's brim
+    ctx.fillStyle='#a07810'; ctx.fillRect(sx+1,sy-4+bob2,18,2);
+    ctx.fillStyle='#c9a227'; ctx.fillRect(sx+2,sy-4+bob2,14,1);
+    // Chainmail neck guard
+    ctx.fillStyle='#384450';
+    for(let ci=0;ci<4;ci++){ ctx.fillRect(sx+2+ci*4,sy+10+bob2,2,5); }
+    ctx.fillStyle='#485460';
+    for(let ci=0;ci<4;ci++){ ctx.fillRect(sx+3+ci*4,sy+10+bob2,1,4); }
+  }
+
+  // Shared polish: cloth sheen and belt jewel.
+  ctx.fillStyle = 'rgba(255,255,255,0.18)';
+  ctx.fillRect(sx+4, sy+10+bob2, 2, 6);
+  ctx.fillStyle = '#c9a227';
+  ctx.fillRect(sx+9, sy+18+bob2, 2, 2);
+  ctx.fillStyle = 'rgba(0,0,0,0.14)';
+  ctx.fillRect(sx+3, sy+27+bob2, 14, 1);
+
+  if (sprite === 'hunter' || special === 'hunter') {
+    // Forest cloak (layered with tattered hem)
+    ctx.fillStyle = '#1e1a0c';
+    ctx.fillRect(sx+1, sy+11+bob2, 18, 12);
+    ctx.fillStyle = '#2c2618'; // cloak highlight fold
+    ctx.fillRect(sx+2, sy+11+bob2, 4, 12);
+    ctx.fillStyle = '#14120a'; // cloak shadow side
+    ctx.fillRect(sx+15, sy+12+bob2, 3, 10);
+    // Tattered hem pixels
+    ctx.fillStyle = '#181408';
+    ctx.fillRect(sx+4,  sy+21+bob2, 2, 3);
+    ctx.fillRect(sx+8,  sy+23+bob2, 2, 2);
+    ctx.fillRect(sx+12, sy+22+bob2, 2, 3);
+    ctx.fillRect(sx+16, sy+21+bob2, 2, 4);
+    // Leather quiver (detailed)
+    ctx.fillStyle = '#502c14'; ctx.fillRect(sx+15, sy+5+bob2, 5, 11);
+    ctx.fillStyle = '#341a08'; ctx.fillRect(sx+18, sy+6+bob2, 2, 9); // shadow
+    ctx.fillStyle = '#6a3c1e'; ctx.fillRect(sx+15, sy+5+bob2, 2, 10); // highlight
+    // Arrow heads visible at top
+    ctx.fillStyle = '#8aaab0'; ctx.fillRect(sx+16, sy+4+bob2, 1, 3);
+    ctx.fillRect(sx+18, sy+3+bob2, 1, 4);
+    ctx.fillStyle = '#7a5e28'; // arrow shafts
+    ctx.fillRect(sx+16, sy+7+bob2, 1, 8);
+    ctx.fillRect(sx+18, sy+7+bob2, 1, 8);
+    // Quiver strap
+    ctx.fillStyle='#907030'; ctx.fillRect(sx+14,sy+6+bob2,2,2);
+    // Longbow (detailed arc)
+    ctx.fillStyle = '#5a2c0c'; ctx.fillRect(sx-5, sy+8+bob2, 4, 2); // grip
+    ctx.fillRect(sx-4, sy+10+bob2, 3, 16);
+    ctx.fillStyle = '#703818'; ctx.fillRect(sx-4, sy+10+bob2, 1, 15); // highlight
+    ctx.fillStyle = '#7a3c18';
+    ctx.fillRect(sx-3, sy+6+bob2, 2, 4); // top limb
+    ctx.fillRect(sx-3, sy+26+bob2, 2, 3); // bottom limb
+    // Bowstring
+    ctx.fillStyle = '#c4b080'; ctx.fillRect(sx-3, sy+8+bob2, 1, 20);
   }
 
   // Name tag
@@ -4588,6 +5685,7 @@ function drawFrame() {
   drawNPCs();
   drawEnemies();
   drawAllies();
+  drawCompanions();
   if (G.player) drawPlayer();
   drawProjectiles();
 
@@ -4606,6 +5704,7 @@ function update() {
   updatePlayer();
   updateEnemies();
   updateAllies();
+  updateCompanions();
   updateArrowRain();
   updateProjectiles();
   updateParticles();
@@ -4648,6 +5747,7 @@ function updatePlayer() {
     p.dashTimer--;
     p.x += p.dashVx;
     p.y += p.dashVy;
+    resolveCollisions(p);  // Check collisions with objects during dash
     if (p.dashTimer <= 0) { p.dashing = false; }
     clampPlayer();
     return;
@@ -4684,11 +5784,12 @@ function updatePlayer() {
   clampPlayer();
 
   // Dash trigger — costs 25 energy
-  if ((G.keysPressed['KeyX']||G.keysPressed['KeyK']) && !p.dashing) {
+  if ((G.keysPressed['KeyX']||G.keysPressed['KeyK']||G.keysPressed['ShiftLeft']||G.keysPressed['ShiftRight']) && !p.dashing) {
     if ((p.energy || 0) >= 25) {
       p.energy -= 25;
       p.dashing = true;
       p.dashTimer = 14;
+      playSound('dash');
       p.dashVx = (vx !== 0) ? vx * 4.5 : (p.facing === 'right' ? 4.5 : (p.facing === 'left' ? -4.5 : 0));
       p.dashVy = (vy !== 0) ? vy * 4.5 : (p.facing === 'down' ? 4.5 : (p.facing === 'up' ? -4.5 : 0));
       spawnParticles(p.x+p.w/2, p.y+p.h/2, '#ffffff', 6, 4);
@@ -4703,7 +5804,7 @@ function updatePlayer() {
     p.attackFrame++;
     if (p.attackFrame >= 15) { p.attacking = false; p.attackFrame = 0; }
   }
-  if ((G.keysPressed['KeyZ']||G.keysPressed['KeyJ']) && p.attackCooldown <= 0) {
+  if ((G.keysPressed['KeyZ']||G.keysPressed['KeyJ']||G.keysPressed['KeyR']||(G.bindings.attack&&G.keysPressed[G.bindings.attack])) && p.attackCooldown <= 0) {
     doAttack(p);
   }
 
@@ -4711,10 +5812,10 @@ function updatePlayer() {
   if (p.abilityCooldown > 0) p.abilityCooldown--;
   if (p.abilityCooldown2 > 0) p.abilityCooldown2--;
   if ((p.abilityCooldown3||0) > 0) p.abilityCooldown3--;
-  if (G.keysPressed['KeyQ'] && (p.abilityCooldown||0) <= 0) {
-    useWeaponAbility(p);
+  if (G.keysPressed['KeyQ']||(G.bindings.ability&&G.keysPressed[G.bindings.ability])) {
+    if ((p.abilityCooldown||0) <= 0) useWeaponAbility(p);
   }
-  if (G.keysPressed['KeyR'] && (p.abilityCooldown2||0) <= 0) {
+  if (G.keysPressed['KeyT'] && (p.abilityCooldown2||0) <= 0) {
     if (typeof useWeaponAbility2 === 'function') useWeaponAbility2(p);
   }
   if (G.keysPressed['KeyF'] && (p.abilityCooldown3||0) <= 0) {
@@ -4722,8 +5823,8 @@ function updatePlayer() {
   }
 
   // Interact
-  if (G.keysPressed['KeyE'] && !G.dialogueActive) {
-    tryInteract();
+  if (G.keysPressed['KeyE']||(G.bindings.interact&&G.keysPressed[G.bindings.interact])) {
+    if (!G.dialogueActive) tryInteract();
   }
 
   // Inventory / Character menu
@@ -4772,8 +5873,10 @@ function doAttack(p) {
   p.attacking = true;
   p.attackFrame = 0;
   p.attackCooldown = wconf.cooldown;
+  if (p.weapon !== 'bow') playSound('melee');
 
   if (p.weapon === 'bow') {
+    playSound('shoot');
     const bowDmg = baseDmg + Math.floor((p.stats?.punteria || 0) / 3) + (p.armor === 'hunter' ? 5 : 0);
     // Shoot projectile
     const dir = facingToDir(p.facing);
@@ -4969,13 +6072,20 @@ function onEnemyDeath(e) {
   }
 
   // Zone clearing — mine rooms and camp don't respawn enemies
-  const _clearableZones = ['mine_room2','mine_room3','mine_room4','sur_m2'];
+  const _clearableZones = ['mine_room2','mine_room3','mine_room4','sur_m2','cabin_interior'];
   if (_clearableZones.includes(G.currentZone)) {
     setTimeout(() => {
       if (G.enemies && G.enemies.every(en => !en.alive)) {
         G.clearedZones = G.clearedZones || [];
         if (!G.clearedZones.includes(G.currentZone)) {
           G.clearedZones.push(G.currentZone);
+        }
+        // Specific quest update for pirate cabin
+        if (G.currentZone === 'cabin_interior' && G.questFlags.mesjorQuestActive) {
+          G.questFlags.piratesCabinCleared = true;
+          G.questFlags.mesjorQuestComplete = true;
+          notify('✅ ¡Cabaña Pirata limpiada! Vuelve con Mesjor');
+          updateQuestTracker();
         }
       }
     }, 200);
@@ -5287,6 +6397,7 @@ function hitPlayer(dmg) {
   }
   const reduced = Math.max(1, dmg - Math.floor(p.defense / 5));
   p.hp -= reduced;
+  playSound('hit');
   p.invincible = 60;
   showDamageNumber(p.x+p.w/2, p.y-10, reduced, '#f00');
   spawnParticles(p.x+p.w/2, p.y+p.h/2, '#c00', 5, 3);
@@ -5297,6 +6408,13 @@ function hitPlayer(dmg) {
 }
 
 function playerDied() {
+  // When the player dies we immediately revert their inventory to whatever
+  // was stored in the last save.  This removes any items picked up after the
+  // save (temporary loot) so the death penalty works correctly even before
+  // the user presses "CONTINUAR DESDE GUARDADO" on the death screen.
+  if (G.save && G.player) {
+    G.player.inventory = JSON.parse(JSON.stringify(G.save.inventory || []));
+  }
   G.screen = 'dead';
   document.getElementById('death-screen').style.display = 'flex';
 }
@@ -5328,8 +6446,18 @@ function updateProjectiles() {
           break;
         }
       }
+    } else if (proj.owner === 'companion') {
+      // Companion projectile - hit enemies
+      for (const e of G.enemies) {
+        if (!e.alive) continue;
+        if (pointInRect(proj.x, proj.y, e)) {
+          hitEnemy(e, proj.damage, null);
+          G.projectiles.splice(i,1);
+          break;
+        }
+      }
     } else {
-      // Hit player
+      // Enemy projectile - Hit player
       if (pointInRect(proj.x, proj.y, G.player)) {
         hitPlayer(proj.damage);
         // If verdugo's thrown sword hit player, start retrieval dance
@@ -5343,6 +6471,150 @@ function updateProjectiles() {
         G.projectiles.splice(i,1);
       }
     }
+  }
+}
+
+function updateCompanions() {
+  const p = G.player;
+  if (!p) return;
+
+  for (const c of G.allies) {
+    if (!c.alive) continue;
+
+    const dist = rectDist(p, c);
+    const distToEnemy = (enemy) => rectDist(c, enemy);
+
+    // ---- GENERAL COMPANION AI ----
+    if (c.state === 'follow') {
+      // Follow player at a safe distance
+      const followDist = 60;
+      if (dist > followDist) {
+        const dx = (p.x+p.w/2) - (c.x+c.w/2);
+        const dy = (p.y+p.h/2) - (c.y+c.h/2);
+        const len = Math.hypot(dx,dy) || 1;
+        c.vx = (dx/len) * c.speed * 0.8;
+        c.vy = (dy/len) * c.speed * 0.8;
+      } else {
+        c.vx *= 0.8;
+        c.vy *= 0.8;
+      }
+
+      // Check for nearby enemies to attack
+      let nearestEnemy = null;
+      let nearestDist = 300;
+      for (const e of G.enemies) {
+        if (!e.alive) continue;
+        const d = distToEnemy(e);
+        if (d < nearestDist) {
+          nearestEnemy = e;
+          nearestDist = d;
+        }
+      }
+      if (nearestEnemy && nearestDist < c.aggroRange) {
+        c.state = 'chase';
+        c._target = nearestEnemy;
+      }
+    } else if (c.state === 'chase') {
+      // Chase target enemy
+      const target = c._target;
+      if (!target || !target.alive) {
+        c.state = 'follow';
+        c._target = null;
+      } else {
+        const targetDist = distToEnemy(target);
+        
+        // Mesjor-specific distance management (ranged attacker)
+        if (c.weapon === 'bow') {
+          const dx = (target.x+target.w/2) - (c.x+c.w/2);
+          const dy = (target.y+target.h/2) - (c.y+c.h/2);
+          const len = Math.hypot(dx,dy) || 1;
+
+          if (targetDist < c.minDistance) {
+            // Too close - retreat
+            c.vx = -(dx/len) * c.speed;
+            c.vy = -(dy/len) * c.speed;
+          } else if (targetDist > c.maxDistance) {
+            // Too far - advance
+            c.vx = (dx/len) * c.speed * 0.8;
+            c.vy = (dy/len) * c.speed * 0.8;
+          } else {
+            // Perfect range - stop and shoot
+            c.vx *= 0.5;
+            c.vy *= 0.5;
+          }
+
+          // Try to shoot
+          if (c.attackTimer <= 0 && targetDist < 250) {
+            c.attackTimer = c.attackCooldown;
+            const bx = (target.x+target.w/2)-(c.x+c.w/2);
+            const by = (target.y+target.h/2)-(c.y+c.h/2);
+            const bl = Math.hypot(bx,by) || 1;
+            G.projectiles.push({
+              x: c.x+c.w/2, y: c.y+c.h/2,
+              vx: (bx/bl)*5, vy: (by/bl)*5,
+              damage: 12 + Math.floor((c.stats?.punteria || 0) / 3),
+              type: 'companion_arrow', color: '#f39c12',
+              owner: 'companion', life: 120
+            });
+          }
+        } else {
+          // Melee attacker - chase and hit
+          const dx = (target.x+target.w/2) - (c.x+c.w/2);
+          const dy = (target.y+target.h/2) - (c.y+c.h/2);
+          const len = Math.hypot(dx,dy) || 1;
+          c.vx = (dx/len) * c.speed;
+          c.vy = (dy/len) * c.speed;
+
+          if (targetDist < 50 && c.attackTimer <= 0) {
+            c.attackTimer = c.attackCooldown;
+            const companionDmg = 10 + Math.floor((c.stats?.meleeDmg || 0) / 3);
+            hitEnemy(target, companionDmg, c);
+          }
+        }
+
+        if (targetDist > c.aggroRange * 1.5) {
+          c.state = 'follow';
+          c._target = null;
+        }
+      }
+    }
+
+    // Cooldown ticks
+    if (c.attackTimer > 0) c.attackTimer--;
+    
+    // Move companion
+    c.x += c.vx;
+    c.y += c.vy;
+
+    // Clamp to zone
+    if (currentZoneData) {
+      c.x = Math.max(20, Math.min(currentZoneData.width-c.w-20, c.x));
+      c.y = Math.max(20, Math.min(currentZoneData.height-c.h-20, c.y));
+    }
+
+    // Handle damage from enemies
+    for (const e of G.enemies) {
+      if (!e.alive || c.invincible > 0) continue;
+      const ed = rectDist(e, c);
+      if (ed < 50) {
+        // Enemy tries to damage companion
+        if (Math.random() < 0.02) { // 2% chance per frame
+          const dmg = Math.max(1, e.damage - Math.floor(Math.random()*3));
+          c.hp -= dmg;
+          c.invincible = 40;
+          showDamageNumber(c.x+c.w/2, c.y, dmg, '#e74c3c');
+          if (c.hp <= 0) {
+            c.hp = 0;
+            c.alive = false;
+            spawnParticles(c.x+c.w/2, c.y+c.h/2, '#e74c3c', 12, 5);
+            notify(`😢 ${c.name} fue derrotado...`);
+          }
+        }
+      }
+    }
+
+    // Invincibility countdown
+    if (c.invincible > 0) c.invincible--;
   }
 }
 
@@ -5395,7 +6667,8 @@ function resolveCollisions(p) {
 
 function isCollidable(type) {
   // pier is walkable (player can walk on docks); boat is still solid
-  return ['wall','tree','rock','house','player_house','well','barrel','table','building','boat','water_wall','fence','fence_gate','locked_gate','mine_pillar','mine_cart'].includes(type);
+  // include new fixtures so player cannot walk through stove/sink/toilet
+  return ['wall','tree','rock','house','player_house','well','barrel','table','building','boat','water_wall','fence','fence_gate','locked_gate','mine_pillar','mine_cart','stove','sink','toilet'].includes(type);
 }
 
 function clampPlayer() {
@@ -5423,7 +6696,7 @@ function checkZoneTransitions() {
     // Expand exit detection a bit so it's not pixel-perfect
     if (cx >= exit.x - 4 && cx <= exit.x + exit.w + 4 &&
         cy >= exit.y - 4 && cy <= exit.y + exit.h + 4) {
-      loadZone(exit.target, exit.tx, exit.ty);
+      loadZone(exit.target, exit.tx, exit.ty, exit.facing);
       return;
     }
   }
@@ -5436,7 +6709,7 @@ function checkZoneTransitions() {
         : { x: obj.x, y: obj.y + obj.h - 12, w: obj.w, h: 12 };
       if (rectsOverlap(p, doorRect)) {
         if (G.keysPressed['KeyE']) {
-          loadZone(obj.target, obj.tx, obj.ty);
+          loadZone(obj.target, obj.tx, obj.ty, obj.facing);
           return;
         }
         // Show interact hint
@@ -5466,7 +6739,8 @@ function tryInteract() {
   // Check objects (chests, beds, doors, mine entrances)
   for (const obj of (currentZoneData?.objects||[])) {
     if (rectDist(p, {x:obj.x,y:obj.y,w:obj.w||30,h:obj.h||30}) < 60) {
-      if (obj.type==='bed' && G.currentZone==='house_start') {
+      // only the sleep-specific half of the bed should trigger saving
+      if (obj.type==='bed' && obj.id==='bed_sleep' && G.currentZone==='house_start') {
         doSleep();
         return;
       }
@@ -5497,6 +6771,7 @@ let dialogueCooldown = 0; // frames before E can reopen dialogue
 
 function startNPCDialogue(npc) {
   if (dialogueCooldown > 0) return;
+  playSound('talk');
   if (npc.isTutorial && !G.tutorialShown.includes('alderman')) {
     G.tutorialShown.push('alderman');
   }
@@ -5514,6 +6789,17 @@ function startNPCDialogue(npc) {
   if (npc.id === 'miner_npc') {
     if (G.questFlags.verdugaDefeated)  dlgKey = 'miner_help_done';
     else if (G.questFlags.andreonDefeated || G.questFlags.relicFound) dlgKey = 'miner_help_active';
+  }
+  if (npc.id === 'hunter') {
+    if (G.questFlags.hunterStage === 3) {
+      if (G.questFlags.mesjorQuestComplete)  dlgKey = 'mesjor_quest_done';
+      else if (G.questFlags.mesjorQuestActive)  dlgKey = 'mesjor_quest_active';
+      else  dlgKey = 'hunter_thanks';
+    } else if (G.questFlags.hunterStage === 2) {
+      dlgKey = 'hunter_after_boars';
+    } else if (G.questFlags.hunterStage === 1) {
+      dlgKey = 'hunter';  // Keep original dialogue
+    }
   }
 
   const dlg = DIALOGUES[dlgKey];
@@ -5584,6 +6870,30 @@ function handleDialogueOption(action) {
     closeDialogue();
     notify('📋 Nueva misión: Matar 10 toros');
     updateQuestTracker();
+    return;
+  }
+  if (action === 'accept_mesjor_quest') {
+    G.questFlags.mesjorQuestActive = true;
+    G.player.inventory.push({id:'mesjor_key', name:'Llave del Puerto Pirata', emoji:'🔑', desc:'Abre la cabaña pirata en el puerto', qty:1});
+    closeDialogue();
+    notify('🔑 Recibiste la Llave del Puerto Pirata');
+    notify('📋 Nueva misión: Limpia la Cabaña Pirata');
+    updateQuestTracker();
+    return;
+  }
+  if (action === 'accept_mesjor_companion') {
+    G.questFlags.mesjorQuestComplete = true;
+    closeDialogue();
+    // Create Mesjor as a companion
+    const mesjor = createCompanion('Mesjor', G.player.x - 40, G.player.y, 'bow', 'light');
+    G.companions = G.companions || [];
+    G.companions.push(mesjor);
+    // Remove Mesjor NPC from current zone
+    const currentZoneNPCs = (G.zones[G.currentZone] || {}).npcs || [];
+    const mesjorNPCIdx = currentZoneNPCs.findIndex(n => n.id === 'hunter');
+    if (mesjorNPCIdx !== -1) currentZoneNPCs.splice(mesjorNPCIdx, 1);
+    notify('✨ ¡Mesjor se ha unido a tu equipo!');
+    saveGame();
     return;
   }
 }
@@ -5778,8 +7088,10 @@ function charMenuTab(tab) {
   // Render content
   if (tab === 'estadisticas') renderCharStats();
   if (tab === 'inventario')   renderCharInventory();
+  if (tab === 'companions')   renderCompanionsTab();
   if (tab === 'mapa')         renderCharMap();
   if (tab === 'info')         renderCharInfo();
+  if (tab === 'ajustes')      renderAjustes();
 }
 
 function bar(pct, color, width) {
@@ -5864,6 +7176,21 @@ function renderCharInventory() {
         ? '<span style="color:#c9a227;font-size:10px;font-family:Cinzel,serif">✓ EQUIPADA</span>'
         : `<button class="use-btn" onclick="equipWeapon('${wid}')">Equipar</button>`}
     </div>`;
+    // Companion-equip quick buttons
+    const comps = G.companions || [];
+    if (comps.length) {
+      html += `<div style="margin-left:12px;margin-bottom:6px"><small style="color:#c9a227">Equipar a:</small>`;
+      for (let ci = 0; ci < comps.length; ci++) {
+        const comp = comps[ci];
+        // Mesjor restriction: only bows
+        if (comp.name === 'Mesjor' && wid !== 'bow' && !(wc.range && wc.range > 150)) {
+          html += `<button class="use-btn" disabled style="margin-left:6px;opacity:0.4">${comp.name}</button>`;
+        } else {
+          html += `<button class="use-btn" onclick="equipCompanionWeapon(${ci}, '${wid}')" style="margin-left:6px">${comp.name}</button>`;
+        }
+      }
+      html += `</div>`;
+    }
   }
 
   html += `<div class="cs-section-title" style="margin-top:6px">ARMADURAS</div>`;
@@ -5880,6 +7207,21 @@ function renderCharInventory() {
         ? '<span style="color:#c9a227;font-size:10px;font-family:Cinzel,serif">✓ EQUIPADA</span>'
         : `<button class="use-btn" onclick="equipArmor('${aid}')">Equipar</button>`}
     </div>`;
+    // Companion-equip quick buttons for armor
+    const compsA = G.companions || [];
+    if (compsA.length) {
+      html += `<div style="margin-left:12px;margin-bottom:6px"><small style="color:#c9a227">Equipar a:</small>`;
+      for (let ci = 0; ci < compsA.length; ci++) {
+        const comp = compsA[ci];
+        // Mesjor restriction: only light/hunter armors
+        if (comp.name === 'Mesjor' && aid !== 'light' && aid !== 'hunter') {
+          html += `<button class="use-btn" disabled style="margin-left:6px;opacity:0.4">${comp.name}</button>`;
+        } else {
+          html += `<button class="use-btn" onclick="equipCompanionArmor(${ci}, '${aid}')" style="margin-left:6px">${comp.name}</button>`;
+        }
+      }
+      html += `</div>`;
+    }
   }
 
   html += `<div class="cs-section-title" style="margin-top:6px">OBJETOS</div>`;
@@ -5932,6 +7274,171 @@ function usePotionById(id) {
   if (!p) return;
   const item = p.inventory.find(i => i.id === id);
   if (item) { usePotion(item); renderCharInventory(); }
+}
+
+function renderCompanionsTab() {
+  const pane = document.getElementById('ctab-companions');
+  const p = G.player;
+  if (!pane) return;
+  const comps = G.companions || [];
+  const ownedWeapons = p ? (p.weapons || [p.weapon]) : [];
+  const ownedArmors  = p ? (p.armors  || [p.armor]) : [];
+
+  if (!comps.length) {
+    pane.innerHTML = `<div style="color:#555;font-family:'Cinzel',serif;font-size:12px;padding:10px;text-align:center">No tienes compañeros</div>`;
+    return;
+  }
+
+  let html = '';
+  comps.forEach((c, idx) => {
+    const wc = WEAPON_CONFIGS[c.weapon] || {};
+    const ac = ARMOR_CONFIGS[c.armor] || {};
+    html += `<div class="cs-section-title" style="display:flex;align-items:center;gap:8px">`+
+            `<span style="font-family:'Cinzel',serif;color:#f0d060">${c.name}</span>`+
+            `<span style="color:#c9a227;font-size:12px">Nivel ${c.level||1}</span>`+
+            `</div>`;
+    html += `<div class="cs-row"><span class="cs-label">Vida</span>${bar((c.hp||0)/(c.maxHp||1),'#e74c3c',120)}<span class="cs-val">${Math.ceil(c.hp||0)}/${c.maxHp||0}</span></div>`;
+    html += `<div class="cs-row"><span class="cs-label">Arma</span><span class="cs-val" style="color:#ddd">${wc.emoji||''} ${wc.name||c.weapon||'—'}</span></div>`;
+    html += `<div class="cs-row"><span class="cs-label">Armadura</span><span class="cs-val" style="color:#ddd">${ac.emoji||''} ${ac.name||c.armor||'—'}</span></div>`;
+
+    // Weapon equip list
+    html += `<div style="margin:6px 0"><small style="color:#c9a227">Equipar arma</small>`;
+    for (const wid of ownedWeapons) {
+      const wconf = WEAPON_CONFIGS[wid];
+      if (!wconf) continue;
+      // Mesjor restrictions: only bows
+      if (c.name === 'Mesjor' && wid !== 'bow' && !(wconf.range && wconf.range>150)) continue;
+      if (c.weapon === wid) {
+        html += `<button class="use-btn" style="margin-left:6px;background:#2d2d2d;color:#c9a227">✓ ${wconf.emoji} ${wconf.name}</button>`;
+      } else {
+        html += `<button class="use-btn" onclick="equipCompanionWeapon(${idx}, '${wid}')" style="margin-left:6px">${wconf.emoji} ${wconf.name}</button>`;
+      }
+    }
+    html += `</div>`;
+
+    // Armor equip list
+    html += `<div style="margin:6px 0"><small style="color:#c9a227">Equipar armadura</small>`;
+    for (const aid of ownedArmors) {
+      const aconf = ARMOR_CONFIGS[aid];
+      if (!aconf) continue;
+      // Mesjor restrictions: only light/hunter armors
+      if (c.name === 'Mesjor' && aid !== 'light' && aid !== 'hunter') continue;
+      if (c.armor === aid) {
+        html += `<button class="use-btn" style="margin-left:6px;background:#2d2d2d;color:#c9a227">✓ ${aconf.emoji} ${aconf.name}</button>`;
+      } else {
+        html += `<button class="use-btn" onclick="equipCompanionArmor(${idx}, '${aid}')" style="margin-left:6px">${aconf.emoji} ${aconf.name}</button>`;
+      }
+    }
+    html += `</div>`;
+
+    // View stats button
+    html += `<div style="margin-top:6px"><button class="btn" onclick="renderCompanionStats(${idx})">VER ESTADÍSTICAS</button></div>`;
+  });
+
+  pane.innerHTML = html;
+}
+
+function equipCompanionWeapon(compIdx, wid) {
+  const comps = G.companions || [];
+  const c = comps[compIdx];
+  if (!c || !WEAPON_CONFIGS[wid]) return;
+  // Mesjor restriction enforcement
+  if (c.name === 'Mesjor' && wid !== 'bow' && !(WEAPON_CONFIGS[wid].range && WEAPON_CONFIGS[wid].range>150)) {
+    notify('Mesjor solo puede equipar arcos.');
+    return;
+  }
+  const p = G.player;
+  if (!p) return;
+  p.weapons = p.weapons || [p.weapon];
+  // Remove weapon from player (transfer)
+  const pi = p.weapons.indexOf(wid);
+  if (pi !== -1) p.weapons.splice(pi,1);
+
+  // If player currently has this weapon equipped, switch to another or default
+  if (p.weapon === wid) {
+    if ((p.weapons||[]).length > 0) p.weapon = p.weapons[0];
+    else { p.weapon = 'sword'; p.weapons = p.weapons || []; if (!p.weapons.includes('sword')) p.weapons.push('sword'); }
+  }
+
+  // If companion had a previous weapon, give it back to player
+  const prev = c.weapon;
+  if (prev && prev !== wid) {
+    p.weapons = p.weapons || [];
+    if (!p.weapons.includes(prev)) p.weapons.push(prev);
+    notify(`${(WEAPON_CONFIGS[prev]||{}).emoji||''} ${prev} devuelta al jugador`);
+  }
+
+  c.weapon = wid;
+  c.weaponUpgraded = WEAPON_CONFIGS[wid].upgraded || false;
+  saveGame();
+  notify(`${WEAPON_CONFIGS[wid].emoji} ${WEAPON_CONFIGS[wid].name} equipado a ${c.name}`);
+  updateHUD();
+  renderCompanionsTab();
+  renderCharInventory();
+}
+
+function equipCompanionArmor(compIdx, aid) {
+  const comps = G.companions || [];
+  const c = comps[compIdx];
+  if (!c || !ARMOR_CONFIGS[aid]) return;
+  if (c.name === 'Mesjor' && aid !== 'light' && aid !== 'hunter') {
+    notify('Mesjor solo puede equipar armaduras ligeras.');
+    return;
+  }
+  const p = G.player;
+  if (!p) return;
+  p.armors = p.armors || [p.armor];
+  // Remove armor from player (transfer)
+  const pi = p.armors.indexOf(aid);
+  if (pi !== -1) p.armors.splice(pi,1);
+
+  // If player currently has this armor equipped, switch to another or default
+  if (p.armor === aid) {
+    if ((p.armors||[]).length > 0) p.armor = p.armors[0];
+    else { p.armor = 'normal'; p.armors = p.armors || []; if (!p.armors.includes('normal')) p.armors.push('normal'); }
+  }
+
+  // If companion had a previous armor, give it back to player
+  const prevA = c.armor;
+  if (prevA && prevA !== aid) {
+    p.armors = p.armors || [];
+    if (!p.armors.includes(prevA)) p.armors.push(prevA);
+    notify(`${(ARMOR_CONFIGS[prevA]||{}).emoji||''} ${prevA} devuelta al jugador`);
+  }
+
+  c.armor = aid;
+  const ac = ARMOR_CONFIGS[aid];
+  // Apply basic armor effects to companion
+  c.baseMaxHp = ac.hp || c.baseMaxHp || c.maxHp;
+  c.maxHp = c.baseMaxHp;
+  c.speed = ac.speed || c.speed;
+  c.defense = ac.defense || c.defense;
+  if (c.hp > c.maxHp) c.hp = c.maxHp;
+  saveGame();
+  notify(`${ac.emoji} ${ac.name} equipada a ${c.name}`);
+  updateHUD();
+  renderCompanionsTab();
+}
+
+function renderCompanionStats(compIdx) {
+  const comps = G.companions || [];
+  const c = comps[compIdx];
+  if (!c) return;
+  const contentEl = document.getElementById('comp-stats-content');
+  const titleEl = document.getElementById('comp-stats-name');
+  titleEl.textContent = `${c.name} — Nivel ${c.level||1}`;
+  const stats = c.stats || {};
+  const lines = [];
+  lines.push(`<div style="margin-bottom:6px">HP: ${Math.ceil(c.hp||0)} / ${c.maxHp||0}</div>`);
+  lines.push(`<div>Arma: ${(WEAPON_CONFIGS[c.weapon]||{}).name||c.weapon||'—'}</div>`);
+  lines.push(`<div>Armadura: ${(ARMOR_CONFIGS[c.armor]||{}).name||c.armor||'—'}</div>`);
+  lines.push(`<div style="margin-top:6px"><b>Estadísticas</b></div>`);
+  for (const k of Object.keys(stats)) {
+    lines.push(`<div style="display:flex;justify-content:space-between"><span style="color:#ccc">${k}</span><span style="color:#fff">${stats[k]}</span></div>`);
+  }
+  lines.push(`<div style="margin-top:6px;color:#c9a227">XP: ${c.xp||0} / ${c.xpToNext||100}</div>`);
+  contentEl.innerHTML = lines.join('');
+  document.getElementById('companion-stats-modal').style.display = 'block';
 }
 
 function renderCharMap() {
@@ -5995,6 +7502,11 @@ function openChest(chestObj) {
     document.getElementById('chest-contents').textContent =
       '¡Has obtenido: Degolladora ⚔️, Armadura Pesada 🛡 y 4 Gemas Puras 💎!';
     notify('⚔️ Degolladora, Armadura Pesada y 4 Gemas obtenidas!');
+  } else if (chestObj.id === 'pirate_treasure') {
+    // Special pirate chest: just give big gold haul
+    G.player.gold += 200;
+    document.getElementById('chest-contents').textContent = '¡Encontraste 200 de oro!';
+    notify('💰 200 oro obtenido. ¡Rico botín!');
   } else {
     // === DEFAULT CHEST ===
     G.player.gold += 30;
@@ -6016,8 +7528,86 @@ function closeChest() {
   document.getElementById('chest-modal').style.display = 'none';
 }
 
+function renderAjustes() {
+  const pane = document.getElementById('ctab-ajustes');
+  if (!pane) return;
+  const b = G.bindings;
+  const keyLabel = code => {
+    if (!code) return '—';
+    const m = { 'KeyA':'A','KeyB':'B','KeyC':'C','KeyD':'D','KeyE':'E','KeyF':'F',
+      'KeyG':'G','KeyH':'H','KeyI':'I','KeyJ':'J','KeyK':'K','KeyL':'L','KeyM':'M',
+      'KeyN':'N','KeyO':'O','KeyP':'P','KeyQ':'Q','KeyR':'R','KeyS':'S','KeyT':'T',
+      'KeyU':'U','KeyV':'V','KeyW':'W','KeyX':'X','KeyY':'Y','KeyZ':'Z',
+      'ShiftLeft':'Shift Izq','ShiftRight':'Shift Der','Space':'Espacio',
+      'ArrowUp':'↑','ArrowDown':'↓','ArrowLeft':'←','ArrowRight':'→',
+      'F1':'F1','F2':'F2','Digit1':'1','Digit2':'2','Digit3':'3' };
+    return m[code] || code;
+  };
+  const CONTROLES = [
+    { key:'attack',   label:'Atacar',          defaults:'Z / J / R' },
+    { key:'dash',     label:'Dash',            defaults:'X / K / Shift' },
+    { key:'ability',  label:'Habilidad (Q)',   defaults:'Q' },
+    { key:'interact', label:'Interactuar',     defaults:'E' },
+  ];
+  const FIJOS = [
+    { label:'Mover',       value:'WASD / Flechas' },
+    { label:'Inventario',  value:'I' },
+    { label:'Mapa',        value:'M' },
+    { label:'Habilidad 2', value:'T' },
+    { label:'Habilidad 3', value:'F' },
+  ];
+  let html = `<div style="padding:8px;color:#c9a227;font-family:'Cinzel',serif;font-size:13px">⚙ CONTROLES</div>
+<table style="width:100%;border-collapse:collapse;font-size:12px">
+<tr style="color:#888;font-size:11px"><th align="left" style="padding:4px 6px">Acción</th><th style="padding:4px 6px">Teclas fijas</th><th style="padding:4px 6px">Tecla extra</th><th></th></tr>`;
+  for (const r of CONTROLES) {
+    const cur = keyLabel(b[r.key]);
+    html += `<tr style="border-top:1px solid #2a1800">
+      <td style="padding:6px;color:#f0d060">${r.label}</td>
+      <td style="padding:6px;color:#aaa;text-align:center">${r.defaults}</td>
+      <td style="padding:6px;color:#7cf;text-align:center" id="kb-lbl-${r.key}">${cur}</td>
+      <td style="padding:4px"><button class="btn" style="font-size:10px;padding:3px 8px" onclick="startRemap('${r.key}')">Cambiar</button></td>
+    </tr>`;
+  }
+  html += `<tr style="border-top:2px solid #3a2800"><td colspan="4" style="padding:6px 6px 2px;color:#888;font-size:11px">Controles fijos (no remapeables)</td></tr>`;
+  for (const r of FIJOS) {
+    html += `<tr><td style="padding:4px 6px;color:#aaa">${r.label}</td><td colspan="3" style="padding:4px 6px;color:#888">${r.value}</td></tr>`;
+  }
+  html += `</table><div style="padding:8px;text-align:center"><button class="btn" style="font-size:10px;padding:3px 12px" onclick="resetBindings()">Restablecer</button></div>
+<div id="remap-msg" style="text-align:center;color:#7cf;font-size:12px;min-height:20px"></div>`;
+  pane.innerHTML = html;
+}
+
+let _remapTarget = null;
+function startRemap(key) {
+  _remapTarget = key;
+  const msg = document.getElementById('remap-msg');
+  if (msg) msg.textContent = 'Presiona la nueva tecla para "' + key + '"...';
+}
+function resetBindings() {
+  G.bindings = {attack:'',dash:'',ability:'',interact:''};
+  try { localStorage.removeItem('megarpg_bindings'); } catch(e) {}
+  renderAjustes();
+}
+window.addEventListener('keydown', function(e) {
+  if (_remapTarget) {
+    G.bindings[_remapTarget] = e.code;
+    try { localStorage.setItem('megarpg_bindings', JSON.stringify(G.bindings)); } catch(er) {}
+    _remapTarget = null;
+    renderAjustes();
+    e.preventDefault();
+    return;
+  }
+}, true);
+
 function doSleep() {
   G.player.hp = G.player.maxHp;
+  // Recover all companions
+  if (G.companions) {
+    for (const c of G.companions) {
+      c.hp = c.maxHp;
+      c.alive = true;
+    }
+  }
   saveGame();
   notify('💤 Dormiste y te curaste. ¡Partida guardada!');
   updateHUD();
@@ -6027,6 +7617,18 @@ function saveGame() {
   // Collect current weapon upgrade states
   const wUpgrades = {};
   for (const k of Object.keys(WEAPON_CONFIGS)) wUpgrades[k] = !!WEAPON_CONFIGS[k].upgraded;
+
+  // Collect companion data
+  const companionsData = (G.companions || []).map(c => ({
+    name: c.name,
+    x: c.x, y: c.y,
+    weapon: c.weapon,
+    armor: c.armor,
+    hp: c.hp,
+    maxHp: c.maxHp,
+    level: c.level,
+    alive: c.alive
+  }));
 
   const data = {
     zone: G.currentZone,
@@ -6043,6 +7645,7 @@ function saveGame() {
     armors: (G.player.armors  || [G.player.armor]).slice(),
     questFlags: JSON.parse(JSON.stringify(G.questFlags)),
     clearedZones: (G.clearedZones || []).slice(),
+    companions: companionsData,
     level: G.player.level,
     xp: G.player.xp,
     xpToNext: G.player.xpToNext,
@@ -6052,6 +7655,8 @@ function saveGame() {
     maxEnergy: G.player.maxEnergy,
     mp: G.player.mp,
     maxMp: G.player.maxMp,
+    tutorialShown: (G.tutorialShown || []).slice(),
+    abilityUnlocked: G.player.abilityUnlocked || false,
     savedAt: new Date().toLocaleDateString('es-ES', {day:'2-digit',month:'2-digit',year:'numeric'})
   };
   G.save = data;
@@ -6064,11 +7669,14 @@ function loadSave() {
   if (!G.save) { location.reload(); return; }
   document.getElementById('death-screen').style.display = 'none';
   G.screen = 'playing';
+  // strict inventory sync: wipe anything not present in the saved data so
+  // temporary objects (obtained after last save) are removed on reload.
+  G.player.inventory = JSON.parse(JSON.stringify(G.save.inventory || []));
   G.player.hp = G.save.hp;
   G.player.gold = G.save.gold;
-  G.player.inventory = JSON.parse(JSON.stringify(G.save.inventory));
   G.player.weaponUpgraded = G.save.weaponUpgraded;
   G.questFlags = JSON.parse(JSON.stringify(G.save.questFlags));
+  G.tutorialShown = G.save.tutorialShown ? G.save.tutorialShown.slice() : [];
   if (G.save.level    != null) G.player.level      = G.save.level;
   if (G.save.xp       != null) G.player.xp         = G.save.xp;
   if (G.save.xpToNext != null) G.player.xpToNext   = G.save.xpToNext;
@@ -6081,6 +7689,17 @@ function loadSave() {
   if (G.save.weapons  != null) G.player.weapons     = G.save.weapons.slice();
   if (G.save.armors   != null) G.player.armors      = G.save.armors.slice();
   if (G.save.clearedZones != null) G.clearedZones   = G.save.clearedZones.slice();
+  if (G.save.companions != null) {
+    G.companions = [];
+    for (const cd of G.save.companions) {
+      const comp = createCompanion(cd.name, cd.x, cd.y, cd.weapon, cd.armor);
+      comp.hp = cd.hp;
+      comp.maxHp = cd.maxHp;
+      comp.level = cd.level;
+      comp.alive = cd.alive;
+      G.companions.push(comp);
+    }
+  }
   if (G.save.weaponUpgrades) {
     for (const [k,v] of Object.entries(G.save.weaponUpgrades)) {
       if (WEAPON_CONFIGS[k]) WEAPON_CONFIGS[k].upgraded = v;
@@ -6127,7 +7746,8 @@ function updateHUD() {
   // Ability slot
   const abilSlot = document.getElementById('ability-slot');
   if (abilSlot && p.weapon) {
-    abilSlot.style.display = 'flex';
+    if (!p.abilityUnlocked) abilSlot.style.display = 'none';
+    else abilSlot.style.display = 'flex';
     const abilityEmojis = { sword:'\ud83d\udca8', staff:'\ud83d\udee1', bow:'\u2614', summon:p.weaponUpgraded?'\ud83d\udc02':'\ud83d\udfe2' };
     const abilityCDs   = { sword:480, staff:300, bow:480, summon:300 };
     const aIconEl = document.getElementById('ability-icon-text');
@@ -6137,6 +7757,30 @@ function updateHUD() {
     const curCd = (p.weapon==='summon' && p.weaponUpgraded) ? (p.abilityCooldown||0) : (p.abilityCooldown||0);
     const pct = Math.max(0, Math.min(1, curCd / maxCd));
     if (aCdBar) aCdBar.style.height = Math.round(pct * 100) + '%';
+  
+    // Companion HUDs
+    const chud = document.getElementById('companions-hud');
+    if (chud) {
+      const comps = G.companions || [];
+      if (!comps.length) { chud.style.display = 'none'; }
+      else {
+        chud.style.display = 'flex';
+        chud.innerHTML = '';
+        for (const c of comps) {
+          const pct = Math.max(0, Math.min(100, Math.floor((c.hp||0)/(c.maxHp||1)*100)));
+          const color = c.name === 'Mesjor' ? '#8b4513' : '#c9a227';
+          const el = document.createElement('div');
+          el.style.background = 'rgba(18,18,18,0.6)';
+          el.style.border = '1px solid #3a2800';
+          el.style.padding = '6px';
+          el.style.borderRadius = '6px';
+          el.style.minWidth = '120px';
+          el.innerHTML = `<div style="font-size:12px;color:${color}">${c.name} <span style="float:right;font-size:11px;color:#ccc">NV ${c.level||1}</span></div>` +
+                         `<div style="height:8px;background:#222;margin:6px 0;border-radius:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:#e74c3c"></div></div>`;
+          chud.appendChild(el);
+        }
+      }
+    }
   }
 }
 
@@ -6162,6 +7806,11 @@ function gainXP(amount) {
   const p = G.player;
   if (!p || amount <= 0) return;
   p.xp = (p.xp || 0) + amount;
+  // Unlock ability slot on first kill
+  if (!p.abilityUnlocked) {
+    p.abilityUnlocked = true;
+    document.getElementById('ability-slot').style.display = 'flex';
+  }
   showFloatingText(p.x+p.w/2, p.y-28, '+'+amount+' XP', '#f0d060');
   while (p.xp >= p.xpToNext) {
     p.xp -= p.xpToNext;
@@ -6190,6 +7839,7 @@ function levelUp() {
   p.energy = p.maxEnergy;
   p.mp     = p.maxMp;
   openLevelUpModal();
+  playSound('level_up');
   notify('\u2b50 \u00a1Subiste al nivel ' + p.level + '!');
 }
 
@@ -6469,6 +8119,75 @@ function drawAllies() {
   }
 }
 
+// Draw companion NPCs
+function drawCompanions() {
+  if (!G.companions || !G.companions.length) return;
+  for (const c of G.companions) {
+    if (!c.alive) continue;
+    const sx = Math.round(c.x - G.camera.x);
+    const sy = Math.round(c.y - G.camera.y);
+    if (sx+c.w < -20 || sx > 820 || sy+c.h < -20 || sy > 620) continue;
+
+    const frameOff = Math.sin(G.frame * 0.12) * 1.5;
+
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.beginPath();
+    ctx.ellipse(sx+c.w/2, sy+c.h+2, c.w/2-1, 3, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    // MESJOR - HUNTER SPRITE
+    if (c.name === 'Mesjor') {
+      // Body with cloak (hunter outfit)
+      ctx.fillStyle = '#4a5a3a';
+      ctx.fillRect(sx+2, sy+9+frameOff, c.w-4, c.h-9);
+      // Head
+      ctx.fillStyle = '#f0c090';
+      ctx.fillRect(sx+4, sy+frameOff, c.w-8, 11);
+      // Bandana/hat
+      ctx.fillStyle = '#8b4513';
+      ctx.fillRect(sx+3, sy+2+frameOff, c.w-6, 4);
+      // Eye
+      ctx.fillStyle = '#2a1a0a';
+      ctx.fillRect(sx+6, sy+5+frameOff, 2, 2);
+      // Bow (equipment)
+      ctx.strokeStyle = '#8b4513';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(sx+c.w+6, sy+c.h/2+frameOff, 8, -Math.PI*0.6, Math.PI*0.6);
+      ctx.stroke();
+      // Arrow
+      ctx.strokeStyle = '#c0392b';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(sx+c.w+4, sy+c.h/2+frameOff);
+      ctx.lineTo(sx+c.w-2, sy+c.h/2+frameOff);
+      ctx.stroke();
+    }
+
+    // HP bar with companion styling
+    const barW = c.w + 12;
+    const hpPct = Math.max(0, c.hp / c.maxHp);
+    ctx.fillStyle='rgba(0,0,0,0.7)';
+    ctx.fillRect(sx-6, sy-14, barW, 7);
+    ctx.fillStyle='#1a1a1a';
+    ctx.fillRect(sx-5, sy-13, barW-2, 5);
+    const hpCol = hpPct > 0.6 ? '#2ecc71' : hpPct > 0.3 ? '#f39c12' : '#e74c3c';
+    ctx.fillStyle = hpCol;
+    ctx.fillRect(sx-5, sy-13, (barW-2)*hpPct, 5);
+    ctx.fillStyle='rgba(255,255,255,0.25)';
+    ctx.fillRect(sx-5, sy-13, (barW-2)*hpPct, 2);
+    ctx.strokeStyle='rgba(255,255,255,0.2)';
+    ctx.lineWidth=1;
+    ctx.strokeRect(sx-6, sy-14, barW, 7);
+
+    // Name label
+    ctx.fillStyle='#f0d060';
+    ctx.font='bold 9px Cinzel';
+    ctx.fillText(c.name, sx-6, sy-18);
+  }
+}
+
 // Update falling arrow-rain markers
 function updateArrowRain() {
   if (!G.arrowRainMarkers || !G.arrowRainMarkers.length) return;
@@ -6528,7 +8247,7 @@ function drawArrowRain() {
 function updateQuestTracker() {
   const qt = document.getElementById('quest-tracker');
   const qo = document.getElementById('quest-objectives');
-  const hasAny = G.questFlags.hasRelicQuest || G.questFlags.shwingQuestActive || (G.questFlags.hunterStage && G.questFlags.hunterStage > 0);
+  const hasAny = G.questFlags.hasRelicQuest || G.questFlags.shwingQuestActive || (G.questFlags.hunterStage && G.questFlags.hunterStage > 0) || G.questFlags.mesjorQuestActive;
   if (!hasAny) { qt.style.display='none'; return; }
   qt.style.display='block';
   let html = '';
@@ -6550,6 +8269,13 @@ function updateQuestTracker() {
   }
   if (G.questFlags.hunterStage === 3) {
     html += `<div class="quest-obj done">→ Recompensa de Cazador obtenida</div>`;
+  }
+  // Mesjor pirate quest tracker
+  if (G.questFlags.mesjorQuestActive) {
+    html += `<div class="quest-obj ${G.questFlags.piratesCabinCleared?'done':''}">→ Limpiar la Cabaña Pirata (Puerto Oeste)</div>`;
+  }
+  if (G.questFlags.mesjorQuestComplete && !G.questFlags.mesjorQuestActive) {
+    html += `<div class="quest-obj done">→ Mesjor se ha unido a tu equipo</div>`;
   }
   qo.innerHTML = html;
 }
@@ -6671,9 +8397,19 @@ function deleteSlot(e, slotNum) {
   showSlotScreen();
 }
 
+function resetCharSelection() {
+  // Limpia elecciones previas para forzar selección al empezar nueva partida
+  selectedWeapon = null;
+  selectedArmor = null;
+  const cards = document.querySelectorAll('#weapon-choices .choice-card, #armor-choices .choice-card');
+  cards.forEach(c => c.classList.remove('selected'));
+  checkStartBtn();
+}
+
 function newGameInSlot(slotNum) {
   G.activeSlot = slotNum;
   document.getElementById('slot-screen').style.display = 'none';
+  resetCharSelection();
   document.getElementById('char-screen').style.display = 'flex';
 }
 
@@ -6687,7 +8423,6 @@ function loadSlot(slotNum) {
   G.screen = 'playing';
   document.getElementById('zone-name').style.display = 'block';
   document.getElementById('weapon-icon').style.display = 'flex';
-  document.getElementById('ability-slot').style.display = 'flex';
   document.getElementById('map-btn').style.display = 'block';
   buildZones();
   G.player = createPlayer(data.weapon || 'sword', data.armor || 'normal');
@@ -6699,6 +8434,9 @@ function loadSlot(slotNum) {
   G.player.inventory    = JSON.parse(JSON.stringify(data.inventory || []));
   G.player.weaponUpgraded = data.weaponUpgraded;
   G.questFlags          = JSON.parse(JSON.stringify(data.questFlags || {}));
+  G.tutorialShown       = data.tutorialShown ? data.tutorialShown.slice() : [];
+  G.player.abilityUnlocked = data.abilityUnlocked || false;
+  if (data.abilityUnlocked) document.getElementById('ability-slot').style.display = 'flex';
   if (data.level    != null) G.player.level      = data.level;
   if (data.xp       != null) G.player.xp         = data.xp;
   if (data.xpToNext != null) G.player.xpToNext   = data.xpToNext;
@@ -6729,7 +8467,6 @@ function beginAdventure() {
   G.screen = 'playing';
   document.getElementById('zone-name').style.display = 'block';
   document.getElementById('weapon-icon').style.display = 'flex';
-  document.getElementById('ability-slot').style.display = 'flex';
   document.getElementById('map-btn').style.display = 'block';
 
   buildZones();
@@ -6771,12 +8508,13 @@ window.addEventListener('keyup', e => {
 });
 
 // ---- ZONE LOADER (single definition) ----
-function loadZone(zoneId, tx, ty) {
+function loadZone(zoneId, tx, ty, facing) {
   if (G.fadingOut || G.fadingIn) return; // prevent double-trigger
+  playSound('door');
   G.fadingOut = true;
   G.fadeAlpha = 0;
   G.fadeCallback = () => {
-    _doLoadZone(zoneId, tx, ty);
+    _doLoadZone(zoneId, tx, ty, facing);
     G.fadingIn = true;
     G.fadingOut = false;
     G.fadeAlpha = 1;
@@ -6846,11 +8584,12 @@ function drawIslandMap(useCanvas) {
   const subToParent = {
     'farm_crops':'nor_m1','farm_cows':'nor_m3',
     'mine_special':'sur_n1','mine_empty':'sur_m1','mine_b':'sur_n3',
-    'house_start':'village_center',
+    'house_start':'village_center','camino_costa':'village_center',
   };
   const effectiveZone = subToParent[cz] || cz;
 
   const ZONES = [
+    { id:'highland_farm', col:2,row:-1, color:'#3d7a25', label:'Granja W.' },
     { id:'nor_n1', col:1,row:0, color:'#3e7a28', label:'N-NO' },
     { id:'nor_n2', col:2,row:0, color:'#3e7a28', label:'N-N'  },
     { id:'nor_n3', col:3,row:0, color:'#3e7a28', label:'N-NE' },
@@ -6861,13 +8600,12 @@ function drawIslandMap(useCanvas) {
     { id:'nor_s2', col:2,row:2, color:'#3e7a28', label:'N-S'  },
     { id:'nor_s3', col:3,row:2, color:'#3e7a28', label:'N-SE' },
     { id:'west_coast_top', col:0,row:2, color:'#b89860', label:'C.N' },
-    { id:'west_coast_mid', col:0,row:3, color:'#b89860', label:'C.C' },
+    { id:'west_coast_mid', col:0,row:3, color:'#b89860', label:'C.Costa' },
+    { id:'camino_costa',   col:1,row:3, color:'#5a8828', label:'Cam.C' },
     { id:'west_coast_bot', col:0,row:4, color:'#b89860', label:'C.S' },
     { id:'village_center', col:2,row:3, color:'#7a6448', label:'Aldea' },
     { id:'camino_puerto',  col:4,row:3, color:'#5a8828', label:'Camino' },
     { id:'port_zone',      col:5,row:3, color:'#c2a870', label:'Puerto' },
-    { id:'east_a',         col:4,row:2, color:'#3e7a28', label:'E-N'  },
-    { id:'east_b',         col:4,row:4, color:'#3e7a28', label:'E-S'  },
     { id:'sur_n1', col:1,row:4, color:'#2d5a1a', label:'S-NO' },
     { id:'sur_n2', col:2,row:4, color:'#2d5a1a', label:'S-N'  },
     { id:'sur_n3', col:3,row:4, color:'#2d5a1a', label:'S-NE' },
@@ -7348,6 +9086,110 @@ function initMobileControls() {
     btnI.classList.remove('pressed');
   }, {passive: false});
 }
+
+// ===================== WEB AUDIO SYSTEM =====================
+let _audioCtx = null;
+function _getAudio() {
+  if (!_audioCtx) {
+    try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+  }
+  return _audioCtx;
+}
+function playSound(type) {
+  const ctx = _getAudio();
+  if (!ctx) return;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  let osc, gain, osc2, gain2;
+  switch(type) {
+    case 'door':
+      // Wooden knock: two quick thumps
+      for (let i = 0; i < 2; i++) {
+        const g = ctx.createGain(); g.connect(ctx.destination);
+        const o = ctx.createOscillator(); o.type = 'triangle';
+        o.frequency.setValueAtTime(180, t + i*0.08);
+        o.frequency.exponentialRampToValueAtTime(80, t + i*0.08 + 0.06);
+        g.gain.setValueAtTime(0.35, t + i*0.08);
+        g.gain.exponentialRampToValueAtTime(0.001, t + i*0.08 + 0.07);
+        o.connect(g); o.start(t + i*0.08); o.stop(t + i*0.08 + 0.08);
+      }
+      break;
+    case 'talk':
+      // Soft bloop
+      osc = ctx.createOscillator(); gain = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.setValueAtTime(440, t);
+      osc.frequency.linearRampToValueAtTime(520, t + 0.05);
+      gain.gain.setValueAtTime(0.12, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t); osc.stop(t + 0.15);
+      break;
+    case 'hit':
+      // Low thud
+      osc = ctx.createOscillator(); gain = ctx.createGain();
+      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, t);
+      osc.frequency.exponentialRampToValueAtTime(40, t + 0.08);
+      gain.gain.setValueAtTime(0.4, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t); osc.stop(t + 0.12);
+      break;
+    case 'melee':
+      // Slash: high-freq burst
+      osc = ctx.createOscillator(); gain = ctx.createGain();
+      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(800, t);
+      osc.frequency.exponentialRampToValueAtTime(200, t + 0.06);
+      gain.gain.setValueAtTime(0.25, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t); osc.stop(t + 0.08);
+      break;
+    case 'shoot':
+      // Bow twang: quick rise-fall
+      osc = ctx.createOscillator(); gain = ctx.createGain();
+      osc.type = 'triangle'; osc.frequency.setValueAtTime(300, t);
+      osc.frequency.exponentialRampToValueAtTime(600, t + 0.02);
+      osc.frequency.exponentialRampToValueAtTime(150, t + 0.12);
+      gain.gain.setValueAtTime(0.2, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t); osc.stop(t + 0.15);
+      break;
+    case 'dash':
+      // Whoosh
+      osc = ctx.createOscillator(); gain = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.setValueAtTime(600, t);
+      osc.frequency.exponentialRampToValueAtTime(200, t + 0.1);
+      gain.gain.setValueAtTime(0.15, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t); osc.stop(t + 0.13);
+      break;
+    case 'pickup':
+      // Chime: two ascending notes
+      [440, 660].forEach((f, i) => {
+        const g = ctx.createGain(); g.connect(ctx.destination);
+        const o = ctx.createOscillator(); o.type = 'sine';
+        o.frequency.value = f;
+        g.gain.setValueAtTime(0.15, t + i*0.09);
+        g.gain.exponentialRampToValueAtTime(0.001, t + i*0.09 + 0.15);
+        o.connect(g); o.start(t + i*0.09); o.stop(t + i*0.09 + 0.18);
+      });
+      break;
+    case 'level_up':
+      // Short fanfare
+      [262, 330, 392, 523].forEach((f, i) => {
+        const g = ctx.createGain(); g.connect(ctx.destination);
+        const o = ctx.createOscillator(); o.type = 'square';
+        o.frequency.value = f;
+        g.gain.setValueAtTime(0.12, t + i*0.1);
+        g.gain.exponentialRampToValueAtTime(0.001, t + i*0.1 + 0.18);
+        o.connect(g); o.start(t + i*0.1); o.stop(t + i*0.1 + 0.2);
+      });
+      break;
+  }
+}
+// Unlock AudioContext on first user interaction
+(function(){
+  const _unlock = () => { _getAudio(); document.removeEventListener('keydown', _unlock); document.removeEventListener('click', _unlock); };
+  document.addEventListener('keydown', _unlock);
+  document.addEventListener('click', _unlock);
+})();
 
 // Start the game loop
 initMobileControls();
