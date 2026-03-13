@@ -28,36 +28,63 @@
 
   const CHARACTERS = [
     {
-      id: "warrior",
-      name: "Steel Vanguard",
-      hp: 180,
-      speed: 180,
-      meleeMult: 1.35,
-      rangedMult: 0.8,
-      magicMult: 0.8,
-      armor: 0.12,
+      id: "knight",
+      name: "Iron Knight",
+      hp: 190,
+      speed: 165,
+      meleeMult: 1.38,
+      rangedMult: 0.78,
+      magicMult: 0.72,
+      armor: 0.16,
+      dodge: 0.05,
       startWeapon: "iron_sword"
     },
     {
-      id: "mage",
-      name: "Hex Arcanist",
-      hp: 110,
-      speed: 200,
-      meleeMult: 0.75,
-      rangedMult: 0.9,
-      magicMult: 1.4,
-      armor: 0.04,
-      startWeapon: "arc_staff"
+      id: "orc",
+      name: "Axe Orc",
+      hp: 225,
+      speed: 145,
+      meleeMult: 1.52,
+      rangedMult: 0.7,
+      magicMult: 0.64,
+      armor: 0.08,
+      dodge: 0.02,
+      startWeapon: "battle_axe"
     },
     {
-      id: "ranger",
-      name: "Ash Ranger",
-      hp: 135,
-      speed: 230,
-      meleeMult: 0.9,
-      rangedMult: 1.35,
-      magicMult: 0.8,
-      armor: 0.06,
+      id: "mage",
+      name: "Blue Pyromancer",
+      hp: 108,
+      speed: 225,
+      meleeMult: 0.72,
+      rangedMult: 0.92,
+      magicMult: 1.46,
+      armor: 0.04,
+      dodge: 0.12,
+      startWeapon: "fire_wand"
+    },
+    {
+      id: "hunter",
+      name: "Lumber Hunter",
+      hp: 108,
+      speed: 225,
+      meleeMult: 0.72,
+      rangedMult: 1.46,
+      magicMult: 0.92,
+      armor: 0.04,
+      dodge: 0.12,
+      startWeapon: "crossbow"
+    },
+    {
+      id: "frogfolk",
+      name: "Bog Frogfolk",
+      hp: 108,
+      speed: 205,
+      meleeMult: 0.72,
+      rangedMult: 1.46,
+      magicMult: 0.92,
+      armor: 0.04,
+      dodge: 0.2,
       startWeapon: "shortbow"
     }
   ];
@@ -310,8 +337,10 @@
   ];
 
   const WEAPON_OFFERS = [
+    { id: "iron_sword", rarity: 1, name: "Iron Sword", desc: "Reliable melee starter blade", cost: 44, weaponId: "iron_sword" },
     { id: "battle_axe", rarity: 2, name: "Battle Axe", desc: "Slow heavy melee weapon", cost: 52, weaponId: "battle_axe" },
     { id: "fire_wand", rarity: 2, name: "Fire Wand", desc: "Rapid magic projectiles", cost: 50, weaponId: "fire_wand" },
+    { id: "shortbow", rarity: 1, name: "Shortbow", desc: "Fast light ranged weapon", cost: 46, weaponId: "shortbow" },
     { id: "crossbow", rarity: 2, name: "Crossbow", desc: "Powerful ranged shots", cost: 54, weaponId: "crossbow" },
     { id: "thunder_hammer", rarity: 4, name: "Thunder Hammer", desc: "Huge melee arc and burst damage", cost: 86, weaponId: "thunder_hammer" },
     { id: "twin_daggers", rarity: 2, name: "Twin Daggers", desc: "Ultra fast close combat", cost: 56, weaponId: "twin_daggers" },
@@ -321,9 +350,11 @@
 
   const SPRITE_PATHS = {
     characters: {
-      warrior: "assets/sprites/characters/warrior.svg",
+      knight: "assets/sprites/characters/warrior.svg",
+      orc: "assets/sprites/characters/orc.svg",
       mage: "assets/sprites/characters/mage.svg",
-      ranger: "assets/sprites/characters/ranger.svg",
+      hunter: "assets/sprites/characters/ranger.svg",
+      frogfolk: "assets/sprites/characters/frogfolk.svg",
       merchant: "assets/sprites/characters/merchant.svg"
     },
     enemies: {
@@ -924,6 +955,7 @@
       this.bonus = {
         maxHp: 0,
         speed: 0,
+        dodge: 0,
         melee: 0,
         ranged: 0,
         magic: 0,
@@ -969,6 +1001,10 @@
 
     armor() {
       return clamp(this.base.armor + this.bonus.armor, 0, 0.75);
+    }
+
+    dodgeChance() {
+      return clamp((this.base.dodge || 0) + this.bonus.dodge, 0, 0.65);
     }
 
     currentDashCooldown() {
@@ -1164,6 +1200,10 @@
         return;
       }
 
+      if (Math.random() < this.dodgeChance()) {
+        return;
+      }
+
       const final = raw * (1 - this.armor());
       this.hp -= final;
       this.invulnerable = 0.4;
@@ -1353,10 +1393,16 @@
     return pickRandom(candidates);
   }
 
-  function generateShopOffers() {
+  function generateShopOffers(player = null) {
+    const ownedWeapons = new Set(
+      player ? player.weapons.map((w) => w.id) : []
+    );
+
     const combined = [
       ...PASSIVE_ITEMS.map((item) => ({ ...item, kind: "item" })),
-      ...WEAPON_OFFERS.map((offer) => ({ ...offer, kind: "weapon" }))
+      ...WEAPON_OFFERS
+        .filter((offer) => !ownedWeapons.has(offer.weaponId))
+        .map((offer) => ({ ...offer, kind: "weapon" }))
     ];
 
     const offers = [];
@@ -1453,7 +1499,7 @@
 
   function openMerchantCamp() {
     game.state = GAME_STATE.MERCHANT;
-    game.shopOffers = generateShopOffers();
+    game.shopOffers = generateShopOffers(game.player);
     game.projectiles = [];
     game.groundOffers = [];
     const mult = getMerchantPriceMultiplier();
@@ -1620,6 +1666,7 @@
       <p>HP: ${Math.floor(game.player.hp)} / ${Math.floor(game.player.maxHp())}</p>
       <p>Move Speed: ${Math.floor(game.player.speed())}</p>
       <p>Armor: ${Math.round(game.player.armor() * 100)}%</p>
+      <p>Dodge: ${Math.round(game.player.dodgeChance() * 100)}%</p>
       <p>Lifesteal: ${Math.round(game.player.bonus.lifesteal * 100)}%</p>
       <p>Gold Bonus: ${Math.round(game.player.bonus.goldFactor * 100)}%</p>
       <p>Dash CD: ${game.player.currentDashCooldown().toFixed(2)}s</p>
@@ -1962,6 +2009,7 @@
         <h3>${c.name}</h3>
         <p>HP: ${c.hp}</p>
         <p>Speed: ${c.speed}</p>
+        <p>Armor: ${Math.round(c.armor * 100)}% | Dodge: ${Math.round((c.dodge || 0) * 100)}%</p>
         <p>Weapon: ${w.name} (${w.kind})</p>
         <p>Melee ${Math.round(c.meleeMult * 100)}% | Magic ${Math.round(c.magicMult * 100)}% | Ranged ${Math.round(c.rangedMult * 100)}%</p>
       `;
