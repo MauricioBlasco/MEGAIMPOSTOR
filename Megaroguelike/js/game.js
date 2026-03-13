@@ -303,7 +303,10 @@
     { id: "gambler_coin", rarity: 2, name: "Gambler Coin", desc: "+70% gold, -20 max HP", cost: 48, apply: (p) => { p.bonus.goldFactor += 0.7; p.bonus.maxHp -= 20; p.hp = Math.min(p.maxHp(), p.hp); } },
     { id: "phantom_cloak", rarity: 4, name: "Phantom Cloak", desc: "+10 speed, +5% lifesteal, +6% armor", cost: 74, apply: (p) => { p.bonus.speed += 10; p.bonus.lifesteal += 0.05; p.bonus.armor += 0.06; } },
     { id: "titan_grip", rarity: 3, name: "Titan Grip", desc: "+25% melee range, +15% melee arc", cost: 62, apply: (p) => { p.bonus.meleeRangeFactor *= 1.25; p.bonus.meleeArcBonus += Math.PI * 0.15; } },
-    { id: "seeker_crystal", rarity: 4, name: "Seeker Crystal", desc: "Magic shots become homing", cost: 84, apply: (p) => { p.bonus.magicHoming += 3.2; } }
+    { id: "seeker_crystal", rarity: 4, name: "Seeker Crystal", desc: "Magic shots become homing", cost: 84, apply: (p) => { p.bonus.magicHoming += 3.2; } },
+    { id: "blood_moss", rarity: 3, name: "Blood Moss", desc: "Regenerate 1.6 HP per second", cost: 66, apply: (p) => { p.bonus.hpRegen += 1.6; } },
+    { id: "echo_blade", rarity: 4, name: "Echo Blade", desc: "Legendary: melee launches piercing half-wave", cost: 98, apply: (p) => { p.bonus.swordWave += 1; } },
+    { id: "ranger_harness", rarity: 4, name: "Ranger Harness", desc: "Ranged weapons gain +1 dash charge", cost: 88, apply: (p) => { p.bonus.rangedDashBonus = 1; } }
   ];
 
   const WEAPON_OFFERS = [
@@ -370,7 +373,10 @@
       gambler_coin: "assets/sprites/items/gambler_coin.svg",
       phantom_cloak: "assets/sprites/items/phantom_cloak.svg",
       titan_grip: "assets/sprites/items/titan_grip.svg",
-      seeker_crystal: "assets/sprites/items/seeker_crystal.svg"
+      seeker_crystal: "assets/sprites/items/seeker_crystal.svg",
+      blood_moss: "assets/sprites/items/blood_moss.svg",
+      echo_blade: "assets/sprites/items/echo_blade.svg",
+      ranger_harness: "assets/sprites/items/ranger_harness.svg"
     }
   };
 
@@ -383,6 +389,7 @@
   const waveText = document.getElementById("waveText");
   const goldText = document.getElementById("goldText");
   const hpBar = document.getElementById("hpBar");
+  const dashBar = document.getElementById("dashBar");
   const weaponSlots = document.getElementById("weaponSlots");
 
   const charSelect = document.getElementById("charSelect");
@@ -391,6 +398,7 @@
   const shopPanel = document.getElementById("shopPanel");
   const shopCards = document.getElementById("shopCards");
   const skipShopBtn = document.getElementById("skipShopBtn");
+  const rerollShopBtn = document.getElementById("rerollShopBtn");
 
   const inventoryBtn = document.getElementById("inventoryBtn");
   const inventoryPanel = document.getElementById("inventoryPanel");
@@ -450,6 +458,10 @@
     return "magic_bolt";
   }
 
+  function isRangedWeapon(weapon) {
+    return !!weapon && weapon.kind === "ranged";
+  }
+
   function loadSpriteAssets() {
     const loads = [];
     Object.keys(SPRITE_PATHS).forEach((group) => {
@@ -506,6 +518,8 @@
       this.life = 1.9;
       this.homingStrength = 0;
       this.homingRange = 220;
+      this.pierce = false;
+      this.hitTargets = new WeakSet();
       this.dead = false;
     }
 
@@ -922,7 +936,10 @@
         dashCooldownFactor: 1,
         meleeRangeFactor: 1,
         meleeArcBonus: 0,
-        magicHoming: 0
+        magicHoming: 0,
+        hpRegen: 0,
+        swordWave: 0,
+        rangedDashBonus: 0
       };
 
       this.weapons = [
@@ -935,7 +952,8 @@
       this.lastMoveDir = { x: 1, y: 0 };
       this.dashDir = { x: 1, y: 0 };
       this.dashTimer = 0;
-      this.dashCooldown = 0;
+      this.dashRechargeTimer = 0;
+      this.dashCharges = 1;
       this.baseDashDuration = 0.16;
       this.baseDashSpeed = 520;
       this.baseDashCooldown = 1.4;
@@ -957,17 +975,50 @@
       return Math.max(0.45, this.baseDashCooldown * this.bonus.dashCooldownFactor);
     }
 
+    currentDashMaxCharges() {
+      const weapon = this.weapons[this.activeWeapon];
+      const extra = this.bonus.rangedDashBonus > 0 && isRangedWeapon(weapon) ? 1 : 0;
+      return 1 + extra;
+    }
+
+    dashChargeFillPct() {
+      const maxCharges = this.currentDashMaxCharges();
+      if (maxCharges <= 0) {
+        return 0;
+      }
+
+      const cooldown = this.currentDashCooldown();
+      const partial = this.dashCharges >= maxCharges || this.dashRechargeTimer <= 0
+        ? 0
+        : (cooldown - this.dashRechargeTimer) / cooldown;
+
+      return clamp((this.dashCharges + partial) / maxCharges, 0, 1);
+    }
+
+    normalizeDashState() {
+      const maxCharges = this.currentDashMaxCharges();
+      this.dashCharges = clamp(this.dashCharges, 0, maxCharges);
+      if (this.dashCharges >= maxCharges) {
+        this.dashRechargeTimer = 0;
+      }
+    }
+
     dashSpeed() {
       return this.baseDashSpeed + this.bonus.dashPower;
     }
 
     triggerDash() {
-      if (this.dashCooldown > 0 || this.dashTimer > 0) {
+      this.normalizeDashState();
+      if (this.dashCharges <= 0 || this.dashTimer > 0) {
         return;
       }
 
+      const maxCharges = this.currentDashMaxCharges();
+      this.dashCharges -= 1;
       this.dashTimer = this.baseDashDuration;
-      this.dashCooldown = this.currentDashCooldown();
+      if (this.dashCharges < maxCharges && this.dashRechargeTimer <= 0) {
+        this.dashRechargeTimer = this.currentDashCooldown();
+      }
       this.dashDir = { x: this.lastMoveDir.x, y: this.lastMoveDir.y };
       this.invulnerable = Math.max(this.invulnerable, 0.1);
     }
@@ -994,8 +1045,19 @@
       this.attackCooldown -= dt;
       this.invulnerable -= dt;
       this.damageFlash = Math.max(0, this.damageFlash - dt * 3);
-      this.dashCooldown = Math.max(0, this.dashCooldown - dt);
       this.dashTimer = Math.max(0, this.dashTimer - dt);
+      this.normalizeDashState();
+
+      const maxCharges = this.currentDashMaxCharges();
+      if (this.dashCharges < maxCharges) {
+        this.dashRechargeTimer = Math.max(0, this.dashRechargeTimer - dt);
+        if (this.dashRechargeTimer <= 0) {
+          this.dashCharges += 1;
+          if (this.dashCharges < maxCharges) {
+            this.dashRechargeTimer = this.currentDashCooldown();
+          }
+        }
+      }
 
       let dx = 0;
       let dy = 0;
@@ -1053,6 +1115,25 @@
               this.hp = Math.min(this.maxHp(), this.hp + damage * this.bonus.lifesteal * 0.16);
             }
           }
+        }
+
+        if (this.bonus.swordWave > 0 && weapon.id.includes("sword")) {
+          const waveSpeed = 430;
+          const wave = new Projectile(
+            this.x + aim.x * meleeRange,
+            this.y + aim.y * meleeRange,
+            aim.x * waveSpeed,
+            aim.y * waveSpeed,
+            damage * 0.5,
+            "player",
+            3,
+            "#d7f2ff",
+            "magic_bolt",
+            Math.atan2(aim.y, aim.x) + Math.PI / 2
+          );
+          wave.pierce = true;
+          wave.life = 0.55;
+          projectiles.push(wave);
         }
       } else {
         const speed = weapon.projectileSpeed;
@@ -1163,7 +1244,8 @@
     merchantMessage: "",
     merchantMessageTimer: 0,
     activeBossId: "",
-    hazards: []
+    hazards: [],
+    rerollCount: 0
   };
 
   function getWaveEnemyPressure(waveNumber) {
@@ -1180,10 +1262,21 @@
   }
 
   function getMerchantPriceMultiplier() {
-    const progress = 1 + game.wave * 0.055;
+    const progress = 1 + game.wave * 0.082;
     const nextPressure = getWaveEnemyPressure(game.wave + 1);
-    const pressureFactor = 1 + nextPressure * 0.009;
-    return clamp(progress * pressureFactor, 1.02, 2.35);
+    const pressureFactor = 1 + nextPressure * 0.013;
+    return clamp(progress * pressureFactor, 1.06, 2.75);
+  }
+
+  function getRerollCost() {
+    return Math.round(22 + game.rerollCount * 14 + game.wave * 3);
+  }
+
+  function updateRerollButtonLabel() {
+    if (!rerollShopBtn) {
+      return;
+    }
+    rerollShopBtn.textContent = `Reroll (${getRerollCost()}g)`;
   }
 
   function spawnToxicPool(x, y, radius, life, damage) {
@@ -1320,6 +1413,7 @@
     game.wave = 0;
     game.kills = 0;
     game.elapsed = 0;
+    game.rerollCount = 0;
     hideOverlay(charSelect);
     hideOverlay(endPanel);
     hideOverlay(inventoryPanel);
@@ -1383,6 +1477,25 @@
     }
 
     showMerchantUI();
+    updateRerollButtonLabel();
+  }
+
+  function rerollMerchantOffers() {
+    if (game.state !== GAME_STATE.MERCHANT) {
+      return;
+    }
+
+    const cost = getRerollCost();
+    if (game.player.gold < cost) {
+      showMerchantMessage("Not enough gold for reroll.");
+      return;
+    }
+
+    game.player.gold -= cost;
+    game.rerollCount += 1;
+    openMerchantCamp();
+    showMerchantMessage(`Reroll used (${game.rerollCount} total).`);
+    refreshHUD();
   }
 
   function closeMerchantAndAdvance() {
@@ -1455,6 +1568,8 @@
     goldText.textContent = `Gold: ${Math.floor(game.player.gold)}`;
     const hpPct = clamp(game.player.hp / game.player.maxHp(), 0, 1);
     hpBar.style.width = `${Math.round(hpPct * 100)}%`;
+    const dashPct = game.player.dashChargeFillPct();
+    dashBar.style.width = `${Math.round(dashPct * 100)}%`;
   }
 
   function renderWeaponSlots() {
@@ -1488,6 +1603,7 @@
         if (!game.player.weapons[i]) return;
         game.player.activeWeapon = i;
         renderWeaponSlots();
+        refreshHUD();
       });
 
       weaponSlots.appendChild(slot);
@@ -1507,8 +1623,10 @@
       <p>Lifesteal: ${Math.round(game.player.bonus.lifesteal * 100)}%</p>
       <p>Gold Bonus: ${Math.round(game.player.bonus.goldFactor * 100)}%</p>
       <p>Dash CD: ${game.player.currentDashCooldown().toFixed(2)}s</p>
+      <p>Dash Charges: ${game.player.currentDashMaxCharges()}</p>
       <p>Melee Size: x${game.player.bonus.meleeRangeFactor.toFixed(2)}</p>
       <p>Magic Homing: ${game.player.bonus.magicHoming > 0 ? "Enabled" : "Off"}</p>
+      <p>HP Regen: ${game.player.bonus.hpRegen.toFixed(1)} /s</p>
     `;
 
     inventoryItems.innerHTML = "";
@@ -1618,6 +1736,8 @@
     ctx.font = "13px Consolas";
     ctx.textAlign = "center";
     ctx.fillText("Merchant Camp", cx, cy - 24);
+    ctx.fillStyle = "#cde3f2";
+    ctx.fillText(`Rerolls used this run: ${game.rerollCount}`, cx, cy - 8);
 
     const sprite = getSprite("characters", "merchant");
     if (sprite) {
@@ -1642,6 +1762,10 @@
 
   function updatePlaying(dt) {
     game.elapsed += dt;
+
+    if (game.player.bonus.hpRegen > 0) {
+      game.player.hp = Math.min(game.player.maxHp(), game.player.hp + game.player.bonus.hpRegen * dt);
+    }
 
     if (game.spawnQueue.length > 0) {
       game.enemySpawnTimer -= dt;
@@ -1670,15 +1794,21 @@
       if (proj.type === "player") {
         for (const e of game.enemies) {
           if (e.dead) continue;
+          if (proj.hitTargets.has(e)) continue;
           const d = distance(proj.x, proj.y, e.x, e.y);
           if (d <= proj.size + e.radius) {
             e.takeDamage(proj.damage);
-            proj.dead = true;
+            proj.hitTargets.add(e);
+            if (!proj.pierce) {
+              proj.dead = true;
+            }
 
             if (game.player.bonus.lifesteal > 0) {
               game.player.hp = Math.min(game.player.maxHp(), game.player.hp + proj.damage * game.player.bonus.lifesteal * 0.12);
             }
-            break;
+            if (!proj.pierce) {
+              break;
+            }
           }
         }
       } else {
@@ -1724,6 +1854,9 @@
   function updateMerchant(dt) {
     game.elapsed += dt;
     game.merchantMessageTimer = Math.max(0, game.merchantMessageTimer - dt);
+    if (game.player.bonus.hpRegen > 0) {
+      game.player.hp = Math.min(game.player.maxHp(), game.player.hp + game.player.bonus.hpRegen * dt);
+    }
     game.player.update(dt, [], [], false);
     refreshHUD();
   }
@@ -1864,17 +1997,20 @@
       if (game.player && game.player.weapons.length > 1) {
         game.player.activeWeapon = game.player.activeWeapon === 0 ? 1 : 0;
         renderWeaponSlots();
+        refreshHUD();
       }
     }
 
     if (e.code === "Digit1" && game.player && game.player.weapons[0]) {
       game.player.activeWeapon = 0;
       renderWeaponSlots();
+      refreshHUD();
     }
 
     if (e.code === "Digit2" && game.player && game.player.weapons[1]) {
       game.player.activeWeapon = 1;
       renderWeaponSlots();
+      refreshHUD();
     }
 
     if (e.code === "KeyI") {
@@ -1897,6 +2033,7 @@
   });
 
   skipShopBtn.addEventListener("click", closeMerchantAndAdvance);
+  rerollShopBtn.addEventListener("click", rerollMerchantOffers);
   inventoryBtn.addEventListener("click", toggleInventory);
   closeInventoryBtn.addEventListener("click", toggleInventory);
 
@@ -1918,10 +2055,12 @@
     game.wave = 0;
     game.kills = 0;
     game.elapsed = 0;
+    game.rerollCount = 0;
 
     waveText.textContent = `Wave: 0/${MAX_WAVE}`;
     goldText.textContent = "Gold: 0";
     hpBar.style.width = "100%";
+    dashBar.style.width = "100%";
     weaponSlots.innerHTML = "";
   });
 

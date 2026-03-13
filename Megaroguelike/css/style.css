@@ -83,6 +83,19 @@ body {
   background: linear-gradient(90deg, #df5959, #cf2e2e);
 }
 
+#dashWrap {
+  width: 170px;
+  height: 16px;
+  border: 2px solid #5f7686;
+  background: #12212b;
+}
+
+#dashBar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #59c2f5, #2a9cd6);
+}
+
 #weaponPanel {
   position: absolute;
   right: max(20px, calc(50vw - 470px));
@@ -259,6 +272,7 @@ body {
 #shopPanel.merchantMode .row {
   margin-top: 8px;
   justify-content: flex-start;
+  gap: 8px;
 }
 
 ul {
@@ -277,6 +291,10 @@ ul {
   #weaponPanel {
     width: 190px;
     padding: 6px;
+  }
+
+  #dashWrap {
+    width: 112px;
   }
 
   .weaponSlot {
