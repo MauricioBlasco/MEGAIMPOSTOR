@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mega Roguelike Demo</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="gameRoot">
+    <header id="hudBar">
+      <div id="hudLeft">
+        <span id="waveText">Wave: 0</span>
+        <span id="goldText">Gold: 0</span>
+      </div>
+      <div id="hpWrap">
+        <div id="hpBar"></div>
+      </div>
+      <div id="hudRight">
+        <button id="inventoryBtn" class="smallBtn">Inventory (I)</button>
+      </div>
+    </header>
+
+    <canvas id="gameCanvas" width="960" height="720"></canvas>
+
+    <div id="weaponPanel">
+      <div class="weaponTitle">Weapons (Tab / 1 / 2) | Dash: Shift | Buy: E</div>
+      <div id="weaponSlots"></div>
+    </div>
+
+    <div id="charSelect" class="overlay show">
+      <div class="panel wide">
+        <h1>Choose Your Hunter</h1>
+        <p class="muted">Each hero begins with a different weapon and specialized stats.</p>
+        <div id="charCards" class="cardGrid"></div>
+      </div>
+    </div>
+
+    <div id="shopPanel" class="hidden">
+      <h2>Merchant Camp</h2>
+      <p class="muted">Walk to an offer and press E. You can buy up to 3 offers per visit.</p>
+      <div id="shopCards" class="cardGrid"></div>
+      <div class="row">
+        <button id="skipShopBtn" class="smallBtn">Skip Merchant</button>
+      </div>
+    </div>
+
+    <div id="inventoryPanel" class="overlay hidden">
+      <div class="panel">
+        <h2>Character Sheet</h2>
+        <div id="inventoryStats"></div>
+        <h3>Items</h3>
+        <ul id="inventoryItems"></ul>
+        <button id="closeInventoryBtn" class="smallBtn">Close</button>
+      </div>
+    </div>
+
+    <div id="endPanel" class="overlay hidden">
+      <div class="panel">
+        <h2 id="endTitle">Victory</h2>
+        <p id="endSummary"></p>
+        <button id="restartBtn" class="smallBtn">Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/game.js"></script>
+</body>
+</html>
