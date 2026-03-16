@@ -12,6 +12,8 @@
 
   const MAX_WAVE = 10;
   const MERCHANT_INTERACT_RANGE = 56;
+  const ENEMY_WAVE_INCREASE = 1.4;
+  const WAVE_SPAWN_DURATION = 25;
 
   const ARENA = {
     x: 180,
@@ -37,6 +39,7 @@
       magicMult: 0.72,
       armor: 0.16,
       dodge: 0.05,
+      luck: 1,
       startWeapon: "iron_sword"
     },
     {
@@ -49,6 +52,7 @@
       magicMult: 0.64,
       armor: 0.08,
       dodge: 0.02,
+      luck: 1,
       startWeapon: "battle_axe"
     },
     {
@@ -61,6 +65,7 @@
       magicMult: 1.46,
       armor: 0.04,
       dodge: 0.12,
+      luck: 1,
       startWeapon: "fire_wand"
     },
     {
@@ -73,6 +78,7 @@
       magicMult: 0.92,
       armor: 0.04,
       dodge: 0.12,
+      luck: 1.25,
       startWeapon: "crossbow"
     },
     {
@@ -85,7 +91,66 @@
       magicMult: 0.92,
       armor: 0.04,
       dodge: 0.2,
+      luck: 1,
       startWeapon: "shortbow"
+    },
+    {
+      id: "engineer",
+      name: "Copper Engineer",
+      hp: 160,
+      speed: 214,
+      meleeMult: 0.86,
+      rangedMult: 0.84,
+      magicMult: 1.0,
+      armor: 0.07,
+      dodge: 0.1,
+      luck: 1,
+      startWeapon: "soldering_iron"
+    },
+    {
+      id: "conductor",
+      name: "Conductor",
+      hp: 168,
+      speed: 200,
+      meleeMult: 1.0,
+      rangedMult: 1.0,
+      magicMult: 1.0,
+      armor: 0.08,
+      dodge: 0.08,
+      luck: 1.25,
+      startWeapon: "drone_weapon",
+      trait: "Trait: Drone Specialist (+25% Drone Weapon damage)"
+    },
+    {
+      id: "slot_machine_robot",
+      name: "Slot Machine Robot",
+      hp: 150,
+      speed: 190,
+      meleeMult: 1,
+      rangedMult: 1,
+      magicMult: 1,
+      armor: 0.08,
+      dodge: 0.07,
+      luck: 4,
+      startWeapon: "arc_staff",
+      startingGold: 100,
+      weaponLocked: true,
+      trait: "Trait: Spend 1 Gold per attack. Damage rolls from 1 to 100 scale with Luck."
+    },
+    {
+      id: "thief",
+      name: "Thief",
+      hp: 90,
+      speed: 248,
+      meleeMult: 0.85,
+      rangedMult: 0.82,
+      magicMult: 0.8,
+      armor: 0.02,
+      dodge: 0.24,
+      luck: 1.2,
+      startWeapon: "dagger",
+      goldDropMultiplier: 2,
+      trait: "Trait: Greed (x2 gold drops)."
     }
   ];
 
@@ -170,6 +235,17 @@
       arc: Math.PI * 0.78,
       color: "#ececec"
     },
+    dagger: {
+      id: "dagger",
+      name: "Dagger",
+      kind: "melee",
+      damage: 10,
+      goldScaling: 0.06,
+      cooldown: 0.265,
+      range: 70,
+      arc: Math.PI * 0.72,
+      color: "#e6e6e6"
+    },
     frost_orb: {
       id: "frost_orb",
       name: "Frost Orb",
@@ -189,6 +265,28 @@
       projectileSpeed: 700,
       projectileSize: 6,
       color: "#d7a6ff"
+    },
+    soldering_iron: {
+      id: "soldering_iron",
+      name: "Soldering Iron",
+      kind: "magic",
+      damage: 9,
+      cooldown: 0.26,
+      projectileSpeed: 330,
+      projectileSize: 4,
+      projectileLife: 0.28,
+      projectileSpread: 0.18,
+      color: "#ff9861"
+    },
+    drone_weapon: {
+      id: "drone_weapon",
+      name: "Drone Weapon",
+      kind: "ranged",
+      damage: 26,
+      cooldown: 0.34,
+      projectileSpeed: 700,
+      projectileSize: 4,
+      color: "#8fe6ff"
     }
   };
 
@@ -333,7 +431,29 @@
     { id: "seeker_crystal", rarity: 4, name: "Seeker Crystal", desc: "Magic shots become homing", cost: 84, apply: (p) => { p.bonus.magicHoming += 3.2; } },
     { id: "blood_moss", rarity: 3, name: "Blood Moss", desc: "Regenerate 1.6 HP per second", cost: 66, apply: (p) => { p.bonus.hpRegen += 1.6; } },
     { id: "echo_blade", rarity: 4, name: "Echo Blade", desc: "Legendary: melee launches piercing half-wave", cost: 98, apply: (p) => { p.bonus.swordWave += 1; } },
-    { id: "ranger_harness", rarity: 4, name: "Ranger Harness", desc: "Ranged weapons gain +1 dash charge", cost: 88, apply: (p) => { p.bonus.rangedDashBonus = 1; } }
+    { id: "ranger_harness", rarity: 4, name: "Ranger Harness", desc: "Ranged weapons gain +1 dash charge", cost: 88, apply: (p) => { p.bonus.rangedDashBonus = 1; } },
+    { id: "extra_sentry", rarity: 1, name: "Extra Sentry", desc: "+1 Engineer turret", cost: 34, apply: (p) => { p.bonus.sentryCountBonus += 1; p.syncEngineerSentries(); } },
+    { id: "overclock_chip", rarity: 1, name: "Overclock Chip", desc: "+8 turret damage", cost: 34, apply: (p) => { p.bonus.sentryDamageBonus += 8; } },
+    { id: "rapid_cycle", rarity: 1, name: "Rapid Cycle", desc: "+12% turret attack speed", cost: 36, apply: (p) => { p.bonus.sentryRateFactor *= 0.88; } },
+    { id: "lightning_overlord", rarity: 4, name: "Lightning Overlord", desc: "Legendary turret fires 5 AoE lightning bolts", cost: 108, apply: (p) => { p.bonus.lightningOverlord = true; p.syncEngineerSentries(); } },
+    { id: "lucky_clover", rarity: 1, name: "Lucky Clover", desc: "+1 luck", cost: 32, apply: (p) => { p.bonus.luckFlat += 1; } },
+    {
+      id: "volatile_fortune_core",
+      rarity: 3,
+      name: "Volatile Fortune Core",
+      desc: "Epic: +10 luck, but it drops when hit (down to 0.5)",
+      cost: 82,
+      apply: (p) => { p.bonus.epicLuckCurrent = Math.max(p.bonus.epicLuckCurrent, 10); }
+    },
+    {
+      id: "drone_missile",
+      rarity: 4,
+      name: "Drone Missile",
+      desc: "Legendary: drone fires explosive missiles at 25% rate",
+      cost: 102,
+      condition: (p) => !!p && p.hasWeapon("drone_weapon"),
+      apply: (p) => { p.bonus.droneMissile = true; }
+    }
   ];
 
   const WEAPON_OFFERS = [
@@ -344,17 +464,24 @@
     { id: "crossbow", rarity: 2, name: "Crossbow", desc: "Powerful ranged shots", cost: 54, weaponId: "crossbow" },
     { id: "thunder_hammer", rarity: 4, name: "Thunder Hammer", desc: "Huge melee arc and burst damage", cost: 86, weaponId: "thunder_hammer" },
     { id: "twin_daggers", rarity: 2, name: "Twin Daggers", desc: "Ultra fast close combat", cost: 56, weaponId: "twin_daggers" },
+    { id: "dagger", rarity: 1, name: "Dagger", desc: "Damage scales with current Gold", cost: 48, weaponId: "dagger" },
     { id: "frost_orb", rarity: 3, name: "Frost Orb", desc: "Heavy magic bolts with control", cost: 68, weaponId: "frost_orb" },
-    { id: "void_lance", rarity: 4, name: "Void Lance", desc: "High speed piercing shots", cost: 92, weaponId: "void_lance" }
+    { id: "void_lance", rarity: 4, name: "Void Lance", desc: "High speed piercing shots", cost: 92, weaponId: "void_lance" },
+    { id: "soldering_iron", rarity: 1, name: "Soldering Iron", desc: "Short-range fire tool with support turret", cost: 45, weaponId: "soldering_iron" },
+    { id: "drone_weapon", rarity: 2, name: "Drone Weapon", desc: "Activates orbital combat drone while equipped", cost: 62, weaponId: "drone_weapon" }
   ];
 
   const SPRITE_PATHS = {
     characters: {
-      knight: "assets/sprites/characters/warrior.svg",
-      orc: "assets/sprites/characters/orc.svg",
-      mage: "assets/sprites/characters/mage.svg",
-      hunter: "assets/sprites/characters/ranger.svg",
-      frogfolk: "assets/sprites/characters/frogfolk.svg",
+      knight: "assets/sprites/characters/warrior.png",
+      orc: "assets/sprites/characters/orc.png",
+      mage: "assets/sprites/characters/wizard.png",
+      hunter: "assets/sprites/characters/ranger.png",
+      frogfolk: "assets/sprites/characters/Frogfolk.png",
+      engineer: "assets/sprites/characters/enginner.png",
+      conductor: "assets/sprites/characters/Conductor.png",
+      slot_machine_robot: "assets/sprites/characters/Maquina tragamonedas.png",
+      thief: "assets/sprites/characters/Thief.png",
       merchant: "assets/sprites/characters/merchant.svg"
     },
     enemies: {
@@ -378,13 +505,25 @@
       crossbow: "assets/sprites/weapons/crossbow.svg",
       thunder_hammer: "assets/sprites/weapons/thunder_hammer.svg",
       twin_daggers: "assets/sprites/weapons/twin_daggers.svg",
+      dagger: "assets/sprites/weapons/twin_daggers.svg",
       frost_orb: "assets/sprites/weapons/frost_orb.svg",
-      void_lance: "assets/sprites/weapons/void_lance.svg"
+      void_lance: "assets/sprites/weapons/void_lance.svg",
+      soldering_iron: "assets/sprites/weapons/soldering_iron.svg",
+      drone_weapon: "assets/sprites/weapons/drone_weapon.svg"
     },
     projectiles: {
       magic_bolt: "assets/sprites/projectiles/magic_bolt.svg",
       arrow: "assets/sprites/projectiles/arrow.svg",
-      enemy_skull: "assets/sprites/projectiles/enemy_skull.svg"
+      enemy_skull: "assets/sprites/projectiles/enemy_skull.svg",
+      engineer_flame: "assets/sprites/projectiles/engineer_flame.svg",
+      lightning_bolt: "assets/sprites/projectiles/lightning_bolt.svg",
+      drone_shot: "assets/sprites/projectiles/drone_shot.svg",
+      drone_missile: "assets/sprites/projectiles/drone_missile.svg"
+    },
+    turrets: {
+      sentry: "assets/sprites/turrets/sentry.svg",
+      lightning_sentry: "assets/sprites/turrets/lightning_sentry.svg",
+      drone_unit: "assets/sprites/turrets/drone_unit.svg"
     },
     items: {
       vital_core: "assets/sprites/items/vital_core.svg",
@@ -407,9 +546,30 @@
       seeker_crystal: "assets/sprites/items/seeker_crystal.svg",
       blood_moss: "assets/sprites/items/blood_moss.svg",
       echo_blade: "assets/sprites/items/echo_blade.svg",
-      ranger_harness: "assets/sprites/items/ranger_harness.svg"
+      ranger_harness: "assets/sprites/items/ranger_harness.svg",
+      extra_sentry: "assets/sprites/items/extra_sentry.svg",
+      overclock_chip: "assets/sprites/items/overclock_chip.svg",
+      rapid_cycle: "assets/sprites/items/rapid_cycle.svg",
+      lightning_overlord: "assets/sprites/items/lightning_overlord.svg",
+      lucky_clover: "assets/sprites/items/lucky_clover.svg",
+      volatile_fortune_core: "assets/sprites/items/volatile_fortune_core.svg",
+      drone_missile: "assets/sprites/items/drone_missile.svg"
     }
   };
+
+  const PLAYER_CHARACTER_TUNING = {
+    knight: { bodyWidth: 40, bodyHeight: 40, hitboxRadius: 14 },
+    orc: { bodyWidth: 44, bodyHeight: 42, hitboxRadius: 15 },
+    mage: { bodyWidth: 38, bodyHeight: 40, hitboxRadius: 13 },
+    hunter: { bodyWidth: 38, bodyHeight: 40, hitboxRadius: 13 },
+    frogfolk: { bodyWidth: 40, bodyHeight: 38, hitboxRadius: 14 },
+    engineer: { bodyWidth: 40, bodyHeight: 38, hitboxRadius: 14 },
+    conductor: { bodyWidth: 40, bodyHeight: 33, hitboxRadius: 13 },
+    slot_machine_robot: { bodyWidth: 42, bodyHeight: 40, hitboxRadius: 14 },
+    thief: { bodyWidth: 36, bodyHeight: 38, hitboxRadius: 12 }
+  };
+  const PLAYER_BODY_WIDTH_MULTIPLIER = 3;
+  const PLAYER_BODY_HEIGHT_MULTIPLIER = 1.876875;
 
   const spriteImageMap = new Map();
 
@@ -486,11 +646,105 @@
     if (weaponId === "shortbow" || weaponId === "crossbow" || weaponId === "void_lance") {
       return "arrow";
     }
+    if (weaponId === "drone_weapon") {
+      return "drone_shot";
+    }
     return "magic_bolt";
   }
 
   function isRangedWeapon(weapon) {
     return !!weapon && weapon.kind === "ranged";
+  }
+
+  function rollSlotMachineDamage(luck) {
+    const normalizedLuck = clamp((luck - 1) / 9, 0, 1);
+    const groupWeights = [60, 24, 9, 4, 2, 0.25];
+    const weights = [];
+    let total = 0;
+
+    for (let value = 1; value <= 100; value++) {
+      let group = 5;
+      if (value <= 10) group = 0;
+      else if (value <= 30) group = 1;
+      else if (value <= 50) group = 2;
+      else if (value <= 70) group = 3;
+      else if (value <= 89) group = 4;
+
+      const groupStart = group === 0 ? 1
+        : group === 1 ? 11
+        : group === 2 ? 31
+        : group === 3 ? 51
+        : group === 4 ? 71
+        : 90;
+      const inGroupIndex = value - groupStart;
+      const inGroupDecay = Math.exp(-0.1 * inGroupIndex);
+      const baseWeight = groupWeights[group] * inGroupDecay;
+
+      const highFavor = Math.pow(value / 100, 2.35);
+      const lowFavor = Math.pow((101 - value) / 100, 1.25);
+      const luckBoost = 1 + normalizedLuck * 2.4 * highFavor;
+      const luckPenalty = 1 - normalizedLuck * 0.35 * lowFavor;
+      const weight = baseWeight * luckBoost * Math.max(0.12, luckPenalty);
+
+      weights.push(weight);
+      total += weight;
+    }
+
+    let roll = Math.random() * total;
+    for (let value = 1; value <= 100; value++) {
+      roll -= weights[value - 1];
+      if (roll <= 0) {
+        return value;
+      }
+    }
+
+    return 100;
+  }
+
+  function addFloatingDamageText(x, y, amount, color = "#FF0000", duration = 1) {
+    if (!game) {
+      return;
+    }
+
+    game.floatingDamageTexts.push({
+      x,
+      y,
+      vy: -36,
+      text: `${Math.max(1, Math.round(amount))}`,
+      color,
+      ttl: duration
+    });
+  }
+
+  function updateFloatingDamageTexts(dt) {
+    if (game.floatingDamageTexts.length === 0) {
+      return;
+    }
+
+    const keep = [];
+    for (const text of game.floatingDamageTexts) {
+      text.y += text.vy * dt;
+      text.ttl -= dt;
+      if (text.ttl > 0) {
+        keep.push(text);
+      }
+    }
+    game.floatingDamageTexts = keep;
+  }
+
+  function drawFloatingDamageTexts() {
+    if (game.floatingDamageTexts.length === 0) {
+      return;
+    }
+
+    ctx.save();
+    ctx.font = "bold 16px Consolas";
+    ctx.textAlign = "center";
+    for (const text of game.floatingDamageTexts) {
+      ctx.fillStyle = text.color;
+      ctx.fillText(text.text, text.x, text.y);
+    }
+    ctx.restore();
   }
 
   function loadSpriteAssets() {
@@ -518,12 +772,18 @@
     return spriteImageMap.get(`${group}.${id}`) || null;
   }
 
-  function drawSpriteCentered(image, x, y, width, height, angle = 0, alpha = 1) {
+  function drawSpriteCentered(image, x, y, width, height, angle = 0, alpha = 1, smooth = false) {
     if (!image) {
       return false;
     }
 
     ctx.save();
+    if (smooth) {
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+    } else {
+      ctx.imageSmoothingEnabled = false;
+    }
     ctx.globalAlpha = alpha;
     ctx.translate(Math.round(x), Math.round(y));
     if (angle !== 0) {
@@ -552,6 +812,8 @@
       this.pierce = false;
       this.hitTargets = new WeakSet();
       this.dead = false;
+      this.splashRadius = 0;
+      this.splashFactor = 0.6;
     }
 
     update(dt) {
@@ -586,6 +848,237 @@
       ctx.fillStyle = this.color;
       const s = this.size;
       ctx.fillRect(Math.round(this.x - s), Math.round(this.y - s), s * 2, s * 2);
+    }
+  }
+
+  class SentryTurret {
+    constructor(x, y, mode = "normal") {
+      this.x = x;
+      this.y = y;
+      this.mode = mode;
+      this.radius = 12;
+      this.attackTimer = Math.random() * 0.25;
+      this.range = mode === "lightning" ? 370 : 280;
+      this.dead = false;
+    }
+
+    currentSpriteId() {
+      return this.mode === "lightning" ? "lightning_sentry" : "sentry";
+    }
+
+    update(dt, player, enemies, projectiles) {
+      if (this.dead) {
+        return;
+      }
+
+      this.attackTimer -= dt;
+      if (this.attackTimer > 0) {
+        return;
+      }
+
+      const alive = enemies.filter((e) => !e.dead);
+      if (alive.length === 0) {
+        return;
+      }
+
+      this.attackTimer = player.sentryAttackCooldown();
+
+      if (this.mode === "lightning") {
+        for (let i = 0; i < 5; i++) {
+          const target = pickRandom(alive);
+          const jitterX = randInt(-10, 10);
+          const jitterY = randInt(-10, 10);
+          const aim = normalize((target.x + jitterX) - this.x, (target.y + jitterY) - this.y);
+          const speed = 420;
+          const bolt = new Projectile(
+            this.x,
+            this.y,
+            aim.x * speed,
+            aim.y * speed,
+            player.sentryDamage() * 1.85,
+            "player",
+            5,
+            "#c9b2ff",
+            "lightning_bolt",
+            Math.atan2(aim.y, aim.x) + Math.PI / 2
+          );
+          bolt.life = 0.48;
+          bolt.splashRadius = 58;
+          bolt.splashFactor = 0.85;
+          bolt.homingStrength = 8.5;
+          bolt.homingRange = 430;
+          projectiles.push(bolt);
+        }
+        return;
+      }
+
+      let target = null;
+      let best = Infinity;
+      for (const e of alive) {
+        const d = distance(this.x, this.y, e.x, e.y);
+        if (d < best && d <= this.range) {
+          best = d;
+          target = e;
+        }
+      }
+      if (!target) {
+        return;
+      }
+
+      const aim = normalize(target.x - this.x, target.y - this.y);
+      const speed = 338;
+      const flame = new Projectile(
+        this.x,
+        this.y,
+        aim.x * speed,
+        aim.y * speed,
+        player.sentryDamage(),
+        "player",
+        4,
+        "#ff8e57",
+        "engineer_flame",
+        Math.atan2(aim.y, aim.x) + Math.PI / 2
+      );
+      flame.life = 0.75;
+      flame.homingStrength = 3.8;
+      flame.homingRange = 300;
+      projectiles.push(flame);
+    }
+
+    draw() {
+      const sprite = getSprite("turrets", this.currentSpriteId());
+      if (sprite) {
+        drawSpriteCentered(sprite, this.x, this.y, 30, 30);
+      } else {
+        ctx.fillStyle = this.mode === "lightning" ? "#8f78bd" : "#5d7288";
+        ctx.fillRect(Math.round(this.x - 10), Math.round(this.y - 10), 20, 20);
+      }
+    }
+  }
+
+  class DroneCompanion {
+    constructor() {
+      this.x = 0;
+      this.y = 0;
+      this.radius = 10;
+      this.orbitAngle = Math.random() * Math.PI * 2;
+      this.orbitRadius = 42;
+      this.primaryTimer = Math.random() * 0.3;
+      this.missileTimer = 0;
+      this.range = 520;
+      this.dead = false;
+    }
+
+    primaryCooldown(player) {
+      return Math.max(0.1, 0.42 * player.bonus.cooldownFactor);
+    }
+
+    missileCooldown(player) {
+      return this.primaryCooldown(player) * 4;
+    }
+
+    primaryBaseDamage(player) {
+      return (16 + player.bonus.ranged) * player.droneWeaponDamageMultiplier();
+    }
+
+    findTarget(enemies) {
+      let target = null;
+      let best = Infinity;
+      for (const e of enemies) {
+        if (e.dead) continue;
+        const d = distance(this.x, this.y, e.x, e.y);
+        if (d < best && d <= this.range) {
+          best = d;
+          target = e;
+        }
+      }
+      return target;
+    }
+
+    update(dt, player, enemies, projectiles) {
+      this.orbitAngle += dt * 2.8;
+      const targetX = player.x + Math.cos(this.orbitAngle) * this.orbitRadius;
+      const targetY = player.y + Math.sin(this.orbitAngle) * this.orbitRadius;
+      this.x = clamp(targetX, ARENA.x + 14, ARENA.x + ARENA.size - 14);
+      this.y = clamp(targetY, ARENA.y + 14, ARENA.y + ARENA.size - 14);
+
+      if (!player.isDroneWeaponEquipped()) {
+        return;
+      }
+
+      this.primaryTimer -= dt;
+      this.missileTimer -= dt;
+
+      const target = this.findTarget(enemies);
+      if (!target) {
+        return;
+      }
+
+      if (this.primaryTimer <= 0) {
+        this.primaryTimer = this.primaryCooldown(player);
+        const aim = normalize(target.x - this.x, target.y - this.y);
+        const crit = Math.random() < player.bonus.critChance;
+        const base = this.primaryBaseDamage(player);
+        const damage = crit ? base * 1.6 : base;
+        const speed = 820;
+        const shot = new Projectile(
+          this.x,
+          this.y,
+          aim.x * speed,
+          aim.y * speed,
+          damage,
+          "player",
+          3,
+          "#9fe8ff",
+          "drone_shot",
+          Math.atan2(aim.y, aim.x) + Math.PI / 2
+        );
+        shot.life = 0.92;
+        shot.homingStrength = 2.4;
+        shot.homingRange = 260;
+        projectiles.push(shot);
+      }
+
+      if (player.bonus.droneMissile && this.missileTimer <= 0) {
+        this.missileTimer = this.missileCooldown(player);
+        const aim = normalize(target.x - this.x, target.y - this.y);
+        const crit = Math.random() < player.bonus.critChance;
+        const base = this.primaryBaseDamage(player) * 2.2;
+        const damage = crit ? base * 1.6 : base;
+        const speed = 560;
+        const missile = new Projectile(
+          this.x,
+          this.y,
+          aim.x * speed,
+          aim.y * speed,
+          damage,
+          "player",
+          6,
+          "#ffd177",
+          "drone_missile",
+          Math.atan2(aim.y, aim.x) + Math.PI / 2
+        );
+        missile.life = 1.2;
+        missile.splashRadius = 72;
+        missile.splashFactor = 0.9;
+        missile.homingStrength = 1.4;
+        missile.homingRange = 210;
+        projectiles.push(missile);
+      }
+    }
+
+    draw(player) {
+      if (!player.isDroneWeaponEquipped()) {
+        return;
+      }
+
+      const sprite = getSprite("turrets", "drone_unit");
+      if (sprite) {
+        drawSpriteCentered(sprite, this.x, this.y, 24, 24, this.orbitAngle * 1.4);
+      } else {
+        ctx.fillStyle = "#7bd7f2";
+        ctx.fillRect(Math.round(this.x - 8), Math.round(this.y - 8), 16, 16);
+      }
     }
   }
 
@@ -902,8 +1395,11 @@
       return (Date.now() % 10000) / 10000 * Math.PI * 2;
     }
 
-    takeDamage(amount) {
+    takeDamage(amount, options = null) {
       this.hp -= amount;
+      if (options && options.showFloating) {
+        addFloatingDamageText(this.x, this.y - this.radius - 8, amount, "#FF0000", 1);
+      }
       if (this.hp <= 0) {
         this.dead = true;
       }
@@ -945,11 +1441,12 @@
       this.charId = charDef.id;
       this.name = charDef.name;
       this.base = charDef;
+      const tuning = PLAYER_CHARACTER_TUNING[this.charId] || { bodyWidth: 40, bodyHeight: 40, hitboxRadius: 14 };
       this.x = ARENA.x + ARENA.size / 2;
       this.y = ARENA.y + ARENA.size / 2;
-      this.radius = 14;
+      this.radius = tuning.hitboxRadius;
       this.hp = charDef.hp;
-      this.gold = 0;
+      this.gold = charDef.startingGold || 0;
       this.damageFlash = 0;
 
       this.bonus = {
@@ -971,7 +1468,14 @@
         magicHoming: 0,
         hpRegen: 0,
         swordWave: 0,
-        rangedDashBonus: 0
+        rangedDashBonus: 0,
+        sentryCountBonus: 0,
+        sentryDamageBonus: 0,
+        sentryRateFactor: 1,
+        lightningOverlord: false,
+        droneMissile: false,
+        luckFlat: 0,
+        epicLuckCurrent: 0
       };
 
       this.weapons = [
@@ -989,6 +1493,13 @@
       this.baseDashDuration = 0.16;
       this.baseDashSpeed = 520;
       this.baseDashCooldown = 1.4;
+      this.sentries = [];
+      this.drone = new DroneCompanion();
+      this.moveAnimTime = 0;
+      this.isMovingVisual = false;
+      this.facingSign = 1;
+      this.moveAnimBlend = 0;
+      this.facingScaleX = 1;
     }
 
     maxHp() {
@@ -1005,6 +1516,11 @@
 
     dodgeChance() {
       return clamp((this.base.dodge || 0) + this.bonus.dodge, 0, 0.65);
+    }
+
+    luck() {
+      const baseLuck = this.base.luck || 1;
+      return Math.max(0.5, baseLuck + this.bonus.luckFlat + this.bonus.epicLuckCurrent);
     }
 
     currentDashCooldown() {
@@ -1074,7 +1590,110 @@
         typeBonus = this.bonus.magic;
       }
 
-      return (weapon.damage + typeBonus) * mult;
+      const dynamicBase = weapon.damage + (typeof weapon.goldScaling === "number" ? this.gold * weapon.goldScaling : 0);
+      const base = (dynamicBase + typeBonus) * mult;
+      if (weapon.id === "drone_weapon" && this.charId === "conductor") {
+        return base * 1.25;
+      }
+
+      return base;
+    }
+
+    activeWeaponDef() {
+      return this.weapons[this.activeWeapon] || null;
+    }
+
+    hasWeapon(weaponId) {
+      return this.weapons.some((w) => !!w && w.id === weaponId);
+    }
+
+    isDroneWeaponEquipped() {
+      const weapon = this.activeWeaponDef();
+      return !!weapon && weapon.id === "drone_weapon";
+    }
+
+    droneWeaponDamageMultiplier() {
+      return this.charId === "conductor" && this.isDroneWeaponEquipped() ? 1.25 : 1;
+    }
+
+    isSolderingIronActive() {
+      const weapon = this.activeWeaponDef();
+      return !!weapon && weapon.id === "soldering_iron";
+    }
+
+    desiredSentryCount() {
+      if (!this.isSolderingIronActive()) {
+        return 0;
+      }
+      return 1 + this.bonus.sentryCountBonus;
+    }
+
+    sentryDamage() {
+      return 14 + this.bonus.sentryDamageBonus;
+    }
+
+    sentryAttackCooldown() {
+      return Math.max(0.12, 0.46 * this.bonus.sentryRateFactor);
+    }
+
+    spawnSentry(mode = "normal") {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = 56;
+      const x = clamp(this.x + Math.cos(angle) * radius, ARENA.x + 16, ARENA.x + ARENA.size - 16);
+      const y = clamp(this.y + Math.sin(angle) * radius, ARENA.y + 16, ARENA.y + ARENA.size - 16);
+      this.sentries.push(new SentryTurret(x, y, mode));
+    }
+
+    clearEngineerSentries() {
+      this.sentries = [];
+    }
+
+    syncEngineerSentries() {
+      const desired = this.desiredSentryCount();
+      if (desired <= 0) {
+        this.clearEngineerSentries();
+        return;
+      }
+
+      while (this.sentries.length < desired) {
+        this.spawnSentry("normal");
+      }
+      while (this.sentries.length > desired) {
+        this.sentries.pop();
+      }
+
+      const hasLightning = this.sentries.some((s) => s.mode === "lightning");
+      if (this.bonus.lightningOverlord && !hasLightning && this.sentries.length > 0) {
+        this.sentries[0].mode = "lightning";
+      }
+      if (!this.bonus.lightningOverlord) {
+        for (const sentry of this.sentries) {
+          sentry.mode = "normal";
+        }
+      } else {
+        let firstLightningFound = false;
+        for (const sentry of this.sentries) {
+          if (sentry.mode === "lightning" && !firstLightningFound) {
+            firstLightningFound = true;
+            continue;
+          }
+          sentry.mode = "normal";
+        }
+      }
+    }
+
+    onWeaponStateChanged() {
+      this.syncEngineerSentries();
+    }
+
+    updateSentries(dt, enemies, projectiles) {
+      for (const sentry of this.sentries) {
+        sentry.update(dt, this, enemies, projectiles);
+      }
+    }
+
+    updateDrone(dt, enemies, projectiles) {
+      this.drone.update(dt, this, enemies, projectiles);
     }
 
     update(dt, enemies, projectiles, canAttack = true) {
@@ -1116,8 +1735,20 @@
         this.y += this.dashDir.y * this.dashSpeed() * dt;
       }
 
+      const movingNow = dx !== 0 || dy !== 0 || this.dashTimer > 0;
+      const targetMoveBlend = movingNow ? 1 : 0;
+      const moveBlendLerp = Math.min(1, dt * (movingNow ? 9 : 6));
+      this.moveAnimBlend += (targetMoveBlend - this.moveAnimBlend) * moveBlendLerp;
+      this.isMovingVisual = this.moveAnimBlend > 0.06;
+      const animSpeed = 2.8 + this.moveAnimBlend * 7.6;
+      this.moveAnimTime += dt * animSpeed;
+
       this.x = clamp(this.x, ARENA.x + this.radius, ARENA.x + ARENA.size - this.radius);
       this.y = clamp(this.y, ARENA.y + this.radius, ARENA.y + ARENA.size - this.radius);
+
+      this.syncEngineerSentries();
+      this.updateSentries(dt, enemies, projectiles);
+      this.updateDrone(dt, enemies, projectiles);
 
       if (canAttack && input.mouseDown && this.attackCooldown <= 0) {
         this.attack(enemies, projectiles);
@@ -1125,13 +1756,27 @@
     }
 
     attack(enemies, projectiles) {
+      if (this.charId === "conductor") {
+        this.attackCooldown = 0.06;
+        return;
+      }
+
+      if (this.charId === "slot_machine_robot") {
+        if (this.gold < 1) {
+          return;
+        }
+        this.gold -= 1;
+      }
+
       const weapon = this.weapons[this.activeWeapon];
       const cooldown = weapon.cooldown * this.bonus.cooldownFactor;
       this.attackCooldown = Math.max(0.08, cooldown);
 
       const aim = normalize(input.mouseX - this.x, input.mouseY - this.y);
-      const baseDamage = this.weaponDamage(weapon);
-      const crit = Math.random() < this.bonus.critChance;
+      const baseDamage = this.charId === "slot_machine_robot"
+        ? rollSlotMachineDamage(this.luck())
+        : this.weaponDamage(weapon);
+      const crit = this.charId === "slot_machine_robot" ? false : Math.random() < this.bonus.critChance;
       const damage = crit ? baseDamage * 1.6 : baseDamage;
 
       if (weapon.kind === "melee") {
@@ -1146,7 +1791,7 @@
           let diff = Math.abs(a - attackAngle);
           if (diff > Math.PI) diff = Math.PI * 2 - diff;
           if (diff <= meleeArc * 0.5) {
-            e.takeDamage(damage);
+            e.takeDamage(damage, { showFloating: this.charId === "slot_machine_robot" });
             if (this.bonus.lifesteal > 0) {
               this.hp = Math.min(this.maxHp(), this.hp + damage * this.bonus.lifesteal * 0.16);
             }
@@ -1173,25 +1818,46 @@
         }
       } else {
         const speed = weapon.projectileSpeed;
-        const projectileSprite = getProjectileSpriteForWeapon(weapon.id);
-        const projectileAngle = Math.atan2(aim.y, aim.x) + Math.PI / 2;
-        const projectile = new Projectile(
-          this.x + aim.x * 16,
-          this.y + aim.y * 16,
-          aim.x * speed,
-          aim.y * speed,
-          damage,
-          "player",
-          weapon.projectileSize,
-          weapon.color,
-          projectileSprite,
-          projectileAngle
-        );
-        if (weapon.kind === "magic" && this.bonus.magicHoming > 0) {
-          projectile.homingStrength = this.bonus.magicHoming;
-          projectile.homingRange = 320;
+        if (weapon.id === "soldering_iron") {
+          const spread = weapon.projectileSpread || 0.14;
+          const angle = Math.atan2(aim.y, aim.x) + (Math.random() * 2 - 1) * spread;
+          const dirX = Math.cos(angle);
+          const dirY = Math.sin(angle);
+          const projectile = new Projectile(
+            this.x + dirX * 14,
+            this.y + dirY * 14,
+            dirX * speed,
+            dirY * speed,
+            damage,
+            "player",
+            weapon.projectileSize,
+            weapon.color,
+            "engineer_flame",
+            angle + Math.PI / 2
+          );
+          projectile.life = weapon.projectileLife || 0.3;
+          projectiles.push(projectile);
+        } else {
+          const projectileSprite = getProjectileSpriteForWeapon(weapon.id);
+          const projectileAngle = Math.atan2(aim.y, aim.x) + Math.PI / 2;
+          const projectile = new Projectile(
+            this.x + aim.x * 16,
+            this.y + aim.y * 16,
+            aim.x * speed,
+            aim.y * speed,
+            damage,
+            "player",
+            weapon.projectileSize,
+            weapon.color,
+            projectileSprite,
+            projectileAngle
+          );
+          if (weapon.kind === "magic" && this.bonus.magicHoming > 0) {
+            projectile.homingStrength = this.bonus.magicHoming;
+            projectile.homingRange = 320;
+          }
+          projectiles.push(projectile);
         }
-        projectiles.push(projectile);
       }
     }
 
@@ -1208,6 +1874,10 @@
       this.hp -= final;
       this.invulnerable = 0.4;
       this.damageFlash = 1;
+
+      if (this.bonus.epicLuckCurrent > 0) {
+        this.bonus.epicLuckCurrent = Math.max(0.5, this.bonus.epicLuckCurrent - 0.5);
+      }
     }
 
     applyOffer(offer) {
@@ -1215,7 +1885,11 @@
         offer.apply(this);
         this.items.push({ id: offer.id, name: offer.name, rarity: offer.rarity || 1 });
         this.hp = Math.min(this.maxHp(), this.hp);
-        return;
+        return true;
+      }
+
+      if (this.base.weaponLocked) {
+        return false;
       }
 
       const weapon = JSON.parse(JSON.stringify(WEAPONS[offer.weaponId]));
@@ -1224,11 +1898,24 @@
       } else {
         this.weapons[this.activeWeapon] = weapon;
       }
+      this.onWeaponStateChanged();
+      return true;
+    }
+
+    drawSentries() {
+      for (const sentry of this.sentries) {
+        sentry.draw();
+      }
+    }
+
+    drawDrone() {
+      this.drone.draw(this);
     }
 
     draw() {
       const aim = normalize(input.mouseX - this.x, input.mouseY - this.y);
       const bodySprite = getSprite("characters", this.charId);
+      const bodyTuning = PLAYER_CHARACTER_TUNING[this.charId] || { bodyWidth: 40, bodyHeight: 40, hitboxRadius: 14 };
       const activeWeapon = this.weapons[this.activeWeapon];
       const weaponSprite = activeWeapon ? getSprite("weapons", activeWeapon.id) : null;
 
@@ -1243,7 +1930,31 @@
 
       if (bodySprite) {
         const alpha = this.damageFlash > 0 ? 0.82 : 1;
-        drawSpriteCentered(bodySprite, this.x, this.y, 40, 40, 0, alpha);
+        if (aim.x > 0.05) {
+          this.facingSign = 1;
+        } else if (aim.x < -0.05) {
+          this.facingSign = -1;
+        }
+
+        const phase = this.moveAnimTime;
+        const bobAmplitude = 0.7 + this.moveAnimBlend * 2.7;
+        const bobOffsetY = Math.sin(phase) * bobAmplitude;
+        const pulse = Math.sin(phase * 2) * 0.5 + 0.5;
+        const widthPulse = 1 - this.moveAnimBlend * (0.03 + pulse * 0.04);
+        const heightPulse = 1 + this.moveAnimBlend * (0.02 + pulse * 0.045);
+        this.facingScaleX += (this.facingSign - this.facingScaleX) * 0.22;
+
+        const drawWidth = Math.round(bodyTuning.bodyWidth * PLAYER_BODY_WIDTH_MULTIPLIER * widthPulse);
+        const drawHeight = Math.round(bodyTuning.bodyHeight * PLAYER_BODY_HEIGHT_MULTIPLIER * heightPulse);
+
+        ctx.save();
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.globalAlpha = alpha;
+        ctx.translate(Math.round(this.x), Math.round(this.y + bobOffsetY));
+        ctx.scale(this.facingScaleX, 1);
+        ctx.drawImage(bodySprite, Math.round(-drawWidth / 2), Math.round(-drawHeight / 2), drawWidth, drawHeight);
+        ctx.restore();
       } else {
         const x = Math.round(this.x);
         const y = Math.round(this.y);
@@ -1280,12 +1991,14 @@
     shopOffers: [],
     groundOffers: [],
     enemySpawnTimer: 0,
+    spawnInterval: 0,
     spawnQueue: [],
     merchantMessage: "",
     merchantMessageTimer: 0,
     activeBossId: "",
     hazards: [],
-    rerollCount: 0
+    rerollCount: 0,
+    floatingDamageTexts: []
   };
 
   function getWaveEnemyPressure(waveNumber) {
@@ -1295,21 +2008,23 @@
     }
 
     if (plan.bossPool && plan.bossPool.length > 0) {
-      return 26;
+      return Math.ceil(26 * ENEMY_WAVE_INCREASE);
     }
 
-    return Object.values(plan.spawns).reduce((sum, count) => sum + count, 0);
+    return Object.values(plan.spawns).reduce((sum, count) => {
+      return sum + Math.ceil(count * ENEMY_WAVE_INCREASE);
+    }, 0);
   }
 
   function getMerchantPriceMultiplier() {
-    const progress = 1 + game.wave * 0.082;
+    const progress = 1 + game.wave * 0.12;
     const nextPressure = getWaveEnemyPressure(game.wave + 1);
-    const pressureFactor = 1 + nextPressure * 0.013;
-    return clamp(progress * pressureFactor, 1.06, 2.75);
+    const pressureFactor = 1 + nextPressure * 0.019;
+    return clamp(progress * pressureFactor * ENEMY_WAVE_INCREASE, 1.4, 4.5);
   }
 
   function getRerollCost() {
-    return Math.round(22 + game.rerollCount * 14 + game.wave * 3);
+    return Math.round((24 + game.rerollCount * 18 + game.wave * 6) * ENEMY_WAVE_INCREASE);
   }
 
   function updateRerollButtonLabel() {
@@ -1364,6 +2079,20 @@
     proj.angle = Math.atan2(proj.vy, proj.vx) + Math.PI / 2;
   }
 
+  function applyProjectileSplash(projectile, primaryEnemy, enemies, showFloating) {
+    if (projectile.splashRadius <= 0) {
+      return;
+    }
+
+    for (const enemy of enemies) {
+      if (enemy.dead || enemy === primaryEnemy) continue;
+      const d = distance(projectile.x, projectile.y, enemy.x, enemy.y);
+      if (d <= projectile.splashRadius + enemy.radius) {
+        enemy.takeDamage(projectile.damage * projectile.splashFactor, { showFloating });
+      }
+    }
+  }
+
   function randomEdgeSpawn() {
     const side = randInt(0, 3);
     if (side === 0) return { x: ARENA.x + randInt(12, ARENA.size - 12), y: ARENA.y + 6 };
@@ -1372,18 +2101,40 @@
     return { x: ARENA.x + 6, y: ARENA.y + randInt(12, ARENA.size - 12) };
   }
 
-  function weightedRarityPick(pool) {
+  function weightedRarityPick(pool, luck = 1) {
     const byRarity = [[], [], [], []];
     for (const item of pool) {
       const r = clamp(item.rarity || 1, 1, 4);
       byRarity[r - 1].push(item);
     }
 
-    const roll = Math.random();
+    const luckFactor = clamp(luck, 0.5, 20);
+    const luckDelta = luckFactor - 1;
+
+    // Base: more common items, less high-tier items.
+    let w1 = 62 - luckDelta * 12;
+    let w2 = 25 - luckDelta * 4;
+    let w3 = 10 + luckDelta * 9;
+    let w4 = 3 + luckDelta * 7;
+
+    w1 = Math.max(0.7, w1);
+    w2 = Math.max(0.2, w2);
+    w3 = Math.max(0.1, w3);
+    w4 = Math.max(0.05, w4);
+
+    const total = w1 + w2 + w3 + w4;
+    const roll = Math.random() * total;
+
     let targetR = 1;
-    if (roll > 0.94) targetR = 4;
-    else if (roll > 0.75) targetR = 3;
-    else if (roll > 0.42) targetR = 2;
+    if (roll < w1) {
+      targetR = 1;
+    } else if (roll < w1 + w2) {
+      targetR = 2;
+    } else if (roll < w1 + w2 + w3) {
+      targetR = 3;
+    } else {
+      targetR = 4;
+    }
 
     let candidates = byRarity[targetR - 1];
     if (candidates.length === 0) {
@@ -1398,16 +2149,24 @@
       player ? player.weapons.map((w) => w.id) : []
     );
 
-    const combined = [
-      ...PASSIVE_ITEMS.map((item) => ({ ...item, kind: "item" })),
-      ...WEAPON_OFFERS
+    const weaponPool = player && player.base.weaponLocked
+      ? []
+      : WEAPON_OFFERS
         .filter((offer) => !ownedWeapons.has(offer.weaponId))
-        .map((offer) => ({ ...offer, kind: "weapon" }))
+        .map((offer) => ({ ...offer, kind: "weapon" }));
+
+    const combined = [
+      ...PASSIVE_ITEMS
+        .filter((item) => !item.condition || item.condition(player))
+        .map((item) => ({ ...item, kind: "item" })),
+      ...weaponPool
     ];
+
+    const playerLuck = player ? player.luck() : 1;
 
     const offers = [];
     while (offers.length < 3 && combined.length > 0) {
-      const pick = weightedRarityPick(combined);
+      const pick = weightedRarityPick(combined, playerLuck);
       const idx = combined.findIndex((c) => c.id === pick.id && c.kind === pick.kind);
       offers.push(combined.splice(idx, 1)[0]);
     }
@@ -1425,10 +2184,12 @@
     game.projectiles = [];
     game.spawnQueue = [];
     game.enemySpawnTimer = 0;
+    game.spawnInterval = 0;
     game.shopOffers = [];
     game.groundOffers = [];
     game.hazards = [];
     game.activeBossId = "";
+    game.floatingDamageTexts = [];
 
     const plan = getWavePlan(nextWave);
     if (!plan) {
@@ -1441,11 +2202,16 @@
       game.activeBossId = bossId;
     } else {
       Object.keys(plan.spawns).forEach((enemyId) => {
-        const count = plan.spawns[enemyId];
+        const count = Math.ceil(plan.spawns[enemyId] * ENEMY_WAVE_INCREASE);
         for (let i = 0; i < count; i++) {
           game.spawnQueue.push(enemyId);
         }
       });
+    }
+
+    if (game.spawnQueue.length > 0) {
+      game.spawnInterval = WAVE_SPAWN_DURATION / game.spawnQueue.length;
+      game.enemySpawnTimer = 0;
     }
 
     game.state = GAME_STATE.PLAYING;
@@ -1456,10 +2222,12 @@
   function startGame(characterId) {
     const charDef = CHARACTERS.find((c) => c.id === characterId);
     game.player = new Player(charDef);
+    game.player.onWeaponStateChanged();
     game.wave = 0;
     game.kills = 0;
     game.elapsed = 0;
     game.rerollCount = 0;
+    game.floatingDamageTexts = [];
     hideOverlay(charSelect);
     hideOverlay(endPanel);
     hideOverlay(inventoryPanel);
@@ -1589,8 +2357,13 @@
       return;
     }
 
+    const applied = game.player.applyOffer(offer);
+    if (!applied) {
+      showMerchantMessage("This character cannot equip new weapons.");
+      return;
+    }
+
     game.player.gold -= offer.cost;
-    game.player.applyOffer(offer);
     offerNode.bought = true;
 
     renderWeaponSlots();
@@ -1648,6 +2421,7 @@
       slot.addEventListener("click", () => {
         if (!game.player.weapons[i]) return;
         game.player.activeWeapon = i;
+        game.player.onWeaponStateChanged();
         renderWeaponSlots();
         refreshHUD();
       });
@@ -1661,6 +2435,12 @@
       return;
     }
 
+    const activeWeapon = game.player.activeWeaponDef();
+    const activeWeaponDamage = activeWeapon ? game.player.weaponDamage(activeWeapon) : 0;
+    const daggerInfo = activeWeapon && activeWeapon.id === "dagger"
+      ? `<p>Dagger Dynamic Damage: ${activeWeapon.damage.toFixed(1)} + (${Math.floor(game.player.gold)} Gold x ${(activeWeapon.goldScaling || 0).toFixed(2)})</p>`
+      : "";
+
     inventoryStats.innerHTML = `
       <p><b>${game.player.name}</b></p>
       <p>HP: ${Math.floor(game.player.hp)} / ${Math.floor(game.player.maxHp())}</p>
@@ -1668,12 +2448,20 @@
       <p>Armor: ${Math.round(game.player.armor() * 100)}%</p>
       <p>Dodge: ${Math.round(game.player.dodgeChance() * 100)}%</p>
       <p>Lifesteal: ${Math.round(game.player.bonus.lifesteal * 100)}%</p>
+      <p>Luck: ${game.player.luck().toFixed(2)}</p>
+      <p>Active Weapon: ${activeWeapon ? activeWeapon.name : "None"}</p>
+      <p>Active Weapon Damage: ${activeWeaponDamage.toFixed(1)}</p>
+      ${daggerInfo}
       <p>Gold Bonus: ${Math.round(game.player.bonus.goldFactor * 100)}%</p>
       <p>Dash CD: ${game.player.currentDashCooldown().toFixed(2)}s</p>
       <p>Dash Charges: ${game.player.currentDashMaxCharges()}</p>
       <p>Melee Size: x${game.player.bonus.meleeRangeFactor.toFixed(2)}</p>
       <p>Magic Homing: ${game.player.bonus.magicHoming > 0 ? "Enabled" : "Off"}</p>
       <p>HP Regen: ${game.player.bonus.hpRegen.toFixed(1)} /s</p>
+      <p>Sentries: ${game.player.sentries.length} (max ${game.player.desiredSentryCount()})</p>
+      <p>Sentry DMG: ${Math.round(game.player.sentryDamage())} | Sentry CD: ${game.player.sentryAttackCooldown().toFixed(2)}s</p>
+      <p>Drone Weapon Equipped: ${game.player.isDroneWeaponEquipped() ? "Yes" : "No"}</p>
+      <p>Drone Missile: ${game.player.bonus.droneMissile ? "Enabled" : "Off"}</p>
     `;
 
     inventoryItems.innerHTML = "";
@@ -1816,11 +2604,11 @@
 
     if (game.spawnQueue.length > 0) {
       game.enemySpawnTimer -= dt;
-      if (game.enemySpawnTimer <= 0) {
-        game.enemySpawnTimer = game.activeBossId ? 0.6 : 0.33;
+      while (game.spawnQueue.length > 0 && game.enemySpawnTimer <= 0) {
         const typeId = game.spawnQueue.shift();
         const p = randomEdgeSpawn();
         game.enemies.push(new Enemy(typeId, p.x, p.y));
+        game.enemySpawnTimer += game.spawnInterval;
       }
     }
 
@@ -1844,7 +2632,9 @@
           if (proj.hitTargets.has(e)) continue;
           const d = distance(proj.x, proj.y, e.x, e.y);
           if (d <= proj.size + e.radius) {
-            e.takeDamage(proj.damage);
+            const showFloating = game.player.charId === "slot_machine_robot";
+            e.takeDamage(proj.damage, { showFloating });
+            applyProjectileSplash(proj, e, game.enemies, showFloating);
             proj.hitTargets.add(e);
             if (!proj.pierce) {
               proj.dead = true;
@@ -1871,7 +2661,9 @@
     for (const e of game.enemies) {
       if (e.dead) {
         game.kills += 1;
-        const gain = randInt(e.goldRange[0], e.goldRange[1]) * (1 + game.player.bonus.goldFactor);
+        const gain = randInt(e.goldRange[0], e.goldRange[1])
+          * (1 + game.player.bonus.goldFactor)
+          * (game.player.base.goldDropMultiplier || 1);
         game.player.gold += gain;
       } else {
         livingEnemies.push(e);
@@ -1881,6 +2673,7 @@
 
     game.projectiles = game.projectiles.filter((p) => !p.dead);
     updateHazards(dt);
+    updateFloatingDamageTexts(dt);
 
     if (game.player.hp <= 0) {
       finishRun(false);
@@ -1896,6 +2689,9 @@
     }
 
     refreshHUD();
+    if (!inventoryPanel.classList.contains("hidden")) {
+      refreshInventory();
+    }
   }
 
   function updateMerchant(dt) {
@@ -1904,8 +2700,12 @@
     if (game.player.bonus.hpRegen > 0) {
       game.player.hp = Math.min(game.player.maxHp(), game.player.hp + game.player.bonus.hpRegen * dt);
     }
+    updateFloatingDamageTexts(dt);
     game.player.update(dt, [], [], false);
     refreshHUD();
+    if (!inventoryPanel.classList.contains("hidden")) {
+      refreshInventory();
+    }
   }
 
   function updateGame(dt) {
@@ -1923,6 +2723,8 @@
     drawArena();
 
     if (game.player) {
+      game.player.drawSentries();
+      game.player.drawDrone();
       game.player.draw();
       drawPlayerMeleeArc();
     }
@@ -1941,6 +2743,8 @@
     for (const p of game.projectiles) {
       p.draw();
     }
+
+    drawFloatingDamageTexts();
 
     drawHazards();
 
@@ -1999,19 +2803,26 @@
       const w = WEAPONS[c.startWeapon];
       const charIcon = getSpritePath("characters", c.id);
       const weaponIcon = getSpritePath("weapons", c.startWeapon);
+      const bodyTuning = PLAYER_CHARACTER_TUNING[c.id] || { bodyWidth: 40, bodyHeight: 40, hitboxRadius: 14 };
+      const cardCharWidth = Math.round(bodyTuning.bodyWidth * PLAYER_BODY_WIDTH_MULTIPLIER);
+      const cardCharHeight = Math.round(bodyTuning.bodyHeight * PLAYER_BODY_HEIGHT_MULTIPLIER);
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
         <div class="cardArt">
-          <img class="spriteIcon lg" src="${charIcon}" alt="${c.name}" />
+          <img class="spriteIcon lg" src="${charIcon}" alt="${c.name}" style="width:${cardCharWidth}px;height:${cardCharHeight}px;" />
           <img class="spriteIcon" src="${weaponIcon}" alt="${w.name}" />
         </div>
         <h3>${c.name}</h3>
         <p>HP: ${c.hp}</p>
         <p>Speed: ${c.speed}</p>
         <p>Armor: ${Math.round(c.armor * 100)}% | Dodge: ${Math.round((c.dodge || 0) * 100)}%</p>
+        <p>Luck: ${(c.luck || 1).toFixed(2)}</p>
         <p>Weapon: ${w.name} (${w.kind})</p>
         <p>Melee ${Math.round(c.meleeMult * 100)}% | Magic ${Math.round(c.magicMult * 100)}% | Ranged ${Math.round(c.rangedMult * 100)}%</p>
+        <p>Starting Gold: ${Math.floor(c.startingGold || 0)}</p>
+        <p>Weapon Lock: ${c.weaponLocked ? "Yes" : "No"}</p>
+        <p>${c.trait || "Trait: -"}</p>
       `;
 
       const pick = document.createElement("button");
@@ -2044,6 +2855,7 @@
       e.preventDefault();
       if (game.player && game.player.weapons.length > 1) {
         game.player.activeWeapon = game.player.activeWeapon === 0 ? 1 : 0;
+        game.player.onWeaponStateChanged();
         renderWeaponSlots();
         refreshHUD();
       }
@@ -2051,12 +2863,14 @@
 
     if (e.code === "Digit1" && game.player && game.player.weapons[0]) {
       game.player.activeWeapon = 0;
+      game.player.onWeaponStateChanged();
       renderWeaponSlots();
       refreshHUD();
     }
 
     if (e.code === "Digit2" && game.player && game.player.weapons[1]) {
       game.player.activeWeapon = 1;
+      game.player.onWeaponStateChanged();
       renderWeaponSlots();
       refreshHUD();
     }
