@@ -32,6 +32,7 @@
     {
       id: "knight",
       name: "Iron Knight",
+      startsUnlocked: true,
       hp: 190,
       speed: 165,
       meleeMult: 1.38,
@@ -45,6 +46,7 @@
     {
       id: "orc",
       name: "Axe Orc",
+      startsUnlocked: true,
       hp: 225,
       speed: 145,
       meleeMult: 1.52,
@@ -58,6 +60,7 @@
     {
       id: "mage",
       name: "Blue Pyromancer",
+      startsUnlocked: true,
       hp: 108,
       speed: 225,
       meleeMult: 0.72,
@@ -71,6 +74,7 @@
     {
       id: "hunter",
       name: "Lumber Hunter",
+      startsUnlocked: true,
       hp: 108,
       speed: 225,
       meleeMult: 0.72,
@@ -84,6 +88,7 @@
     {
       id: "frogfolk",
       name: "Bog Frogfolk",
+      startsUnlocked: true,
       hp: 108,
       speed: 205,
       meleeMult: 0.72,
@@ -97,6 +102,7 @@
     {
       id: "engineer",
       name: "Copper Engineer",
+      startsUnlocked: true,
       hp: 160,
       speed: 214,
       meleeMult: 0.86,
@@ -110,6 +116,9 @@
     {
       id: "conductor",
       name: "Conductor",
+      startsUnlocked: false,
+      unlockCategory: "characters",
+      unlockId: "conductor",
       hp: 168,
       speed: 200,
       meleeMult: 1.0,
@@ -124,6 +133,9 @@
     {
       id: "slot_machine_robot",
       name: "Slot Machine Robot",
+      startsUnlocked: false,
+      unlockCategory: "characters",
+      unlockId: "slot_machine_robot",
       hp: 150,
       speed: 190,
       meleeMult: 1,
@@ -140,6 +152,7 @@
     {
       id: "thief",
       name: "Thief",
+      startsUnlocked: true,
       hp: 90,
       speed: 248,
       meleeMult: 0.85,
@@ -265,6 +278,16 @@
       projectileSpeed: 700,
       projectileSize: 6,
       color: "#d7a6ff"
+    },
+    oraculus: {
+      id: "oraculus",
+      name: "Oraculus",
+      kind: "magic",
+      damage: 26,
+      cooldown: 0.56,
+      projectileSpeed: 980,
+      projectileSize: 5,
+      color: "#b7f3ff"
     },
     soldering_iron: {
       id: "soldering_iron",
@@ -430,12 +453,56 @@
     { id: "titan_grip", rarity: 3, name: "Titan Grip", desc: "+25% melee range, +15% melee arc", cost: 62, apply: (p) => { p.bonus.meleeRangeFactor *= 1.25; p.bonus.meleeArcBonus += Math.PI * 0.15; } },
     { id: "seeker_crystal", rarity: 4, name: "Seeker Crystal", desc: "Magic shots become homing", cost: 84, apply: (p) => { p.bonus.magicHoming += 3.2; } },
     { id: "blood_moss", rarity: 3, name: "Blood Moss", desc: "Regenerate 1.6 HP per second", cost: 66, apply: (p) => { p.bonus.hpRegen += 1.6; } },
-    { id: "echo_blade", rarity: 4, name: "Echo Blade", desc: "Legendary: melee launches piercing half-wave", cost: 98, apply: (p) => { p.bonus.swordWave += 1; } },
+    { id: "echo_blade", rarity: 4, name: "Echo Blade", desc: "Legendary: melee launches piercing half-wave", cost: 98, unlockCategory: "items", unlockId: "echo_blade", startsUnlocked: false, apply: (p) => { p.bonus.swordWave += 1; } },
+    {
+      id: "ira_berserker",
+      rarity: 4,
+      name: "Ira berserker",
+      desc: "Legendary: +100% attack speed while HP is below 25%",
+      cost: 104,
+      unlockCategory: "items",
+      unlockId: "ira_berserker",
+      startsUnlocked: false,
+      apply: (p) => { p.bonus.iraBerserker = true; }
+    },
+    {
+      id: "botas_saltarinas",
+      rarity: 3,
+      name: "Botas saltarinas",
+      desc: "Epic: +25% move speed, -12% dash cooldown",
+      cost: 78,
+      unlockCategory: "items",
+      unlockId: "botas_saltarinas",
+      startsUnlocked: false,
+      apply: (p) => { p.bonus.speed += p.base.speed * 0.25; p.bonus.dashCooldownFactor *= 0.88; }
+    },
+    {
+      id: "traje_de_hojas",
+      rarity: 3,
+      name: "Traje de hojas",
+      desc: "Epic: +25% evasion",
+      cost: 74,
+      unlockCategory: "items",
+      unlockId: "traje_de_hojas",
+      startsUnlocked: false,
+      apply: (p) => { p.bonus.dodge += 0.25; }
+    },
+    {
+      id: "carterista",
+      rarity: 2,
+      name: "Carterista",
+      desc: "10% chance to gain 5 gold on hit",
+      cost: 58,
+      unlockCategory: "items",
+      unlockId: "carterista",
+      startsUnlocked: false,
+      apply: (p) => { p.bonus.pickpocketChance = Math.max(p.bonus.pickpocketChance, 0.1); }
+    },
     { id: "ranger_harness", rarity: 4, name: "Ranger Harness", desc: "Ranged weapons gain +1 dash charge", cost: 88, apply: (p) => { p.bonus.rangedDashBonus = 1; } },
     { id: "extra_sentry", rarity: 1, name: "Extra Sentry", desc: "+1 Engineer turret", cost: 34, apply: (p) => { p.bonus.sentryCountBonus += 1; p.syncEngineerSentries(); } },
     { id: "overclock_chip", rarity: 1, name: "Overclock Chip", desc: "+8 turret damage", cost: 34, apply: (p) => { p.bonus.sentryDamageBonus += 8; } },
     { id: "rapid_cycle", rarity: 1, name: "Rapid Cycle", desc: "+12% turret attack speed", cost: 36, apply: (p) => { p.bonus.sentryRateFactor *= 0.88; } },
-    { id: "lightning_overlord", rarity: 4, name: "Lightning Overlord", desc: "Legendary turret fires 5 AoE lightning bolts", cost: 108, apply: (p) => { p.bonus.lightningOverlord = true; p.syncEngineerSentries(); } },
+    { id: "lightning_overlord", rarity: 4, name: "Lightning Overlord", desc: "Legendary turret fires 5 AoE lightning bolts", cost: 108, unlockCategory: "items", unlockId: "lightning_overlord", startsUnlocked: false, apply: (p) => { p.bonus.lightningOverlord = true; p.syncEngineerSentries(); } },
     { id: "lucky_clover", rarity: 1, name: "Lucky Clover", desc: "+1 luck", cost: 32, apply: (p) => { p.bonus.luckFlat += 1; } },
     {
       id: "volatile_fortune_core",
@@ -451,6 +518,9 @@
       name: "Drone Missile",
       desc: "Legendary: drone fires explosive missiles at 25% rate",
       cost: 102,
+      unlockCategory: "items",
+      unlockId: "drone_missile",
+      startsUnlocked: false,
       condition: (p) => !!p && p.hasWeapon("drone_weapon"),
       apply: (p) => { p.bonus.droneMissile = true; }
     }
@@ -468,7 +538,8 @@
     { id: "frost_orb", rarity: 3, name: "Frost Orb", desc: "Heavy magic bolts with control", cost: 68, weaponId: "frost_orb" },
     { id: "void_lance", rarity: 4, name: "Void Lance", desc: "High speed piercing shots", cost: 92, weaponId: "void_lance" },
     { id: "soldering_iron", rarity: 1, name: "Soldering Iron", desc: "Short-range fire tool with support turret", cost: 45, weaponId: "soldering_iron" },
-    { id: "drone_weapon", rarity: 2, name: "Drone Weapon", desc: "Activates orbital combat drone while equipped", cost: 62, weaponId: "drone_weapon" }
+    { id: "drone_weapon", rarity: 2, name: "Drone Weapon", desc: "Activates orbital combat drone while equipped", cost: 62, weaponId: "drone_weapon", unlockCategory: "weapons", unlockId: "drone_weapon", startsUnlocked: false },
+    { id: "oraculus", rarity: 4, name: "Oraculus", desc: "Legendary beam that pierces to map bounds", cost: 110, weaponId: "oraculus", unlockCategory: "weapons", unlockId: "oraculus", startsUnlocked: false }
   ];
 
   const SPRITE_PATHS = {
@@ -508,6 +579,7 @@
       dagger: "assets/sprites/weapons/twin_daggers.svg",
       frost_orb: "assets/sprites/weapons/frost_orb.svg",
       void_lance: "assets/sprites/weapons/void_lance.svg",
+      oraculus: "assets/sprites/weapons/arc_staff.svg",
       soldering_iron: "assets/sprites/weapons/soldering_iron.svg",
       drone_weapon: "assets/sprites/weapons/drone_weapon.svg"
     },
@@ -546,6 +618,10 @@
       seeker_crystal: "assets/sprites/items/seeker_crystal.svg",
       blood_moss: "assets/sprites/items/blood_moss.svg",
       echo_blade: "assets/sprites/items/echo_blade.svg",
+      ira_berserker: "assets/sprites/items/berserker_rune.svg",
+      botas_saltarinas: "assets/sprites/items/swift_boots.svg",
+      traje_de_hojas: "assets/sprites/items/phantom_cloak.svg",
+      carterista: "assets/sprites/items/coin_charm.svg",
       ranger_harness: "assets/sprites/items/ranger_harness.svg",
       extra_sentry: "assets/sprites/items/extra_sentry.svg",
       overclock_chip: "assets/sprites/items/overclock_chip.svg",
@@ -601,6 +677,492 @@
   const endTitle = document.getElementById("endTitle");
   const endSummary = document.getElementById("endSummary");
   const restartBtn = document.getElementById("restartBtn");
+  const achievementFeed = document.getElementById("achievementFeed");
+  const langToggleBtn = document.getElementById("langToggleBtn");
+
+  const STORAGE_KEY = "megaroguelike_progress_v1";
+
+  const I18N = {
+    EN: {
+      ui: {
+        inventoryBtn: "Inventory (I)",
+        weaponTitle: "Weapons (Tab / 1 / 2) | Dash: Shift | Buy: E",
+        charSelectTitle: "Choose Your Weapon Archetype",
+        charSelectSubtitle: "Each hero is tied to a basic weapon, unique stats, and a distinct combat role.",
+        shopTitle: "Merchant Camp",
+        shopSubtitle: "Walk to an offer and press E. You can buy up to 3 offers per visit.",
+        inventoryTitle: "Character Sheet",
+        inventoryItemsTitle: "Items",
+        close: "Close",
+        restart: "Restart",
+        reroll: "Reroll",
+        skipMerchant: "Skip Merchant",
+        select: "Select",
+        locked: "Locked",
+        wave: "Wave",
+        gold: "Gold",
+        victory: "Victory",
+        defeated: "Defeated",
+        empty: "Empty",
+        yes: "Yes",
+        no: "No",
+        none: "None",
+        enabled: "Enabled",
+        off: "Off",
+        merchantCamp: "Merchant Camp",
+        pressToBuy: "Press E to Buy",
+        noItemsYet: "No items purchased yet.",
+        controlsHint: "WASD move | Shift dash | Mouse + hold LMB attack | Tab swap weapon | I inventory",
+        merchantHint: "Merchant phase: move to an offer and press E to buy. You can buy up to 3 offers.",
+        priceScale: "Price scale x{mult} (based on wave and enemy pressure)",
+        rerollsUsed: "Rerolls used this run: {count}",
+        unlockAchievement: "Unlock Achievement: {name}",
+        wavesClearedSummary: "Waves Cleared: {wave}/{maxWave} | Kills: {kills} | Gold: {gold}"
+      },
+      kind: {
+        melee: "melee",
+        magic: "magic",
+        ranged: "ranged"
+      },
+      stat: {
+        hp: "HP",
+        moveSpeed: "Move Speed",
+        armor: "Armor",
+        dodge: "Dodge",
+        lifesteal: "Lifesteal",
+        luck: "Luck",
+        activeWeapon: "Active Weapon",
+        activeWeaponDamage: "Active Weapon Damage",
+        daggerDynamicDamage: "Dagger Dynamic Damage",
+        goldBonus: "Gold Bonus",
+        dashCd: "Dash CD",
+        dashCharges: "Dash Charges",
+        meleeSize: "Melee Size",
+        magicHoming: "Magic Homing",
+        hpRegen: "HP Regen",
+        sentries: "Sentries",
+        sentryStats: "Sentry DMG",
+        sentryCd: "Sentry CD",
+        droneWeaponEquipped: "Drone Weapon Equipped",
+        droneMissile: "Drone Missile",
+        berserkerRage: "Berserker Rage",
+        speed: "Speed",
+        weapon: "Weapon",
+        startingGold: "Starting Gold",
+        weaponLock: "Weapon Lock",
+        trait: "Trait",
+        melee: "Melee",
+        magic: "Magic",
+        ranged: "Ranged"
+      },
+      msg: {
+        notEnoughReroll: "Not enough gold for reroll.",
+        rerollUsed: "Reroll used ({count} total).",
+        moveCloser: "Move closer to an offer.",
+        notEnoughGold: "Not enough gold.",
+        weaponLocked: "This character cannot equip new weapons.",
+        purchased: "Purchased: {name}"
+      },
+      rarity: {
+        qPrefix: "Q"
+      },
+      charName: {
+        knight: "Iron Knight",
+        orc: "Axe Orc",
+        mage: "Blue Pyromancer",
+        hunter: "Lumber Hunter",
+        frogfolk: "Bog Frogfolk",
+        engineer: "Copper Engineer",
+        conductor: "Conductor",
+        slot_machine_robot: "Slot Machine Robot",
+        thief: "Thief"
+      },
+      weaponName: {
+        oraculus: "Oraculus",
+        drone_weapon: "Drone Weapon"
+      },
+      weaponDesc: {
+        oraculus: "Legendary beam that pierces to map bounds",
+        drone_weapon: "Activates orbital combat drone while equipped"
+      },
+      itemName: {
+        echo_blade: "Echo Blade",
+        ira_berserker: "Ira berserker",
+        botas_saltarinas: "Botas saltarinas",
+        lightning_overlord: "Lightning Overlord",
+        traje_de_hojas: "Traje de hojas",
+        drone_missile: "Drone Missile",
+        carterista: "Carterista"
+      },
+      itemDesc: {
+        echo_blade: "Legendary: melee launches piercing half-wave",
+        ira_berserker: "Legendary: +100% attack speed while HP is below 25%",
+        botas_saltarinas: "Epic: +25% move speed, -12% dash cooldown",
+        lightning_overlord: "Legendary turret fires 5 AoE lightning bolts",
+        traje_de_hojas: "Epic: +25% evasion",
+        drone_missile: "Legendary: drone fires explosive missiles at 25% rate",
+        carterista: "10% chance to gain 5 gold on hit"
+      },
+      charTrait: {
+        default: "Trait: -",
+        conductor: "Trait: Drone Specialist (+25% Drone Weapon damage)",
+        slot_machine_robot: "Trait: Spend 1 Gold per attack. Damage rolls from 1 to 100 scale with Luck.",
+        thief: "Trait: Greed (x2 gold drops)."
+      }
+    },
+    ES: {
+      ui: {
+        inventoryBtn: "Inventario (I)",
+        weaponTitle: "Armas (Tab / 1 / 2) | Dash: Shift | Comprar: E",
+        charSelectTitle: "Elige tu arquetipo de arma",
+        charSelectSubtitle: "Cada heroe tiene un arma base, estadisticas unicas y un rol de combate distinto.",
+        shopTitle: "Campamento Mercante",
+        shopSubtitle: "Acercate a una oferta y pulsa E. Puedes comprar hasta 3 ofertas por visita.",
+        inventoryTitle: "Ficha del Personaje",
+        inventoryItemsTitle: "Objetos",
+        close: "Cerrar",
+        restart: "Reiniciar",
+        reroll: "Repetir tienda",
+        skipMerchant: "Saltar mercante",
+        select: "Seleccionar",
+        locked: "Bloqueado",
+        wave: "Oleada",
+        gold: "Oro",
+        victory: "Victoria",
+        defeated: "Derrotado",
+        empty: "Vacio",
+        yes: "Si",
+        no: "No",
+        none: "Ninguna",
+        enabled: "Activo",
+        off: "Apagado",
+        merchantCamp: "Campamento Mercante",
+        pressToBuy: "Pulsa E para comprar",
+        noItemsYet: "Todavia no compraste objetos.",
+        controlsHint: "WASD mover | Shift dash | Mouse + mantener LMB atacar | Tab cambiar arma | I inventario",
+        merchantHint: "Fase de mercante: acercate a una oferta y pulsa E para comprar. Puedes comprar hasta 3.",
+        priceScale: "Escala de precio x{mult} (segun oleada y presion enemiga)",
+        rerollsUsed: "Repeticiones esta run: {count}",
+        unlockAchievement: "Logro desbloqueado: {name}",
+        wavesClearedSummary: "Oleadas superadas: {wave}/{maxWave} | Bajas: {kills} | Oro: {gold}"
+      },
+      kind: {
+        melee: "melee",
+        magic: "magia",
+        ranged: "distancia"
+      },
+      stat: {
+        hp: "HP",
+        moveSpeed: "Velocidad",
+        armor: "Armadura",
+        dodge: "Evasion",
+        lifesteal: "Robo de vida",
+        luck: "Suerte",
+        activeWeapon: "Arma activa",
+        activeWeaponDamage: "Danio arma activa",
+        daggerDynamicDamage: "Danio dinamico daga",
+        goldBonus: "Bono de oro",
+        dashCd: "CD Dash",
+        dashCharges: "Cargas de dash",
+        meleeSize: "Tamano melee",
+        magicHoming: "Homing magico",
+        hpRegen: "Regeneracion HP",
+        sentries: "Torretas",
+        sentryStats: "Danio torreta",
+        sentryCd: "CD torreta",
+        droneWeaponEquipped: "Arma dron equipada",
+        droneMissile: "Misil de dron",
+        berserkerRage: "Ira berserker",
+        speed: "Velocidad",
+        weapon: "Arma",
+        startingGold: "Oro inicial",
+        weaponLock: "Bloqueo de arma",
+        trait: "Rasgo",
+        melee: "Melee",
+        magic: "Magia",
+        ranged: "Distancia"
+      },
+      msg: {
+        notEnoughReroll: "No tienes oro suficiente para repetir.",
+        rerollUsed: "Repeticion usada ({count} total).",
+        moveCloser: "Acercate mas a una oferta.",
+        notEnoughGold: "No tienes oro suficiente.",
+        weaponLocked: "Este personaje no puede equipar armas nuevas.",
+        purchased: "Comprado: {name}"
+      },
+      rarity: {
+        qPrefix: "Q"
+      },
+      charName: {
+        knight: "Guerrero de Hierro",
+        orc: "Orco del Hacha",
+        mage: "Piromante Azul",
+        hunter: "Cazador del Bosque",
+        frogfolk: "Frogfolk del Pantano",
+        engineer: "Ingeniero de Cobre",
+        conductor: "Conductor",
+        slot_machine_robot: "Robot Tragamonedas",
+        thief: "Ladron"
+      },
+      weaponName: {
+        oraculus: "Oraculus",
+        drone_weapon: "Arma Dron"
+      },
+      weaponDesc: {
+        oraculus: "Rayo legendario con perforacion hasta los limites del mapa",
+        drone_weapon: "Activa dron orbital de combate al equiparla"
+      },
+      itemName: {
+        echo_blade: "Hoja eco",
+        ira_berserker: "Ira berserker",
+        botas_saltarinas: "Botas saltarinas",
+        lightning_overlord: "Senor del relampago",
+        traje_de_hojas: "Traje de hojas",
+        drone_missile: "Misil de dron",
+        carterista: "Carterista"
+      },
+      itemDesc: {
+        echo_blade: "Legendario: melee lanza una onda perforante",
+        ira_berserker: "Legendario: +100% velocidad de ataque con HP por debajo de 25%",
+        botas_saltarinas: "Epico: +25% velocidad de movimiento, -12% enfriamiento de dash",
+        lightning_overlord: "Torreta legendaria lanza 5 rayos AoE",
+        traje_de_hojas: "Epico: +25% evasion",
+        drone_missile: "Legendario: el dron dispara misiles explosivos al 25% de frecuencia",
+        carterista: "10% de probabilidad de ganar 5 de oro al golpear"
+      },
+      charTrait: {
+        default: "Rasgo: -",
+        conductor: "Rasgo: Especialista en dron (+25% danio de Arma Dron)",
+        slot_machine_robot: "Rasgo: Gasta 1 oro por ataque. El danio va de 1 a 100 y escala con suerte.",
+        thief: "Rasgo: Codicia (x2 oro)."
+      }
+    }
+  };
+
+  function cloneObject(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function getNestedValue(obj, key) {
+    const parts = key.split(".");
+    let current = obj;
+    for (const part of parts) {
+      if (!current || typeof current !== "object" || !(part in current)) {
+        return null;
+      }
+      current = current[part];
+    }
+    return current;
+  }
+
+  function formatTemplate(text, params = {}) {
+    return String(text).replace(/\{(\w+)\}/g, (_, key) => {
+      if (params[key] === undefined || params[key] === null) {
+        return `{${key}}`;
+      }
+      return String(params[key]);
+    });
+  }
+
+  function loadProgress() {
+    const fallback = {
+      language: "EN",
+      unlockedContent: { characters: [], items: [], weapons: [] },
+      completedRuns: []
+    };
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        return fallback;
+      }
+      const parsed = JSON.parse(raw);
+      return {
+        language: parsed.language === "ES" ? "ES" : "EN",
+        unlockedContent: {
+          characters: Array.isArray(parsed.unlockedContent?.characters) ? parsed.unlockedContent.characters : [],
+          items: Array.isArray(parsed.unlockedContent?.items) ? parsed.unlockedContent.items : [],
+          weapons: Array.isArray(parsed.unlockedContent?.weapons) ? parsed.unlockedContent.weapons : []
+        },
+        completedRuns: Array.isArray(parsed.completedRuns) ? parsed.completedRuns : []
+      };
+    } catch {
+      return fallback;
+    }
+  }
+
+  const progress = loadProgress();
+  const unlockedSets = {
+    characters: new Set(progress.unlockedContent.characters),
+    items: new Set(progress.unlockedContent.items),
+    weapons: new Set(progress.unlockedContent.weapons)
+  };
+  let currentLang = progress.language;
+
+  function saveProgress() {
+    const payload = {
+      language: currentLang,
+      unlockedContent: {
+        characters: [...unlockedSets.characters],
+        items: [...unlockedSets.items],
+        weapons: [...unlockedSets.weapons]
+      },
+      completedRuns: progress.completedRuns
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  }
+
+  function t(key, params = {}, fallback = key) {
+    const langTable = I18N[currentLang] || I18N.EN;
+    const englishTable = I18N.EN;
+    const value = getNestedValue(langTable, key) ?? getNestedValue(englishTable, key) ?? fallback;
+    return formatTemplate(value, params);
+  }
+
+  function rarityLabel(rarity) {
+    return `${t("rarity.qPrefix")}${rarity}`;
+  }
+
+  function localizeCharacterName(charId, fallbackName) {
+    return t(`charName.${charId}`, {}, fallbackName);
+  }
+
+  function localizeCharacterTrait(charDef) {
+    const fallback = charDef.trait || t("charTrait.default");
+    return t(`charTrait.${charDef.id}`, {}, fallback);
+  }
+
+  function localizeOfferName(offer) {
+    if (offer.kind === "weapon" || offer.weaponId) {
+      return t(`weaponName.${offer.weaponId || offer.id}`, {}, offer.name);
+    }
+    return t(`itemName.${offer.id}`, {}, offer.name);
+  }
+
+  function localizeOfferDesc(offer) {
+    if (offer.kind === "weapon" || offer.weaponId) {
+      return t(`weaponDesc.${offer.weaponId || offer.id}`, {}, offer.desc);
+    }
+    return t(`itemDesc.${offer.id}`, {}, offer.desc);
+  }
+
+  function localizeWeaponName(weapon) {
+    if (!weapon) return "";
+    return t(`weaponName.${weapon.id}`, {}, weapon.name);
+  }
+
+  function localizeWeaponKind(kind) {
+    return t(`kind.${kind}`, {}, kind || "");
+  }
+
+  function isUnlocked(category, id, startsUnlocked = true) {
+    if (!id) {
+      return true;
+    }
+    if (unlockedSets[category] && unlockedSets[category].has(id)) {
+      return true;
+    }
+    return !!startsUnlocked;
+  }
+
+  function unlockContent(category, id, displayName) {
+    if (!category || !id || !unlockedSets[category] || unlockedSets[category].has(id)) {
+      return false;
+    }
+    unlockedSets[category].add(id);
+    saveProgress();
+    pushAchievementToast(displayName || id);
+    return true;
+  }
+
+  function ensureInitialUnlocks() {
+    for (const c of CHARACTERS) {
+      if (c.unlockCategory && c.unlockId && c.startsUnlocked) {
+        unlockedSets[c.unlockCategory].add(c.unlockId);
+      }
+    }
+    for (const item of PASSIVE_ITEMS) {
+      if (item.unlockCategory && item.unlockId && item.startsUnlocked) {
+        unlockedSets[item.unlockCategory].add(item.unlockId);
+      }
+    }
+    for (const weaponOffer of WEAPON_OFFERS) {
+      if (weaponOffer.unlockCategory && weaponOffer.unlockId && weaponOffer.startsUnlocked) {
+        unlockedSets[weaponOffer.unlockCategory].add(weaponOffer.unlockId);
+      }
+    }
+    saveProgress();
+  }
+
+  function refreshStaticUIText() {
+    const inventoryTitleEl = document.getElementById("inventoryTitle");
+    const inventoryItemsTitleEl = document.getElementById("inventoryItemsTitle");
+    const weaponTitleEl = document.getElementById("weaponTitle");
+    const charSelectTitleEl = document.getElementById("charSelectTitle");
+    const charSelectSubtitleEl = document.getElementById("charSelectSubtitle");
+    const shopTitleEl = document.getElementById("shopTitle");
+    const shopSubtitleEl = document.getElementById("shopSubtitle");
+
+    if (inventoryBtn) inventoryBtn.textContent = t("ui.inventoryBtn");
+    if (weaponTitleEl) weaponTitleEl.textContent = t("ui.weaponTitle");
+    if (charSelectTitleEl) charSelectTitleEl.textContent = t("ui.charSelectTitle");
+    if (charSelectSubtitleEl) charSelectSubtitleEl.textContent = t("ui.charSelectSubtitle");
+    if (shopTitleEl) shopTitleEl.textContent = t("ui.shopTitle");
+    if (shopSubtitleEl) shopSubtitleEl.textContent = t("ui.shopSubtitle");
+    if (inventoryTitleEl) inventoryTitleEl.textContent = t("ui.inventoryTitle");
+    if (inventoryItemsTitleEl) inventoryItemsTitleEl.textContent = t("ui.inventoryItemsTitle");
+    if (closeInventoryBtn) closeInventoryBtn.textContent = t("ui.close");
+    if (restartBtn) restartBtn.textContent = t("ui.restart");
+    if (skipShopBtn) skipShopBtn.textContent = t("ui.skipMerchant");
+    if (langToggleBtn) {
+      langToggleBtn.textContent = currentLang === "EN" ? "ES" : "EN";
+    }
+    updateRerollButtonLabel();
+  }
+
+  function setLanguage(lang) {
+    currentLang = lang === "ES" ? "ES" : "EN";
+    saveProgress();
+    refreshStaticUIText();
+    createCharacterCards();
+    renderWeaponSlots();
+    refreshInventory();
+    refreshHUD();
+  }
+
+  const achievementQueue = [];
+  let achievementActive = false;
+
+  function pushAchievementToast(name) {
+    achievementQueue.push(name);
+    if (achievementActive) {
+      return;
+    }
+    achievementActive = true;
+
+    const showNext = () => {
+      const next = achievementQueue.shift();
+      if (!next) {
+        achievementActive = false;
+        return;
+      }
+
+      const toast = document.createElement("div");
+      toast.className = "achievementToast";
+      toast.textContent = t("ui.unlockAchievement", { name: next });
+      achievementFeed.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add("fadeOut");
+      }, 2100);
+
+      setTimeout(() => {
+        toast.remove();
+        showNext();
+      }, 2400);
+    };
+
+    showNext();
+  }
 
   function clamp(v, min, max) {
     return Math.max(min, Math.min(max, v));
@@ -628,10 +1190,6 @@
     if (rarity === 3) return "#6ad9ff";
     if (rarity === 2) return "#8de26f";
     return "#d7dbe3";
-  }
-
-  function rarityLabel(rarity) {
-    return `Q${rarity}`;
   }
 
   function getSpritePath(group, id) {
@@ -1115,9 +1673,9 @@
       ctx.textAlign = "center";
       ctx.font = "12px Consolas";
       ctx.fillStyle = rarityColor(this.offer.rarity || 1);
-      ctx.fillText(`${this.offer.name} [${rarityLabel(this.offer.rarity || 1)}]`, this.x, this.y + 26);
+      ctx.fillText(`${localizeOfferName(this.offer)} [${rarityLabel(this.offer.rarity || 1)}]`, this.x, this.y + 26);
       ctx.fillStyle = "#d8e4ee";
-      ctx.fillText(this.offer.desc, this.x, this.y + 40);
+      ctx.fillText(localizeOfferDesc(this.offer), this.x, this.y + 40);
       ctx.fillStyle = "#f3d27a";
       ctx.fillText(`${this.offer.cost}g`, this.x, this.y + 54);
 
@@ -1125,7 +1683,7 @@
         ctx.fillStyle = "rgba(50, 70, 85, 0.9)";
         ctx.fillRect(this.x - 58, this.y - 54, 116, 20);
         ctx.fillStyle = "#f6f9fc";
-        ctx.fillText("Press E to Buy", this.x, this.y - 40);
+        ctx.fillText(t("ui.pressToBuy"), this.x, this.y - 40);
       }
     }
   }
@@ -1474,6 +2032,8 @@
         sentryRateFactor: 1,
         lightningOverlord: false,
         droneMissile: false,
+        iraBerserker: false,
+        pickpocketChance: 0,
         luckFlat: 0,
         epicLuckCurrent: 0
       };
@@ -1680,6 +2240,8 @@
           sentry.mode = "normal";
         }
       }
+
+      tryUnlockEngineerMilestone();
     }
 
     onWeaponStateChanged() {
@@ -1769,7 +2331,8 @@
       }
 
       const weapon = this.weapons[this.activeWeapon];
-      const cooldown = weapon.cooldown * this.bonus.cooldownFactor;
+      const berserkerFactor = this.bonus.iraBerserker && (this.hp / this.maxHp()) < 0.25 ? 0.5 : 1;
+      const cooldown = weapon.cooldown * this.bonus.cooldownFactor * berserkerFactor;
       this.attackCooldown = Math.max(0.08, cooldown);
 
       const aim = normalize(input.mouseX - this.x, input.mouseY - this.y);
@@ -1792,6 +2355,7 @@
           if (diff > Math.PI) diff = Math.PI * 2 - diff;
           if (diff <= meleeArc * 0.5) {
             e.takeDamage(damage, { showFloating: this.charId === "slot_machine_robot" });
+            onPlayerSuccessfulHit(this, e.x, e.y);
             if (this.bonus.lifesteal > 0) {
               this.hp = Math.min(this.maxHp(), this.hp + damage * this.bonus.lifesteal * 0.16);
             }
@@ -1856,6 +2420,11 @@
             projectile.homingStrength = this.bonus.magicHoming;
             projectile.homingRange = 320;
           }
+          if (weapon.id === "oraculus") {
+            projectile.pierce = true;
+            projectile.life = 3.4;
+            projectile.size = 6;
+          }
           projectiles.push(projectile);
         }
       }
@@ -1883,7 +2452,7 @@
     applyOffer(offer) {
       if (offer.kind === "item") {
         offer.apply(this);
-        this.items.push({ id: offer.id, name: offer.name, rarity: offer.rarity || 1 });
+        this.items.push({ id: offer.id, rarity: offer.rarity || 1 });
         this.hp = Math.min(this.maxHp(), this.hp);
         return true;
       }
@@ -1998,8 +2567,100 @@
     activeBossId: "",
     hazards: [],
     rerollCount: 0,
-    floatingDamageTexts: []
+    floatingDamageTexts: [],
+    runFlags: {
+      hadFiveEngineerSentries: false
+    }
   };
+
+  function isCharacterUnlocked(charDef) {
+    if (!charDef.unlockCategory || !charDef.unlockId) {
+      return true;
+    }
+    return isUnlocked(charDef.unlockCategory, charDef.unlockId, !!charDef.startsUnlocked);
+  }
+
+  function isOfferUnlocked(offer) {
+    if (!offer.unlockCategory || !offer.unlockId) {
+      return true;
+    }
+    return isUnlocked(offer.unlockCategory, offer.unlockId, !!offer.startsUnlocked);
+  }
+
+  function offerDisplayNameById(kind, id, fallback = id) {
+    if (kind === "weapon") {
+      return t(`weaponName.${id}`, {}, fallback);
+    }
+    return t(`itemName.${id}`, {}, fallback);
+  }
+
+  function onPlayerSuccessfulHit(player, x, y) {
+    if (!player || player.bonus.pickpocketChance <= 0) {
+      return;
+    }
+    if (Math.random() < player.bonus.pickpocketChance) {
+      player.gold += 5;
+      addFloatingDamageText(x, y - 10, 5, "#f3d27a", 0.75);
+    }
+  }
+
+  function tryUnlockEngineerMilestone() {
+    if (!game.player || game.player.charId !== "engineer") {
+      return;
+    }
+    if (game.player.sentries.length < 5 || game.runFlags.hadFiveEngineerSentries) {
+      return;
+    }
+
+    game.runFlags.hadFiveEngineerSentries = true;
+    const unlockedCharacter = unlockContent("characters", "conductor", localizeCharacterName("conductor", "Conductor"));
+    const unlockedWeapon = unlockContent("weapons", "drone_weapon", offerDisplayNameById("weapon", "drone_weapon", "Drone Weapon"));
+    if (unlockedCharacter || unlockedWeapon) {
+      createCharacterCards();
+    }
+  }
+
+  function evaluateVictoryUnlocks() {
+    if (!game.player) {
+      return;
+    }
+
+    const won = game.wave >= MAX_WAVE;
+    if (!won) {
+      return;
+    }
+
+    if (Math.floor(game.player.gold) > 2000) {
+      unlockContent("characters", "slot_machine_robot", localizeCharacterName("slot_machine_robot", "Slot Machine Robot"));
+    }
+
+    const clearUnlockMap = {
+      knight: [{ category: "items", id: "echo_blade", kind: "item" }],
+      orc: [{ category: "items", id: "ira_berserker", kind: "item" }],
+      frogfolk: [{ category: "items", id: "botas_saltarinas", kind: "item" }],
+      engineer: [{ category: "items", id: "lightning_overlord", kind: "item" }],
+      mage: [{ category: "weapons", id: "oraculus", kind: "weapon" }],
+      hunter: [{ category: "items", id: "traje_de_hojas", kind: "item" }],
+      conductor: [{ category: "items", id: "drone_missile", kind: "item" }],
+      thief: [{ category: "items", id: "carterista", kind: "item" }]
+    };
+
+    const unlocks = clearUnlockMap[game.player.charId] || [];
+    for (const entry of unlocks) {
+      unlockContent(entry.category, entry.id, offerDisplayNameById(entry.kind, entry.id, entry.id));
+    }
+
+    progress.completedRuns.push({
+      charId: game.player.charId,
+      wave: game.wave,
+      kills: game.kills,
+      gold: Math.floor(game.player.gold),
+      won: true,
+      timestamp: Date.now()
+    });
+    saveProgress();
+    createCharacterCards();
+  }
 
   function getWaveEnemyPressure(waveNumber) {
     const plan = getWavePlan(waveNumber);
@@ -2031,7 +2692,7 @@
     if (!rerollShopBtn) {
       return;
     }
-    rerollShopBtn.textContent = `Reroll (${getRerollCost()}g)`;
+    rerollShopBtn.textContent = `${t("ui.reroll")} (${getRerollCost()}g)`;
   }
 
   function spawnToxicPool(x, y, radius, life, damage) {
@@ -2152,11 +2813,13 @@
     const weaponPool = player && player.base.weaponLocked
       ? []
       : WEAPON_OFFERS
+        .filter((offer) => isOfferUnlocked(offer))
         .filter((offer) => !ownedWeapons.has(offer.weaponId))
         .map((offer) => ({ ...offer, kind: "weapon" }));
 
     const combined = [
       ...PASSIVE_ITEMS
+        .filter((item) => isOfferUnlocked(item))
         .filter((item) => !item.condition || item.condition(player))
         .map((item) => ({ ...item, kind: "item" })),
       ...weaponPool
@@ -2216,17 +2879,21 @@
 
     game.state = GAME_STATE.PLAYING;
     hideMerchantUI();
-    waveText.textContent = `Wave: ${game.wave}/${MAX_WAVE}`;
+    waveText.textContent = `${t("ui.wave")}: ${game.wave}/${MAX_WAVE}`;
   }
 
   function startGame(characterId) {
     const charDef = CHARACTERS.find((c) => c.id === characterId);
+    if (!charDef || !isCharacterUnlocked(charDef)) {
+      return;
+    }
     game.player = new Player(charDef);
     game.player.onWeaponStateChanged();
     game.wave = 0;
     game.kills = 0;
     game.elapsed = 0;
     game.rerollCount = 0;
+    game.runFlags.hadFiveEngineerSentries = false;
     game.floatingDamageTexts = [];
     hideOverlay(charSelect);
     hideOverlay(endPanel);
@@ -2249,7 +2916,7 @@
   function showMerchantUI() {
     shopPanel.classList.remove("hidden", "overlay", "show");
     shopPanel.classList.add("merchantMode");
-    skipShopBtn.textContent = "Skip Merchant";
+    skipShopBtn.textContent = t("ui.skipMerchant");
   }
 
   function hideMerchantUI() {
@@ -2259,8 +2926,16 @@
 
   function finishRun(win) {
     game.state = win ? GAME_STATE.VICTORY : GAME_STATE.GAME_OVER;
-    endTitle.textContent = win ? "Victory" : "Defeated";
-    endSummary.textContent = `Waves Cleared: ${game.wave}/${MAX_WAVE} | Kills: ${game.kills} | Gold: ${Math.floor(game.player.gold)}`;
+    if (win) {
+      evaluateVictoryUnlocks();
+    }
+    endTitle.textContent = win ? t("ui.victory") : t("ui.defeated");
+    endSummary.textContent = t("ui.wavesClearedSummary", {
+      wave: game.wave,
+      maxWave: MAX_WAVE,
+      kills: game.kills,
+      gold: Math.floor(game.player.gold)
+    });
     showOverlay(endPanel);
     hideMerchantUI();
   }
@@ -2301,14 +2976,14 @@
 
     const cost = getRerollCost();
     if (game.player.gold < cost) {
-      showMerchantMessage("Not enough gold for reroll.");
+      showMerchantMessage(t("msg.notEnoughReroll"));
       return;
     }
 
     game.player.gold -= cost;
     game.rerollCount += 1;
     openMerchantCamp();
-    showMerchantMessage(`Reroll used (${game.rerollCount} total).`);
+    showMerchantMessage(t("msg.rerollUsed", { count: game.rerollCount }));
     refreshHUD();
   }
 
@@ -2347,19 +3022,19 @@
 
     const offerNode = getNearestOfferInRange();
     if (!offerNode) {
-      showMerchantMessage("Move closer to an offer.");
+      showMerchantMessage(t("msg.moveCloser"));
       return;
     }
 
     const offer = offerNode.offer;
     if (game.player.gold < offer.cost) {
-      showMerchantMessage("Not enough gold.");
+      showMerchantMessage(t("msg.notEnoughGold"));
       return;
     }
 
     const applied = game.player.applyOffer(offer);
     if (!applied) {
-      showMerchantMessage("This character cannot equip new weapons.");
+      showMerchantMessage(t("msg.weaponLocked"));
       return;
     }
 
@@ -2374,17 +3049,19 @@
     if (left <= 0) {
       closeMerchantAndAdvance();
     } else {
-      showMerchantMessage(`Purchased: ${offer.name}`);
+      showMerchantMessage(t("msg.purchased", { name: localizeOfferName(offer) }));
     }
   }
 
   function refreshHUD() {
     if (!game.player) {
+      waveText.textContent = `${t("ui.wave")}: 0/${MAX_WAVE}`;
+      goldText.textContent = `${t("ui.gold")}: 0`;
       return;
     }
 
-    waveText.textContent = `Wave: ${game.wave}/${MAX_WAVE}`;
-    goldText.textContent = `Gold: ${Math.floor(game.player.gold)}`;
+    waveText.textContent = `${t("ui.wave")}: ${game.wave}/${MAX_WAVE}`;
+    goldText.textContent = `${t("ui.gold")}: ${Math.floor(game.player.gold)}`;
     const hpPct = clamp(game.player.hp / game.player.maxHp(), 0, 1);
     hpBar.style.width = `${Math.round(hpPct * 100)}%`;
     const dashPct = game.player.dashChargeFillPct();
@@ -2407,15 +3084,16 @@
       const weapon = game.player.weapons[i];
       if (weapon) {
         const icon = getSpritePath("weapons", weapon.id);
+        const localizedWeaponName = localizeWeaponName(weapon);
         slot.innerHTML = `
           <div class="slotHead">
-            <img class="spriteIcon" src="${icon}" alt="${weapon.name}" />
-            <b>${i + 1}. ${weapon.name}</b>
+            <img class="spriteIcon" src="${icon}" alt="${localizedWeaponName}" />
+            <b>${i + 1}. ${localizedWeaponName}</b>
           </div>
-          <span>${weapon.kind}</span>
+          <span>${localizeWeaponKind(weapon.kind)}</span>
         `;
       } else {
-        slot.textContent = `${i + 1}. Empty`;
+        slot.textContent = `${i + 1}. ${t("ui.empty")}`;
       }
 
       slot.addEventListener("click", () => {
@@ -2437,37 +3115,40 @@
 
     const activeWeapon = game.player.activeWeaponDef();
     const activeWeaponDamage = activeWeapon ? game.player.weaponDamage(activeWeapon) : 0;
+    const activeWeaponName = activeWeapon ? localizeWeaponName(activeWeapon) : t("ui.none");
     const daggerInfo = activeWeapon && activeWeapon.id === "dagger"
-      ? `<p>Dagger Dynamic Damage: ${activeWeapon.damage.toFixed(1)} + (${Math.floor(game.player.gold)} Gold x ${(activeWeapon.goldScaling || 0).toFixed(2)})</p>`
+      ? `<p>${t("stat.daggerDynamicDamage")}: ${activeWeapon.damage.toFixed(1)} + (${Math.floor(game.player.gold)} ${t("ui.gold")} x ${(activeWeapon.goldScaling || 0).toFixed(2)})</p>`
       : "";
 
+    const berserkerActive = game.player.bonus.iraBerserker && (game.player.hp / game.player.maxHp()) < 0.25;
     inventoryStats.innerHTML = `
-      <p><b>${game.player.name}</b></p>
-      <p>HP: ${Math.floor(game.player.hp)} / ${Math.floor(game.player.maxHp())}</p>
-      <p>Move Speed: ${Math.floor(game.player.speed())}</p>
-      <p>Armor: ${Math.round(game.player.armor() * 100)}%</p>
-      <p>Dodge: ${Math.round(game.player.dodgeChance() * 100)}%</p>
-      <p>Lifesteal: ${Math.round(game.player.bonus.lifesteal * 100)}%</p>
-      <p>Luck: ${game.player.luck().toFixed(2)}</p>
-      <p>Active Weapon: ${activeWeapon ? activeWeapon.name : "None"}</p>
-      <p>Active Weapon Damage: ${activeWeaponDamage.toFixed(1)}</p>
+      <p><b>${localizeCharacterName(game.player.charId, game.player.name)}</b></p>
+      <p>${t("stat.hp")}: ${Math.floor(game.player.hp)} / ${Math.floor(game.player.maxHp())}</p>
+      <p>${t("stat.moveSpeed")}: ${Math.floor(game.player.speed())}</p>
+      <p>${t("stat.armor")}: ${Math.round(game.player.armor() * 100)}%</p>
+      <p>${t("stat.dodge")}: ${Math.round(game.player.dodgeChance() * 100)}%</p>
+      <p>${t("stat.lifesteal")}: ${Math.round(game.player.bonus.lifesteal * 100)}%</p>
+      <p>${t("stat.luck")}: ${game.player.luck().toFixed(2)}</p>
+      <p>${t("stat.activeWeapon")}: ${activeWeaponName}</p>
+      <p>${t("stat.activeWeaponDamage")}: ${activeWeaponDamage.toFixed(1)}</p>
       ${daggerInfo}
-      <p>Gold Bonus: ${Math.round(game.player.bonus.goldFactor * 100)}%</p>
-      <p>Dash CD: ${game.player.currentDashCooldown().toFixed(2)}s</p>
-      <p>Dash Charges: ${game.player.currentDashMaxCharges()}</p>
-      <p>Melee Size: x${game.player.bonus.meleeRangeFactor.toFixed(2)}</p>
-      <p>Magic Homing: ${game.player.bonus.magicHoming > 0 ? "Enabled" : "Off"}</p>
-      <p>HP Regen: ${game.player.bonus.hpRegen.toFixed(1)} /s</p>
-      <p>Sentries: ${game.player.sentries.length} (max ${game.player.desiredSentryCount()})</p>
-      <p>Sentry DMG: ${Math.round(game.player.sentryDamage())} | Sentry CD: ${game.player.sentryAttackCooldown().toFixed(2)}s</p>
-      <p>Drone Weapon Equipped: ${game.player.isDroneWeaponEquipped() ? "Yes" : "No"}</p>
-      <p>Drone Missile: ${game.player.bonus.droneMissile ? "Enabled" : "Off"}</p>
+      <p>${t("stat.goldBonus")}: ${Math.round(game.player.bonus.goldFactor * 100)}%</p>
+      <p>${t("stat.dashCd")}: ${game.player.currentDashCooldown().toFixed(2)}s</p>
+      <p>${t("stat.dashCharges")}: ${game.player.currentDashMaxCharges()}</p>
+      <p>${t("stat.meleeSize")}: x${game.player.bonus.meleeRangeFactor.toFixed(2)}</p>
+      <p>${t("stat.magicHoming")}: ${game.player.bonus.magicHoming > 0 ? t("ui.enabled") : t("ui.off")}</p>
+      <p>${t("stat.hpRegen")}: ${game.player.bonus.hpRegen.toFixed(1)} /s</p>
+      <p>${t("stat.sentries")}: ${game.player.sentries.length} (max ${game.player.desiredSentryCount()})</p>
+      <p>${t("stat.sentryStats")}: ${Math.round(game.player.sentryDamage())} | ${t("stat.sentryCd")}: ${game.player.sentryAttackCooldown().toFixed(2)}s</p>
+      <p>${t("stat.droneWeaponEquipped")}: ${game.player.isDroneWeaponEquipped() ? t("ui.yes") : t("ui.no")}</p>
+      <p>${t("stat.droneMissile")}: ${game.player.bonus.droneMissile ? t("ui.enabled") : t("ui.off")}</p>
+      <p>${t("stat.berserkerRage")}: ${berserkerActive ? t("ui.enabled") : t("ui.off")}</p>
     `;
 
     inventoryItems.innerHTML = "";
     if (game.player.items.length === 0) {
       const li = document.createElement("li");
-      li.textContent = "No items purchased yet.";
+      li.textContent = t("ui.noItemsYet");
       inventoryItems.appendChild(li);
     } else {
       for (const item of game.player.items) {
@@ -2475,7 +3156,8 @@
         li.className = "inventoryItem";
         const itemPath = getSpritePath("items", item.id);
         const color = rarityColor(item.rarity || 1);
-        li.innerHTML = `<img class="spriteIcon" src="${itemPath}" alt="${item.name}" /><span style="color:${color}">${item.name} [${rarityLabel(item.rarity || 1)}]</span>`;
+        const itemName = t(`itemName.${item.id}`, {}, item.id);
+        li.innerHTML = `<img class="spriteIcon" src="${itemPath}" alt="${itemName}" /><span style="color:${color}">${itemName} [${rarityLabel(item.rarity || 1)}]</span>`;
         inventoryItems.appendChild(li);
       }
     }
@@ -2570,9 +3252,9 @@
     ctx.fillStyle = "#f5e6a8";
     ctx.font = "13px Consolas";
     ctx.textAlign = "center";
-    ctx.fillText("Merchant Camp", cx, cy - 24);
+    ctx.fillText(t("ui.merchantCamp"), cx, cy - 24);
     ctx.fillStyle = "#cde3f2";
-    ctx.fillText(`Rerolls used this run: ${game.rerollCount}`, cx, cy - 8);
+    ctx.fillText(t("ui.rerollsUsed", { count: game.rerollCount }), cx, cy - 8);
 
     const sprite = getSprite("characters", "merchant");
     if (sprite) {
@@ -2634,6 +3316,7 @@
           if (d <= proj.size + e.radius) {
             const showFloating = game.player.charId === "slot_machine_robot";
             e.takeDamage(proj.damage, { showFloating });
+            onPlayerSuccessfulHit(game.player, e.x, e.y);
             applyProjectileSplash(proj, e, game.enemies, showFloating);
             proj.hitTargets.add(e);
             if (!proj.pierce) {
@@ -2755,13 +3438,13 @@
     if (game.state === GAME_STATE.PLAYING || game.state === GAME_STATE.MERCHANT) {
       ctx.fillStyle = "rgba(250,250,250,0.75)";
       ctx.font = "13px Consolas";
-      ctx.fillText("WASD move | Shift dash | Mouse + hold LMB attack | Tab swap weapon | I inventory", 190, 690);
+      ctx.fillText(t("ui.controlsHint"), 190, 690);
       if (game.state === GAME_STATE.MERCHANT) {
         ctx.fillStyle = "rgba(245, 226, 157, 0.95)";
-        ctx.fillText("Merchant phase: move to an offer and press E to buy. You can buy up to 3 offers.", 190, 668);
+        ctx.fillText(t("ui.merchantHint"), 190, 668);
         const mult = getMerchantPriceMultiplier();
         ctx.fillStyle = "rgba(195, 233, 255, 0.95)";
-        ctx.fillText(`Price scale x${mult.toFixed(2)} (based on wave and enemy pressure)`, 190, 646);
+        ctx.fillText(t("ui.priceScale", { mult: mult.toFixed(2) }), 190, 646);
       }
     }
   }
@@ -2801,6 +3484,23 @@
 
     for (const c of CHARACTERS) {
       const w = WEAPONS[c.startWeapon];
+      const isLocked = !isCharacterUnlocked(c);
+      const hidden = "???";
+      const localizedCharName = isLocked ? hidden : localizeCharacterName(c.id, c.name);
+      const localizedWeaponName = isLocked ? hidden : localizeWeaponName(w);
+      const localizedTrait = isLocked ? hidden : localizeCharacterTrait(c);
+      const hpValue = isLocked ? hidden : c.hp;
+      const speedValue = isLocked ? hidden : c.speed;
+      const armorValue = isLocked ? hidden : `${Math.round(c.armor * 100)}%`;
+      const dodgeValue = isLocked ? hidden : `${Math.round((c.dodge || 0) * 100)}%`;
+      const luckValue = isLocked ? hidden : (c.luck || 1).toFixed(2);
+      const weaponKindValue = isLocked ? hidden : localizeWeaponKind(w.kind);
+      const meleeValue = isLocked ? hidden : `${Math.round(c.meleeMult * 100)}%`;
+      const magicValue = isLocked ? hidden : `${Math.round(c.magicMult * 100)}%`;
+      const rangedValue = isLocked ? hidden : `${Math.round(c.rangedMult * 100)}%`;
+      const startingGoldValue = isLocked ? hidden : Math.floor(c.startingGold || 0);
+      const weaponLockValue = isLocked ? hidden : (c.weaponLocked ? t("ui.yes") : t("ui.no"));
+      const charVisualClass = isLocked ? " lockedSilhouette" : "";
       const charIcon = getSpritePath("characters", c.id);
       const weaponIcon = getSpritePath("weapons", c.startWeapon);
       const bodyTuning = PLAYER_CHARACTER_TUNING[c.id] || { bodyWidth: 40, bodyHeight: 40, hitboxRadius: 14 };
@@ -2808,26 +3508,30 @@
       const cardCharHeight = Math.round(bodyTuning.bodyHeight * PLAYER_BODY_HEIGHT_MULTIPLIER);
       const card = document.createElement("div");
       card.className = "card";
+      if (isLocked) {
+        card.style.opacity = "0.65";
+      }
       card.innerHTML = `
         <div class="cardArt">
-          <img class="spriteIcon lg" src="${charIcon}" alt="${c.name}" style="width:${cardCharWidth}px;height:${cardCharHeight}px;" />
-          <img class="spriteIcon" src="${weaponIcon}" alt="${w.name}" />
+          <img class="spriteIcon lg${charVisualClass}" src="${charIcon}" alt="${localizedCharName}" style="width:${cardCharWidth}px;height:${cardCharHeight}px;" />
+          <img class="spriteIcon" src="${weaponIcon}" alt="${localizedWeaponName}" />
         </div>
-        <h3>${c.name}</h3>
-        <p>HP: ${c.hp}</p>
-        <p>Speed: ${c.speed}</p>
-        <p>Armor: ${Math.round(c.armor * 100)}% | Dodge: ${Math.round((c.dodge || 0) * 100)}%</p>
-        <p>Luck: ${(c.luck || 1).toFixed(2)}</p>
-        <p>Weapon: ${w.name} (${w.kind})</p>
-        <p>Melee ${Math.round(c.meleeMult * 100)}% | Magic ${Math.round(c.magicMult * 100)}% | Ranged ${Math.round(c.rangedMult * 100)}%</p>
-        <p>Starting Gold: ${Math.floor(c.startingGold || 0)}</p>
-        <p>Weapon Lock: ${c.weaponLocked ? "Yes" : "No"}</p>
-        <p>${c.trait || "Trait: -"}</p>
+        <h3>${localizedCharName}</h3>
+        <p>${t("stat.hp")}: ${hpValue}</p>
+        <p>${t("stat.speed")}: ${speedValue}</p>
+        <p>${t("stat.armor")}: ${armorValue} | ${t("stat.dodge")}: ${dodgeValue}</p>
+        <p>${t("stat.luck")}: ${luckValue}</p>
+        <p>${t("stat.weapon")}: ${localizedWeaponName} (${weaponKindValue})</p>
+        <p>${t("stat.melee")} ${meleeValue} | ${t("stat.magic")} ${magicValue} | ${t("stat.ranged")} ${rangedValue}</p>
+        <p>${t("stat.startingGold")}: ${startingGoldValue}</p>
+        <p>${t("stat.weaponLock")}: ${weaponLockValue}</p>
+        <p>${localizedTrait}</p>
       `;
 
       const pick = document.createElement("button");
       pick.className = "smallBtn";
-      pick.textContent = "Select";
+      pick.textContent = isLocked ? t("ui.locked") : t("ui.select");
+      pick.disabled = isLocked;
       pick.addEventListener("click", () => startGame(c.id));
       card.appendChild(pick);
       charCards.appendChild(card);
@@ -2898,6 +3602,11 @@
   rerollShopBtn.addEventListener("click", rerollMerchantOffers);
   inventoryBtn.addEventListener("click", toggleInventory);
   closeInventoryBtn.addEventListener("click", toggleInventory);
+  if (langToggleBtn) {
+    langToggleBtn.addEventListener("click", () => {
+      setLanguage(currentLang === "EN" ? "ES" : "EN");
+    });
+  }
 
   restartBtn.addEventListener("click", () => {
     showOverlay(charSelect);
@@ -2918,13 +3627,19 @@
     game.kills = 0;
     game.elapsed = 0;
     game.rerollCount = 0;
+    game.runFlags.hadFiveEngineerSentries = false;
 
-    waveText.textContent = `Wave: 0/${MAX_WAVE}`;
-    goldText.textContent = "Gold: 0";
+    waveText.textContent = `${t("ui.wave")}: 0/${MAX_WAVE}`;
+    goldText.textContent = `${t("ui.gold")}: 0`;
     hpBar.style.width = "100%";
     dashBar.style.width = "100%";
     weaponSlots.innerHTML = "";
+    createCharacterCards();
   });
+
+  ensureInitialUnlocks();
+  refreshStaticUIText();
+  setLanguage(currentLang);
 
   loadSpriteAssets()
     .then(() => {

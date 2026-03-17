@@ -27,21 +27,24 @@
     <canvas id="gameCanvas" width="960" height="720"></canvas>
 
     <div id="weaponPanel">
-      <div class="weaponTitle">Weapons (Tab / 1 / 2) | Dash: Shift | Buy: E</div>
+      <div id="weaponTitle" class="weaponTitle">Weapons (Tab / 1 / 2) | Dash: Shift | Buy: E</div>
       <div id="weaponSlots"></div>
     </div>
 
     <div id="charSelect" class="overlay show">
       <div class="panel wide">
-        <h1>Choose Your Weapon Archetype</h1>
-        <p class="muted">Each hero is tied to a basic weapon, unique stats, and a distinct combat role.</p>
+        <div class="menuTopRow">
+          <h1 id="charSelectTitle">Choose Your Weapon Archetype</h1>
+          <button id="langToggleBtn" class="smallBtn" type="button">ES</button>
+        </div>
+        <p id="charSelectSubtitle" class="muted">Each hero is tied to a basic weapon, unique stats, and a distinct combat role.</p>
         <div id="charCards" class="cardGrid"></div>
       </div>
     </div>
 
     <div id="shopPanel" class="hidden">
-      <h2>Merchant Camp</h2>
-      <p class="muted">Walk to an offer and press E. You can buy up to 3 offers per visit.</p>
+      <h2 id="shopTitle">Merchant Camp</h2>
+      <p id="shopSubtitle" class="muted">Walk to an offer and press E. You can buy up to 3 offers per visit.</p>
       <div id="shopCards" class="cardGrid"></div>
       <div class="row">
         <button id="rerollShopBtn" class="smallBtn">Reroll</button>
@@ -51,9 +54,9 @@
 
     <div id="inventoryPanel" class="overlay hidden">
       <div class="panel">
-        <h2>Character Sheet</h2>
+        <h2 id="inventoryTitle">Character Sheet</h2>
         <div id="inventoryStats"></div>
-        <h3>Items</h3>
+        <h3 id="inventoryItemsTitle">Items</h3>
         <ul id="inventoryItems"></ul>
         <button id="closeInventoryBtn" class="smallBtn">Close</button>
       </div>
@@ -66,6 +69,8 @@
         <button id="restartBtn" class="smallBtn">Restart</button>
       </div>
     </div>
+
+    <div id="achievementFeed" aria-live="polite" aria-atomic="false"></div>
   </div>
 
   <script src="js/game.js"></script>
