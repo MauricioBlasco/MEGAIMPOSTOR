@@ -13,7 +13,23 @@
   const MAX_WAVE = 10;
   const MERCHANT_INTERACT_RANGE = 56;
   const ENEMY_WAVE_INCREASE = 1.4;
+  const ENEMY_SPAWN_MULTIPLIER = 1.5;
+  const ENEMY_DAMAGE_MULTIPLIER = 0.5;
+  const ENEMY_GOLD_GAIN_FACTOR = 0.25;
+  const ITEM_COST_FACTOR = 0.67;
+  const NON_BOSS_HP_FACTOR = 0.8;
+  const NON_BOSS_DAMAGE_FACTOR = 0.8;
+  const NON_BOSS_SPEED_FACTOR = 1.15;
   const WAVE_SPAWN_DURATION = 25;
+  const BOSS_DAMAGE_MULTIPLIER = 0.75;
+  const BOSS_SUMMON_CAP = 8;
+  const BGM_SRC = "./Pixelated_Gauntlet.mp3";
+  const BGM_LOOP_START = 1;
+  const BGM_LOOP_END = 11.75;
+
+  function scaleEnemyDamage(value) {
+    return Math.max(1, Math.round(value * ENEMY_DAMAGE_MULTIPLIER));
+  }
 
   const ARENA = {
     x: 180,
@@ -27,6 +43,67 @@
     mouseY: 0,
     mouseDown: false
   };
+
+  const bgm = new Audio(BGM_SRC);
+  bgm.loop = false;
+  bgm.preload = "auto";
+  bgm.volume = 0.5;
+
+  let bgmPrimed = false;
+
+  function getBgmToggleLabel() {
+    return bgm.muted ? t("ui.unmuteMusic") : t("ui.muteMusic");
+  }
+
+  function updateMuteMusicButtonLabel() {
+    if (!muteMusicBtn) {
+      return;
+    }
+    muteMusicBtn.textContent = getBgmToggleLabel();
+  }
+
+  function toggleBgmMute() {
+    bgm.muted = !bgm.muted;
+    updateMuteMusicButtonLabel();
+  }
+
+  function enforceBgmLoopRange() {
+    if (!bgmPrimed) {
+      return;
+    }
+    if (bgm.currentTime < BGM_LOOP_START || bgm.currentTime >= BGM_LOOP_END) {
+      bgm.currentTime = BGM_LOOP_START;
+    }
+  }
+
+  function ensureBgmPlaying() {
+    if (!bgmPrimed) {
+      bgmPrimed = true;
+      if (Number.isFinite(bgm.duration) && bgm.duration > BGM_LOOP_START) {
+        bgm.currentTime = BGM_LOOP_START;
+      }
+    }
+
+    if (!bgm.paused) {
+      return;
+    }
+
+    bgm.play().catch(() => {
+      // Ignorado: el navegador puede bloquear autoplay hasta otro gesto del usuario.
+    });
+  }
+
+  bgm.addEventListener("loadedmetadata", () => {
+    if (bgmPrimed) {
+      bgm.currentTime = BGM_LOOP_START;
+    }
+  });
+  bgm.addEventListener("timeupdate", enforceBgmLoopRange);
+  bgm.addEventListener("ended", () => {
+    bgm.currentTime = BGM_LOOP_START;
+    ensureBgmPlaying();
+  });
+  bgm.addEventListener("seeking", enforceBgmLoopRange);
 
   const CHARACTERS = [
     {
@@ -252,8 +329,8 @@
       id: "dagger",
       name: "Dagger",
       kind: "melee",
-      damage: 10,
-      goldScaling: 0.06,
+      damage: 14,
+      goldScaling: 0.045,
       cooldown: 0.265,
       range: 70,
       arc: Math.PI * 0.72,
@@ -293,11 +370,11 @@
       id: "soldering_iron",
       name: "Soldering Iron",
       kind: "magic",
-      damage: 9,
+      damage: 11,
       cooldown: 0.26,
       projectileSpeed: 330,
       projectileSize: 4,
-      projectileLife: 0.28,
+      projectileLife: 0.34,
       projectileSpread: 0.18,
       color: "#ff9861"
     },
@@ -305,7 +382,7 @@
       id: "drone_weapon",
       name: "Drone Weapon",
       kind: "ranged",
-      damage: 26,
+      damage: 30,
       cooldown: 0.34,
       projectileSpeed: 700,
       projectileSize: 4,
@@ -347,7 +424,7 @@
     cultist: {
       id: "cultist",
       name: "Cultist",
-      hp: 95,
+      hp: 64,
       speed: 96,
       damage: 14,
       radius: 16,
@@ -374,48 +451,63 @@
       gold: [12, 18],
       color: "#75e3ff"
     },
-    boss: {
-      id: "boss",
-      name: "Bone Tyrant",
-      hp: 1500,
+    skeleton_king: {
+      id: "skeleton_king",
+      name: "Rey Esqueleto",
+      hp: 1200,
       speed: 98,
-      damage: 25,
+      damage: 16,
+      radius: 40,
+      gold: [120, 155],
+      color: "#d8dadf",
+      isBoss: true
+    },
+    slime_boss: {
+      id: "slime_boss",
+      name: "Slime Boss",
+      hp: 760,
+      speed: 172,
+      damage: 12,
       radius: 42,
-      gold: [110, 140],
-      color: "#d54848",
-      isBoss: true
+      gold: [105, 132],
+      color: "#66d97e",
+      isBoss: true,
+      splitLevel: 0,
+      splitScale: 1
     },
-    boss_reaver: {
-      id: "boss_reaver",
-      name: "Crimson Reaver",
-      hp: 1450,
-      speed: 126,
-      damage: 22,
-      radius: 38,
-      gold: [108, 142],
-      color: "#db4242",
-      isBoss: true
+    slime_boss_split_1: {
+      id: "slime_boss_split_1",
+      name: "Slime Boss Fragment",
+      hp: 380,
+      speed: 98,
+      damage: 6,
+      radius: 26,
+      gold: [36, 52],
+      color: "#70e78a",
+      splitLevel: 1,
+      splitScale: 0.5
     },
-    boss_abomination: {
-      id: "boss_abomination",
-      name: "Rot Abomination",
-      hp: 3050,
-      speed: 102,
-      damage: 34,
-      radius: 46,
-      gold: [185, 230],
-      color: "#6fbe60",
-      isBoss: true
-    },
-    boss_oracle: {
-      id: "boss_oracle",
-      name: "Void Oracle",
-      hp: 2150,
+    slime_boss_split_2: {
+      id: "slime_boss_split_2",
+      name: "Slime Boss Shard",
+      hp: 190,
       speed: 112,
-      damage: 24,
-      radius: 44,
-      gold: [145, 182],
-      color: "#ae70ff",
+      damage: 3,
+      radius: 16,
+      gold: [16, 24],
+      color: "#83f2a1",
+      splitLevel: 2,
+      splitScale: 0.25
+    },
+    golem: {
+      id: "golem",
+      name: "Golem",
+      hp: 2900,
+      speed: 82,
+      damage: 28,
+      radius: 48,
+      gold: [190, 240],
+      color: "#9f9688",
       isBoss: true
     }
   };
@@ -425,12 +517,12 @@
     { spawns: { slime: 10, skeleton: 6 } },
     { spawns: { slime: 6, skeleton: 8, bat: 7 } },
     { spawns: { slime: 4, skeleton: 11, bat: 9 } },
-    { bossPool: ["boss", "boss_reaver"] },
+    { bossPool: ["skeleton_king", "slime_boss"] },
     { spawns: { skeleton: 10, cultist: 6, bat: 7 } },
-    { spawns: { cultist: 11, brute: 5, wisp: 8 } },
-    { spawns: { skeleton: 8, brute: 7, wisp: 10 } },
+    { spawns: { cultist: 7, brute: 5, wisp: 8 } },
+    { spawns: { skeleton: 5, cultist: 8, brute: 7, wisp: 10 } },
     { spawns: { cultist: 9, brute: 9, wisp: 11, bat: 8 } },
-    { bossPool: ["boss_abomination", "boss_oracle"] }
+    { bossPool: ["golem"] }
   ];
 
   const PASSIVE_ITEMS = [
@@ -448,7 +540,7 @@
     { id: "guardian_totem", rarity: 3, name: "Guardian Totem", desc: "+16% armor, +25 max HP", cost: 60, apply: (p) => { p.bonus.armor += 0.16; p.bonus.maxHp += 25; } },
     { id: "storm_insignia", rarity: 4, name: "Storm Insignia", desc: "Dash stronger, cooldown -20%", cost: 70, apply: (p) => { p.bonus.dashPower += 150; p.bonus.dashCooldownFactor *= 0.8; } },
     { id: "arcane_prism", rarity: 3, name: "Arcane Prism", desc: "+20 magic, +8% crit", cost: 58, apply: (p) => { p.bonus.magic += 20; p.bonus.critChance += 0.08; } },
-    { id: "gambler_coin", rarity: 2, name: "Gambler Coin", desc: "+70% gold, -20 max HP", cost: 48, apply: (p) => { p.bonus.goldFactor += 0.7; p.bonus.maxHp -= 20; p.hp = Math.min(p.maxHp(), p.hp); } },
+    { id: "gambler_coin", rarity: 2, name: "Gambler Coin", desc: "+30% gold, -20 max HP", cost: 48, apply: (p) => { p.bonus.goldFactor += 0.3; p.bonus.maxHp -= 20; p.hp = Math.min(p.maxHp(), p.hp); } },
     { id: "phantom_cloak", rarity: 4, name: "Phantom Cloak", desc: "+10 speed, +5% lifesteal, +6% armor", cost: 74, apply: (p) => { p.bonus.speed += 10; p.bonus.lifesteal += 0.05; p.bonus.armor += 0.06; } },
     { id: "titan_grip", rarity: 3, name: "Titan Grip", desc: "+25% melee range, +15% melee arc", cost: 62, apply: (p) => { p.bonus.meleeRangeFactor *= 1.25; p.bonus.meleeArcBonus += Math.PI * 0.15; } },
     { id: "seeker_crystal", rarity: 4, name: "Seeker Crystal", desc: "Magic shots become homing", cost: 84, apply: (p) => { p.bonus.magicHoming += 3.2; } },
@@ -499,10 +591,10 @@
       apply: (p) => { p.bonus.pickpocketChance = Math.max(p.bonus.pickpocketChance, 0.1); }
     },
     { id: "ranger_harness", rarity: 4, name: "Ranger Harness", desc: "Ranged weapons gain +1 dash charge", cost: 88, apply: (p) => { p.bonus.rangedDashBonus = 1; } },
-    { id: "extra_sentry", rarity: 1, name: "Extra Sentry", desc: "+1 Engineer turret", cost: 34, apply: (p) => { p.bonus.sentryCountBonus += 1; p.syncEngineerSentries(); } },
-    { id: "overclock_chip", rarity: 1, name: "Overclock Chip", desc: "+8 turret damage", cost: 34, apply: (p) => { p.bonus.sentryDamageBonus += 8; } },
-    { id: "rapid_cycle", rarity: 1, name: "Rapid Cycle", desc: "+12% turret attack speed", cost: 36, apply: (p) => { p.bonus.sentryRateFactor *= 0.88; } },
-    { id: "lightning_overlord", rarity: 4, name: "Lightning Overlord", desc: "Legendary turret fires 5 AoE lightning bolts", cost: 108, unlockCategory: "items", unlockId: "lightning_overlord", startsUnlocked: false, apply: (p) => { p.bonus.lightningOverlord = true; p.syncEngineerSentries(); } },
+    { id: "extra_sentry", rarity: 1, name: "Extra Sentry", desc: "+1 Engineer turret", cost: 34, condition: (p) => !!p && p.hasWeapon("soldering_iron"), apply: (p) => { p.bonus.sentryCountBonus += 1; p.syncEngineerSentries(); } },
+    { id: "overclock_chip", rarity: 1, name: "Overclock Chip", desc: "+8 turret damage", cost: 34, condition: (p) => !!p && p.hasWeapon("soldering_iron"), apply: (p) => { p.bonus.sentryDamageBonus += 8; } },
+    { id: "rapid_cycle", rarity: 1, name: "Rapid Cycle", desc: "+12% turret attack speed", cost: 36, condition: (p) => !!p && p.hasWeapon("soldering_iron"), apply: (p) => { p.bonus.sentryRateFactor *= 0.88; } },
+    { id: "lightning_overlord", rarity: 4, name: "Lightning Overlord", desc: "Legendary turret fires 5 AoE lightning bolts", cost: 108, unlockCategory: "items", unlockId: "lightning_overlord", startsUnlocked: false, condition: (p) => !!p && p.hasWeapon("soldering_iron"), apply: (p) => { p.bonus.lightningOverlord = true; p.syncEngineerSentries(); } },
     { id: "lucky_clover", rarity: 1, name: "Lucky Clover", desc: "+1 luck", cost: 32, apply: (p) => { p.bonus.luckFlat += 1; } },
     {
       id: "volatile_fortune_core",
@@ -542,6 +634,8 @@
     { id: "oraculus", rarity: 4, name: "Oraculus", desc: "Legendary beam that pierces to map bounds", cost: 110, weaponId: "oraculus", unlockCategory: "weapons", unlockId: "oraculus", startsUnlocked: false }
   ];
 
+  const ENEMY_PNG_VERSION = "20260317";
+
   const SPRITE_PATHS = {
     characters: {
       knight: "assets/sprites/characters/warrior.png",
@@ -553,19 +647,22 @@
       conductor: "assets/sprites/characters/Conductor.png",
       slot_machine_robot: "assets/sprites/characters/Maquina tragamonedas.png",
       thief: "assets/sprites/characters/Thief.png",
-      merchant: "assets/sprites/characters/merchant.svg"
+      merchant: `assets/sprites/enemies/Mercader.png?v=${ENEMY_PNG_VERSION}`
     },
     enemies: {
-      slime: "assets/sprites/enemies/slime.svg",
-      skeleton: "assets/sprites/enemies/skeleton.svg",
-      bat: "assets/sprites/enemies/bat.svg",
-      cultist: "assets/sprites/enemies/cultist.svg",
-      brute: "assets/sprites/enemies/brute.svg",
-      wisp: "assets/sprites/enemies/wisp.svg",
-      boss: "assets/sprites/enemies/boss.svg",
-      boss_reaver: "assets/sprites/enemies/boss_reaver.svg",
-      boss_abomination: "assets/sprites/enemies/boss_abomination.svg",
-      boss_oracle: "assets/sprites/enemies/boss_oracle.svg"
+      slime: `assets/sprites/enemies/Slime.png?v=${ENEMY_PNG_VERSION}`,
+      skeleton: `assets/sprites/enemies/Skeleton.png?v=${ENEMY_PNG_VERSION}`,
+      skeleton_alt: `assets/sprites/enemies/Skeleton 2.png?v=${ENEMY_PNG_VERSION}`,
+      bat: `assets/sprites/enemies/Bat.png?v=${ENEMY_PNG_VERSION}`,
+      bat_alt: `assets/sprites/enemies/Bat 2.png?v=${ENEMY_PNG_VERSION}`,
+      cultist: `assets/sprites/enemies/Cultist.png?v=${ENEMY_PNG_VERSION}`,
+      brute: `assets/sprites/enemies/Brute.png?v=${ENEMY_PNG_VERSION}`,
+      wisp: `assets/sprites/enemies/Wisp.png?v=${ENEMY_PNG_VERSION}`,
+      skeleton_king_1: `assets/sprites/enemies/Rey esqueleto 1.png?v=${ENEMY_PNG_VERSION}`,
+      skeleton_king_2: `assets/sprites/enemies/Rey esqueleto 2.png?v=${ENEMY_PNG_VERSION}`,
+      slime_boss: `assets/sprites/enemies/Slime boss.png?v=${ENEMY_PNG_VERSION}`,
+      golem: `assets/sprites/enemies/Golem.png?v=${ENEMY_PNG_VERSION}`,
+      golem_charge: `assets/sprites/enemies/Carga golem.png?v=${ENEMY_PNG_VERSION}`
     },
     weapons: {
       iron_sword: "assets/sprites/weapons/iron_sword.svg",
@@ -653,6 +750,218 @@
   const ctx = canvas.getContext("2d");
   ctx.imageSmoothingEnabled = false;
 
+  // ─── PARTICLE SYSTEM ────────────────────────────────────────────────────────
+  const particles = [];
+
+  function spawnParticles(x, y, count, opts = {}) {
+    const {
+      colors = ["#ffffff"],
+      speed = 80,
+      speedVariance = 50,
+      size = 3,
+      sizeVariance = 2,
+      life = 0.55,
+      lifeVariance = 0.3,
+      gravity = 55,
+      spread = Math.PI * 2,
+      baseAngle = 0
+    } = opts;
+    for (let i = 0; i < count; i++) {
+      const a = baseAngle + (Math.random() - 0.5) * spread;
+      const spd = speed + Math.random() * speedVariance;
+      const lt = Math.max(0.05, life + (Math.random() - 0.5) * lifeVariance);
+      const sz = Math.max(0.5, size + (Math.random() - 0.5) * sizeVariance);
+      particles.push({
+        x,
+        y,
+        vx: Math.cos(a) * spd,
+        vy: Math.sin(a) * spd,
+        size: sz,
+        initSize: sz,
+        life: lt,
+        initLife: lt,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        gravity
+      });
+    }
+  }
+
+  function updateParticles(dt) {
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.vy += p.gravity * dt;
+      p.vx *= 1 - dt * 3.5;
+      p.life -= dt;
+      if (p.life <= 0) {
+        particles.splice(i, 1);
+      }
+    }
+  }
+
+  function drawParticles() {
+    if (particles.length === 0) return;
+    ctx.save();
+    for (const p of particles) {
+      const ratio = Math.max(0, p.life / p.initLife);
+      const sz = p.initSize * (0.25 + ratio * 0.75);
+      ctx.globalAlpha = ratio * ratio;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, sz, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  // ─── SCREEN SHAKE ───────────────────────────────────────────────────────────
+  const screenShake = { intensity: 0, timer: 0 };
+
+  function triggerScreenShake(intensity, duration) {
+    screenShake.intensity = Math.max(screenShake.intensity, intensity);
+    screenShake.timer = Math.max(screenShake.timer, duration);
+  }
+
+  function updateScreenShake(dt) {
+    if (screenShake.timer > 0) {
+      screenShake.timer = Math.max(0, screenShake.timer - dt);
+      screenShake.intensity *= Math.pow(0.04, dt);
+      if (screenShake.timer === 0) screenShake.intensity = 0;
+    }
+  }
+
+  function applyScreenShakeTransform() {
+    if (screenShake.intensity < 0.3) return;
+    const dx = (Math.random() * 2 - 1) * screenShake.intensity;
+    const dy = (Math.random() * 2 - 1) * screenShake.intensity;
+    ctx.translate(dx, dy);
+  }
+
+  // ─── WAVE ANNOUNCEMENT ──────────────────────────────────────────────────────
+  const waveAnn = { text: "", subText: "", timer: 0, duration: 2.4, isBoss: false };
+
+  function triggerWaveAnnouncement(waveNum, isBoss) {
+    waveAnn.isBoss = !!isBoss;
+    waveAnn.text = isBoss ? `BOSS — WAVE ${waveNum}` : `WAVE ${waveNum}`;
+    waveAnn.subText = isBoss ? "PREPARE YOURSELF" : "FIGHT!";
+    waveAnn.timer = waveAnn.duration;
+  }
+
+  function updateWaveAnnouncement(dt) {
+    if (waveAnn.timer > 0) {
+      waveAnn.timer = Math.max(0, waveAnn.timer - dt);
+    }
+  }
+
+  function drawWaveAnnouncement() {
+    if (waveAnn.timer <= 0) return;
+    const elapsed = waveAnn.duration - waveAnn.timer;
+    const fadeIn = 0.25;
+    const fadeOut = 0.5;
+    let alpha;
+    if (elapsed < fadeIn) {
+      alpha = elapsed / fadeIn;
+    } else if (waveAnn.timer < fadeOut) {
+      alpha = waveAnn.timer / fadeOut;
+    } else {
+      alpha = 1;
+    }
+    const scaleBoost = elapsed < fadeIn ? 1 + (1 - elapsed / fadeIn) * 0.35 : 1;
+
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, alpha);
+    ctx.translate(canvas.width / 2, canvas.height * 0.42);
+    ctx.scale(scaleBoost, scaleBoost);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    const mainColor = waveAnn.isBoss ? "#ff8040" : "#f5e060";
+    ctx.font = "bold 56px 'Courier New'";
+    ctx.lineWidth = 9;
+    ctx.strokeStyle = "rgba(0,0,0,0.9)";
+    ctx.strokeText(waveAnn.text, 0, 0);
+    ctx.fillStyle = mainColor;
+    ctx.fillText(waveAnn.text, 0, 0);
+
+    ctx.font = "bold 18px 'Courier New'";
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "rgba(0,0,0,0.8)";
+    ctx.strokeText(waveAnn.subText, 0, 44);
+    ctx.fillStyle = "rgba(255,255,255,0.8)";
+    ctx.fillText(waveAnn.subText, 0, 44);
+
+    ctx.restore();
+  }
+
+  // ─── BOSS HP BAR ────────────────────────────────────────────────────────────
+  function drawBossHpBar() {
+    if (!game || !game.player) return;
+    const boss = game.enemies.find((e) => e.isBoss && !e.dead);
+    if (!boss) return;
+
+    const barW = 420;
+    const barH = 16;
+    const barX = (canvas.width - barW) / 2;
+    const barY = 13;
+    const hpPct = clamp(boss.hp / boss.maxHp, 0, 1);
+
+    ctx.save();
+
+    // Background plate
+    ctx.fillStyle = "rgba(0,0,0,0.75)";
+    ctx.fillRect(barX - 8, barY - 22, barW + 16, barH + 28);
+
+    // Boss label
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+    ctx.font = "bold 12px 'Courier New'";
+    ctx.fillStyle = "#ffa040";
+    ctx.fillText((boss.name || boss.id).toUpperCase(), canvas.width / 2, barY - 6);
+
+    // Empty bar
+    ctx.fillStyle = "#1a0808";
+    ctx.fillRect(barX, barY, barW, barH);
+
+    // HP fill
+    const grad = ctx.createLinearGradient(barX, 0, barX + barW, 0);
+    grad.addColorStop(0, "#7a0e0e");
+    grad.addColorStop(0.45, "#c01e1e");
+    grad.addColorStop(0.8, "#e04040");
+    grad.addColorStop(1, "#ff6666");
+    ctx.fillStyle = grad;
+    ctx.fillRect(barX, barY, barW * hpPct, barH);
+
+    // Shine
+    const shine = ctx.createLinearGradient(barX, barY, barX, barY + barH);
+    shine.addColorStop(0, "rgba(255,255,255,0.16)");
+    shine.addColorStop(0.5, "rgba(255,255,255,0.04)");
+    shine.addColorStop(1, "rgba(0,0,0,0.12)");
+    ctx.fillStyle = shine;
+    ctx.fillRect(barX, barY, barW * hpPct, barH);
+
+    // Border
+    ctx.strokeStyle = "rgba(255,160,64,0.65)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(barX, barY, barW, barH);
+
+    ctx.restore();
+  }
+
+  // ─── ARENA VIGNETTE (drawn after floor tiles) ────────────────────────────────
+  function drawArenaVignette() {
+    const cx = ARENA.x + ARENA.size / 2;
+    const cy = ARENA.y + ARENA.size / 2;
+    const r0 = ARENA.size * 0.25;
+    const r1 = ARENA.size * 0.72;
+    const vignette = ctx.createRadialGradient(cx, cy, r0, cx, cy, r1);
+    vignette.addColorStop(0, "rgba(0,0,0,0)");
+    vignette.addColorStop(1, "rgba(0,0,0,0.52)");
+    ctx.fillStyle = vignette;
+    ctx.fillRect(ARENA.x, ARENA.y, ARENA.size, ARENA.size);
+  }
+
   const waveText = document.getElementById("waveText");
   const goldText = document.getElementById("goldText");
   const hpBar = document.getElementById("hpBar");
@@ -661,6 +970,10 @@
 
   const charSelect = document.getElementById("charSelect");
   const charCards = document.getElementById("charCards");
+  const godCodeInput = document.getElementById("godCodeInput");
+  const activateGodCodeBtn = document.getElementById("activateGodCodeBtn");
+  const toggleInvincibleBtn = document.getElementById("toggleInvincibleBtn");
+  const disableGodModeBtn = document.getElementById("disableGodModeBtn");
 
   const shopPanel = document.getElementById("shopPanel");
   const shopCards = document.getElementById("shopCards");
@@ -668,6 +981,7 @@
   const rerollShopBtn = document.getElementById("rerollShopBtn");
 
   const inventoryBtn = document.getElementById("inventoryBtn");
+  const muteMusicBtn = document.getElementById("muteMusicBtn");
   const inventoryPanel = document.getElementById("inventoryPanel");
   const closeInventoryBtn = document.getElementById("closeInventoryBtn");
   const inventoryStats = document.getElementById("inventoryStats");
@@ -681,6 +995,7 @@
   const langToggleBtn = document.getElementById("langToggleBtn");
 
   const STORAGE_KEY = "megaroguelike_progress_v1";
+  const GOD_MODE_CODE = "Lopa23cm";
 
   const I18N = {
     EN: {
@@ -717,7 +1032,14 @@
         priceScale: "Price scale x{mult} (based on wave and enemy pressure)",
         rerollsUsed: "Rerolls used this run: {count}",
         unlockAchievement: "Unlock Achievement: {name}",
-        wavesClearedSummary: "Waves Cleared: {wave}/{maxWave} | Kills: {kills} | Gold: {gold}"
+        wavesClearedSummary: "Waves Cleared: {wave}/{maxWave} | Kills: {kills} | Gold: {gold}",
+        godCodePlaceholder: "Enter code",
+        godCodeActivate: "Activate Code",
+        invincibleOn: "Invincible Mode: ON",
+        invincibleOff: "Invincible Mode: OFF",
+        disableGodMode: "Disable God Mode",
+        muteMusic: "Mute Music: OFF",
+        unmuteMusic: "Mute Music: ON"
       },
       kind: {
         melee: "melee",
@@ -761,7 +1083,12 @@
         moveCloser: "Move closer to an offer.",
         notEnoughGold: "Not enough gold.",
         weaponLocked: "This character cannot equip new weapons.",
-        purchased: "Purchased: {name}"
+        purchased: "Purchased: {name}",
+        godCodeInvalid: "Invalid code.",
+        godModeEnabled: "God mode enabled.",
+        godModeDisabled: "God mode disabled.",
+        invincibleEnabled: "Invincible mode enabled.",
+        invincibleDisabled: "Invincible mode disabled."
       },
       rarity: {
         qPrefix: "Q"
@@ -844,7 +1171,14 @@
         priceScale: "Escala de precio x{mult} (segun oleada y presion enemiga)",
         rerollsUsed: "Repeticiones esta run: {count}",
         unlockAchievement: "Logro desbloqueado: {name}",
-        wavesClearedSummary: "Oleadas superadas: {wave}/{maxWave} | Bajas: {kills} | Oro: {gold}"
+        wavesClearedSummary: "Oleadas superadas: {wave}/{maxWave} | Bajas: {kills} | Oro: {gold}",
+        godCodePlaceholder: "Ingresa codigo",
+        godCodeActivate: "Activar codigo",
+        invincibleOn: "Modo invencible: ON",
+        invincibleOff: "Modo invencible: OFF",
+        disableGodMode: "Desactivar modo dios",
+        muteMusic: "Silenciar musica: OFF",
+        unmuteMusic: "Silenciar musica: ON"
       },
       kind: {
         melee: "melee",
@@ -888,7 +1222,12 @@
         moveCloser: "Acercate mas a una oferta.",
         notEnoughGold: "No tienes oro suficiente.",
         weaponLocked: "Este personaje no puede equipar armas nuevas.",
-        purchased: "Comprado: {name}"
+        purchased: "Comprado: {name}",
+        godCodeInvalid: "Codigo invalido.",
+        godModeEnabled: "Modo dios activado.",
+        godModeDisabled: "Modo dios desactivado.",
+        invincibleEnabled: "Modo invencible activado.",
+        invincibleDisabled: "Modo invencible desactivado."
       },
       rarity: {
         qPrefix: "Q"
@@ -997,6 +1336,10 @@
     weapons: new Set(progress.unlockedContent.weapons)
   };
   let currentLang = progress.language;
+  const godMode = {
+    active: false,
+    invincible: false
+  };
 
   function saveProgress() {
     const payload = {
@@ -1058,6 +1401,9 @@
     if (!id) {
       return true;
     }
+    if (godMode.active) {
+      return true;
+    }
     if (unlockedSets[category] && unlockedSets[category].has(id)) {
       return true;
     }
@@ -1103,6 +1449,7 @@
     const shopSubtitleEl = document.getElementById("shopSubtitle");
 
     if (inventoryBtn) inventoryBtn.textContent = t("ui.inventoryBtn");
+    updateMuteMusicButtonLabel();
     if (weaponTitleEl) weaponTitleEl.textContent = t("ui.weaponTitle");
     if (charSelectTitleEl) charSelectTitleEl.textContent = t("ui.charSelectTitle");
     if (charSelectSubtitleEl) charSelectSubtitleEl.textContent = t("ui.charSelectSubtitle");
@@ -1116,7 +1463,76 @@
     if (langToggleBtn) {
       langToggleBtn.textContent = currentLang === "EN" ? "ES" : "EN";
     }
+    if (godCodeInput) {
+      godCodeInput.placeholder = t("ui.godCodePlaceholder");
+    }
+    if (activateGodCodeBtn) {
+      activateGodCodeBtn.textContent = t("ui.godCodeActivate");
+    }
+    if (toggleInvincibleBtn) {
+      toggleInvincibleBtn.textContent = godMode.invincible ? t("ui.invincibleOn") : t("ui.invincibleOff");
+    }
+    if (disableGodModeBtn) {
+      disableGodModeBtn.textContent = t("ui.disableGodMode");
+    }
+    updateGodModeUI();
     updateRerollButtonLabel();
+  }
+
+  function updateGodModeUI() {
+    if (!toggleInvincibleBtn || !disableGodModeBtn) {
+      return;
+    }
+
+    if (godMode.active) {
+      toggleInvincibleBtn.classList.remove("hidden");
+      disableGodModeBtn.classList.remove("hidden");
+    } else {
+      toggleInvincibleBtn.classList.add("hidden");
+      disableGodModeBtn.classList.add("hidden");
+    }
+  }
+
+  function setGodMode(active) {
+    godMode.active = !!active;
+    if (!godMode.active) {
+      godMode.invincible = false;
+    }
+    updateGodModeUI();
+    createCharacterCards();
+    refreshStaticUIText();
+  }
+
+  function activateGodModeByCode() {
+    if (!godCodeInput) {
+      return;
+    }
+
+    if (godCodeInput.value.trim() !== GOD_MODE_CODE) {
+      pushAchievementToast(t("msg.godCodeInvalid"));
+      return;
+    }
+
+    setGodMode(true);
+    godCodeInput.value = "";
+    pushAchievementToast(t("msg.godModeEnabled"));
+  }
+
+  function toggleInvincibleMode() {
+    if (!godMode.active) {
+      return;
+    }
+    godMode.invincible = !godMode.invincible;
+    refreshStaticUIText();
+    pushAchievementToast(t(godMode.invincible ? "msg.invincibleEnabled" : "msg.invincibleDisabled"));
+  }
+
+  function disableGodMode() {
+    if (!godMode.active) {
+      return;
+    }
+    setGodMode(false);
+    pushAchievementToast(t("msg.godModeDisabled"));
   }
 
   function setLanguage(lang) {
@@ -1185,6 +1601,16 @@
     return arr[randInt(0, arr.length - 1)];
   }
 
+  function shuffleInPlace(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = randInt(0, i);
+      const tmp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = tmp;
+    }
+    return arr;
+  }
+
   function rarityColor(rarity) {
     if (rarity === 4) return "#ffa94d";
     if (rarity === 3) return "#6ad9ff";
@@ -1208,6 +1634,36 @@
       return "drone_shot";
     }
     return "magic_bolt";
+  }
+
+  function getEnemySpriteId(enemy) {
+    if (!enemy) {
+      return "";
+    }
+
+    if (enemy.id === "skeleton_king") {
+      const t = (game ? game.elapsed : 0) + enemy.batFrameOffset;
+      return Math.floor(t * 8) % 2 === 0 ? "skeleton_king_1" : "skeleton_king_2";
+    }
+
+    if (enemy.id === "golem") {
+      return enemy.chargeTimer > 0 ? "golem_charge" : "golem";
+    }
+
+    if (enemy.id === "slime_boss" || enemy.id === "slime_boss_split_1" || enemy.id === "slime_boss_split_2") {
+      return "slime_boss";
+    }
+
+    if (enemy.id === "bat") {
+      const t = (game ? game.elapsed : 0) + enemy.batFrameOffset;
+      return Math.floor(t * 12) % 2 === 0 ? "bat" : "bat_alt";
+    }
+
+    if (enemy.id === "skeleton") {
+      return enemy.visualSpriteId || "skeleton";
+    }
+
+    return enemy.id;
   }
 
   function isRangedWeapon(weapon) {
@@ -1296,12 +1752,24 @@
     }
 
     ctx.save();
-    ctx.font = "bold 16px Consolas";
     ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     for (const text of game.floatingDamageTexts) {
+      const lifePct = Math.max(0, text.ttl);
+      const alpha = Math.min(1, lifePct * 2.5);
+      const value = parseInt(text.text, 10);
+      const isBig = !isNaN(value) && value >= 40;
+      const fontSize = isBig ? 20 : 15;
+      ctx.font = `bold ${fontSize}px 'Courier New'`;
+      ctx.globalAlpha = alpha;
+      // Drop shadow
+      ctx.fillStyle = "rgba(0,0,0,0.7)";
+      ctx.fillText(text.text, text.x + 1, text.y + 1);
+      // Main text
       ctx.fillStyle = text.color;
       ctx.fillText(text.text, text.x, text.y);
     }
+    ctx.globalAlpha = 1;
     ctx.restore();
   }
 
@@ -1536,7 +2004,7 @@
     }
 
     primaryBaseDamage(player) {
-      return (16 + player.bonus.ranged) * player.droneWeaponDamageMultiplier();
+      return (21 + player.bonus.ranged) * player.droneWeaponDamageMultiplier();
     }
 
     findTarget(enemies) {
@@ -1691,19 +2159,27 @@
   class Enemy {
     constructor(typeId, x, y) {
       const def = ENEMIES[typeId];
+      const isBoss = !!def.isBoss;
+      const isSlimeSplit = typeId === "slime_boss_split_1" || typeId === "slime_boss_split_2";
+      const adjustedHp = isBoss ? def.hp : Math.max(1, Math.round(def.hp * NON_BOSS_HP_FACTOR));
+      const adjustedDamageBase = isBoss ? def.damage : def.damage * NON_BOSS_DAMAGE_FACTOR;
+      const adjustedSpeed = isSlimeSplit
+        ? ENEMIES.slime_boss.speed
+        : (isBoss ? def.speed : def.speed * NON_BOSS_SPEED_FACTOR);
+
       this.id = def.id;
       this.name = def.name;
       this.x = x;
       this.y = y;
       this.radius = def.radius;
-      this.baseSpeed = def.speed;
-      this.speed = def.speed;
-      this.damage = def.damage;
-      this.maxHp = def.hp;
-      this.hp = def.hp;
+      this.baseSpeed = adjustedSpeed;
+      this.speed = adjustedSpeed;
+      this.damage = scaleEnemyDamage(adjustedDamageBase);
+      this.maxHp = adjustedHp;
+      this.hp = adjustedHp;
       this.color = def.color;
       this.goldRange = def.gold;
-      this.isBoss = !!def.isBoss;
+      this.isBoss = isBoss;
       this.dead = false;
       this.hitCooldown = 0;
       this.attackTimer = 0;
@@ -1715,12 +2191,57 @@
       this.chargeVy = 0;
       this.orbitAngle = Math.random() * Math.PI * 2;
       this.flankSign = Math.random() < 0.5 ? -1 : 1;
+      this.visualSpriteId = this.id === "skeleton" && Math.random() < 0.5 ? "skeleton_alt" : this.id;
+      this.batFrameOffset = Math.random();
+      this.moveAnimTime = Math.random() * Math.PI * 2;
+      this.moveAnimBlend = 0;
+      this.facingSign = Math.random() < 0.5 ? -1 : 1;
+      this.facingScaleX = this.facingSign;
+      this.prevX = x;
+      this.prevY = y;
+      this.summonedMinions = this.isBoss ? new Set() : null;
+      this.splitLevel = def.splitLevel || 0;
+      this.splitScale = def.splitScale || 1;
+      if (this.id === "skeleton_king") {
+        this.secondaryTimer = 7;
+      } else if (this.id === "golem") {
+        this.secondaryTimer = 10;
+        this.attackTimer = 3.4;
+      }
+    }
+
+    currentSummonCount() {
+      if (!this.summonedMinions) {
+        return 0;
+      }
+
+      for (const minion of this.summonedMinions) {
+        if (!minion || minion.dead) {
+          this.summonedMinions.delete(minion);
+        }
+      }
+
+      return this.summonedMinions.size;
+    }
+
+    trySummonEnemy(typeId, x, y, enemies) {
+      if (!this.summonedMinions || this.currentSummonCount() >= BOSS_SUMMON_CAP) {
+        return false;
+      }
+
+      const minion = new Enemy(typeId, x, y);
+      this.summonedMinions.add(minion);
+      enemies.push(minion);
+      return true;
     }
 
     update(dt, player, projectiles, enemies) {
       if (this.dead) {
         return;
       }
+
+      this.prevX = this.x;
+      this.prevY = this.y;
 
       this.hitCooldown -= dt;
       this.attackTimer -= dt;
@@ -1734,6 +2255,21 @@
 
       this.x = clamp(this.x, ARENA.x + this.radius, ARENA.x + ARENA.size - this.radius);
       this.y = clamp(this.y, ARENA.y + this.radius, ARENA.y + ARENA.size - this.radius);
+
+      const moveDx = this.x - this.prevX;
+      const moveDy = this.y - this.prevY;
+      const movingNow = Math.hypot(moveDx, moveDy) > 0.04;
+      const targetMoveBlend = movingNow ? 1 : 0;
+      const moveBlendLerp = Math.min(1, dt * (movingNow ? 9 : 6));
+      this.moveAnimBlend += (targetMoveBlend - this.moveAnimBlend) * moveBlendLerp;
+      this.moveAnimTime += dt * (2.4 + this.moveAnimBlend * 6.8);
+
+      if (moveDx > 0.25) {
+        this.facingSign = 1;
+      } else if (moveDx < -0.25) {
+        this.facingSign = -1;
+      }
+      this.facingScaleX += (this.facingSign - this.facingScaleX) * 0.22;
 
       const d = distance(this.x, this.y, player.x, player.y);
       if (d <= this.radius + player.radius && this.hitCooldown <= 0) {
@@ -1772,7 +2308,7 @@
         toPlayerY += sideY * 72 * this.flankSign;
       }
 
-      if (this.id === "slime") {
+      if (this.id === "slime" || this.id === "slime_boss_split_1" || this.id === "slime_boss_split_2") {
         this.wobble += dt * 3.5;
         toPlayerX += Math.cos(this.wobble) * 34;
         toPlayerY += Math.sin(this.wobble * 1.1) * 34;
@@ -1791,10 +2327,11 @@
           toPlayerY *= -1;
         }
         if (this.attackTimer <= 0) {
-          this.attackTimer = 1.2;
+          this.attackTimer = 1.5;
           const aim = normalize(player.x - this.x, player.y - this.y);
-          const speed = 280;
-          projectiles.push(new Projectile(this.x, this.y, aim.x * speed, aim.y * speed, 14, "enemy", 5, "#b998ff", "enemy_skull", Math.atan2(aim.y, aim.x) + Math.PI / 2));
+          const speed = 168;
+          const cultistProjectileBaseDamage = 14 * NON_BOSS_DAMAGE_FACTOR;
+          projectiles.push(new Projectile(this.x, this.y, aim.x * speed, aim.y * speed, scaleEnemyDamage(cultistProjectileBaseDamage), "enemy", 5, "#b998ff", "enemy_skull", Math.atan2(aim.y, aim.x) + Math.PI / 2));
         }
       }
 
@@ -1832,121 +2369,94 @@
     }
 
     updateBoss(dt, player, projectiles, enemies) {
-      const toPlayer = normalize(player.x - this.x, player.y - this.y);
-      this.x += toPlayer.x * this.speed * dt;
-      this.y += toPlayer.y * this.speed * dt;
+      const toPlayerX = player.x - this.x;
+      const toPlayerY = player.y - this.y;
+      const distToPlayer = Math.hypot(toPlayerX, toPlayerY) || 1;
+      const toPlayer = normalize(toPlayerX, toPlayerY);
 
-      if (!this.phase2 && this.hp <= this.maxHp * 0.55) {
-        this.phase2 = true;
-        this.speed += 24;
-      }
+      if (this.id === "skeleton_king") {
+        let moveX = toPlayer.x;
+        let moveY = toPlayer.y;
+        const preferredDistance = 260;
 
-      if (this.id === "boss") {
-        const mainCd = this.phase2 ? 0.85 : 1.25;
+        if (distToPlayer < preferredDistance - 40) {
+          moveX = -toPlayer.x;
+          moveY = -toPlayer.y;
+        } else if (distToPlayer <= preferredDistance + 40) {
+          moveX = (-toPlayer.y / distToPlayer) * this.flankSign;
+          moveY = (toPlayer.x / distToPlayer) * this.flankSign;
+        }
+
+        this.x += moveX * this.speed * dt;
+        this.y += moveY * this.speed * dt;
+
         if (this.attackTimer <= 0) {
-          this.attackTimer = mainCd;
-          const spread = this.phase2 ? 4 : 3;
-          for (let i = -spread; i <= spread; i++) {
-            const angle = Math.atan2(toPlayer.y, toPlayer.x) + i * 0.15;
-            const vx = Math.cos(angle) * 290;
-            const vy = Math.sin(angle) * 290;
-            projectiles.push(new Projectile(this.x, this.y, vx, vy, 16, "enemy", 5, "#ff8f8f", "enemy_skull", angle + Math.PI / 2));
+          this.attackTimer = 1.15;
+          const base = Math.atan2(toPlayer.y, toPlayer.x);
+          for (const off of [-0.13, 0.13]) {
+            const angle = base + off;
+            projectiles.push(new Projectile(this.x, this.y, Math.cos(angle) * 300, Math.sin(angle) * 300, scaleEnemyDamage(12), "enemy", 5, "#dfe7ff", "enemy_skull", angle + Math.PI / 2));
           }
         }
 
         if (this.secondaryTimer <= 0) {
-          this.secondaryTimer = this.phase2 ? 1.9 : 2.8;
-          const ringShots = this.phase2 ? 12 : 8;
-          for (let i = 0; i < ringShots; i++) {
-            const angle = (Math.PI * 2 * i) / ringShots;
-            projectiles.push(new Projectile(this.x, this.y, Math.cos(angle) * 240, Math.sin(angle) * 240, 12, "enemy", 4, "#ff7373", "enemy_skull", angle + Math.PI / 2));
-          }
-          const summonCount = this.phase2 ? 3 : 2;
-          for (let i = 0; i < summonCount; i++) {
+          this.secondaryTimer = 7;
+          for (let i = 0; i < 3; i++) {
             const p = randomEdgeSpawn();
-            enemies.push(new Enemy(Math.random() < 0.6 ? "skeleton" : "cultist", p.x, p.y));
+            if (!this.trySummonEnemy("skeleton", p.x, p.y, enemies)) {
+              break;
+            }
           }
         }
         return;
       }
 
-      if (this.id === "boss_reaver") {
+      if (this.id === "slime_boss") {
+        this.wobble += dt * 2.5;
+        this.x += (toPlayer.x + Math.cos(this.wobble) * 0.3) * this.speed * dt;
+        this.y += (toPlayer.y + Math.sin(this.wobble * 1.1) * 0.3) * this.speed * dt;
+
+        if (this.attackTimer <= 0) {
+          this.attackTimer = 2.1;
+          const angle = Math.atan2(toPlayer.y, toPlayer.x);
+          projectiles.push(new Projectile(this.x, this.y, Math.cos(angle) * 220, Math.sin(angle) * 220, scaleEnemyDamage(8), "enemy", 6, "#82ff9c", "enemy_skull", angle + Math.PI / 2));
+        }
+        return;
+      }
+
+      if (this.id === "golem") {
         if (this.chargeTimer > 0) {
-          this.chargeTimer -= dt;
           this.x += this.chargeVx * dt;
           this.y += this.chargeVy * dt;
+
+          if (this.attackTimer <= 0) {
+            this.attackTimer = 0.24;
+            spawnGolemCrackVolley(this.x, this.y, normalize(this.chargeVx, this.chargeVy), scaleEnemyDamage(24));
+          }
           return;
         }
 
+        this.x += toPlayer.x * this.speed * dt;
+        this.y += toPlayer.y * this.speed * dt;
+
         if (this.attackTimer <= 0) {
-          this.attackTimer = this.phase2 ? 1.25 : 1.7;
-          const count = this.phase2 ? 16 : 12;
-          for (let i = 0; i < count; i++) {
-            const angle = (Math.PI * 2 * i) / count + this.elapsedOffset();
-            projectiles.push(new Projectile(this.x, this.y, Math.cos(angle) * 260, Math.sin(angle) * 260, 13, "enemy", 4, "#ff6f6f", "enemy_skull", angle + Math.PI / 2));
-          }
+          this.attackTimer = 3.4;
+          spawnGolemCrackVolley(this.x, this.y, toPlayer, scaleEnemyDamage(20));
         }
 
         if (this.secondaryTimer <= 0) {
-          this.secondaryTimer = this.phase2 ? 1.45 : 2.0;
+          this.secondaryTimer = 10;
           const aim = normalize(player.x - this.x, player.y - this.y);
-          this.chargeVx = aim.x * (this.phase2 ? 520 : 430);
-          this.chargeVy = aim.y * (this.phase2 ? 520 : 430);
-          this.chargeTimer = this.phase2 ? 0.35 : 0.26;
+          this.chargeVx = aim.x * 520;
+          this.chargeVy = aim.y * 520;
+          this.chargeTimer = 1.05;
+          this.attackTimer = 0;
         }
         return;
       }
 
-      if (this.id === "boss_abomination") {
-        if (this.attackTimer <= 0) {
-          this.attackTimer = this.phase2 ? 0.72 : 1.05;
-          const bursts = this.phase2 ? 8 : 5;
-          const baseAngle = Math.atan2(toPlayer.y, toPlayer.x);
-          for (let i = -bursts; i <= bursts; i++) {
-            const angle = baseAngle + i * 0.1;
-            projectiles.push(new Projectile(this.x, this.y, Math.cos(angle) * 275, Math.sin(angle) * 275, 18, "enemy", 6, "#90d967", "enemy_skull", angle + Math.PI / 2));
-          }
-        }
-
-        if (this.secondaryTimer <= 0) {
-          this.secondaryTimer = this.phase2 ? 1.2 : 1.9;
-          const p = randomEdgeSpawn();
-          enemies.push(new Enemy(Math.random() < 0.5 ? "wisp" : "brute", p.x, p.y));
-          spawnToxicPool(player.x + randInt(-38, 38), player.y + randInt(-38, 38), this.phase2 ? 54 : 44, this.phase2 ? 7.2 : 5.4, this.phase2 ? 20 : 14);
-          if (this.phase2) {
-            this.hp = Math.min(this.maxHp, this.hp + 36);
-          }
-        }
-        return;
-      }
-
-      if (this.id === "boss_oracle") {
-        if (this.attackTimer <= 0) {
-          this.attackTimer = this.phase2 ? 0.55 : 0.85;
-          const count = this.phase2 ? 14 : 10;
-          const offset = this.elapsedOffset();
-          for (let i = 0; i < count; i++) {
-            const angle = (Math.PI * 2 * i) / count + offset;
-            const speed = this.phase2 ? 300 : 250;
-            projectiles.push(new Projectile(this.x, this.y, Math.cos(angle) * speed, Math.sin(angle) * speed, 12, "enemy", 4, "#bb89ff", "enemy_skull", angle + Math.PI / 2));
-          }
-        }
-
-        if (this.secondaryTimer <= 0) {
-          this.secondaryTimer = this.phase2 ? 1.45 : 2.05;
-          this.x = randInt(ARENA.x + 80, ARENA.x + ARENA.size - 80);
-          this.y = randInt(ARENA.y + 80, ARENA.y + ARENA.size - 80);
-          const burst = this.phase2 ? 12 : 8;
-          for (let i = 0; i < burst; i++) {
-            const angle = (Math.PI * 2 * i) / burst;
-            projectiles.push(new Projectile(this.x, this.y, Math.cos(angle) * 270, Math.sin(angle) * 270, 11, "enemy", 4, "#c9a5ff", "enemy_skull", angle + Math.PI / 2));
-          }
-          if (this.phase2) {
-            const p = randomEdgeSpawn();
-            enemies.push(new Enemy(Math.random() < 0.5 ? "cultist" : "bat", p.x, p.y));
-          }
-        }
-      }
+      this.x += toPlayer.x * this.speed * dt;
+      this.y += toPlayer.y * this.speed * dt;
     }
 
     elapsedOffset() {
@@ -1958,32 +2468,106 @@
       if (options && options.showFloating) {
         addFloatingDamageText(this.x, this.y - this.radius - 8, amount, "#FF0000", 1);
       }
+      // Spawn hit spark particles
+      const isCrit = amount >= 40;
+      const sparkCount = isCrit ? 10 : 5;
+      const sparkColors = this.isBoss
+        ? ["#ff8040", "#ffb860", "#ff4020"]
+        : ["#ff5555", "#ffaa44", "#ffddaa"];
+      spawnParticles(this.x, this.y, sparkCount, {
+        colors: sparkColors,
+        speed: isCrit ? 100 : 60,
+        speedVariance: 60,
+        size: isCrit ? 3.5 : 2.2,
+        sizeVariance: 1.5,
+        life: isCrit ? 0.55 : 0.38,
+        lifeVariance: 0.2,
+        gravity: 40,
+        spread: Math.PI * 2
+      });
       if (this.hp <= 0) {
         this.dead = true;
+        // Death explosion particles
+        const deathCount = this.isBoss ? 32 : 12;
+        const deathColors = this.isBoss
+          ? ["#ff8040", "#ff4020", "#ffcc40", "#ff6090", "#ffffff"]
+          : ["#cc3333", "#ff6644", "#ffaa44"];
+        spawnParticles(this.x, this.y, deathCount, {
+          colors: deathColors,
+          speed: this.isBoss ? 140 : 80,
+          speedVariance: 80,
+          size: this.isBoss ? 5 : 3,
+          sizeVariance: 2,
+          life: this.isBoss ? 0.9 : 0.55,
+          lifeVariance: 0.35,
+          gravity: 25,
+          spread: Math.PI * 2
+        });
+        if (this.isBoss) {
+          triggerScreenShake(12, 0.7);
+        }
       }
     }
 
     draw() {
       const r = this.radius;
-      const sprite = getSprite("enemies", this.id);
+      const sprite = getSprite("enemies", getEnemySpriteId(this));
 
       if (sprite) {
+        const phase = this.moveAnimTime;
+        const bobAmplitude = 0.3 + this.moveAnimBlend * (this.isBoss ? 1.4 : 2.2);
+        const bobOffsetY = Math.sin(phase) * bobAmplitude;
+        const pulse = Math.sin(phase * 2) * 0.5 + 0.5;
+        const widthPulse = 1 - this.moveAnimBlend * (0.02 + pulse * 0.03);
+        const heightPulse = 1 + this.moveAnimBlend * (0.02 + pulse * 0.04);
+
+        let drawWidth = r * 2 + 8;
+        let drawHeight = r * 2 + 10;
         if (this.isBoss) {
-          drawSpriteCentered(sprite, this.x, this.y, r * 2 + 20, r * 2 + 20);
-          return;
+          drawWidth = r * 2 + 20;
+          drawHeight = r * 2 + 20;
+          if (this.id === "skeleton_king") {
+            drawWidth = 104;
+            drawHeight = 118;
+          } else if (this.id === "slime_boss") {
+            drawWidth = 116;
+            drawHeight = 86;
+          } else if (this.id === "golem") {
+            drawWidth = this.chargeTimer > 0 ? 154 : 132;
+            drawHeight = this.chargeTimer > 0 ? 136 : 122;
+          }
+        } else if (this.id === "bat") {
+          drawWidth = 46 * 1.75;
+          drawHeight = 24 * 1.75;
+        } else if (this.id === "slime") {
+          drawWidth = 50 * 2.5;
+          drawHeight = 34 * 2.5;
+        } else if (this.id === "slime_boss_split_1" || this.id === "slime_boss_split_2") {
+          drawWidth = 116 * this.splitScale;
+          drawHeight = 86 * this.splitScale;
+        } else if (this.id === "wisp") {
+          drawWidth *= 2.5;
+          drawHeight *= 2.5;
+        } else if (this.id === "cultist") {
+          drawWidth *= 2;
+        } else if (this.id === "brute") {
+          drawWidth *= 2;
+          drawHeight *= 1.75;
+        } else if (this.id === "skeleton") {
+          drawWidth *= 3;
+          drawHeight *= 1.25;
         }
 
-        if (this.id === "bat") {
-          drawSpriteCentered(sprite, this.x, this.y, 46, 24);
-          return;
-        }
+        drawWidth = Math.round(drawWidth * widthPulse);
+        drawHeight = Math.round(drawHeight * heightPulse);
 
-        if (this.id === "slime") {
-          drawSpriteCentered(sprite, this.x, this.y, 50, 34);
-          return;
-        }
-
-        drawSpriteCentered(sprite, this.x, this.y, r * 2 + 8, r * 2 + 10);
+        ctx.save();
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.translate(Math.round(this.x), Math.round(this.y + bobOffsetY));
+        ctx.scale(this.facingScaleX, 1);
+        ctx.drawImage(sprite, Math.round(-drawWidth / 2), Math.round(-drawHeight / 2), drawWidth, drawHeight);
+        ctx.restore();
         return;
       }
 
@@ -2133,6 +2717,19 @@
       }
       this.dashDir = { x: this.lastMoveDir.x, y: this.lastMoveDir.y };
       this.invulnerable = Math.max(this.invulnerable, 0.1);
+      // Dash burst particles
+      spawnParticles(this.x, this.y, 10, {
+        colors: ["#40c4ff", "#80e0ff", "#c0f0ff"],
+        speed: 90,
+        speedVariance: 60,
+        size: 2.5,
+        sizeVariance: 1.5,
+        life: 0.32,
+        lifeVariance: 0.16,
+        gravity: -20,
+        spread: Math.PI * 2,
+        baseAngle: Math.atan2(-this.lastMoveDir.y, -this.lastMoveDir.x)
+      });
     }
 
     weaponDamage(weapon) {
@@ -2431,6 +3028,10 @@
     }
 
     takeDamage(raw) {
+      if (godMode.invincible) {
+        return;
+      }
+
       if (this.invulnerable > 0) {
         return;
       }
@@ -2443,6 +3044,21 @@
       this.hp -= final;
       this.invulnerable = 0.4;
       this.damageFlash = 1;
+
+      // Screen shake + impact particles when player takes damage
+      const shakeIntensity = Math.min(10, 3 + final * 0.06);
+      triggerScreenShake(shakeIntensity, 0.35);
+      spawnParticles(this.x, this.y, 8, {
+        colors: ["#ff3030", "#ff7070", "#ffaaaa"],
+        speed: 70,
+        speedVariance: 50,
+        size: 2.5,
+        sizeVariance: 1.5,
+        life: 0.4,
+        lifeVariance: 0.2,
+        gravity: 30,
+        spread: Math.PI * 2
+      });
 
       if (this.bonus.epicLuckCurrent > 0) {
         this.bonus.epicLuckCurrent = Math.max(0.5, this.bonus.epicLuckCurrent - 0.5);
@@ -2538,13 +3154,6 @@
         ctx.arc(this.x, this.y, 22, 0, Math.PI * 2);
         ctx.stroke();
       }
-
-      ctx.strokeStyle = "rgba(255,255,255,0.38)";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(this.x, this.y);
-      ctx.lineTo(this.x + aim.x * 26, this.y + aim.y * 26);
-      ctx.stroke();
     }
   }
 
@@ -2678,10 +3287,10 @@
   }
 
   function getMerchantPriceMultiplier() {
-    const progress = 1 + game.wave * 0.12;
+    const progress = 1 + game.wave * 0.1;
     const nextPressure = getWaveEnemyPressure(game.wave + 1);
-    const pressureFactor = 1 + nextPressure * 0.019;
-    return clamp(progress * pressureFactor * ENEMY_WAVE_INCREASE, 1.4, 4.5);
+    const pressureFactor = 1 + nextPressure * 0.015;
+    return clamp(progress * pressureFactor * ENEMY_WAVE_INCREASE, 1.4, 3.9);
   }
 
   function getRerollCost() {
@@ -2704,6 +3313,40 @@
       tick: 0.1,
       damage
     });
+  }
+
+  function spawnGolemCrackVolley(x, y, dir, damage) {
+    const aim = normalize(dir.x, dir.y);
+    const offsets = [-0.28, 0, 0.28];
+
+    for (let i = 0; i < offsets.length; i++) {
+      const angle = Math.atan2(aim.y, aim.x) + offsets[i];
+      const dirX = Math.cos(angle);
+      const dirY = Math.sin(angle);
+      const perpX = -dirY;
+      const perpY = dirX;
+      game.hazards.push({
+        type: "golem_crack",
+        startX: x,
+        startY: y,
+        x,
+        y,
+        dirX,
+        dirY,
+        perpX,
+        perpY,
+        speed: 250,
+        travel: 0,
+        zigzagAmp: 16,
+        zigzagFreq: 0.085,
+        phase: i * 1.4,
+        life: 2.4,
+        radius: 18,
+        tick: 0.18,
+        damage,
+        trail: []
+      });
+    }
   }
 
   function updateHomingProjectile(proj, dt, enemies) {
@@ -2865,11 +3508,12 @@
       game.activeBossId = bossId;
     } else {
       Object.keys(plan.spawns).forEach((enemyId) => {
-        const count = Math.ceil(plan.spawns[enemyId] * ENEMY_WAVE_INCREASE);
+        const count = Math.ceil(plan.spawns[enemyId] * ENEMY_WAVE_INCREASE * ENEMY_SPAWN_MULTIPLIER);
         for (let i = 0; i < count; i++) {
           game.spawnQueue.push(enemyId);
         }
       });
+      shuffleInPlace(game.spawnQueue);
     }
 
     if (game.spawnQueue.length > 0) {
@@ -2880,6 +3524,8 @@
     game.state = GAME_STATE.PLAYING;
     hideMerchantUI();
     waveText.textContent = `${t("ui.wave")}: ${game.wave}/${MAX_WAVE}`;
+    const isBossWave = !!(plan && plan.bossPool && plan.bossPool.length > 0);
+    triggerWaveAnnouncement(game.wave, isBossWave);
   }
 
   function startGame(characterId) {
@@ -2947,8 +3593,11 @@
     game.groundOffers = [];
     const mult = getMerchantPriceMultiplier();
     for (const offer of game.shopOffers) {
-      offer.baseCost = offer.cost;
-      offer.cost = Math.round(offer.cost * mult);
+      const adjustedBaseCost = offer.kind === "item"
+        ? Math.max(1, Math.round(offer.cost * ITEM_COST_FACTOR))
+        : offer.cost;
+      offer.baseCost = adjustedBaseCost;
+      offer.cost = Math.max(1, Math.round(adjustedBaseCost * mult));
     }
 
     const cx = ARENA.x + ARENA.size * 0.5;
@@ -3064,6 +3713,7 @@
     goldText.textContent = `${t("ui.gold")}: ${Math.floor(game.player.gold)}`;
     const hpPct = clamp(game.player.hp / game.player.maxHp(), 0, 1);
     hpBar.style.width = `${Math.round(hpPct * 100)}%`;
+    hpBar.classList.toggle("low", hpPct <= 0.25);
     const dashPct = game.player.dashChargeFillPct();
     dashBar.style.width = `${Math.round(dashPct * 100)}%`;
   }
@@ -3164,31 +3814,66 @@
   }
 
   function drawArena() {
-    ctx.fillStyle = "#142028";
+    // Outer background
+    ctx.fillStyle = "#0c1218";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "#1d2d38";
+    // Border surround
+    ctx.fillStyle = "#182636";
     ctx.fillRect(ARENA.x - 22, ARENA.y - 22, ARENA.size + 44, ARENA.size + 44);
 
-    ctx.fillStyle = "#2f4351";
+    // Battlements / crenellations on border
+    ctx.fillStyle = "#243848";
     for (let i = 0; i < 24; i++) {
       ctx.fillRect(ARENA.x - 22 + i * 26, ARENA.y - 22, 16, 8);
       ctx.fillRect(ARENA.x - 22 + i * 26, ARENA.y + ARENA.size + 14, 16, 8);
       ctx.fillRect(ARENA.x - 22, ARENA.y - 22 + i * 26, 8, 16);
       ctx.fillRect(ARENA.x + ARENA.size + 14, ARENA.y - 22 + i * 26, 8, 16);
     }
+    // Corner accents
+    ctx.fillStyle = "#3a6080";
+    const corners = [
+      [ARENA.x - 22, ARENA.y - 22],
+      [ARENA.x + ARENA.size + 6, ARENA.y - 22],
+      [ARENA.x - 22, ARENA.y + ARENA.size + 6],
+      [ARENA.x + ARENA.size + 6, ARENA.y + ARENA.size + 6]
+    ];
+    for (const [cx, cy] of corners) {
+      ctx.fillRect(cx, cy, 16, 16);
+    }
 
-    ctx.fillStyle = "#11191f";
+    // Arena floor
+    ctx.fillStyle = "#0e1820";
     ctx.fillRect(ARENA.x, ARENA.y, ARENA.size, ARENA.size);
 
-    for (let y = ARENA.y; y < ARENA.y + ARENA.size; y += 30) {
-      for (let x = ARENA.x; x < ARENA.x + ARENA.size; x += 30) {
-        if (((x + y) / 30) % 2 === 0) {
-          ctx.fillStyle = "rgba(65,95,120,0.09)";
-          ctx.fillRect(x, y, 30, 30);
+    // Checkerboard tiles
+    for (let fy = ARENA.y; fy < ARENA.y + ARENA.size; fy += 30) {
+      for (let fx = ARENA.x; fx < ARENA.x + ARENA.size; fx += 30) {
+        if (((fx + fy) / 30) % 2 === 0) {
+          ctx.fillStyle = "rgba(55,88,115,0.08)";
+          ctx.fillRect(fx, fy, 30, 30);
         }
       }
     }
+
+    // Subtle grid lines
+    ctx.strokeStyle = "rgba(50,80,110,0.06)";
+    ctx.lineWidth = 1;
+    for (let fy = ARENA.y; fy <= ARENA.y + ARENA.size; fy += 30) {
+      ctx.beginPath();
+      ctx.moveTo(ARENA.x, fy);
+      ctx.lineTo(ARENA.x + ARENA.size, fy);
+      ctx.stroke();
+    }
+    for (let fx = ARENA.x; fx <= ARENA.x + ARENA.size; fx += 30) {
+      ctx.beginPath();
+      ctx.moveTo(fx, ARENA.y);
+      ctx.lineTo(fx, ARENA.y + ARENA.size);
+      ctx.stroke();
+    }
+
+    // Vignette
+    drawArenaVignette();
   }
 
   function drawPlayerMeleeArc() {
@@ -3200,11 +3885,20 @@
       const angle = Math.atan2(input.mouseY - p.y, input.mouseX - p.x);
       const meleeRange = w.range * p.bonus.meleeRangeFactor;
       const meleeArc = w.arc + p.bonus.meleeArcBonus;
-      ctx.strokeStyle = "rgba(220,230,245,0.35)";
-      ctx.lineWidth = 8;
+      // Outer glow pass
+      ctx.save();
+      ctx.strokeStyle = "rgba(160,200,255,0.14)";
+      ctx.lineWidth = 18;
       ctx.beginPath();
       ctx.arc(p.x, p.y, meleeRange, angle - meleeArc / 2, angle + meleeArc / 2);
       ctx.stroke();
+      // Inner bright arc
+      ctx.strokeStyle = "rgba(200,225,255,0.38)";
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, meleeRange, angle - meleeArc / 2, angle + meleeArc / 2);
+      ctx.stroke();
+      ctx.restore();
     }
   }
 
@@ -3218,15 +3912,31 @@
       hazard.life -= dt;
       hazard.tick -= dt;
 
+      if (hazard.type === "golem_crack") {
+        hazard.travel += hazard.speed * dt;
+        const side = Math.sin(hazard.travel * hazard.zigzagFreq + hazard.phase) * hazard.zigzagAmp;
+        hazard.x = hazard.startX + hazard.dirX * hazard.travel + hazard.perpX * side;
+        hazard.y = hazard.startY + hazard.dirY * hazard.travel + hazard.perpY * side;
+        hazard.trail.push({ x: hazard.x, y: hazard.y });
+        if (hazard.trail.length > 14) {
+          hazard.trail.shift();
+        }
+      }
+
       if (hazard.tick <= 0) {
-        hazard.tick = 0.35;
+        hazard.tick = hazard.type === "golem_crack" ? 0.16 : 0.35;
         const d = distance(hazard.x, hazard.y, game.player.x, game.player.y);
         if (d <= hazard.radius + game.player.radius) {
           game.player.takeDamage(hazard.damage);
         }
       }
 
-      if (hazard.life > 0) {
+      const insideArena = hazard.x >= ARENA.x - 20
+        && hazard.x <= ARENA.x + ARENA.size + 20
+        && hazard.y >= ARENA.y - 20
+        && hazard.y <= ARENA.y + ARENA.size + 20;
+
+      if (hazard.life > 0 && insideArena) {
         keep.push(hazard);
       }
     }
@@ -3235,6 +3945,23 @@
 
   function drawHazards() {
     for (const hazard of game.hazards) {
+      if (hazard.type === "golem_crack") {
+        const alpha = clamp(hazard.life / 2.4, 0.22, 0.7);
+        ctx.strokeStyle = `rgba(151, 140, 129, ${alpha})`;
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        for (let i = 0; i < hazard.trail.length; i++) {
+          const p = hazard.trail[i];
+          if (i === 0) {
+            ctx.moveTo(p.x, p.y);
+          } else {
+            ctx.lineTo(p.x, p.y);
+          }
+        }
+        ctx.stroke();
+        continue;
+      }
+
       const alpha = clamp(hazard.life / 2.2, 0.2, 0.62);
       ctx.fillStyle = `rgba(110, 210, 95, ${alpha})`;
       ctx.beginPath();
@@ -3258,7 +3985,7 @@
 
     const sprite = getSprite("characters", "merchant");
     if (sprite) {
-      drawSpriteCentered(sprite, cx, cy, 54, 54);
+      drawSpriteCentered(sprite, cx, cy, 54 * 2.25, 108);
     } else {
       ctx.fillStyle = "#ccb58a";
       ctx.fillRect(cx - 15, cy - 18, 30, 36);
@@ -3343,10 +4070,22 @@
     const livingEnemies = [];
     for (const e of game.enemies) {
       if (e.dead) {
+        if (e.id === "slime_boss" || e.id === "slime_boss_split_1") {
+          const childId = e.id === "slime_boss" ? "slime_boss_split_1" : "slime_boss_split_2";
+          for (let i = 0; i < 2; i++) {
+            const angle = (Math.PI * 2 * i) / 2 + Math.random() * 0.3;
+            const offset = e.radius * 0.75;
+            const childX = clamp(e.x + Math.cos(angle) * offset, ARENA.x + 22, ARENA.x + ARENA.size - 22);
+            const childY = clamp(e.y + Math.sin(angle) * offset, ARENA.y + 22, ARENA.y + ARENA.size - 22);
+            game.enemies.push(new Enemy(childId, childX, childY));
+          }
+        }
+
         game.kills += 1;
         const gain = randInt(e.goldRange[0], e.goldRange[1])
           * (1 + game.player.bonus.goldFactor)
-          * (game.player.base.goldDropMultiplier || 1);
+          * (game.player.base.goldDropMultiplier || 1)
+          * ENEMY_GOLD_GAIN_FACTOR;
         game.player.gold += gain;
       } else {
         livingEnemies.push(e);
@@ -3392,6 +4131,10 @@
   }
 
   function updateGame(dt) {
+    updateParticles(dt);
+    updateScreenShake(dt);
+    updateWaveAnnouncement(dt);
+
     if (game.state === GAME_STATE.PLAYING) {
       updatePlaying(dt);
       return;
@@ -3403,6 +4146,9 @@
   }
 
   function renderGame() {
+    ctx.save();
+    applyScreenShakeTransform();
+
     drawArena();
 
     if (game.player) {
@@ -3417,18 +4163,27 @@
 
       const w = e.radius * 2;
       const hpPct = clamp(e.hp / e.maxHp, 0, 1);
-      ctx.fillStyle = "rgba(0,0,0,0.45)";
-      ctx.fillRect(e.x - e.radius, e.y - e.radius - 10, w, 4);
-      ctx.fillStyle = e.isBoss ? "#ffd16a" : "#df5555";
-      ctx.fillRect(e.x - e.radius, e.y - e.radius - 10, w * hpPct, 4);
+      // HP bar background
+      ctx.fillStyle = "rgba(0,0,0,0.6)";
+      ctx.fillRect(e.x - e.radius, e.y - e.radius - 11, w, 5);
+      // HP fill
+      if (e.isBoss) {
+        const bossGrad = ctx.createLinearGradient(e.x - e.radius, 0, e.x + e.radius, 0);
+        bossGrad.addColorStop(0, "#cc1111");
+        bossGrad.addColorStop(1, "#ff8820");
+        ctx.fillStyle = bossGrad;
+      } else {
+        ctx.fillStyle = "#df5555";
+      }
+      ctx.fillRect(e.x - e.radius, e.y - e.radius - 11, w * hpPct, 5);
     }
 
     for (const p of game.projectiles) {
       p.draw();
     }
 
+    drawParticles();
     drawFloatingDamageTexts();
-
     drawHazards();
 
     if (game.state === GAME_STATE.MERCHANT) {
@@ -3436,17 +4191,23 @@
     }
 
     if (game.state === GAME_STATE.PLAYING || game.state === GAME_STATE.MERCHANT) {
-      ctx.fillStyle = "rgba(250,250,250,0.75)";
-      ctx.font = "13px Consolas";
+      ctx.fillStyle = "rgba(220,230,245,0.5)";
+      ctx.font = "12px 'Courier New'";
       ctx.fillText(t("ui.controlsHint"), 190, 690);
       if (game.state === GAME_STATE.MERCHANT) {
-        ctx.fillStyle = "rgba(245, 226, 157, 0.95)";
+        ctx.fillStyle = "rgba(245, 226, 157, 0.85)";
         ctx.fillText(t("ui.merchantHint"), 190, 668);
         const mult = getMerchantPriceMultiplier();
-        ctx.fillStyle = "rgba(195, 233, 255, 0.95)";
+        ctx.fillStyle = "rgba(195, 233, 255, 0.85)";
         ctx.fillText(t("ui.priceScale", { mult: mult.toFixed(2) }), 190, 646);
       }
     }
+
+    ctx.restore();
+
+    // Drawn outside shake transform so they stay stable in screen space
+    drawBossHpBar();
+    drawWaveAnnouncement();
   }
 
   function loop(ts) {
@@ -3553,6 +4314,7 @@
   });
 
   window.addEventListener("keydown", (e) => {
+    ensureBgmPlaying();
     input.keys.add(e.code);
 
     if (e.code === "Tab") {
@@ -3598,14 +4360,35 @@
     input.keys.delete(e.code);
   });
 
+  window.addEventListener("pointerdown", ensureBgmPlaying, { passive: true });
+
   skipShopBtn.addEventListener("click", closeMerchantAndAdvance);
   rerollShopBtn.addEventListener("click", rerollMerchantOffers);
   inventoryBtn.addEventListener("click", toggleInventory);
+  if (muteMusicBtn) {
+    muteMusicBtn.addEventListener("click", toggleBgmMute);
+  }
   closeInventoryBtn.addEventListener("click", toggleInventory);
   if (langToggleBtn) {
     langToggleBtn.addEventListener("click", () => {
       setLanguage(currentLang === "EN" ? "ES" : "EN");
     });
+  }
+  if (activateGodCodeBtn) {
+    activateGodCodeBtn.addEventListener("click", activateGodModeByCode);
+  }
+  if (godCodeInput) {
+    godCodeInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        activateGodModeByCode();
+      }
+    });
+  }
+  if (toggleInvincibleBtn) {
+    toggleInvincibleBtn.addEventListener("click", toggleInvincibleMode);
+  }
+  if (disableGodModeBtn) {
+    disableGodModeBtn.addEventListener("click", disableGodMode);
   }
 
   restartBtn.addEventListener("click", () => {

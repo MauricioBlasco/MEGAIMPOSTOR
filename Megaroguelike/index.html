@@ -21,6 +21,7 @@
       </div>
       <div id="hudRight">
         <button id="inventoryBtn" class="smallBtn">Inventory (I)</button>
+        <button id="muteMusicBtn" class="smallBtn" type="button">Mute Music: OFF</button>
       </div>
     </header>
 
@@ -38,6 +39,12 @@
           <button id="langToggleBtn" class="smallBtn" type="button">ES</button>
         </div>
         <p id="charSelectSubtitle" class="muted">Each hero is tied to a basic weapon, unique stats, and a distinct combat role.</p>
+        <div id="godModePanel" class="godModePanel">
+          <input id="godCodeInput" class="godCodeInput" type="text" placeholder="Enter code" autocomplete="off" />
+          <button id="activateGodCodeBtn" class="smallBtn" type="button">Activate Code</button>
+          <button id="toggleInvincibleBtn" class="smallBtn hidden" type="button">Invincible Mode: OFF</button>
+          <button id="disableGodModeBtn" class="smallBtn hidden" type="button">Disable God Mode</button>
+        </div>
         <div id="charCards" class="cardGrid"></div>
       </div>
     </div>
